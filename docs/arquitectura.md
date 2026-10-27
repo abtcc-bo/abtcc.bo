@@ -105,11 +105,12 @@ abtcc-web/
 │   └── docs/                  ← PDFs públicos (estatuto, código de ética)
 ├── src/
 │   ├── content/
-│   │   ├── eventos/             ← UN archivo .md por evento (datos comunes + textos por idioma)
+│   │   ├── eventos/AAAA-MM-DD-slug/ ← evento.yaml (datos comunes) + es.md/en.md/pt.md (textos)
 │   │   ├── blog/{es,en,pt}/
-│   │   ├── personas/            ← comisión directiva, facilitadores, autores
+│   │   ├── personas/            ← un .yaml por persona (comisión, facilitadores, autores)
 │   │   └── paginas/{es,en,pt}/  ← nosotros, membresía, etc.
 │   ├── content.config.ts      ← esquemas (campos obligatorios)
+│   ├── lib/contenido.ts       ← lectura del contenido ya combinado y validado
 │   ├── i18n/{es,en,pt}.json   ← textos de interfaz (menú, botones)
 │   ├── assets/                ← imágenes que Astro optimiza
 │   ├── components/            ← piezas reutilizables (TarjetaEvento, Header…)
@@ -131,7 +132,7 @@ abtcc-web/
 | Personas | nombre, foto; cargo y biografía breve por idioma (es obligatorio, en/pt opcionales) | título profesional, enlaces (ORCID, LinkedIn, Instagram), orden de aparición |
 | Páginas | título, idioma, clave de traducción, descripción para Google | imagen para redes |
 
-**Eventos: un solo archivo.** Los datos que no dependen del idioma (fechas, modalidad, costos, estado, cupos, facilitadores) se escriben una sola vez; solo los textos (título, resumen, descripción) van por idioma dentro del mismo archivo. Así es imposible que la fecha en español y en portugués queden distintas. Un evento aparece en `/en/` o `/pt/` solo si tiene textos en ese idioma.
+**Eventos: una carpeta por evento.** Los datos que no dependen del idioma (fechas, modalidad, costos, estado, cupos, facilitadores) se escriben una sola vez en `evento.yaml`; los textos (título, resumen, descripción) van en `es.md`, `en.md`, `pt.md` dentro de la misma carpeta. Así es imposible que la fecha en español y en portugués queden distintas. Un evento aparece en `/en/` o `/pt/` solo si tiene textos en ese idioma.
 
 **La "clave de traducción"** (blog y páginas) es un identificador común (por ejemplo `taller-act-estres-2026`) que une las tres versiones de un mismo contenido. Gracias a ella el selector de idioma lleva a la página equivalente, no a la portada, y Google sabe que son traducciones entre sí (sección 5).
 
@@ -425,7 +426,7 @@ Lo que conviene medir: visitas por idioma y país, páginas de eventos más vist
 **Flujo típico para cargar un evento con Claude Code**
 
 1. Abres el proyecto y pides: "Crea el evento del taller de ACT y estrés del 14 de noviembre, presencial en La Paz, en español y portugués", adjuntando el afiche.
-2. Claude Code crea un archivo en `src/content/eventos/` con los datos comunes y los textos en español y portugués, y optimiza la imagen.
+2. Claude Code crea la carpeta del evento en `src/content/eventos/` con `evento.yaml`, `es.md` y `pt.md`, y optimiza la imagen.
 3. Ejecuta la construcción local: si falta un campo obligatorio, el esquema lo detecta.
 4. Revisas la vista previa en el navegador.
 5. *Commit* y *push*: en uno o dos minutos está publicado, con su ficha para Google y su archivo de calendario.
@@ -486,7 +487,7 @@ Conviene construir en cuatro fases y publicar al terminar la primera: una web se
 **27/10/2026 — Revisión inicial**
 
 - Alojamiento: Vercel en lugar de Cloudflare Pages. Sin dominio propio por ahora: subdominio gratuito; el dominio pasa a ser requisito de la fase 3.
-- Eventos: un solo archivo por evento con datos comunes y textos por idioma (antes: un archivo por idioma, con riesgo de fechas distintas).
+- Eventos: una carpeta por evento con `evento.yaml` (datos comunes) y un `.md` por idioma (antes: un archivo completo por idioma, con riesgo de fechas distintas).
 - Personas: cargo y biografía por idioma.
 - Socios: el solicitante no crea cuenta; se desactiva el registro abierto de Supabase; se contempla la pausa del plan gratuito.
 - Reconstrucción diaria: cron con *deploy hook* en lugar de depender solo de GitHub Actions.

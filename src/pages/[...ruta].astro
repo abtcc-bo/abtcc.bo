@@ -1,9 +1,15 @@
 ---
 // Genera todas las secciones fijas en los tres idiomas a partir de SECCIONES (src/i18n/rutas.ts).
+// Contenido de cada sección, en orden de prioridad:
+//   1. una vista propia registrada en VISTAS (p. ej. la portada);
+//   2. una página de texto en src/content/paginas/{idioma}/ con `clave` igual a la sección;
+//   3. el aviso "en construcción".
 // Los contenidos con su propia página (eventos, artículos) tienen rutas aparte.
 import Base from '../layouts/Base.astro';
 import Inicio from '../vistas/Inicio.astro';
+import PaginaInstitucional from '../vistas/PaginaInstitucional.astro';
 import Pendiente from '../vistas/Pendiente.astro';
+import { paginaDeSeccion } from '../lib/contenido';
 import { IDIOMAS, SECCIONES, alternosDeSeccion, cadenaDeSecciones, ruta, t, type Idioma, type Seccion } from '../i18n';
 
 export function getStaticPaths() {
@@ -27,8 +33,10 @@ const VISTAS: Partial<Record<Seccion, typeof Inicio>> = {
 	inicio: Inicio,
 };
 const Vista = VISTAS[seccion];
+const pagina = Vista ? undefined : await paginaDeSeccion(seccion, idioma);
 
-const titulo = seccion === 'inicio' ? `${textos.sitio.sigla} · ${textos.sitio.nombre}` : `${textos.nav[seccion]} · ${textos.sitio.sigla}`;
+const nombre = pagina?.data.titulo ?? textos.nav[seccion];
+const titulo = seccion === 'inicio' ? `${textos.sitio.sigla} · ${textos.sitio.nombre}` : `${nombre} · ${textos.sitio.sigla}`;
 const migas = cadenaDeSecciones(seccion)
 	.slice(0, -1)
 	.map((s) => ({ nombre: textos.nav[s], href: ruta(s, idioma) }));
@@ -37,10 +45,11 @@ const migas = cadenaDeSecciones(seccion)
 <Base
 	idioma={idioma}
 	titulo={titulo}
+	descripcion={pagina?.data.descripcion}
 	alternos={alternosDeSeccion(seccion)}
 	migas={migas}
-	nombreEnMigas={seccion === 'inicio' ? undefined : textos.nav[seccion]}
+	nombreEnMigas={seccion === 'inicio' ? undefined : nombre}
 	noIndexar={seccion === 'socios'}
 >
-	{Vista ? <Vista idioma={idioma} /> : <Pendiente idioma={idioma} seccion={seccion} />}
+	{Vista ? <Vista idioma={idioma} /> : pagina ? <PaginaInstitucional pagina={pagina} /> : <Pendiente idioma={idioma} seccion={seccion} />}
 </Base>

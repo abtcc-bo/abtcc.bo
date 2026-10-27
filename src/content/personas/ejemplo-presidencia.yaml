@@ -1,0 +1,15 @@
+# [EJEMPLO] Reemplazar por los datos reales. Ver docs/datos-pendientes.md
+nombre: "[PENDIENTE: nombre completo]"
+titulo_profesional: "[PENDIENTE: p. ej. Lic. en Psicología, Mg. en Psicología Clínica]"
+comision: true
+orden: 1
+textos:
+  es:
+    cargo: Presidencia
+    bio: "[PENDIENTE: formación y experiencia en 2–3 líneas]"
+  en:
+    cargo: President
+    bio: "[PENDING]"
+  pt:
+    cargo: Presidência
+    bio: "[PENDENTE]"

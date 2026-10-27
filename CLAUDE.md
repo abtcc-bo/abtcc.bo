@@ -8,7 +8,7 @@ La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisi
 - Etapa actual: **construir la estructura funcional**. El diseño visual va al final: estilos mínimos y legibles, todo en variables CSS (`src/styles/`) para poder rediseñar sin tocar la estructura.
 - Los datos reales se cargan al final. Mientras tanto se usa relleno marcado con `[PENDIENTE: ...]` y cada dato faltante se anota en `docs/datos-pendientes.md`.
 - Se avanza paso a paso; cada paso termina con algo que se pueda ver funcionando en el navegador.
-- El usuario escribe en español; responder en español.
+- El usuario escribe en español; responder en español. No programa: avisarle claramente cuando tenga que hacer algo y mantener `docs/tareas-para-ti.md` al día.
 
 ## Stack
 
@@ -39,11 +39,15 @@ La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisi
 
 ## Contenido (`src/content/`)
 
-- **Eventos:** UN archivo por evento en `src/content/eventos/`, nombrado `AAAA-MM-DD-slug.md`. Datos comunes (fechas, modalidad, costos, estado...) una sola vez; textos por idioma dentro del mismo archivo. Un evento sale en un idioma solo si tiene textos en ese idioma.
-- **Blog y páginas:** un archivo por idioma, unidos por la `clave` de traducción.
-- **Personas:** un archivo por persona; cargo y bio por idioma.
-- Nombres de archivo en minúsculas, sin tildes ni espacios, con guiones.
-- Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos.
+Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. Las vistas leen el contenido con las funciones de `src/lib/contenido.ts`, no con `getCollection` directamente.
+
+- **Eventos:** una carpeta por evento, `src/content/eventos/AAAA-MM-DD-slug/`, con `evento.yaml` (datos comunes: fechas, modalidad, costos, estado...), `es.md` obligatorio y `en.md`/`pt.md` opcionales (título, resumen y descripción de cada idioma), y el afiche en la misma carpeta. La URL es el nombre de la carpeta sin la fecha. Un evento sale en un idioma solo si tiene su .md.
+- **Fechas y horas** de eventos siempre entre comillas y con zona: `"2026-11-14T09:00-04:00"`.
+- **Blog:** `src/content/blog/{es,en,pt}/slug.md`; las traducciones comparten `clave`. `borrador: true` lo oculta al publicar.
+- **Personas:** `src/content/personas/nombre-apellido.yaml`; cargo y bio por idioma; `comision: true` para la comisión directiva. Eventos y artículos las referencian por el nombre del archivo.
+- **Páginas:** `src/content/paginas/{es,en,pt}/nombre.md`; `clave` = sección de `SECCIONES` donde se muestra.
+- Contenido de muestra: lleva `[EJEMPLO]` en el título; se borra cuando llegue el real.
+- Nombres de archivo y carpeta en minúsculas, sin tildes ni espacios, con guiones.
 
 ## Prohibiciones
 
