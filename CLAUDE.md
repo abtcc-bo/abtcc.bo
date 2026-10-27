@@ -63,6 +63,13 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 - Claves en variables de entorno (`astro.config.mjs` → `env.schema`, ejemplo en `.env.example`). Sin claves funciona en **modo prueba**: el mensaje se muestra en la consola del servidor y no se envía.
 - Sin dominio propio, Resend solo envía desde `onboarding@resend.dev` al correo dueño de la cuenta: no hay respuesta automática a quien escribe hasta tener dominio.
 
+## SEO técnico y seguridad
+
+- La lista de páginas del sitio sale de `src/lib/paginas.ts` (`paginasDelSitio`); la usan `[...ruta].astro` y `/sitemap.xml`. Solo las páginas `indexable` entran al sitemap.
+- `/robots.txt` (`src/pages/robots.txt.ts`) bloquea el área de socios y `/api/`.
+- CSP: `security.csp` en `astro.config.mjs` (meta tag con hashes que Astro calcula). Todo script `is:inline` necesita su hash en `scriptDirective.hashes`; un script externo nuevo, su dominio en `resources`. No se puede probar en `npm run dev`: construir y servir `.vercel/output/static`.
+- Resto de encabezados de seguridad en `vercel.json` (verificar en securityheaders.com al publicar).
+
 ## Prohibiciones
 
 - No subir `.env` ni claves a GitHub.

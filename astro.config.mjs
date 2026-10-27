@@ -21,6 +21,28 @@ export default defineConfig({
 	redirects: {
 		'/': '/es/',
 	},
+	// Política de seguridad de contenido (CSP): el navegador solo ejecuta los scripts y estilos de este sitio.
+	// Astro calcula las huellas (hashes) de sus propios scripts; aquí se añaden las excepciones necesarias.
+	// No funciona en `npm run dev`; se comprueba sobre la versión construida.
+	security: {
+		csp: {
+			scriptDirective: {
+				// Huella del script en línea de Base.astro que marca <html class="js">. Si se cambia ese script, recalcular.
+				hashes: ['sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='],
+				// Cloudflare Turnstile (antispam del formulario de contacto).
+				resources: ["'self'", 'https://challenges.cloudflare.com'],
+			},
+			directives: [
+				"default-src 'self'",
+				"img-src 'self' data:",
+				"connect-src 'self'",
+				'frame-src https://challenges.cloudflare.com',
+				"form-action 'self'",
+				"base-uri 'self'",
+				"object-src 'none'",
+			],
+		},
+	},
 	// Claves y ajustes que se cargan en Vercel (o en un archivo .env local que nunca se sube a GitHub).
 	// Sin ellas el formulario funciona en modo prueba: no envía correos y no pide verificación antispam.
 	env: {

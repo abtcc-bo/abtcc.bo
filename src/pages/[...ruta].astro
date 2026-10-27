@@ -1,7 +1,7 @@
 ---
-// Genera todas las páginas HTML del sitio en los tres idiomas:
+// Genera todas las páginas HTML del sitio en los tres idiomas, a partir de la lista de src/lib/paginas.ts:
 //  - Secciones fijas (SECCIONES en src/i18n/rutas.ts). Contenido, en orden de prioridad:
-//      1. una vista propia registrada en VISTAS (recibe también la página de texto, si existe);
+//      1. una vista propia registrada en src/vistas/index.ts (recibe también la página de texto, si existe);
 //      2. una página de texto en src/content/paginas/{idioma}/ con `clave` igual a la sección;
 //      3. el aviso "en construcción", que no se indexa en Google.
 //  - Detalle de cada evento público, en los idiomas en que tiene texto.
@@ -11,36 +11,14 @@ import { VISTAS } from '../vistas';
 import DetalleEvento from '../vistas/DetalleEvento.astro';
 import PaginaInstitucional from '../vistas/PaginaInstitucional.astro';
 import Pendiente from '../vistas/Pendiente.astro';
-import { obtenerEventosPublicos, paginaDeSeccion, type Evento } from '../lib/contenido';
-import { IDIOMAS, PADRES, SECCIONES, cadenaDeSecciones, ruta, t, type Alternos, type Idioma, type Seccion } from '../i18n';
+import { paginasDelSitio, type PaginaDelSitio } from '../lib/paginas';
+import { PADRES, cadenaDeSecciones, ruta, t, type Seccion } from '../i18n';
 
 export async function getStaticPaths() {
-	const secciones = await Promise.all(
-		(Object.keys(SECCIONES) as Seccion[]).map(async (seccion) => {
-			const paginas = Object.fromEntries(await Promise.all(IDIOMAS.map(async (idioma) => [idioma, await paginaDeSeccion(seccion, idioma)] as const)));
-			// Idiomas en que la sección tiene contenido real: solo esos se anuncian a Google como versiones.
-			const conContenido = IDIOMAS.filter((idioma) => VISTAS[seccion] || paginas[idioma]);
-			const alternos: Alternos = Object.fromEntries(conContenido.map((idioma) => [idioma, ruta(seccion, idioma)]));
-			return IDIOMAS.map((idioma) => ({
-				params: { ruta: ruta(seccion, idioma).slice(1, -1) },
-				props: { tipo: 'seccion' as const, idioma, seccion, pagina: paginas[idioma], alternos },
-			}));
-		}),
-	);
-	const eventos = await Promise.all(
-		IDIOMAS.map(async (idioma) =>
-			(await obtenerEventosPublicos(idioma)).map((evento) => ({
-				params: { ruta: ruta('eventos', idioma, evento.slug).slice(1, -1) },
-				props: { tipo: 'evento' as const, idioma, evento },
-			})),
-		),
-	);
-	return [...secciones.flat(), ...eventos.flat()];
+	return (await paginasDelSitio()).map(({ url, datos }) => ({ params: { ruta: url.slice(1, -1) }, props: datos }));
 }
 
-type Props =
-	| { tipo: 'seccion'; idioma: Idioma; seccion: Seccion; pagina?: Awaited<ReturnType<typeof paginaDeSeccion>>; alternos: Alternos }
-	| { tipo: 'evento'; idioma: Idioma; evento: Evento };
+type Props = PaginaDelSitio;
 
 const props = Astro.props;
 const { idioma } = props;
@@ -55,7 +33,6 @@ if (props.tipo === 'evento' && props.evento.datos.imagen) {
 
 const Vista = props.tipo === 'seccion' ? VISTAS[props.seccion] : undefined;
 const pagina = props.tipo === 'seccion' ? props.pagina : undefined;
-const enConstruccion = props.tipo === 'seccion' && !Vista && !pagina;
 const subsecciones =
 	props.tipo === 'seccion'
 		? (Object.entries(PADRES) as [Seccion, Seccion][]).filter(([, padre]) => padre === props.seccion).map(([hija]) => ({ nombre: textos.nav[hija], href: ruta(hija, idioma) }))
@@ -74,7 +51,7 @@ const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${texto
 			alternos={props.alternos}
 			migas={migasHasta(props.seccion).slice(0, -1)}
 			nombreEnMigas={props.seccion === 'inicio' ? undefined : nombre}
-			noIndexar={props.seccion === 'socios' || enConstruccion}
+			noIndexar={!props.indexable}
 		>
 			{Vista ? (
 				<Vista idioma={idioma} pagina={pagina} />
@@ -89,7 +66,7 @@ const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${texto
 			idioma={idioma}
 			titulo={titulo}
 			descripcion={props.evento.texto.data.resumen}
-			alternos={props.evento.alternos}
+			alternos={props.alternos}
 			migas={migasHasta('eventos')}
 			nombreEnMigas={nombre}
 			imagen={imagenEvento}
