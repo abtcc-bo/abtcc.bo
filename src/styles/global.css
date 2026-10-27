@@ -1,14 +1,29 @@
-/* Estilos mínimos de trabajo. El diseño definitivo se aplica al final sobre estas variables. */
+/* Diseño de prueba: "elegancia y ciencia". Papel cálido, tinta azul profunda, títulos con serifa,
+   y los tres colores del logo solo como firma (franja tricolor y puntos). Todo se ajusta desde estas variables. */
 :root {
-	--color-fondo: #ffffff;
-	--color-texto: #1a1a1a;
-	--color-texto-suave: #555555;
-	--color-acento: #1f4e79;
-	--color-borde: #dddddd;
-	--fuente-texto: system-ui, sans-serif;
-	--fuente-titulos: system-ui, sans-serif;
+	--color-fondo: #faf8f4;
+	--color-superficie: #ffffff;
+	--color-texto: #1c2533;
+	--color-texto-suave: #5a6270;
+	--color-titulos: #14213d;
+	--color-acento: #03713a;
+	--color-acento-hover: #025c2f;
+	--color-acento-suave: #e8f2ec;
+	--color-borde: #e3dfd6;
+	--color-oscuro: #14213d;
+	--color-oscuro-texto: #e9ecf2;
+	/* Colores del logo. */
+	--logo-rojo: #fe1616;
+	--logo-amarillo: #fcde58;
+	--logo-verde: #037f36;
+	--franja-tricolor: linear-gradient(90deg, var(--logo-rojo) 0 33.33%, var(--logo-amarillo) 33.33% 66.66%, var(--logo-verde) 66.66%);
+	--fuente-texto: 'Source Sans 3 Variable', system-ui, sans-serif;
+	--fuente-titulos: 'Source Serif 4 Variable', Georgia, serif;
 	--ancho-maximo: 72rem;
+	--ancho-lectura: 46rem;
 	--espacio: 1rem;
+	--radio: 6px;
+	--sombra: 0 1px 2px rgb(20 33 61 / 0.04), 0 8px 24px rgb(20 33 61 / 0.06);
 }
 
 *,
@@ -22,24 +37,82 @@
 	display: none !important;
 }
 
+/* El encabezado queda fijo arriba: los enlaces a un apartado (#...) no lo tapan. */
+html {
+	scroll-padding-top: 6rem;
+}
+
 body {
 	margin: 0;
 	font-family: var(--fuente-texto);
-	font-size: 1.0625rem;
-	line-height: 1.6;
+	font-size: 1.125rem;
+	line-height: 1.65;
 	color: var(--color-texto);
 	background: var(--color-fondo);
+	overflow-x: clip;
+	-webkit-font-smoothing: antialiased;
 }
 
 h1,
 h2,
 h3 {
 	font-family: var(--fuente-titulos);
+	font-weight: 600;
 	line-height: 1.2;
+	color: var(--color-titulos);
+	letter-spacing: -0.01em;
+	text-wrap: balance;
+}
+h1 {
+	font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+	margin: calc(var(--espacio) * 1.5) 0 var(--espacio);
+}
+h2 {
+	font-size: clamp(1.5rem, 1.25rem + 1vw, 1.875rem);
+	margin: calc(var(--espacio) * 2.5) 0 var(--espacio);
+}
+h3 {
+	font-size: 1.25rem;
+}
+p,
+li {
+	text-wrap: pretty;
+}
+
+main {
+	padding-bottom: calc(var(--espacio) * 3);
 }
 
 a {
 	color: var(--color-acento);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.2em;
+}
+a:hover {
+	color: var(--color-acento-hover);
+	text-decoration-thickness: 2px;
+}
+
+/* Rótulo pequeño sobre un título, con los tres puntos del logo. */
+.antetitulo {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin: 0;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--color-texto-suave);
+}
+.antetitulo::before {
+	content: '';
+	width: 2.1rem;
+	height: 0.55rem;
+	background:
+		radial-gradient(circle, var(--logo-rojo) 0.25rem, transparent 0.27rem) 0 50% / 0.7rem 0.55rem no-repeat,
+		radial-gradient(circle, var(--logo-amarillo) 0.25rem, transparent 0.27rem) 0.7rem 50% / 0.7rem 0.55rem no-repeat,
+		radial-gradient(circle, var(--logo-verde) 0.25rem, transparent 0.27rem) 1.4rem 50% / 0.7rem 0.55rem no-repeat;
 }
 
 :focus-visible {
@@ -84,12 +157,28 @@ a {
 .boton {
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	min-height: 44px;
-	padding-inline: 1.25rem;
+	padding-inline: 1.4rem;
+	border: 1px solid var(--color-acento);
+	border-radius: var(--radio);
 	background: var(--color-acento);
-	color: var(--color-fondo);
-	font-weight: 700;
+	color: #fff;
+	font-weight: 600;
 	text-decoration: none;
+	transition: background-color 0.15s, color 0.15s;
+}
+.boton:hover {
+	background: var(--color-acento-hover);
+	color: #fff;
+}
+.boton-secundario {
+	background: transparent;
+	color: var(--color-acento);
+}
+.boton-secundario:hover {
+	background: var(--color-acento-suave);
+	color: var(--color-acento-hover);
 }
 
 /* Desplegables (submenús y selector de idioma), hechos con <details>: funcionan sin JavaScript.
@@ -131,9 +220,18 @@ a {
 	min-width: 12rem;
 	width: max-content;
 	max-width: 20rem;
-	background: var(--color-fondo);
+	background: var(--color-superficie);
 	border: 1px solid var(--color-borde);
-	box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
+	border-radius: var(--radio);
+	box-shadow: var(--sombra);
+}
+.lista-desplegable a {
+	color: var(--color-texto);
+	text-decoration: none;
+}
+.lista-desplegable a:hover {
+	background: var(--color-acento-suave);
+	color: var(--color-acento-hover);
 }
 /* La primera opción (la página principal de la sección) va separada de las demás. */
 .lista-desplegable .principal {

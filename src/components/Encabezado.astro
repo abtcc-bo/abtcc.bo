@@ -153,14 +153,26 @@ if (paginaMembresia) {
 
 <style>
 	.encabezado {
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		background: rgb(255 255 255 / 0.96);
 		border-bottom: 1px solid var(--color-borde);
+		backdrop-filter: blur(6px);
+	}
+	/* Franja con los tres colores del logo. */
+	.encabezado::before {
+		content: '';
+		display: block;
+		height: 4px;
+		background: var(--franja-tricolor);
 	}
 	.fila {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--espacio);
-		padding-block: var(--espacio);
+		padding-block: 0.6rem;
 	}
 	.logo {
 		margin-right: auto;
@@ -185,15 +197,56 @@ if (paginaMembresia) {
 		margin: 0;
 		padding: 0;
 	}
+	nav a,
+	nav summary,
+	.panel :global(.selector-idioma summary) {
+		color: var(--color-texto);
+		text-decoration: none;
+		font-size: 1rem;
+		font-weight: 500;
+	}
+	nav > ul > li > a,
+	nav summary {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		border-bottom: 2px solid transparent;
+	}
+	nav > ul > li > a:hover,
+	nav summary:hover {
+		color: var(--color-acento);
+	}
 	[aria-current='page'],
 	.actual {
-		font-weight: 700;
+		color: var(--color-acento);
+		border-bottom-color: var(--color-acento) !important;
+	}
+	.boton-socios {
+		display: inline-flex;
+		align-items: center;
+		min-height: 40px;
+		padding-inline: 1rem;
+		border: 1px solid var(--color-acento);
+		border-radius: var(--radio);
+		color: var(--color-acento);
+		font-size: 0.9375rem;
+		font-weight: 600;
+		text-decoration: none;
+	}
+	.boton-socios:hover {
+		background: var(--color-acento);
+		color: #fff;
 	}
 	.boton-menu {
 		display: none;
 		min-height: 44px;
 		padding-inline: 1rem;
 		font: inherit;
+		font-weight: 600;
+		color: var(--color-titulos);
+		background: var(--color-superficie);
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
 	}
 
 	@media (max-width: 48rem) {
@@ -204,6 +257,10 @@ if (paginaMembresia) {
 			flex-basis: 100%;
 			flex-direction: column;
 			align-items: flex-start;
+			gap: 0.25rem;
+			max-height: calc(100dvh - 5rem);
+			overflow-y: auto;
+			padding-bottom: var(--espacio);
 		}
 		:global(.js) .boton-menu[aria-expanded='false'] + .panel {
 			display: none;

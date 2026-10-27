@@ -5,7 +5,7 @@ La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisi
 
 ## Estado y forma de trabajo
 
-- Etapa actual: **construir la estructura funcional**. El diseño visual va al final: estilos mínimos y legibles, todo en variables CSS (`src/styles/`) para poder rediseñar sin tocar la estructura.
+- Etapa actual: **construir la estructura funcional**, con un **diseño de prueba** ("elegancia y ciencia"): papel cálido, tinta azul, verde del logo como acento, títulos Source Serif 4 y texto Source Sans 3 (autoalojadas con @fontsource), y los colores del logo solo como franja tricolor y puntos. Todo en variables CSS (`src/styles/global.css`) para poder rediseñar sin tocar la estructura.
 - Los datos reales se cargan al final. Mientras tanto se usa relleno marcado con `[PENDIENTE: ...]` y cada dato faltante se anota en `docs/datos-pendientes.md`.
 - Se avanza paso a paso; cada paso termina con algo que se pueda ver funcionando en el navegador.
 - El usuario escribe en español; responder en español. No programa: avisarle claramente cuando tenga que hacer algo y mantener `docs/tareas-para-ti.md` al día.

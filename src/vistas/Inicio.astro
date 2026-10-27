@@ -1,5 +1,6 @@
 ---
 import ListaProximos from '../components/ListaProximos.astro';
+import { ORGANIZACION } from '../datos/organizacion';
 import { obtenerEventosPublicos, yaPaso } from '../lib/contenido';
 import { ruta, t, type Idioma } from '../i18n';
 
@@ -12,11 +13,69 @@ const textos = t(idioma);
 const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)).slice(0, 3);
 ---
 
-<h1>{textos.sitio.nombre} ({textos.sitio.sigla})</h1>
-<p>{textos.sitio.descripcion}</p>
-
-<section aria-labelledby="titulo-proximos">
-	<h2 id="titulo-proximos">{textos.comun.proximosEventos}</h2>
-	<ListaProximos eventos={proximos} idioma={idioma} />
-	<p><a href={ruta('eventos', idioma)}>{textos.comun.verTodos}</a></p>
+<section class="portada" aria-labelledby="titulo-portada">
+	<div>
+		<p class="antetitulo">{textos.sitio.sigla} · {ORGANIZACION.ciudades.join(' · ')}</p>
+		<h1 id="titulo-portada">{textos.sitio.nombre}</h1>
+		<p class="bajada">{textos.sitio.descripcion}</p>
+		<p class="acciones">
+			<a class="boton" href={ruta('eventos', idioma)}>{textos.nav.eventos}</a>
+			<a class="boton boton-secundario" href={ruta('membresia', idioma)}>{textos.nav.membresia}</a>
+		</p>
+	</div>
 </section>
+
+<section class="proximos" aria-labelledby="titulo-proximos">
+	<div class="cabecera">
+		<h2 id="titulo-proximos">{textos.comun.proximosEventos}</h2>
+		<a href={ruta('eventos', idioma)}>{textos.comun.verTodos} <span aria-hidden="true">→</span></a>
+	</div>
+	<ListaProximos eventos={proximos} idioma={idioma} />
+</section>
+
+<style>
+	/* Banda de ancho completo aunque esté dentro de <main class="contenedor">. */
+	.portada {
+		margin-inline: calc(50% - 50vw);
+		padding-inline: calc(50vw - 50%);
+		padding-block: clamp(3rem, 8vw, 6rem);
+		background:
+			radial-gradient(circle at 88% 30%, rgb(3 127 54 / 0.07), transparent 40%),
+			radial-gradient(circle at 75% 85%, rgb(252 222 88 / 0.12), transparent 35%),
+			var(--color-superficie);
+		border-bottom: 1px solid var(--color-borde);
+	}
+	.portada h1 {
+		max-width: 20ch;
+		margin: 1rem 0;
+		font-size: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
+		line-height: 1.08;
+	}
+	.bajada {
+		max-width: 40rem;
+		margin: 0;
+		font-size: 1.25rem;
+		color: var(--color-texto-suave);
+	}
+	.acciones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin: 2rem 0 0;
+	}
+	.cabecera {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem var(--espacio);
+		margin: calc(var(--espacio) * 3) 0 calc(var(--espacio) * 1.25);
+	}
+	.cabecera h2 {
+		margin: 0;
+	}
+	.cabecera a {
+		font-weight: 600;
+		text-decoration: none;
+	}
+</style>

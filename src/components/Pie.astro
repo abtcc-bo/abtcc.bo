@@ -64,33 +64,66 @@ const anio = new Date().getFullYear();
 
 <style>
 	.pie {
-		margin-top: calc(var(--espacio) * 4);
-		padding-block: calc(var(--espacio) * 2);
-		border-top: 1px solid var(--color-borde);
+		background: var(--color-oscuro);
+		color: var(--color-oscuro-texto);
 		font-size: 0.9375rem;
+	}
+	/* Franja con los tres colores del logo. */
+	.pie::before {
+		content: '';
+		display: block;
+		height: 4px;
+		background: var(--franja-tricolor);
 	}
 	.columnas {
 		display: grid;
-		gap: calc(var(--espacio) * 1.5);
+		gap: calc(var(--espacio) * 2);
 		grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+		padding-block: calc(var(--espacio) * 3) calc(var(--espacio) * 2);
 	}
 	h2 {
-		font-size: 1rem;
-		margin: 0 0 0.5rem;
+		margin: 0 0 0.75rem;
+		font-family: var(--fuente-texto);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: #aab3c5;
 	}
 	p,
 	ul {
-		margin: 0 0 0.25rem;
+		margin: 0 0 0.4rem;
 	}
 	ul {
 		list-style: none;
 		padding: 0;
 	}
+	li + li {
+		margin-top: 0.4rem;
+	}
+	a {
+		color: #fff;
+		text-decoration-color: rgb(255 255 255 / 0.35);
+	}
+	a:hover {
+		color: #fff;
+		text-decoration-color: #fff;
+	}
 	.nombre {
-		font-weight: 700;
+		font-family: var(--fuente-titulos);
+		font-size: 1.125rem;
+		font-weight: 600;
+		line-height: 1.35;
+		color: #fff;
 	}
 	.derechos {
-		margin-top: calc(var(--espacio) * 2);
-		color: var(--color-texto-suave);
+		margin: 0;
+		padding-block: var(--espacio) calc(var(--espacio) * 1.5);
+		border-top: 1px solid rgb(255 255 255 / 0.12);
+		font-size: 0.875rem;
+		color: #aab3c5;
+	}
+	:focus-visible {
+		outline-color: var(--logo-amarillo);
 	}
 </style>

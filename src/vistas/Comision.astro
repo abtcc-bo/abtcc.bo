@@ -94,43 +94,64 @@ const iniciales = (nombre: string) =>
 	.integrantes {
 		list-style: none;
 		padding: 0;
+		margin: calc(var(--espacio) * 2) 0 0;
 		display: grid;
-		gap: calc(var(--espacio) * 2);
+		gap: 1.5rem;
 	}
 	.integrante {
 		display: grid;
-		grid-template-columns: 8rem 1fr;
-		gap: calc(var(--espacio) * 1.5);
+		grid-template-columns: 10rem 1fr;
+		gap: 2rem;
 		align-items: start;
+		padding: 2rem;
+		background: var(--color-superficie);
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
 	}
 	.foto {
-		width: 8rem;
-		height: 8rem;
+		width: 10rem;
+		height: 10rem;
 		object-fit: cover;
 		border-radius: 50%;
+		box-shadow: 0 0 0 4px var(--color-superficie), 0 0 0 5px var(--color-borde);
 	}
 	.sin-foto {
 		display: grid;
 		place-items: center;
-		background: var(--color-borde);
-		font-size: 2rem;
-		font-weight: 700;
-		color: var(--color-texto-suave);
+		background: var(--color-acento-suave);
+		font-family: var(--fuente-titulos);
+		font-size: 2.5rem;
+		color: var(--color-acento);
 	}
 	h2 {
 		margin: 0;
+		font-size: 1.625rem;
 	}
-	h3 {
-		font-size: 1rem;
-		margin: var(--espacio) 0 0.25rem;
-	}
-	.titulo,
-	.cargo {
-		margin: 0.25rem 0;
+	.titulo {
+		margin: 0.25rem 0 0;
 		color: var(--color-texto-suave);
 	}
 	.cargo {
-		font-weight: 700;
+		margin: 0.5rem 0 1rem;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-acento);
+	}
+	h3 {
+		margin: 1.25rem 0 0.4rem;
+		font-family: var(--fuente-texto);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-texto-suave);
+	}
+	.integrante ul:not(.enlaces) {
+		margin: 0;
+		padding-left: 1.1rem;
+		font-size: 1rem;
 	}
 	.enlaces {
 		display: flex;
@@ -139,9 +160,15 @@ const iniciales = (nombre: string) =>
 		padding: 0;
 		text-transform: capitalize;
 	}
-	@media (max-width: 36rem) {
+	@media (max-width: 40rem) {
 		.integrante {
 			grid-template-columns: 1fr;
+			gap: 1.25rem;
+			padding: 1.5rem;
+		}
+		.foto {
+			width: 8rem;
+			height: 8rem;
 		}
 	}
 </style>
