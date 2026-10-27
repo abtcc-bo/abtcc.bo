@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo-completo.png';
 import ListaProximos from '../components/ListaProximos.astro';
 import { ORGANIZACION } from '../datos/organizacion';
 import { obtenerEventosPublicos, yaPaso } from '../lib/contenido';
@@ -14,7 +16,7 @@ const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)
 ---
 
 <section class="portada banda banda-clara" aria-labelledby="titulo-portada">
-	<div>
+	<div class="presentacion">
 		<p class="antetitulo">{textos.sitio.sigla} · {ORGANIZACION.ciudades.join(' · ')}</p>
 		<h1 id="titulo-portada">{textos.sitio.nombre}</h1>
 		<p class="bajada">{textos.sitio.descripcion}</p>
@@ -23,6 +25,8 @@ const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)
 			<a class="boton boton-secundario" href={ruta('membresia', idioma)}>{textos.nav.membresia}</a>
 		</p>
 	</div>
+	<!-- Decorativo: el nombre de la asociación ya está en el título. -->
+	<Image src={logo} alt="" widths={[400, 800]} sizes="(max-width: 48rem) 16rem, 24rem" class="logo-portada" loading="eager" />
 </section>
 
 <section class="proximos banda" aria-labelledby="titulo-proximos">
@@ -35,8 +39,26 @@ const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)
 
 <style>
 	.portada {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 2rem 4rem;
 		padding-block: clamp(3.5rem, 9vw, 7rem);
 		border-top: 0;
+	}
+	.logo-portada {
+		width: clamp(16rem, 28vw, 24rem);
+		height: auto;
+	}
+	@media (max-width: 56rem) {
+		.portada {
+			grid-template-columns: 1fr;
+		}
+		/* En pantallas angostas el logo va arriba del texto. */
+		.logo-portada {
+			order: -1;
+			width: min(15rem, 70%);
+		}
 	}
 	.portada h1 {
 		max-width: 18ch;
