@@ -22,7 +22,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [x] Comisión directiva: nombres y biografías de 5 integrantes
 - [ ] Cargo de Alexandra Shand, Leonardo Eyzaguirre, Halder Delgado y Carmen Barron (¿y el del Dr. Rivera es "Coordinador"?)
 - [x] Fotos de Guillermo Rivera, Halder Delgado, Carmen Barrón y Leonardo Eyzaguirre ✔
-- [ ] Foto de Alexandra Shand (Alix)
+- [x] Foto de Alexandra Shand (Alix) ✔
 - [ ] Hojas de vida completas de Guillermo, Halder, Carmen y Leonardo, para llenar "Formación" (universidad y país de cada título; ver los [PENDIENTE] en `src/content/personas/`). La de Alix ya está cargada
 - [ ] Orden de la comisión: se usó Guillermo, Halder, Carmen, Leonardo, Alix. Confirmar si es el orden definitivo (lo habitual es por cargo)
 - [ ] ¿La ABTCC es "Grupo de trabajo de ALAPCCO" (como dice el logo) o "capítulo boliviano de ALAPCCO" (como dice la hoja de vida de Alix)? Definir una sola forma para la web

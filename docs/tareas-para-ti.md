@@ -33,7 +33,7 @@ Para la página "Comisión directiva", de cada persona:
 - [ ] **Cargo** de cada uno (falta de 4 personas).
 - [x] Título profesional y formación ✔
 - [x] Fotos de Guillermo, Halder, Carmen y Leonardo ✔
-- [ ] **Foto de Alix.**
+- [x] Foto de Alix ✔
 - [ ] **Hojas de vida** de Guillermo, Halder, Carmen y Leonardo (como la que mandó Alix). Con ellas completo la parte de "Formación", que ahora tiene datos [PENDIENTE]. Todas quedan con el mismo formato: un párrafo corto, la lista de títulos y las áreas de trabajo.
 - [ ] Enlaces opcionales: LinkedIn, ORCID, Instagram profesional.
 - [ ] **Su permiso** para publicar su foto y datos. Las hojas de vida traen datos privados (carnet, dirección, teléfono, fecha de nacimiento): esos **nunca** se publican.

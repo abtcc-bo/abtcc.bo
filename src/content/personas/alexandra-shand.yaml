@@ -2,7 +2,7 @@ nombre: Alexandra Shand
 titulo_profesional: MSc. · Licenciada en Fonoaudiología
 comision: true
 orden: 5
-# foto: [PENDIENTE: foto original, la envía Alix]
+foto: ./fotos/alexandra-shand.webp
 textos:
   es:
     cargo: "[PENDIENTE: cargo]"
