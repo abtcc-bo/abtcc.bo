@@ -59,11 +59,11 @@ No afectan a la web, pero conviene corregirlas antes de aprobarlos:
 
 ---
 
-### 5. Crear dos cuentas gratuitas (te guiaré paso a paso)
-Todas con el Gmail de la asociación (abtcc.bo@gmail.com). Te avisaré cuando sea el momento.
+### 5. Cuentas gratuitas (te guío paso a paso)
+Todas con el Gmail de la asociación (abtcc.bo@gmail.com).
 
 - [ ] **Resend**: envía a abtcc.bo@gmail.com los mensajes del formulario de contacto. Mientras no haya dominio propio, solo puede enviar al correo con el que se crea la cuenta; por eso debe ser el de la asociación.
-- [ ] **Cloudflare**: donde se publica la web (se conecta con el GitHub `abtcc-bo`) y, con su servicio Turnstile, la verificación antispam del formulario.
+- [x] **Cloudflare** ✔ (web publicada en https://abtcc.abtcc-bo.workers.dev): donde se publica la web (se conecta con el GitHub `abtcc-bo`) y, con su servicio Turnstile, la verificación antispam del formulario.
 
 Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en el chat**: se cargan directamente en Cloudflare y te mostraré dónde.
 

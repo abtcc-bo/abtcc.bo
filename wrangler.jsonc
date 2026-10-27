@@ -1,5 +1,5 @@
 // Configuración del Worker de Cloudflare donde se publica la web.
-// La dirección gratuita es https://abtcc.<subdominio-de-la-cuenta>.workers.dev
+// Dirección gratuita: https://abtcc.abtcc-bo.workers.dev (nombre del Worker + subdominio de la cuenta).
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "abtcc",

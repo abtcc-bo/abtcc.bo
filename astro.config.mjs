@@ -4,8 +4,8 @@ import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
-	// [PENDIENTE: dirección definitiva al publicar] Se usa para URLs absolutas (canonical, hreflang, sitemap).
-	site: 'https://abtcc.workers.dev',
+	// Dirección pública (gratuita de Cloudflare hasta tener dominio propio). Se usa para URLs absolutas (canonical, hreflang, sitemap).
+	site: 'https://abtcc.abtcc-bo.workers.dev',
 	trailingSlash: 'always',
 	// Se publica como Worker de Cloudflare (configuración en wrangler.jsonc, código propio en src/worker.ts).
 	// Casi todo es estático; solo las rutas con `export const prerender = false` corren en el servidor:
