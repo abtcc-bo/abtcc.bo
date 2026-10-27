@@ -80,6 +80,17 @@ Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en
 
 ---
 
+## 🔁 Para que nada se desactive en los meses sin actividad
+
+La web se mantiene sola: cada medianoche (hora de Bolivia) Vercel ejecuta una tarea automática que la reconstruye y, cuando exista el área de socios, mantiene activo Supabase. No hace falta entrar a la web. Lo que sí depende de personas, una vez al año (por ejemplo, en enero, al iniciar la gestión):
+
+- [ ] **Iniciar sesión en abtcc.bo@gmail.com** y revisar que la verificación en dos pasos siga activa. Google borra las cuentas que pasan 2 años sin uso, y con ella se perderían Vercel, Resend y Cloudflare.
+- [ ] **Entrar una vez a Vercel, Resend y Cloudflare** con ese Gmail, para confirmar que todo sigue en orden.
+- [ ] **Renovar el dominio** (cuando exista): dejar activada la renovación automática y revisar que la tarjeta o el pago siga vigente.
+- [ ] **Revisar que la comisión nueva tenga acceso** a las cuentas, si cambió la directiva.
+
+---
+
 ## Cómo ver la web en tu computadora
 
 No es necesario, pero si quieres verla mientras avanzo:

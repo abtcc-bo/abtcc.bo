@@ -70,6 +70,12 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 - CSP: `security.csp` en `astro.config.mjs` (meta tag con hashes que Astro calcula). Todo script `is:inline` necesita su hash en `scriptDirective.hashes`; un script externo nuevo, su dominio en `resources`. No se puede probar en `npm run dev`: construir y servir `.vercel/output/static`.
 - Resto de encabezados de seguridad en `vercel.json` (verificar en securityheaders.com al publicar).
 
+## Tarea diaria de mantenimiento
+
+- `/api/mantenimiento/` (`src/pages/api/mantenimiento.ts`), programada en `vercel.json` → `crons` a las 04:00 UTC (medianoche en Bolivia). Vercel la llama con `Authorization: Bearer CRON_SECRET`.
+- Hoy: llama a `VERCEL_DEPLOY_HOOK_URL` para reconstruir el sitio (eventos pasados). Fase 3: agregar ahí la consulta a Supabase para que el plan gratuito no se pause.
+- No usar tareas programadas de GitHub Actions para esto: se desactivan tras 60 días sin cambios en el repositorio.
+
 ## Prohibiciones
 
 - No subir `.env` ni claves a GitHub.

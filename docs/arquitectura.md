@@ -237,7 +237,7 @@ El área de socios es la única parte del sitio que maneja datos personales, as�
 - **Datos mínimos:** pedir solo lo que se usa. No guardar números de carnet ni datos bancarios en la web.
 - **Sesiones:** cierre de sesión visible, expiración automática y cookies seguras.
 - **Registro abierto desactivado:** en Supabase se desactiva "Allow new users to sign up" y el enlace mágico se pide con `shouldCreateUser: false`. Si no, cualquiera podría crearse una cuenta solo pidiendo un enlace.
-- **Pausa del plan gratuito:** Supabase pausa los proyectos gratuitos tras una semana sin actividad. Se evita con una consulta automática diaria (cron) o pasando al plan de pago; decidir al iniciar la fase 3.
+- **Pausa del plan gratuito:** Supabase pausa los proyectos gratuitos tras una semana sin actividad. Se evita con la tarea diaria de mantenimiento (`/api/mantenimiento/`, cron de Vercel), que hará una consulta a Supabase; alternativa: plan de pago.
 
 **Tablas básicas en Supabase:** `socios` (perfil, categoría, estado, fechas), `cuotas` (año, monto, fecha de pago, registrado por), `materiales` (título, archivo, categoría, visible para), `inscripciones` (socio, evento, asistencia, certificado). Claude Code puede crearlas con migraciones versionadas para que la estructura quede documentada en el repositorio.
 

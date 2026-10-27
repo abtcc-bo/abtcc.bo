@@ -51,6 +51,9 @@ export default defineConfig({
 			TURNSTILE_SECRET_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
 			TURNSTILE_SITE_KEY: envField.string({ context: 'client', access: 'public', optional: true }),
 			CONTACTO_DESTINO: envField.string({ context: 'server', access: 'secret', optional: true }),
+			// Tarea diaria (/api/mantenimiento/): Vercel la llama con este secreto; el enlace reconstruye el sitio.
+			CRON_SECRET: envField.string({ context: 'server', access: 'secret', optional: true }),
+			VERCEL_DEPLOY_HOOK_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
 		},
 	},
 });
