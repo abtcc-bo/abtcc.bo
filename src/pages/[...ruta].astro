@@ -7,6 +7,7 @@
 // Los contenidos con su propia página (eventos, artículos) tienen rutas aparte.
 import Base from '../layouts/Base.astro';
 import Inicio from '../vistas/Inicio.astro';
+import Comision from '../vistas/Comision.astro';
 import PaginaInstitucional from '../vistas/PaginaInstitucional.astro';
 import Pendiente from '../vistas/Pendiente.astro';
 import { paginaDeSeccion } from '../lib/contenido';
@@ -31,6 +32,7 @@ const textos = t(idioma);
 
 const VISTAS: Partial<Record<Seccion, typeof Inicio>> = {
 	inicio: Inicio,
+	comision: Comision,
 };
 const Vista = VISTAS[seccion];
 const pagina = Vista ? undefined : await paginaDeSeccion(seccion, idioma);

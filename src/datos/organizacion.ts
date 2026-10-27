@@ -8,7 +8,8 @@ export interface Red {
 
 export const ORGANIZACION: {
 	correo: string | null;
-	ciudad: string | null;
+	/** La primera es la ciudad principal (la que se declara a Google). */
+	ciudades: string[];
 	pais: string;
 	redes: Red[];
 	/** Ruta en /public o URL; idealmente un PNG cuadrado de al menos 112 px para Google. */
@@ -16,10 +17,10 @@ export const ORGANIZACION: {
 	/** Imagen por defecto al compartir en redes (1200×630 px), en /public. */
 	imagenRedes: string | null;
 } = {
-	correo: null, // [PENDIENTE: correo de contacto]
-	ciudad: null, // [PENDIENTE: ciudad]
+	correo: 'abtcc.bo@gmail.com',
+	ciudades: ['Santa Cruz', 'Cochabamba', 'La Paz'],
 	pais: 'Bolivia',
 	redes: [], // [PENDIENTE: redes sociales] p. ej. { nombre: 'Instagram', url: 'https://instagram.com/...' }
-	logo: null,
+	logo: null, // [PENDIENTE: archivo original del logo]
 	imagenRedes: null,
 };

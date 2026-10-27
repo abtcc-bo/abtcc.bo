@@ -1,0 +1,126 @@
+---
+// Comisión directiva: personas con `comision: true` en src/content/personas/.
+import { Image } from 'astro:assets';
+import JsonLd from '../components/JsonLd.astro';
+import { obtenerComision, textosDePersona } from '../lib/contenido';
+import { t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+}
+
+const { idioma } = Astro.props;
+const textos = t(idioma);
+const comision = await obtenerComision();
+
+const iniciales = (nombre: string) =>
+	nombre
+		.split(' ')
+		.slice(0, 2)
+		.map((parte) => parte[0])
+		.join('');
+---
+
+<h1>{textos.nav.comision}</h1>
+
+<ul class="integrantes">
+	{
+		comision.map((persona) => {
+			const { cargo, bio, idioma: idiomaTexto } = textosDePersona(persona, idioma);
+			const { nombre, foto, titulo_profesional, enlaces } = persona.data;
+			const listaEnlaces = Object.entries(enlaces).filter(([, url]) => url);
+			return (
+				<li class="integrante">
+					{foto ? (
+						<Image src={foto} alt={nombre} width={240} height={240} class="foto" />
+					) : (
+						<div class="foto sin-foto" aria-hidden="true">
+							{iniciales(nombre)}
+						</div>
+					)}
+					<div>
+						<h2>{nombre}</h2>
+						{titulo_profesional && <p class="titulo">{titulo_profesional}</p>}
+						<p class="cargo" lang={idiomaTexto !== idioma ? idiomaTexto : undefined}>
+							{cargo}
+						</p>
+						<p lang={idiomaTexto !== idioma ? idiomaTexto : undefined}>{bio}</p>
+						{listaEnlaces.length > 0 && (
+							<ul class="enlaces">
+								{listaEnlaces.map(([red, url]) => (
+									<li>
+										<a href={url} rel="noopener">
+											{red}
+										</a>
+									</li>
+								))}
+							</ul>
+						)}
+					</div>
+					<JsonLd
+						datos={{
+							'@type': 'Person',
+							name: nombre,
+							jobTitle: cargo,
+							description: bio,
+							...(listaEnlaces.length && { sameAs: listaEnlaces.map(([, url]) => url) }),
+							memberOf: { '@id': new URL('/#organizacion', Astro.site).href },
+						}}
+					/>
+				</li>
+			);
+		})
+	}
+</ul>
+
+<style>
+	.integrantes {
+		list-style: none;
+		padding: 0;
+		display: grid;
+		gap: calc(var(--espacio) * 2);
+	}
+	.integrante {
+		display: grid;
+		grid-template-columns: 8rem 1fr;
+		gap: calc(var(--espacio) * 1.5);
+		align-items: start;
+	}
+	.foto {
+		width: 8rem;
+		height: 8rem;
+		object-fit: cover;
+		border-radius: 50%;
+	}
+	.sin-foto {
+		display: grid;
+		place-items: center;
+		background: var(--color-borde);
+		font-size: 2rem;
+		font-weight: 700;
+		color: var(--color-texto-suave);
+	}
+	h2 {
+		margin: 0;
+	}
+	.titulo,
+	.cargo {
+		margin: 0.25rem 0;
+		color: var(--color-texto-suave);
+	}
+	.cargo {
+		font-weight: 700;
+	}
+	.enlaces {
+		display: flex;
+		gap: var(--espacio);
+		list-style: none;
+		padding: 0;
+		text-transform: capitalize;
+	}
+	@media (max-width: 36rem) {
+		.integrante {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

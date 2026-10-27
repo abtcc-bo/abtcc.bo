@@ -52,7 +52,7 @@ const organizacion = {
 	...(ORGANIZACION.logo && { logo: absoluta(ORGANIZACION.logo) }),
 	...(ORGANIZACION.correo && { email: ORGANIZACION.correo }),
 	...(ORGANIZACION.redes.length && { sameAs: ORGANIZACION.redes.map((r) => r.url) }),
-	address: { '@type': 'PostalAddress', addressCountry: 'BO', ...(ORGANIZACION.ciudad && { addressLocality: ORGANIZACION.ciudad }) },
+	address: { '@type': 'PostalAddress', addressCountry: 'BO', ...(ORGANIZACION.ciudades[0] && { addressLocality: ORGANIZACION.ciudades[0] }) },
 };
 
 const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href: Astro.url.pathname }] : [];

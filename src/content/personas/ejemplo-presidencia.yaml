@@ -1,7 +1,7 @@
-# [EJEMPLO] Reemplazar por los datos reales. Ver docs/datos-pendientes.md
+# [EJEMPLO] Persona ficticia usada por el contenido de ejemplo. Borrar junto con él.
 nombre: "[PENDIENTE: nombre completo]"
 titulo_profesional: "[PENDIENTE: p. ej. Lic. en Psicología, Mg. en Psicología Clínica]"
-comision: true
+comision: false
 orden: 1
 textos:
   es:

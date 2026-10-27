@@ -16,7 +16,7 @@ const anio = new Date().getFullYear();
 	<div class="contenedor columnas">
 		<section>
 			<p class="nombre">{textos.sitio.nombre} ({textos.sitio.sigla})</p>
-			<p>{ORGANIZACION.ciudad ?? textos.comun.pendiente}, {ORGANIZACION.pais}</p>
+			<p>{ORGANIZACION.ciudades.join(' · ')} — {ORGANIZACION.pais}</p>
 		</section>
 
 		<section>

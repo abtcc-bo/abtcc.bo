@@ -83,6 +83,20 @@ export function yaPaso(evento: Evento, ahora = new Date()): boolean {
 	return (evento.datos.fin ?? evento.datos.inicio) < ahora;
 }
 
+// ---------- Personas ----------
+
+/** Integrantes de la comisión directiva, en su orden de aparición. */
+export async function obtenerComision(): Promise<CollectionEntry<'personas'>[]> {
+	const personas = await getCollection('personas', (p) => p.data.comision);
+	return personas.sort((a, b) => a.data.orden - b.data.orden || a.data.nombre.localeCompare(b.data.nombre));
+}
+
+/** Cargo y bio en `idioma`; si no están traducidos, los de español (con `idioma: 'es'` para marcarlo en el HTML). */
+export function textosDePersona(persona: CollectionEntry<'personas'>, idioma: Idioma) {
+	const propios = persona.data.textos[idioma];
+	return propios ? { ...propios, idioma } : { ...persona.data.textos.es, idioma: 'es' as Idioma };
+}
+
 // ---------- Blog ----------
 
 /** Artículos publicados en `idioma`, del más reciente al más antiguo. Los borradores solo se ven en desarrollo. */

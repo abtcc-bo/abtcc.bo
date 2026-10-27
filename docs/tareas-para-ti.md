@@ -10,17 +10,18 @@ Cuando termines algo, márcalo con [x] o simplemente avísame en el chat.
 ### 1. Crear un Gmail de la asociación
 Sirve para abrir las cuentas de la web (Vercel, más adelante Supabase) y para recibir los mensajes del formulario de contacto. **No uses tu correo personal**: si algún día dejas la comisión, la web no debe depender de ti.
 
-- [ ] Entra a https://accounts.google.com/signup y crea algo como `abtcc.bolivia@gmail.com`.
+- [x] Crear el Gmail ✔
 - [ ] Activa la verificación en dos pasos (Cuenta de Google → Seguridad → Verificación en 2 pasos).
 - [ ] Guarda la contraseña en un lugar seguro que otra persona de la comisión también pueda consultar.
-- [ ] Pásame la dirección (solo la dirección, **nunca la contraseña**).
+- [x] Pásame la dirección → **abtcc.bo@gmail.com** ✔
+- [ ] Confirma que tiene la verificación en dos pasos activada y que al menos otra persona de la comisión tiene acceso.
 
 ### 2. Ir reuniendo los datos básicos
 Abre el archivo `docs/datos-pendientes.md` (está en la carpeta del proyecto). Lo más urgente:
 
-- [ ] Nombre oficial exacto, tal como figura en el estatuto.
+- [x] Nombre oficial ✔ (pero revisa en el estatuto: en una bio aparece otro nombre)
 - [ ] Una frase que presente a la asociación (aparece en la portada y en Google).
-- [ ] Correo de contacto público y ciudad.
+- [x] Correo de contacto público y ciudad ✔
 - [ ] Enlaces a las redes sociales.
 
 Puedes pegármelos en el chat tal cual, sin formato. Yo los acomodo.
@@ -28,9 +29,10 @@ Puedes pegármelos en el chat tal cual, sin formato. Yo los acomodo.
 ### 3. Pedir a la comisión los datos de cada integrante
 Para la página "Comisión directiva", de cada persona:
 
-- [ ] Nombre completo y cargo.
-- [ ] Título profesional y formación (2–3 líneas).
-- [ ] Una foto (ideal: de frente, fondo neutro, buena luz; todas con estilo parecido).
+- [x] Nombre completo ✔
+- [ ] **Cargo** de cada uno (falta de 4 personas).
+- [x] Título profesional y formación ✔
+- [ ] **Fotos originales** (no capturas de pantalla): de frente, buena luz, todas con estilo parecido.
 - [ ] Enlaces opcionales: LinkedIn, ORCID, Instagram profesional.
 - [ ] **Su permiso** para publicar su foto y datos.
 
