@@ -1,0 +1,74 @@
+---
+// Contacto: texto opcional de src/content/paginas/{idioma}/contacto.md + datos de src/datos/organizacion.ts.
+import { render, type CollectionEntry } from 'astro:content';
+import { ORGANIZACION } from '../datos/organizacion';
+import { t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+	pagina?: CollectionEntry<'paginas'>;
+}
+
+const { idioma, pagina } = Astro.props;
+const textos = t(idioma);
+const Content = pagina ? (await render(pagina)).Content : undefined;
+const correo = ORGANIZACION.correo;
+---
+
+<h1>{pagina?.data.titulo ?? textos.nav.contacto}</h1>
+{Content && <Content />}
+
+<dl class="datos">
+	<dt>{textos.contacto.correo}</dt>
+	<dd>{correo ? <a href={`mailto:${correo}`}>{correo}</a> : textos.comun.pendiente}</dd>
+
+	<dt>{textos.contacto.ciudades}</dt>
+	<dd>{ORGANIZACION.ciudades.join(' · ')} — {ORGANIZACION.pais}</dd>
+
+	<dt>{textos.contacto.redes}</dt>
+	<dd>
+		{
+			ORGANIZACION.redes.length
+				? ORGANIZACION.redes.map((red, i) => (
+						<>
+							{i > 0 && ' · '}
+							<a href={red.url} rel="noopener">
+								{red.nombre}
+							</a>
+						</>
+					))
+				: textos.comun.pendiente
+		}
+	</dd>
+</dl>
+
+<section aria-labelledby="titulo-formulario">
+	<h2 id="titulo-formulario">{textos.contacto.formulario}</h2>
+	<!-- [PENDIENTE paso 6: formulario de contacto con antispam] -->
+	<p>
+		{textos.contacto.formularioPronto}{' '}
+		{correo && <a href={`mailto:${correo}`}>{correo}</a>}.
+	</p>
+</section>
+
+<style>
+	.datos {
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		gap: 0.5rem var(--espacio);
+	}
+	dt {
+		font-weight: 700;
+	}
+	dd {
+		margin: 0;
+	}
+	@media (max-width: 36rem) {
+		.datos {
+			grid-template-columns: 1fr;
+		}
+		dd {
+			margin-bottom: 0.5rem;
+		}
+	}
+</style>

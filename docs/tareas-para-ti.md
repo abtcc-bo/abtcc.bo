@@ -36,11 +36,19 @@ Para la página "Comisión directiva", de cada persona:
 - [ ] Enlaces opcionales: LinkedIn, ORCID, Instagram profesional.
 - [ ] **Su permiso** para publicar su foto y datos.
 
+### 4. Textos de las páginas institucionales
+Las páginas ya están armadas con los títulos de cada parte; solo falta el texto. Puedes escribirlo tú o pedirlo a la comisión, y pegármelo tal cual.
+
+- [ ] **Quiénes somos:** presentación (3–4 líneas), misión, visión, valores, historia y enfoque.
+- [ ] **Membresía:** categorías de socio, para quién es cada una, cuota anual, requisitos y beneficios.
+- [ ] **Aviso legal:** domicilio de la asociación, nombre del representante legal y número de personería jurídica (cuando salga).
+- [ ] **Revisión legal:** te dejé un **borrador** de Política de privacidad y de Aviso legal. Conviene que lo lea alguien con formación legal antes de publicar.
+
 ---
 
 ## 🟡 Cuando te avise (al publicar)
 
-### 4. Crear la cuenta de Vercel
+### 5. Crear la cuenta de Vercel
 Te avisaré cuando llegue el momento y te guiaré paso a paso. Será con el Gmail de la asociación y conectándola al GitHub `abtcc-bo`.
 
 ---

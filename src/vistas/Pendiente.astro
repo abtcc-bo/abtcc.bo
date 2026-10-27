@@ -1,15 +1,30 @@
 ---
-// Vista provisoria para secciones que todavía no se construyeron.
-import { t, type Idioma, type Seccion } from '../i18n';
+// Vista provisoria para secciones sin contenido en este idioma. Si existe en otro idioma, lo ofrece.
+import { IDIOMAS, t, type Alternos, type Idioma, type Seccion } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
 	seccion: Seccion;
+	alternos: Alternos;
 }
 
-const { idioma, seccion } = Astro.props;
+const { idioma, seccion, alternos } = Astro.props;
 const textos = t(idioma);
+const otros = IDIOMAS.filter((otro) => otro !== idioma && alternos[otro]);
 ---
 
 <h1>{textos.nav[seccion]}</h1>
 <p>{textos.comun.enConstruccion}</p>
+{
+	otros.length > 0 && (
+		<ul>
+			{otros.map((otro) => (
+				<li>
+					<a href={alternos[otro]} hreflang={otro} lang={otro}>
+						{t(otro).nav[seccion]} ({t(otro).idioma.nombre})
+					</a>
+				</li>
+			))}
+		</ul>
+	)
+}

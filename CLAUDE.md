@@ -20,7 +20,7 @@ La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisi
 
 - `es` (principal), `en`, `pt`, en rutas `/es/`, `/en/`, `/pt/`. La raíz redirige a `/es/`; nunca redirigir según el idioma del navegador.
 - Las rutas se traducen (`/es/nosotros/`, `/en/about/`, `/pt/sobre/`). El mapa está en `src/i18n/rutas.ts` (`SECCIONES`); generar enlaces siempre con `ruta(seccion, idioma)`, nunca escribir URLs a mano.
-- Las secciones fijas se generan todas desde `src/pages/[...ruta].astro`; el contenido de cada una va en `src/vistas/` y se registra en `VISTAS`. Sin vista registrada, se muestra "en construcción".
+- Todas las páginas HTML se generan desde `src/pages/[...ruta].astro` (secciones y detalle de eventos). Las vistas propias de sección se registran en `src/vistas/index.ts` (`VISTAS`) y reciben `idioma` y la `pagina` de texto si existe. Sin vista ni página de texto, la sección muestra "en construcción", queda con `noindex` y no se anuncia en hreflang.
 - Toda página pasa `alternos` (sus versiones por idioma) al layout `Base`: con eso salen `hreflang` y el selector de idioma.
 - Textos de interfaz en `src/i18n/{es,en,pt}.json`, nunca escritos dentro de las plantillas. Los tres JSON deben tener las mismas claves; si no, la construcción falla.
 - Rutas con barra final siempre (`trailingSlash: 'always'`).

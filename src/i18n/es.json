@@ -114,5 +114,12 @@
 			"no_socio": "No socios",
 			"estudiante": "Estudiantes"
 		}
+	},
+	"contacto": {
+		"correo": "Correo electrónico",
+		"ciudades": "Presencia en",
+		"redes": "Redes sociales",
+		"formulario": "Escríbenos",
+		"formularioPronto": "Muy pronto podrás escribirnos desde aquí. Mientras tanto, envíanos un correo a"
 	}
 }
