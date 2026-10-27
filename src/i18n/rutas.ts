@@ -23,6 +23,21 @@ export const SECCIONES = {
 
 export type Seccion = keyof typeof SECCIONES;
 
+/** Sección que contiene a otra (para las migas de pan). Sin entrada, cuelga directamente de Inicio. */
+export const PADRES: Partial<Record<Seccion, Seccion>> = {
+	comision: 'nosotros',
+	transparencia: 'nosotros',
+};
+
+/** Cadena de secciones desde Inicio hasta `seccion`, ambas incluidas. */
+export function cadenaDeSecciones(seccion: Seccion): Seccion[] {
+	const cadena: Seccion[] = [];
+	for (let actual: Seccion | undefined = seccion; actual && actual !== 'inicio'; actual = PADRES[actual]) {
+		cadena.unshift(actual);
+	}
+	return ['inicio', ...cadena];
+}
+
 /** Secciones del menú principal, en orden. */
 export const MENU: Seccion[] = ['nosotros', 'eventos', 'membresia', 'blog', 'contacto'];
 

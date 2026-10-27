@@ -1,0 +1,48 @@
+---
+// Migas de pan: Inicio › Eventos › Taller X. La última es la página actual.
+import { t, type Idioma } from '../i18n';
+
+export interface Miga {
+	nombre: string;
+	href: string;
+}
+
+interface Props {
+	idioma: Idioma;
+	migas: Miga[];
+}
+
+const { idioma, migas } = Astro.props;
+---
+
+<nav class="migas" aria-label={t(idioma).nav.migas}>
+	<ol>
+		{
+			migas.map((miga, i) =>
+				i === migas.length - 1 ? (
+					<li aria-current="page">{miga.nombre}</li>
+				) : (
+					<li>
+						<a href={miga.href}>{miga.nombre}</a>
+					</li>
+				),
+			)
+		}
+	</ol>
+</nav>
+
+<style>
+	ol {
+		display: flex;
+		flex-wrap: wrap;
+		list-style: none;
+		margin: var(--espacio) 0 0;
+		padding: 0;
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+	li + li::before {
+		content: '›';
+		margin-inline: 0.5rem;
+	}
+</style>

@@ -31,6 +31,11 @@ for (const idioma of IDIOMAS) {
 }
 
 const LOCALE_INTL: Record<Idioma, string> = { es: 'es-BO', en: 'en-US', pt: 'pt-BR' };
+
+/** Formato de idioma para Open Graph (es_BO, en_US, pt_BR). */
+export function localeOpenGraph(idioma: Idioma): string {
+	return LOCALE_INTL[idioma].replace('-', '_');
+}
 export const ZONA_HORARIA = 'America/La_Paz';
 
 /** "14 de noviembre de 2026" / "November 14, 2026" / "14 de novembro de 2026". */

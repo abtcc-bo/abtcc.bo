@@ -1,0 +1,96 @@
+---
+import { ORGANIZACION } from '../datos/organizacion';
+import { MENU_LEGAL, ruta, t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+}
+
+const { idioma } = Astro.props;
+const textos = t(idioma);
+const anio = new Date().getFullYear();
+// [PENDIENTE fase 2: suscripción al boletín]
+---
+
+<footer class="pie">
+	<div class="contenedor columnas">
+		<section>
+			<p class="nombre">{textos.sitio.nombre} ({textos.sitio.sigla})</p>
+			<p>{ORGANIZACION.ciudad ?? textos.comun.pendiente}, {ORGANIZACION.pais}</p>
+		</section>
+
+		<section>
+			<h2>{textos.pie.contacto}</h2>
+			<p>
+				{ORGANIZACION.correo ? <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a> : textos.comun.pendiente}
+			</p>
+			<p><a href={ruta('contacto', idioma)}>{textos.nav.contacto}</a></p>
+		</section>
+
+		<section>
+			<h2>{textos.pie.redes}</h2>
+			{
+				ORGANIZACION.redes.length ? (
+					<ul>
+						{ORGANIZACION.redes.map((red) => (
+							<li>
+								<a href={red.url} rel="noopener">
+									{red.nombre}
+								</a>
+							</li>
+						))}
+					</ul>
+				) : (
+					<p>{textos.comun.pendiente}</p>
+				)
+			}
+		</section>
+
+		<section>
+			<h2>{textos.pie.legal}</h2>
+			<ul>
+				{
+					MENU_LEGAL.map((seccion) => (
+						<li>
+							<a href={ruta(seccion, idioma)}>{textos.nav[seccion]}</a>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+	</div>
+	<p class="contenedor derechos">© {anio} {textos.sitio.sigla}. {textos.pie.derechos}</p>
+</footer>
+
+<style>
+	.pie {
+		margin-top: calc(var(--espacio) * 4);
+		padding-block: calc(var(--espacio) * 2);
+		border-top: 1px solid var(--color-borde);
+		font-size: 0.9375rem;
+	}
+	.columnas {
+		display: grid;
+		gap: calc(var(--espacio) * 1.5);
+		grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+	}
+	h2 {
+		font-size: 1rem;
+		margin: 0 0 0.5rem;
+	}
+	p,
+	ul {
+		margin: 0 0 0.25rem;
+	}
+	ul {
+		list-style: none;
+		padding: 0;
+	}
+	.nombre {
+		font-weight: 700;
+	}
+	.derechos {
+		margin-top: calc(var(--espacio) * 2);
+		color: var(--color-texto-suave);
+	}
+</style>

@@ -4,7 +4,7 @@
 import Base from '../layouts/Base.astro';
 import Inicio from '../vistas/Inicio.astro';
 import Pendiente from '../vistas/Pendiente.astro';
-import { IDIOMAS, SECCIONES, alternosDeSeccion, ruta, t, type Idioma, type Seccion } from '../i18n';
+import { IDIOMAS, SECCIONES, alternosDeSeccion, cadenaDeSecciones, ruta, t, type Idioma, type Seccion } from '../i18n';
 
 export function getStaticPaths() {
 	return IDIOMAS.flatMap((idioma) =>
@@ -29,8 +29,18 @@ const VISTAS: Partial<Record<Seccion, typeof Inicio>> = {
 const Vista = VISTAS[seccion];
 
 const titulo = seccion === 'inicio' ? `${textos.sitio.sigla} · ${textos.sitio.nombre}` : `${textos.nav[seccion]} · ${textos.sitio.sigla}`;
+const migas = cadenaDeSecciones(seccion)
+	.slice(0, -1)
+	.map((s) => ({ nombre: textos.nav[s], href: ruta(s, idioma) }));
 ---
 
-<Base idioma={idioma} titulo={titulo} alternos={alternosDeSeccion(seccion)}>
+<Base
+	idioma={idioma}
+	titulo={titulo}
+	alternos={alternosDeSeccion(seccion)}
+	migas={migas}
+	nombreEnMigas={seccion === 'inicio' ? undefined : textos.nav[seccion]}
+	noIndexar={seccion === 'socios'}
+>
 	{Vista ? <Vista idioma={idioma} /> : <Pendiente idioma={idioma} seccion={seccion} />}
 </Base>

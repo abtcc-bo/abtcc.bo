@@ -1,0 +1,11 @@
+---
+// Datos estructurados schema.org para Google.
+interface Props {
+	datos: Record<string, unknown>;
+}
+
+// Se escapa "<" para que un texto con "</script>" no pueda cerrar la etiqueta.
+const json = JSON.stringify({ '@context': 'https://schema.org', ...Astro.props.datos }).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" set:html={json} />

@@ -1,19 +1,61 @@
 ---
 import '../styles/global.css';
 import Encabezado from '../components/Encabezado.astro';
-import { IDIOMA_PRINCIPAL, t, type Alternos, type Idioma } from '../i18n';
+import Pie from '../components/Pie.astro';
+import Migas, { type Miga } from '../components/Migas.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { ORGANIZACION } from '../datos/organizacion';
+import { IDIOMA_PRINCIPAL, IDIOMAS, localeOpenGraph, ruta, t, type Alternos, type Idioma } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
+	/** Título completo de la pestaña y de Google (hasta ~60 caracteres), p. ej. "Taller ACT · ABTCC". */
 	titulo: string;
+	/** Resumen para Google y redes (~150 caracteres). */
 	descripcion?: string;
 	/** Versiones de esta página en cada idioma (para hreflang y el selector de idioma). */
 	alternos: Alternos;
+	/** Migas de pan sin incluir la página actual al final; se omiten en la portada. */
+	migas?: Miga[];
+	/** Nombre de la página actual en las migas. */
+	nombreEnMigas?: string;
+	/** Imagen para redes (1200×630). Ruta en /public o URL. */
+	imagen?: string | null;
+	tipo?: 'website' | 'article';
+	/** Excluir de Google (área de socios, 404). */
+	noIndexar?: boolean;
 }
 
-const { idioma, titulo, descripcion = t(idioma).sitio.descripcion, alternos } = Astro.props;
-const canonica = new URL(Astro.url.pathname, Astro.site);
+const {
+	idioma,
+	titulo,
+	descripcion = t(idioma).sitio.descripcion,
+	alternos,
+	migas = [],
+	nombreEnMigas,
+	imagen = ORGANIZACION.imagenRedes,
+	tipo = 'website',
+	noIndexar = false,
+} = Astro.props;
+
+const textos = t(idioma);
 const absoluta = (ruta: string) => new URL(ruta, Astro.site).href;
+const canonica = absoluta(Astro.url.pathname);
+const imagenAbsoluta = imagen ? absoluta(imagen) : undefined;
+
+const organizacion = {
+	'@type': 'Organization',
+	'@id': absoluta('/#organizacion'),
+	name: textos.sitio.nombre,
+	alternateName: textos.sitio.sigla,
+	url: absoluta(ruta('inicio', idioma)),
+	...(ORGANIZACION.logo && { logo: absoluta(ORGANIZACION.logo) }),
+	...(ORGANIZACION.correo && { email: ORGANIZACION.correo }),
+	...(ORGANIZACION.redes.length && { sameAs: ORGANIZACION.redes.map((r) => r.url) }),
+	address: { '@type': 'PostalAddress', addressCountry: 'BO', ...(ORGANIZACION.ciudad && { addressLocality: ORGANIZACION.ciudad }) },
+};
+
+const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href: Astro.url.pathname }] : [];
 ---
 
 <!doctype html>
@@ -21,19 +63,47 @@ const absoluta = (ruta: string) => new URL(ruta, Astro.site).href;
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script is:inline>document.documentElement.classList.add('js');</script>
 		<title>{titulo}</title>
 		<meta name="description" content={descripcion} />
-		<link rel="canonical" href={canonica.href} />
-		{Object.entries(alternos).map(([lang, ruta]) => <link rel="alternate" hreflang={lang} href={absoluta(ruta)} />)}
-		{alternos[IDIOMA_PRINCIPAL] && <link rel="alternate" hreflang="x-default" href={absoluta(alternos[IDIOMA_PRINCIPAL])} />}
+		{noIndexar && <meta name="robots" content="noindex" />}
+		{!noIndexar && <link rel="canonical" href={canonica} />}
+		{!noIndexar && Object.entries(alternos).map(([lang, ruta]) => <link rel="alternate" hreflang={lang} href={absoluta(ruta)} />)}
+		{!noIndexar && alternos[IDIOMA_PRINCIPAL] && <link rel="alternate" hreflang="x-default" href={absoluta(alternos[IDIOMA_PRINCIPAL])} />}
+
+		<meta property="og:type" content={tipo} />
+		<meta property="og:site_name" content={textos.sitio.sigla} />
+		<meta property="og:title" content={titulo} />
+		<meta property="og:description" content={descripcion} />
+		<meta property="og:url" content={canonica} />
+		<meta property="og:locale" content={localeOpenGraph(idioma)} />
+		{IDIOMAS.filter((otro) => otro !== idioma && alternos[otro]).map((otro) => <meta property="og:locale:alternate" content={localeOpenGraph(otro)} />)}
+		{imagenAbsoluta && <meta property="og:image" content={imagenAbsoluta} />}
+		<meta name="twitter:card" content={imagenAbsoluta ? 'summary_large_image' : 'summary'} />
+
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
+
+		<JsonLd datos={organizacion} />
+		{
+			migasCompletas.length > 1 && (
+				<JsonLd
+					datos={{
+						'@type': 'BreadcrumbList',
+						itemListElement: migasCompletas.map((miga, i) => ({ '@type': 'ListItem', position: i + 1, name: miga.nombre, item: absoluta(miga.href) })),
+					}}
+				/>
+			)
+		}
+		<slot name="head" />
 	</head>
 	<body>
-		<a class="saltar" href="#contenido">{t(idioma).comun.saltarAlContenido}</a>
+		<a class="saltar" href="#contenido">{textos.comun.saltarAlContenido}</a>
 		<Encabezado idioma={idioma} alternos={alternos} />
 		<main id="contenido" class="contenedor">
+			{migasCompletas.length > 1 && <Migas idioma={idioma} migas={migasCompletas} />}
 			<slot />
 		</main>
+		<Pie idioma={idioma} />
 	</body>
 </html>

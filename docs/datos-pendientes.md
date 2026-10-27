@@ -41,6 +41,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 
 ## Identidad (al final, con el diseño)
 
-- [ ] Logo (idealmente SVG)
+- [ ] Logo (idealmente SVG, más una versión PNG cuadrada para Google)
+- [ ] Imagen para compartir en redes (1200×630 px)
 - [ ] Colores
 - [ ] Fuentes (2–3)

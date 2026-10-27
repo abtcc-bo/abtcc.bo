@@ -22,16 +22,30 @@
 		"contacto": "Contato",
 		"socios": "Área de sócios",
 		"privacidad": "Privacidade",
-		"avisoLegal": "Aviso legal"
+		"avisoLegal": "Aviso legal",
+		"menu": "Menu",
+		"migas": "Trilha de navegação"
 	},
 	"comun": {
 		"saltarAlContenido": "Pular para o conteúdo",
 		"enConstruccion": "Esta seção está em construção.",
 		"proximosEventos": "Próximos eventos",
 		"verTodos": "Ver todos",
-		"inscribirme": "Inscrever-me"
+		"inscribirme": "Inscrever-me",
+		"pendiente": "[PENDENTE]"
 	},
 	"hora": {
 		"zonaBolivia": "horário da Bolívia (UTC−4)"
+	},
+	"pie": {
+		"contacto": "Contato",
+		"redes": "Redes sociais",
+		"legal": "Informações legais",
+		"derechos": "Todos os direitos reservados."
+	},
+	"error404": {
+		"titulo": "Página não encontrada",
+		"texto": "A página que você procura não existe ou mudou de endereço.",
+		"volver": "Ir para o início"
 	}
 }

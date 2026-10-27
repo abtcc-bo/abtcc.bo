@@ -15,26 +15,44 @@ const actual = Astro.url.pathname;
 <header class="encabezado">
 	<div class="contenedor fila">
 		<a class="logo" href={ruta('inicio', idioma)}>{textos.sitio.sigla}</a>
-		<nav aria-label={textos.nav.principal}>
-			<ul>
-				{
-					MENU.map((seccion) => {
-						const href = ruta(seccion, idioma);
-						return (
-							<li>
-								<a href={href} aria-current={actual.startsWith(href) ? 'page' : undefined}>
-									{textos.nav[seccion]}
-								</a>
-							</li>
-						);
-					})
-				}
-			</ul>
-		</nav>
-		<SelectorIdioma idioma={idioma} alternos={alternos} />
-		<a class="boton-socios" href={ruta('socios', idioma)}>{textos.nav.socios}</a>
+		<button class="boton-menu" type="button" aria-expanded="false" aria-controls="panel-menu">{textos.nav.menu}</button>
+		<div class="panel" id="panel-menu">
+			<nav aria-label={textos.nav.principal}>
+				<ul>
+					{
+						MENU.map((seccion) => {
+							const href = ruta(seccion, idioma);
+							return (
+								<li>
+									<a href={href} aria-current={actual.startsWith(href) ? 'page' : undefined}>
+										{textos.nav[seccion]}
+									</a>
+								</li>
+							);
+						})
+					}
+				</ul>
+			</nav>
+			<SelectorIdioma idioma={idioma} alternos={alternos} />
+			<a class="boton-socios" href={ruta('socios', idioma)}>{textos.nav.socios}</a>
+		</div>
 	</div>
 </header>
+
+<script>
+	// Menú desplegable en celular. Sin JavaScript, el menú queda siempre visible.
+	const boton = document.querySelector<HTMLButtonElement>('.boton-menu');
+	boton?.addEventListener('click', () => {
+		const abierto = boton.getAttribute('aria-expanded') === 'true';
+		boton.setAttribute('aria-expanded', String(!abierto));
+	});
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && boton?.getAttribute('aria-expanded') === 'true') {
+			boton.setAttribute('aria-expanded', 'false');
+			boton.focus();
+		}
+	});
+</script>
 
 <style>
 	.encabezado {
@@ -52,6 +70,12 @@ const actual = Astro.url.pathname;
 		text-decoration: none;
 		margin-right: auto;
 	}
+	.panel {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--espacio);
+	}
 	ul {
 		display: flex;
 		flex-wrap: wrap;
@@ -62,5 +86,34 @@ const actual = Astro.url.pathname;
 	}
 	[aria-current='page'] {
 		font-weight: 700;
+	}
+	.boton-menu {
+		display: none;
+		min-height: 44px;
+		padding-inline: 1rem;
+		font: inherit;
+	}
+
+	@media (max-width: 48rem) {
+		:global(.js) .boton-menu {
+			display: block;
+		}
+		.panel {
+			flex-basis: 100%;
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		:global(.js) .boton-menu[aria-expanded='false'] + .panel {
+			display: none;
+		}
+		ul {
+			flex-direction: column;
+			gap: 0;
+		}
+		.panel a {
+			display: inline-block;
+			min-height: 44px;
+			padding-block: 0.6rem;
+		}
 	}
 </style>

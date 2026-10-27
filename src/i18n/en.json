@@ -22,16 +22,30 @@
 		"contacto": "Contact",
 		"socios": "Members area",
 		"privacidad": "Privacy",
-		"avisoLegal": "Legal notice"
+		"avisoLegal": "Legal notice",
+		"menu": "Menu",
+		"migas": "Breadcrumb"
 	},
 	"comun": {
 		"saltarAlContenido": "Skip to content",
 		"enConstruccion": "This section is under construction.",
 		"proximosEventos": "Upcoming events",
 		"verTodos": "See all",
-		"inscribirme": "Register"
+		"inscribirme": "Register",
+		"pendiente": "[PENDING]"
 	},
 	"hora": {
 		"zonaBolivia": "Bolivia time (UTC−4)"
+	},
+	"pie": {
+		"contacto": "Contact",
+		"redes": "Social media",
+		"legal": "Legal information",
+		"derechos": "All rights reserved."
+	},
+	"error404": {
+		"titulo": "Page not found",
+		"texto": "The page you are looking for does not exist or has moved.",
+		"volver": "Go to home page"
 	}
 }
