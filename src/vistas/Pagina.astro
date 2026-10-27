@@ -8,7 +8,7 @@ import DetalleEvento from './DetalleEvento.astro';
 import PaginaInstitucional from './PaginaInstitucional.astro';
 import Pendiente from './Pendiente.astro';
 import type { PaginaDelSitio } from '../lib/paginas';
-import { PADRES, cadenaDeSecciones, ruta, t, type Seccion } from '../i18n';
+import { cadenaDeSecciones, hijasDe, ruta, t, type Seccion } from '../i18n';
 
 type Props = PaginaDelSitio;
 
@@ -27,7 +27,7 @@ const Vista = props.tipo === 'seccion' ? VISTAS[props.seccion] : undefined;
 const pagina = props.tipo === 'seccion' ? props.pagina : undefined;
 const subsecciones =
 	props.tipo === 'seccion'
-		? (Object.entries(PADRES) as [Seccion, Seccion][]).filter(([, padre]) => padre === props.seccion).map(([hija]) => ({ nombre: textos.nav[hija], href: ruta(hija, idioma) }))
+		? hijasDe(props.seccion).map((hija) => ({ nombre: textos.nav[hija], href: ruta(hija, idioma) }))
 		: [];
 
 const nombre = props.tipo === 'evento' ? props.evento.texto.data.titulo : (pagina?.data.titulo ?? textos.nav[props.seccion]);

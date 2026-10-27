@@ -1,5 +1,6 @@
 ---
-// Lleva a la misma página en el otro idioma. Si no existe en ese idioma, lleva a su inicio.
+// Lista desplegable de idiomas. Lleva a la misma página en el otro idioma; si no existe en ese idioma, a su inicio.
+// Usa <details>: funciona sin JavaScript. El comportamiento común de los desplegables está en Encabezado.astro.
 import { IDIOMAS, ruta, t, type Alternos, type Idioma } from '../i18n';
 
 interface Props {
@@ -8,45 +9,41 @@ interface Props {
 }
 
 const { idioma, alternos } = Astro.props;
+const textos = t(idioma).idioma;
 ---
 
-<nav class="selector-idioma" aria-label={t(idioma).idioma.selector}>
-	<ul>
+<details class="desplegable selector-idioma">
+	<summary>
+		<span class="visualmente-oculto">{textos.selector}: </span>{textos.nombre}
+	</summary>
+	<ul class="lista-desplegable">
 		{
 			IDIOMAS.map((otro) => {
-				const textos = t(otro).idioma;
+				const textosOtro = t(otro).idioma;
 				if (otro === idioma) {
 					return (
 						<li>
-							<span aria-current="true">{textos.nombre}</span>
+							<span aria-current="true">{textosOtro.nombre}</span>
 						</li>
 					);
 				}
 				const destino = alternos[otro];
 				return (
 					<li>
-						<a href={destino ?? ruta('inicio', otro)} hreflang={otro} lang={otro} title={destino ? undefined : textos.noDisponible}>
-							{textos.nombre}
+						<a href={destino ?? ruta('inicio', otro)} hreflang={otro} lang={otro} title={destino ? undefined : textosOtro.noDisponible}>
+							{textosOtro.nombre}
 						</a>
 					</li>
 				);
 			})
 		}
 	</ul>
-</nav>
+</details>
 
 <style>
-	ul {
-		display: flex;
-		gap: 0.5rem;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-	li + li::before {
-		content: '·';
-		margin-right: 0.5rem;
-		color: var(--color-texto-suave);
+	.selector-idioma .lista-desplegable {
+		right: 0;
+		left: auto;
 	}
 	[aria-current] {
 		font-weight: 700;

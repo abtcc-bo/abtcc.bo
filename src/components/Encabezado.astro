@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import SelectorIdioma from './SelectorIdioma.astro';
 import logo from '../assets/logo-encabezado.png';
-import { MENU, ruta, t, type Alternos, type Idioma } from '../i18n';
+import { MENU, hijasDe, ruta, t, type Alternos, type Idioma } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
@@ -26,6 +26,29 @@ const actual = Astro.url.pathname;
 					{
 						MENU.map((seccion) => {
 							const href = ruta(seccion, idioma);
+							const hijas = hijasDe(seccion);
+							// Con subsecciones: desplegable con la página principal y sus subsecciones.
+							if (hijas.length) {
+								return (
+									<li>
+										<details class="desplegable">
+											<summary class={actual.startsWith(href) ? 'actual' : undefined}>{textos.nav[seccion]}</summary>
+											<ul class="lista-desplegable">
+												{[seccion, ...hijas].map((s) => {
+													const enlace = ruta(s, idioma);
+													return (
+														<li>
+															<a href={enlace} aria-current={actual === enlace ? 'page' : undefined}>
+																{textos.nav[s]}
+															</a>
+														</li>
+													);
+												})}
+											</ul>
+										</details>
+									</li>
+								);
+							}
 							return (
 								<li>
 									<a href={href} aria-current={actual.startsWith(href) ? 'page' : undefined}>
@@ -50,8 +73,47 @@ const actual = Astro.url.pathname;
 		const abierto = boton.getAttribute('aria-expanded') === 'true';
 		boton.setAttribute('aria-expanded', String(!abierto));
 	});
+
+	// Desplegables (<details>): en pantallas grandes con mouse se abren al pasar por encima;
+	// se cierran al abrir otro, al hacer clic fuera o con Escape.
+	const desplegables = [...document.querySelectorAll<HTMLDetailsElement>('.encabezado .desplegable')];
+	const conMouse = matchMedia('(hover: hover) and (min-width: 48.01rem)');
+	const abiertosPorMouse = new WeakSet<HTMLDetailsElement>();
+	for (const desplegable of desplegables) {
+		desplegable.addEventListener('mouseenter', () => {
+			if (!conMouse.matches || desplegable.open) return;
+			desplegable.open = true;
+			abiertosPorMouse.add(desplegable);
+		});
+		desplegable.addEventListener('mouseleave', () => {
+			if (conMouse.matches && abiertosPorMouse.has(desplegable)) desplegable.open = false;
+		});
+		// Un clic en un desplegable abierto por el mouse lo deja fijo en vez de cerrarlo.
+		desplegable.querySelector('summary')?.addEventListener('click', (e) => {
+			if (abiertosPorMouse.has(desplegable)) {
+				e.preventDefault();
+				abiertosPorMouse.delete(desplegable);
+			}
+		});
+		desplegable.addEventListener('toggle', () => {
+			if (!desplegable.open) {
+				abiertosPorMouse.delete(desplegable);
+				return;
+			}
+			for (const otro of desplegables) if (otro !== desplegable) otro.open = false;
+		});
+	}
+	document.addEventListener('click', (e) => {
+		for (const desplegable of desplegables) if (!desplegable.contains(e.target as Node)) desplegable.open = false;
+	});
+
 	document.addEventListener('keydown', (e) => {
-		if (e.key === 'Escape' && boton?.getAttribute('aria-expanded') === 'true') {
+		if (e.key !== 'Escape') return;
+		const abierto = desplegables.find((d) => d.open);
+		if (abierto) {
+			abierto.open = false;
+			abierto.querySelector('summary')?.focus();
+		} else if (boton?.getAttribute('aria-expanded') === 'true') {
 			boton.setAttribute('aria-expanded', 'false');
 			boton.focus();
 		}
@@ -83,15 +145,17 @@ const actual = Astro.url.pathname;
 		align-items: center;
 		gap: var(--espacio);
 	}
-	ul {
+	nav > ul {
 		display: flex;
 		flex-wrap: wrap;
+		align-items: center;
 		gap: var(--espacio);
 		list-style: none;
 		margin: 0;
 		padding: 0;
 	}
-	[aria-current='page'] {
+	[aria-current='page'],
+	.actual {
 		font-weight: 700;
 	}
 	.boton-menu {
@@ -113,8 +177,9 @@ const actual = Astro.url.pathname;
 		:global(.js) .boton-menu[aria-expanded='false'] + .panel {
 			display: none;
 		}
-		ul {
+		nav > ul {
 			flex-direction: column;
+			align-items: flex-start;
 			gap: 0;
 		}
 		.panel a {

@@ -29,6 +29,11 @@ export const PADRES: Partial<Record<Seccion, Seccion>> = {
 	transparencia: 'nosotros',
 };
 
+/** Subsecciones de una sección según PADRES (p. ej. nosotros → comisión, transparencia). Forman su submenú. */
+export function hijasDe(seccion: Seccion): Seccion[] {
+	return (Object.entries(PADRES) as [Seccion, Seccion][]).filter(([, padre]) => padre === seccion).map(([hija]) => hija);
+}
+
 /** Cadena de secciones desde Inicio hasta `seccion`, ambas incluidas. */
 export function cadenaDeSecciones(seccion: Seccion): Seccion[] {
 	const cadena: Seccion[] = [];
