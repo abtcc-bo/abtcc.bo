@@ -1,7 +1,9 @@
-/* Diseño de prueba: "elegancia y ciencia". Papel cálido, tinta azul profunda, títulos con serifa,
-   y los tres colores del logo solo como firma (franja tricolor y puntos). Todo se ajusta desde estas variables. */
+/* Diseño de prueba: "elegancia y ciencia". Fondo de papel milimetrado con luces suaves en movimiento,
+   tinta azul profunda, títulos en Cormorant Garamond y texto en Inter, y los tres colores del logo como firma
+   (franja tricolor y puntos). Todo se ajusta desde estas variables. */
 :root {
-	--color-fondo: #faf8f4;
+	--color-fondo: #f2f4f7;
+	--color-banda: rgb(255 255 255 / 0.5);
 	--color-superficie: #ffffff;
 	--color-texto: #1c2533;
 	--color-texto-suave: #5a6270;
@@ -9,7 +11,8 @@
 	--color-acento: #03713a;
 	--color-acento-hover: #025c2f;
 	--color-acento-suave: #e8f2ec;
-	--color-borde: #e3dfd6;
+	--color-borde: #dde2ea;
+	--color-division: #c9d1dd;
 	--color-oscuro: #14213d;
 	--color-oscuro-texto: #e9ecf2;
 	/* Colores del logo. */
@@ -17,12 +20,12 @@
 	--logo-amarillo: #fcde58;
 	--logo-verde: #037f36;
 	--franja-tricolor: linear-gradient(90deg, var(--logo-rojo) 0 33.33%, var(--logo-amarillo) 33.33% 66.66%, var(--logo-verde) 66.66%);
-	--fuente-texto: 'Source Sans 3 Variable', system-ui, sans-serif;
-	--fuente-titulos: 'Source Serif 4 Variable', Georgia, serif;
+	--fuente-texto: 'Inter Variable', system-ui, sans-serif;
+	--fuente-titulos: 'Cormorant Garamond Variable', Garamond, Georgia, serif;
 	--ancho-maximo: 72rem;
 	--ancho-lectura: 46rem;
 	--espacio: 1rem;
-	--radio: 6px;
+	--radio: 8px;
 	--sombra: 0 1px 2px rgb(20 33 61 / 0.04), 0 8px 24px rgb(20 33 61 / 0.06);
 }
 
@@ -45,12 +48,60 @@ html {
 body {
 	margin: 0;
 	font-family: var(--fuente-texto);
-	font-size: 1.125rem;
-	line-height: 1.65;
+	font-size: 1.0625rem;
+	line-height: 1.7;
 	color: var(--color-texto);
 	background: var(--color-fondo);
 	overflow-x: clip;
 	-webkit-font-smoothing: antialiased;
+}
+
+/* Fondo: cuadrícula de puntos (como papel científico) y, encima, luces muy suaves con los colores del logo
+   que se desplazan lentamente. Detrás de todo el contenido; se detiene si el usuario pide menos movimiento. */
+body::before,
+body::after {
+	content: '';
+	position: fixed;
+	z-index: -1;
+	pointer-events: none;
+}
+body::before {
+	inset: 0;
+	background-image: radial-gradient(rgb(20 33 61 / 0.09) 1px, transparent 1.2px);
+	background-size: 22px 22px;
+}
+body::after {
+	inset: -25%;
+	background:
+		radial-gradient(closest-side, rgb(3 127 54 / 0.24), transparent) 15% 20% / 45% 45% no-repeat,
+		radial-gradient(closest-side, rgb(252 222 88 / 0.34), transparent) 85% 35% / 40% 40% no-repeat,
+		radial-gradient(closest-side, rgb(254 22 22 / 0.11), transparent) 55% 85% / 45% 45% no-repeat,
+		radial-gradient(closest-side, rgb(20 33 61 / 0.10), transparent) 30% 70% / 50% 50% no-repeat;
+	animation: deriva 30s ease-in-out infinite alternate;
+	will-change: transform;
+}
+@keyframes deriva {
+	0% {
+		transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+	}
+	50% {
+		transform: translate3d(6%, -4%, 0) rotate(8deg) scale(1.08);
+	}
+	100% {
+		transform: translate3d(-5%, 5%, 0) rotate(-6deg) scale(1.02);
+	}
+}
+
+/* Banda de ancho completo (de borde a borde) dentro de <main class="contenedor">, con línea divisoria arriba. */
+.banda {
+	margin-inline: calc(50% - 50vw);
+	padding-inline: calc(50vw - 50%);
+	padding-block: clamp(2.5rem, 6vw, 4.5rem);
+	border-top: 1px solid var(--color-division);
+}
+.banda-clara {
+	background: var(--color-banda);
+	backdrop-filter: blur(2px);
 }
 
 h1,
@@ -58,21 +109,20 @@ h2,
 h3 {
 	font-family: var(--fuente-titulos);
 	font-weight: 600;
-	line-height: 1.2;
+	line-height: 1.15;
 	color: var(--color-titulos);
-	letter-spacing: -0.01em;
 	text-wrap: balance;
 }
 h1 {
-	font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+	font-size: clamp(2.4rem, 1.6rem + 3vw, 3.6rem);
 	margin: calc(var(--espacio) * 1.5) 0 var(--espacio);
 }
 h2 {
-	font-size: clamp(1.5rem, 1.25rem + 1vw, 1.875rem);
+	font-size: clamp(1.85rem, 1.5rem + 1.3vw, 2.4rem);
 	margin: calc(var(--espacio) * 2.5) 0 var(--espacio);
 }
 h3 {
-	font-size: 1.25rem;
+	font-size: 1.5rem;
 }
 p,
 li {
@@ -107,6 +157,7 @@ a:hover {
 }
 .antetitulo::before {
 	content: '';
+	flex-shrink: 0;
 	width: 2.1rem;
 	height: 0.55rem;
 	background:
@@ -138,7 +189,9 @@ a:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	* {
+	*,
+	*::before,
+	*::after {
 		animation: none !important;
 		transition: none !important;
 	}

@@ -136,4 +136,11 @@ const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? [])
 		margin-top: calc(var(--espacio) * 2);
 		font-size: 0.9375rem;
 	}
+	/* Divisiones claras entre próximos, realizados y suscripciones. */
+	section + section,
+	.suscripciones {
+		margin-top: calc(var(--espacio) * 3);
+		padding-top: calc(var(--espacio) * 2);
+		border-top: 1px solid var(--color-division);
+	}
 </style>

@@ -13,7 +13,7 @@ const textos = t(idioma);
 const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)).slice(0, 3);
 ---
 
-<section class="portada" aria-labelledby="titulo-portada">
+<section class="portada banda banda-clara" aria-labelledby="titulo-portada">
 	<div>
 		<p class="antetitulo">{textos.sitio.sigla} · {ORGANIZACION.ciudades.join(' · ')}</p>
 		<h1 id="titulo-portada">{textos.sitio.nombre}</h1>
@@ -25,7 +25,7 @@ const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)
 	</div>
 </section>
 
-<section class="proximos" aria-labelledby="titulo-proximos">
+<section class="proximos banda" aria-labelledby="titulo-proximos">
 	<div class="cabecera">
 		<h2 id="titulo-proximos">{textos.comun.proximosEventos}</h2>
 		<a href={ruta('eventos', idioma)}>{textos.comun.verTodos} <span aria-hidden="true">→</span></a>
@@ -34,22 +34,15 @@ const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)
 </section>
 
 <style>
-	/* Banda de ancho completo aunque esté dentro de <main class="contenedor">. */
 	.portada {
-		margin-inline: calc(50% - 50vw);
-		padding-inline: calc(50vw - 50%);
-		padding-block: clamp(3rem, 8vw, 6rem);
-		background:
-			radial-gradient(circle at 88% 30%, rgb(3 127 54 / 0.07), transparent 40%),
-			radial-gradient(circle at 75% 85%, rgb(252 222 88 / 0.12), transparent 35%),
-			var(--color-superficie);
-		border-bottom: 1px solid var(--color-borde);
+		padding-block: clamp(3.5rem, 9vw, 7rem);
+		border-top: 0;
 	}
 	.portada h1 {
-		max-width: 20ch;
-		margin: 1rem 0;
-		font-size: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
-		line-height: 1.08;
+		max-width: 18ch;
+		margin: 1rem 0 1.25rem;
+		font-size: clamp(2.75rem, 1.6rem + 4.2vw, 4.75rem);
+		line-height: 1.02;
 	}
 	.bajada {
 		max-width: 40rem;
@@ -69,7 +62,7 @@ const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)
 		align-items: baseline;
 		justify-content: space-between;
 		gap: 0.5rem var(--espacio);
-		margin: calc(var(--espacio) * 3) 0 calc(var(--espacio) * 1.25);
+		margin: 0 0 calc(var(--espacio) * 1.5);
 	}
 	.cabecera h2 {
 		margin: 0;

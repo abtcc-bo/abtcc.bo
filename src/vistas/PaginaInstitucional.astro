@@ -30,8 +30,24 @@ const { Content } = await render(pagina);
 </article>
 
 <style>
+	/* La página de texto va sobre una hoja blanca, separada del fondo. */
 	.pagina {
-		max-width: var(--ancho-lectura);
+		max-width: calc(var(--ancho-lectura) + 6rem);
+		margin-top: var(--espacio);
+		padding: clamp(1.5rem, 5vw, 3rem);
+		background: var(--color-superficie);
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		box-shadow: var(--sombra);
+	}
+	.pagina > :global(h1) {
+		margin-top: 0;
+	}
+	/* Cada apartado empieza con una línea divisoria. */
+	.pagina :global(h2) {
+		margin-top: 2.75rem;
+		padding-top: 2rem;
+		border-top: 1px solid var(--color-division);
 	}
 	.subsecciones {
 		display: flex;
