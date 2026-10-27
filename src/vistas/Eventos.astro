@@ -24,7 +24,7 @@ for (const evento of pasados) {
 
 // Solo se ofrecen como filtro los tipos y modalidades que existen entre los próximos.
 const tipos = [...new Set(proximos.map((e) => e.datos.tipo))];
-const modalidades = [...new Set(proximos.map((e) => e.datos.modalidad))];
+const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? []))];
 ---
 
 <h1>{textos.nav.eventos}</h1>

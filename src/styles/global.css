@@ -129,15 +129,22 @@ a {
 	left: 0;
 	z-index: 10;
 	min-width: 12rem;
+	width: max-content;
+	max-width: 20rem;
 	background: var(--color-fondo);
 	border: 1px solid var(--color-borde);
 	box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
+}
+/* La primera opción (la página principal de la sección) va separada de las demás. */
+.lista-desplegable .principal {
+	border-bottom: 1px solid var(--color-borde);
+	margin-bottom: 0.25rem;
+	padding-bottom: 0.25rem;
 }
 .lista-desplegable a,
 .lista-desplegable span {
 	display: block;
 	padding: 0.5rem 1rem;
-	white-space: nowrap;
 }
 @media (max-width: 48rem) {
 	.lista-desplegable {

@@ -2,7 +2,9 @@
 import { Image } from 'astro:assets';
 import SelectorIdioma from './SelectorIdioma.astro';
 import logo from '../assets/logo-encabezado.png';
-import { MENU, hijasDe, ruta, t, type Alternos, type Idioma } from '../i18n';
+import { render } from 'astro:content';
+import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
+import { MENU, hijasDe, ruta, t, type Alternos, type Idioma, type Seccion } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
@@ -12,6 +14,33 @@ interface Props {
 const { idioma, alternos } = Astro.props;
 const textos = t(idioma);
 const actual = Astro.url.pathname;
+
+/** Opción de un submenú. `fin`: el navegador la oculta cuando el evento ya pasó (páginas generadas antes). */
+interface Opcion {
+	nombre: string;
+	href: string;
+	fin?: string;
+}
+
+// Submenús: la sección principal va siempre primero; después, estas opciones.
+const submenus: Partial<Record<Seccion, Opcion[]>> = {};
+for (const seccion of MENU) {
+	const hijas = hijasDe(seccion);
+	if (hijas.length) submenus[seccion] = hijas.map((hija) => ({ nombre: textos.nav[hija], href: ruta(hija, idioma) }));
+}
+// Formación y eventos: los próximos (hasta 4) y el archivo de realizados.
+const eventos = await obtenerEventosPublicos(idioma);
+const proximos = eventos.filter((e) => !yaPaso(e)).slice(0, 4);
+submenus.eventos = [
+	...proximos.map((e) => ({ nombre: e.texto.data.titulo, href: ruta('eventos', idioma, e.slug), fin: (e.datos.fin ?? e.datos.inicio).toISOString() })),
+	...(eventos.length > proximos.length ? [{ nombre: textos.eventos.realizados, href: `${ruta('eventos', idioma)}#titulo-realizados` }] : []),
+];
+// Membresía: los títulos de su página (Categorías, Beneficios, Cuota...).
+const paginaMembresia = await paginaDeSeccion('membresia', idioma);
+if (paginaMembresia) {
+	const { headings } = await render(paginaMembresia);
+	submenus.membresia = headings.filter((h) => h.depth === 2).map((h) => ({ nombre: h.text, href: `${ruta('membresia', idioma)}#${h.slug}` }));
+}
 ---
 
 <header class="encabezado">
@@ -26,24 +55,21 @@ const actual = Astro.url.pathname;
 					{
 						MENU.map((seccion) => {
 							const href = ruta(seccion, idioma);
-							const hijas = hijasDe(seccion);
-							// Con subsecciones: desplegable con la página principal y sus subsecciones.
-							if (hijas.length) {
+							const opciones = submenus[seccion] ?? [];
+							// Con submenú: desplegable con la página principal y sus opciones.
+							if (opciones.length) {
 								return (
 									<li>
 										<details class="desplegable">
 											<summary class={actual.startsWith(href) ? 'actual' : undefined}>{textos.nav[seccion]}</summary>
 											<ul class="lista-desplegable">
-												{[seccion, ...hijas].map((s) => {
-													const enlace = ruta(s, idioma);
-													return (
-														<li>
-															<a href={enlace} aria-current={actual === enlace ? 'page' : undefined}>
-																{textos.nav[s]}
-															</a>
-														</li>
-													);
-												})}
+												{[{ nombre: textos.nav[seccion], href }, ...opciones].map((opcion, i) => (
+													<li class={i === 0 ? 'principal' : undefined} data-fin={opcion.fin}>
+														<a href={opcion.href} aria-current={actual === opcion.href ? 'page' : undefined}>
+															{opcion.nombre}
+														</a>
+													</li>
+												))}
 											</ul>
 										</details>
 									</li>
@@ -73,6 +99,11 @@ const actual = Astro.url.pathname;
 		const abierto = boton.getAttribute('aria-expanded') === 'true';
 		boton.setAttribute('aria-expanded', String(!abierto));
 	});
+
+	// Eventos del submenú que ya terminaron (si la página se generó antes): se ocultan.
+	for (const opcion of document.querySelectorAll<HTMLElement>('.encabezado [data-fin]')) {
+		if (new Date(opcion.dataset.fin!) < new Date()) opcion.hidden = true;
+	}
 
 	// Desplegables (<details>): en pantallas grandes con mouse se abren al pasar por encima;
 	// se cierran al abrir otro, al hacer clic fuera o con Escape.

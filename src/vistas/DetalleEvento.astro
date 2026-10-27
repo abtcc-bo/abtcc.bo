@@ -33,7 +33,12 @@ const compartir = [
 
 <article class="evento">
 	<p class="etiquetas">
-		<span>{ev.tipos[datos.tipo]}</span> · <span>{ev.modalidades[datos.modalidad]}</span>
+		<span>{ev.tipos[datos.tipo]}</span>
+		{datos.modalidad && (
+			<>
+				· <span>{ev.modalidades[datos.modalidad]}</span>
+			</>
+		)}
 	</p>
 	<h1>{titulo}</h1>
 	{datos.estado !== 'programado' && <p class={`aviso-estado estado-${datos.estado}`} role="status">{ev.estados[datos.estado]}</p>}
@@ -74,7 +79,7 @@ const compartir = [
 		}
 
 		<dt>{ev.modalidad}</dt>
-		<dd>{ev.modalidades[datos.modalidad]}</dd>
+		<dd>{datos.modalidad ? ev.modalidades[datos.modalidad] : ev.porConfirmar}</dd>
 
 		{
 			datos.lugar && (
@@ -94,7 +99,7 @@ const compartir = [
 		}
 
 		{
-			datos.modalidad !== 'presencial' && (
+			datos.modalidad && datos.modalidad !== 'presencial' && (
 				<>
 					<dt>{ev.plataforma}</dt>
 					<dd>

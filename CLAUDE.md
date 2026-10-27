@@ -35,6 +35,7 @@ La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisi
 - `noIndexar` para área de socios y 404.
 - Datos institucionales sin idioma (correo, ciudad, redes, logo, imagen para redes) en `src/datos/organizacion.ts`; `null` = pendiente.
 - Menú de celular: botón con `aria-expanded`; sin JavaScript el menú queda visible (clase `js` en `<html>`).
+- Desplegables del menú y del idioma con `<details>` (estilos en `global.css`, comportamiento en `Encabezado.astro`). Submenús: subsecciones de `PADRES`, próximos eventos (hasta 4) y los títulos `##` de la página de Membresía.
 - Fechas y monedas con `Intl`. Horas siempre con zona horaria (`2026-11-14T09:00-04:00`), mostradas como "hora de Bolivia (UTC−4)".
 - Selector de idioma con nombres (Español · English · Português), sin banderas.
 - No publicar traducciones automáticas sin revisión humana.

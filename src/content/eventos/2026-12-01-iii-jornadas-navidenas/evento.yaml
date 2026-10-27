@@ -1,0 +1,7 @@
+# III Jornadas Navideñas. Anuncio previo: solo se conoce el mes.
+# [PENDIENTE: fechas exactas, horario, modalidad, sede, costos, inscripción, afiche, ponentes]
+# Cuando se confirmen: cambiar inicio/fin, quitar `por_confirmar` y completar los datos.
+tipo: jornada
+inicio: "2026-12-01T09:00-04:00"
+fin: "2026-12-31T18:00-04:00"
+por_confirmar: true

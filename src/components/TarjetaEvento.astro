@@ -26,7 +26,7 @@ const abierta = inscripcionAbierta(evento);
 >
 	<p class="etiquetas">
 		<span>{textos.tipos[datos.tipo]}</span>
-		<span>{textos.modalidades[datos.modalidad]}</span>
+		{datos.modalidad && <span>{textos.modalidades[datos.modalidad]}</span>}
 		{datos.estado !== 'programado' && <strong class={`estado estado-${datos.estado}`}>{textos.estados[datos.estado]}</strong>}
 	</p>
 	<Titulo><a href={href}>{evento.texto.data.titulo}</a></Titulo>

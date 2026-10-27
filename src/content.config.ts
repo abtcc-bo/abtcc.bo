@@ -32,7 +32,8 @@ const eventos = defineCollection({
 				fin: fechaHora.optional(),
 				/** Para cursos en varias sesiones. */
 				sesiones: z.array(z.object({ inicio: fechaHora, fin: fechaHora.optional() })).default([]),
-				modalidad: z.enum(['presencial', 'online', 'hibrido']),
+				/** Obligatoria, salvo en un anuncio previo (`por_confirmar`). */
+				modalidad: z.enum(['presencial', 'online', 'hibrido']).optional(),
 				lugar: z
 					.object({
 						/** Puede faltar si la sede aún no está definida (se muestra solo la ciudad). */
@@ -63,12 +64,13 @@ const eventos = defineCollection({
 				solo_socios: z.boolean().default(false),
 				/**
 				 * Anuncio previo: solo se conoce el mes. Se muestra "marzo de 2027 (fecha exacta por confirmar)", sin horario,
-				 * sin botones de calendario ni datos para Google, y los costos pueden faltar.
+				 * sin botones de calendario ni datos para Google; costos, modalidad y sede pueden faltar.
 				 * Poner `inicio` el día 1 y `fin` el último día del mes; quitar este campo cuando se confirme la fecha.
 				 */
 				por_confirmar: z.boolean().default(false),
 			})
-			.refine((e) => e.modalidad === 'online' || e.lugar, { error: 'Un evento presencial o híbrido necesita "lugar".', path: ['lugar'] })
+			.refine((e) => e.modalidad || e.por_confirmar, { error: 'Indica la "modalidad" (presencial, online o hibrido).', path: ['modalidad'] })
+			.refine((e) => !e.modalidad || e.modalidad === 'online' || e.lugar, { error: 'Un evento presencial o híbrido necesita "lugar".', path: ['lugar'] })
 			.refine((e) => !e.fin || e.fin > e.inicio, { error: '"fin" debe ser posterior a "inicio".', path: ['fin'] })
 			.refine((e) => e.gratuito || e.costos.length > 0 || e.solo_socios || e.por_confirmar, {
 				error: 'Indica los "costos" o marca "gratuito: true".',

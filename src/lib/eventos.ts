@@ -46,7 +46,7 @@ export function bloquesDeCalendario(evento: Evento): { inicio: Date; fin: Date }
 function lugarEnTexto(evento: Evento, idioma: Idioma): string {
 	const { lugar, modalidad, plataforma } = evento.datos;
 	const presencial = lugar ? [lugar.nombre, lugar.direccion, lugar.ciudad].filter(Boolean).join(', ') : '';
-	const online = modalidad !== 'presencial' ? `${t(idioma).eventos.modalidades.online}${plataforma ? ` (${plataforma})` : ''}` : '';
+	const online = modalidad && modalidad !== 'presencial' ? `${t(idioma).eventos.modalidades.online}${plataforma ? ` (${plataforma})` : ''}` : '';
 	return [presencial, online].filter(Boolean).join(' / ');
 }
 
@@ -164,7 +164,7 @@ export function datosEstructurados(
 		});
 	}
 	// El enlace real de la reunión no se publica; se indica la página del evento.
-	if (datos.modalidad !== 'presencial') lugares.push({ '@type': 'VirtualLocation', url });
+	if (datos.modalidad && datos.modalidad !== 'presencial') lugares.push({ '@type': 'VirtualLocation', url });
 
 	const disponibilidad = datos.estado === 'agotado' ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock';
 	const ofertas = datos.gratuito
@@ -189,7 +189,7 @@ export function datosEstructurados(
 		startDate: isoBolivia(datos.inicio),
 		...(datos.fin && { endDate: isoBolivia(datos.fin) }),
 		eventStatus: ESTADO_SCHEMA[datos.estado],
-		eventAttendanceMode: MODALIDAD_SCHEMA[datos.modalidad],
+		...(datos.modalidad && { eventAttendanceMode: MODALIDAD_SCHEMA[datos.modalidad] }),
 		location: lugares.length === 1 ? lugares[0] : lugares,
 		...(extra.imagen && { image: [extra.imagen] }),
 		...(ofertas.length && { offers: ofertas }),

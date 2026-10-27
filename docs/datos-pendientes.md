@@ -45,6 +45,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 ## Eventos
 
 - [ ] Próximos eventos (datos + afiche)
+- [ ] III Jornadas Navideñas (diciembre 2026): ya publicado como anuncio. Faltan fechas exactas, horario, modalidad (presencial / en línea), ciudad y sede, costos, inscripción, afiche, tema y ponentes
 - [ ] XI SIALAPCCO Bolivia (marzo 2027, Santa Cruz): ya publicado como anuncio con afiche. Faltan fechas exactas, horario, sede, costos, enlace de inscripción, programa, horas y aval, y qué significa la sigla SIALAPCCO
 - [ ] Eventos pasados para el archivo (opcional). En la hoja de vida de Alix aparecen: Primer Congreso Nacional de TCC y Terapia Contextual (28–29 abr. 2023), Congreso "Suicidio y Depresión a través de la Lente de la TCC y la Tercera Ola" (1–2 ago. 2025), 2.ª Jornada de Actualización "Sanando el trauma" (6 dic. 2025) y II Encuentro Internacional "Nuevos caminos para la Psicoterapia" (4–5 sep. 2026)
 
