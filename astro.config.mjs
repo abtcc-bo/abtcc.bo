@@ -10,7 +10,8 @@ export default defineConfig({
 	// Se publica como Worker de Cloudflare (configuración en wrangler.jsonc, código propio en src/worker.ts).
 	// Casi todo es estático; solo las rutas con `export const prerender = false` corren en el servidor:
 	// la portada y el listado de eventos (siempre al día) y /api/contacto/.
-	adapter: cloudflare(),
+	// Imágenes optimizadas al construir (`compile`), sin el servicio de pago Cloudflare Images.
+	adapter: cloudflare({ imageService: 'compile' }),
 	i18n: {
 		defaultLocale: 'es',
 		locales: ['es', 'en', 'pt'],
