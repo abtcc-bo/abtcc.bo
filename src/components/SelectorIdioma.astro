@@ -1,0 +1,54 @@
+---
+// Lleva a la misma página en el otro idioma. Si no existe en ese idioma, lleva a su inicio.
+import { IDIOMAS, ruta, t, type Alternos, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+	alternos: Alternos;
+}
+
+const { idioma, alternos } = Astro.props;
+---
+
+<nav class="selector-idioma" aria-label={t(idioma).idioma.selector}>
+	<ul>
+		{
+			IDIOMAS.map((otro) => {
+				const textos = t(otro).idioma;
+				if (otro === idioma) {
+					return (
+						<li>
+							<span aria-current="true">{textos.nombre}</span>
+						</li>
+					);
+				}
+				const destino = alternos[otro];
+				return (
+					<li>
+						<a href={destino ?? ruta('inicio', otro)} hreflang={otro} lang={otro} title={destino ? undefined : textos.noDisponible}>
+							{textos.nombre}
+						</a>
+					</li>
+				);
+			})
+		}
+	</ul>
+</nav>
+
+<style>
+	ul {
+		display: flex;
+		gap: 0.5rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	li + li::before {
+		content: '·';
+		margin-right: 0.5rem;
+		color: var(--color-texto-suave);
+	}
+	[aria-current] {
+		font-weight: 700;
+	}
+</style>

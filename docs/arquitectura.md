@@ -114,7 +114,8 @@ abtcc-web/
 │   ├── assets/                ← imágenes que Astro optimiza
 │   ├── components/            ← piezas reutilizables (TarjetaEvento, Header…)
 │   ├── layouts/               ← plantilla base con SEO y fuentes
-│   ├── pages/[lang]/          ← rutas públicas por idioma
+│   ├── pages/[...ruta].astro  ← genera las secciones fijas en los 3 idiomas (rutas traducidas)
+│   ├── vistas/                ← contenido de cada sección
 │   ├── pages/[lang]/socios/   ← rutas protegidas (servidor)
 │   ├── lib/supabase.ts        ← conexión al área de socios
 │   └── styles/                ← variables de color y tipografía

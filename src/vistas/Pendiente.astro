@@ -1,0 +1,15 @@
+---
+// Vista provisoria para secciones que todavía no se construyeron.
+import { t, type Idioma, type Seccion } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+	seccion: Seccion;
+}
+
+const { idioma, seccion } = Astro.props;
+const textos = t(idioma);
+---
+
+<h1>{textos.nav[seccion]}</h1>
+<p>{textos.comun.enConstruccion}</p>

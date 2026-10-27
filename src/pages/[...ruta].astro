@@ -1,0 +1,36 @@
+---
+// Genera todas las secciones fijas en los tres idiomas a partir de SECCIONES (src/i18n/rutas.ts).
+// Los contenidos con su propia página (eventos, artículos) tienen rutas aparte.
+import Base from '../layouts/Base.astro';
+import Inicio from '../vistas/Inicio.astro';
+import Pendiente from '../vistas/Pendiente.astro';
+import { IDIOMAS, SECCIONES, alternosDeSeccion, ruta, t, type Idioma, type Seccion } from '../i18n';
+
+export function getStaticPaths() {
+	return IDIOMAS.flatMap((idioma) =>
+		(Object.keys(SECCIONES) as Seccion[]).map((seccion) => ({
+			params: { ruta: ruta(seccion, idioma).slice(1, -1) },
+			props: { idioma, seccion },
+		})),
+	);
+}
+
+interface Props {
+	idioma: Idioma;
+	seccion: Seccion;
+}
+
+const { idioma, seccion } = Astro.props;
+const textos = t(idioma);
+
+const VISTAS: Partial<Record<Seccion, typeof Inicio>> = {
+	inicio: Inicio,
+};
+const Vista = VISTAS[seccion];
+
+const titulo = seccion === 'inicio' ? `${textos.sitio.sigla} · ${textos.sitio.nombre}` : `${textos.nav[seccion]} · ${textos.sitio.sigla}`;
+---
+
+<Base idioma={idioma} titulo={titulo} alternos={alternosDeSeccion(seccion)}>
+	{Vista ? <Vista idioma={idioma} /> : <Pendiente idioma={idioma} seccion={seccion} />}
+</Base>

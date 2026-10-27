@@ -1,0 +1,66 @@
+---
+import SelectorIdioma from './SelectorIdioma.astro';
+import { MENU, ruta, t, type Alternos, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+	alternos: Alternos;
+}
+
+const { idioma, alternos } = Astro.props;
+const textos = t(idioma);
+const actual = Astro.url.pathname;
+---
+
+<header class="encabezado">
+	<div class="contenedor fila">
+		<a class="logo" href={ruta('inicio', idioma)}>{textos.sitio.sigla}</a>
+		<nav aria-label={textos.nav.principal}>
+			<ul>
+				{
+					MENU.map((seccion) => {
+						const href = ruta(seccion, idioma);
+						return (
+							<li>
+								<a href={href} aria-current={actual.startsWith(href) ? 'page' : undefined}>
+									{textos.nav[seccion]}
+								</a>
+							</li>
+						);
+					})
+				}
+			</ul>
+		</nav>
+		<SelectorIdioma idioma={idioma} alternos={alternos} />
+		<a class="boton-socios" href={ruta('socios', idioma)}>{textos.nav.socios}</a>
+	</div>
+</header>
+
+<style>
+	.encabezado {
+		border-bottom: 1px solid var(--color-borde);
+	}
+	.fila {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--espacio);
+		padding-block: var(--espacio);
+	}
+	.logo {
+		font-weight: 700;
+		text-decoration: none;
+		margin-right: auto;
+	}
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--espacio);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	[aria-current='page'] {
+		font-weight: 700;
+	}
+</style>

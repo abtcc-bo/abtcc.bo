@@ -1,0 +1,37 @@
+{
+	"sitio": {
+		"nombre": "[PENDENTE: nome oficial da associação]",
+		"sigla": "ABTCC",
+		"descripcion": "[PENDENTE: apresentação da associação em uma frase]"
+	},
+	"idioma": {
+		"nombre": "Português",
+		"selector": "Idioma",
+		"noDisponible": "Esta página não está disponível em português; vamos levá-lo ao início."
+	},
+	"nav": {
+		"principal": "Menu principal",
+		"inicio": "Início",
+		"nosotros": "Quem somos",
+		"comision": "Diretoria",
+		"transparencia": "Estatuto e ética",
+		"eventos": "Formação e eventos",
+		"membresia": "Filiação",
+		"blog": "Blog",
+		"recursos": "Recursos",
+		"contacto": "Contato",
+		"socios": "Área de sócios",
+		"privacidad": "Privacidade",
+		"avisoLegal": "Aviso legal"
+	},
+	"comun": {
+		"saltarAlContenido": "Pular para o conteúdo",
+		"enConstruccion": "Esta seção está em construção.",
+		"proximosEventos": "Próximos eventos",
+		"verTodos": "Ver todos",
+		"inscribirme": "Inscrever-me"
+	},
+	"hora": {
+		"zonaBolivia": "horário da Bolívia (UTC−4)"
+	}
+}

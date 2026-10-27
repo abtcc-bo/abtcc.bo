@@ -1,0 +1,39 @@
+---
+import '../styles/global.css';
+import Encabezado from '../components/Encabezado.astro';
+import { IDIOMA_PRINCIPAL, t, type Alternos, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+	titulo: string;
+	descripcion?: string;
+	/** Versiones de esta página en cada idioma (para hreflang y el selector de idioma). */
+	alternos: Alternos;
+}
+
+const { idioma, titulo, descripcion = t(idioma).sitio.descripcion, alternos } = Astro.props;
+const canonica = new URL(Astro.url.pathname, Astro.site);
+const absoluta = (ruta: string) => new URL(ruta, Astro.site).href;
+---
+
+<!doctype html>
+<html lang={idioma}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{titulo}</title>
+		<meta name="description" content={descripcion} />
+		<link rel="canonical" href={canonica.href} />
+		{Object.entries(alternos).map(([lang, ruta]) => <link rel="alternate" hreflang={lang} href={absoluta(ruta)} />)}
+		{alternos[IDIOMA_PRINCIPAL] && <link rel="alternate" hreflang="x-default" href={absoluta(alternos[IDIOMA_PRINCIPAL])} />}
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+	</head>
+	<body>
+		<a class="saltar" href="#contenido">{t(idioma).comun.saltarAlContenido}</a>
+		<Encabezado idioma={idioma} alternos={alternos} />
+		<main id="contenido" class="contenedor">
+			<slot />
+		</main>
+	</body>
+</html>

@@ -1,0 +1,18 @@
+---
+import { t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+}
+
+const { idioma } = Astro.props;
+const textos = t(idioma);
+---
+
+<h1>{textos.sitio.nombre} ({textos.sitio.sigla})</h1>
+<p>{textos.sitio.descripcion}</p>
+
+<section>
+	<h2>{textos.comun.proximosEventos}</h2>
+	<p>{textos.comun.enConstruccion}</p>
+</section>

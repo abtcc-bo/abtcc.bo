@@ -19,7 +19,11 @@ La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisi
 ## Idiomas
 
 - `es` (principal), `en`, `pt`, en rutas `/es/`, `/en/`, `/pt/`. La raíz redirige a `/es/`; nunca redirigir según el idioma del navegador.
-- Textos de interfaz en `src/i18n/{es,en,pt}.json`, nunca escritos dentro de las plantillas.
+- Las rutas se traducen (`/es/nosotros/`, `/en/about/`, `/pt/sobre/`). El mapa está en `src/i18n/rutas.ts` (`SECCIONES`); generar enlaces siempre con `ruta(seccion, idioma)`, nunca escribir URLs a mano.
+- Las secciones fijas se generan todas desde `src/pages/[...ruta].astro`; el contenido de cada una va en `src/vistas/` y se registra en `VISTAS`. Sin vista registrada, se muestra "en construcción".
+- Toda página pasa `alternos` (sus versiones por idioma) al layout `Base`: con eso salen `hreflang` y el selector de idioma.
+- Textos de interfaz en `src/i18n/{es,en,pt}.json`, nunca escritos dentro de las plantillas. Los tres JSON deben tener las mismas claves; si no, la construcción falla.
+- Rutas con barra final siempre (`trailingSlash: 'always'`).
 - Fechas y monedas con `Intl`. Horas siempre con zona horaria (`2026-11-14T09:00-04:00`), mostradas como "hora de Bolivia (UTC−4)".
 - Selector de idioma con nombres (Español · English · Português), sin banderas.
 - No publicar traducciones automáticas sin revisión humana.
