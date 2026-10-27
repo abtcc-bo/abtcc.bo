@@ -56,6 +56,13 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 - Un evento cancelado NO se borra: `estado: cancelado`. `solo_socios: true` lo saca de las páginas públicas.
 - Los eventos pasados se ocultan de "próximos" al reconstruir el sitio (reconstrucción diaria, pendiente al publicar) y, por si falla, con un script en el navegador.
 
+## Formulario de contacto
+
+- Formulario: `src/components/FormularioContacto.astro` → envía a `/api/contacto/` (`src/pages/api/contacto.ts`, única ruta en servidor por ahora, `prerender = false`, adaptador Vercel). Lógica en `src/lib/contacto.ts`.
+- Antispam: campo trampa `sitio_web`, tiempo mínimo de 3 s, límite de 5 envíos/10 min por IP y Turnstile si hay clave. Los bots reciben "ok" sin que se envíe nada.
+- Claves en variables de entorno (`astro.config.mjs` → `env.schema`, ejemplo en `.env.example`). Sin claves funciona en **modo prueba**: el mensaje se muestra en la consola del servidor y no se envía.
+- Sin dominio propio, Resend solo envía desde `onboarding@resend.dev` al correo dueño de la cuenta: no hay respuesta automática a quien escribe hasta tener dominio.
+
 ## Prohibiciones
 
 - No subir `.env` ni claves a GitHub.

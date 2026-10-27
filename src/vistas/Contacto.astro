@@ -1,6 +1,7 @@
 ---
 // Contacto: texto opcional de src/content/paginas/{idioma}/contacto.md + datos de src/datos/organizacion.ts.
 import { render, type CollectionEntry } from 'astro:content';
+import FormularioContacto from '../components/FormularioContacto.astro';
 import { ORGANIZACION } from '../datos/organizacion';
 import { t, type Idioma } from '../i18n';
 
@@ -42,13 +43,9 @@ const correo = ORGANIZACION.correo;
 	</dd>
 </dl>
 
-<section aria-labelledby="titulo-formulario">
-	<h2 id="titulo-formulario">{textos.contacto.formulario}</h2>
-	<!-- [PENDIENTE paso 6: formulario de contacto con antispam] -->
-	<p>
-		{textos.contacto.formularioPronto}{' '}
-		{correo && <a href={`mailto:${correo}`}>{correo}</a>}.
-	</p>
+<section aria-labelledby="titulo-formulario" id="formulario">
+	<h2 id="titulo-formulario">{textos.contacto.formulario.titulo}</h2>
+	<FormularioContacto idioma={idioma} />
 </section>
 
 <style>

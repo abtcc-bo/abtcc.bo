@@ -119,7 +119,34 @@
 		"correo": "Email",
 		"ciudades": "Present in",
 		"redes": "Social media",
-		"formulario": "Write to us",
-		"formularioPronto": "You will soon be able to write to us from here. In the meantime, send us an email at"
+		"formulario": {
+			"titulo": "Write to us",
+			"nombre": "Full name",
+			"correo": "Email",
+			"asunto": "Subject",
+			"asuntos": {
+				"general": "General enquiry",
+				"eventos": "Events and training",
+				"membresia": "Membership",
+				"otro": "Other"
+			},
+			"mensaje": "Message",
+			"consentimiento": "I agree that ABTCC may use this information only to reply to my message, in accordance with its",
+			"politica": "Privacy policy",
+			"enviar": "Send message",
+			"enviando": "Sending…",
+			"exito": "Thank you! We have received your message and will reply shortly.",
+			"volver": "Back to the form",
+			"errores": {
+				"general": "We could not send your message. Please try again in a few minutes or write to us directly at",
+				"revisa": "Please check the highlighted fields.",
+				"nombre": "Enter your name (2 to 100 characters).",
+				"correo": "Enter a valid email address.",
+				"mensaje": "Enter your message (10 to 5000 characters).",
+				"consentimiento": "We need your consent to reply to you.",
+				"demasiados": "We received several messages from your connection. Please wait a few minutes before trying again.",
+				"verificacion": "We could not verify that you are not a robot. Reload the page and try again."
+			}
+		}
 	}
 }

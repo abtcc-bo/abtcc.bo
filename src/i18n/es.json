@@ -119,7 +119,34 @@
 		"correo": "Correo electrónico",
 		"ciudades": "Presencia en",
 		"redes": "Redes sociales",
-		"formulario": "Escríbenos",
-		"formularioPronto": "Muy pronto podrás escribirnos desde aquí. Mientras tanto, envíanos un correo a"
+		"formulario": {
+			"titulo": "Escríbenos",
+			"nombre": "Nombre completo",
+			"correo": "Correo electrónico",
+			"asunto": "Asunto",
+			"asuntos": {
+				"general": "Consulta general",
+				"eventos": "Eventos y formación",
+				"membresia": "Membresía",
+				"otro": "Otro"
+			},
+			"mensaje": "Mensaje",
+			"consentimiento": "Acepto que la ABTCC use estos datos solo para responder a mi mensaje, según su",
+			"politica": "Política de privacidad",
+			"enviar": "Enviar mensaje",
+			"enviando": "Enviando…",
+			"exito": "¡Gracias! Recibimos tu mensaje y te responderemos a la brevedad.",
+			"volver": "Volver al formulario",
+			"errores": {
+				"general": "No pudimos enviar tu mensaje. Inténtalo de nuevo en unos minutos o escríbenos directamente a",
+				"revisa": "Revisa los campos marcados.",
+				"nombre": "Escribe tu nombre (entre 2 y 100 caracteres).",
+				"correo": "Escribe un correo electrónico válido.",
+				"mensaje": "Escribe tu mensaje (entre 10 y 5000 caracteres).",
+				"consentimiento": "Necesitamos tu consentimiento para poder responderte.",
+				"demasiados": "Recibimos varios mensajes desde tu conexión. Espera unos minutos antes de volver a intentarlo.",
+				"verificacion": "No pudimos verificar que no eres un robot. Recarga la página e inténtalo de nuevo."
+			}
+		}
 	}
 }

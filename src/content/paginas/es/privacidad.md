@@ -32,7 +32,9 @@ Tratamos tus datos porque tú nos los das con ese fin y das tu consentimiento al
 
 - El sitio web está alojado en Vercel.
 - Los correos que nos envías se reciben en una cuenta de Google (Gmail) de la asociación.
-- [PENDIENTE: servicios que se agreguen más adelante: formulario de contacto, boletín, área de socios]
+- Los mensajes del formulario de contacto se reenvían a ese correo mediante Resend, un servicio de envío de correos.
+- Para filtrar mensajes automáticos (spam) usamos Cloudflare Turnstile, que verifica que quien escribe es una persona sin usar cookies de seguimiento.
+- [PENDIENTE: servicios que se agreguen más adelante: boletín, área de socios]
 
 Estos proveedores pueden almacenar datos fuera de Bolivia y aplican sus propias medidas de seguridad.
 

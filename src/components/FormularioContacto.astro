@@ -1,0 +1,226 @@
+---
+// Formulario de contacto. Envía a /api/contacto/ (src/pages/api/contacto.ts).
+// Con JavaScript: envío sin recargar y errores junto a cada campo. Sin JavaScript: envío normal y página de respuesta.
+// Antispam: campo trampa oculto, tiempo mínimo de llenado y, si hay clave configurada, Cloudflare Turnstile.
+import { TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { ORGANIZACION } from '../datos/organizacion';
+import { ASUNTOS } from '../lib/contacto';
+import { ruta, t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+}
+
+const { idioma } = Astro.props;
+const textos = t(idioma).contacto.formulario;
+---
+
+<form
+	class="formulario"
+	method="post"
+	action="/api/contacto/"
+	novalidate
+	data-formulario-contacto
+	data-texto-enviando={textos.enviando}
+	data-texto-enviar={textos.enviar}
+>
+	<input type="hidden" name="idioma" value={idioma} />
+	<input type="hidden" name="cargado" value="" />
+
+	<p class="aviso" role="alert" data-aviso hidden></p>
+
+	<div class="campo">
+		<label for="contacto-nombre">{textos.nombre}</label>
+		<input id="contacto-nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="100" aria-describedby="error-nombre" />
+		<p class="error" id="error-nombre" data-error="nombre" hidden>{textos.errores.nombre}</p>
+	</div>
+
+	<div class="campo">
+		<label for="contacto-correo">{textos.correo}</label>
+		<input id="contacto-correo" name="correo" type="email" autocomplete="email" required maxlength="200" aria-describedby="error-correo" />
+		<p class="error" id="error-correo" data-error="correo" hidden>{textos.errores.correo}</p>
+	</div>
+
+	<div class="campo">
+		<label for="contacto-asunto">{textos.asunto}</label>
+		<select id="contacto-asunto" name="asunto">
+			{ASUNTOS.map((asunto) => <option value={asunto}>{textos.asuntos[asunto]}</option>)}
+		</select>
+	</div>
+
+	<div class="campo">
+		<label for="contacto-mensaje">{textos.mensaje}</label>
+		<textarea id="contacto-mensaje" name="mensaje" rows="6" required minlength="10" maxlength="5000" aria-describedby="error-mensaje"></textarea>
+		<p class="error" id="error-mensaje" data-error="mensaje" hidden>{textos.errores.mensaje}</p>
+	</div>
+
+	<!-- Campo trampa: invisible para las personas; si un bot lo llena, el mensaje se descarta. -->
+	<div class="visualmente-oculto" aria-hidden="true">
+		<label for="contacto-sitio-web">Sitio web</label>
+		<input id="contacto-sitio-web" name="sitio_web" type="text" tabindex="-1" autocomplete="off" />
+	</div>
+
+	<div class="campo campo-casilla">
+		<input id="contacto-consentimiento" name="consentimiento" type="checkbox" value="si" required aria-describedby="error-consentimiento" />
+		<label for="contacto-consentimiento">
+			{textos.consentimiento} <a href={ruta('privacidad', idioma)}>{textos.politica}</a>.
+		</label>
+		<p class="error" id="error-consentimiento" data-error="consentimiento" hidden>{textos.errores.consentimiento}</p>
+	</div>
+
+	{TURNSTILE_SITE_KEY && <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-language={idioma}></div>}
+
+	<button class="boton" type="submit">{textos.enviar}</button>
+</form>
+
+<div class="exito" role="status" data-exito hidden>
+	<p>{textos.exito}</p>
+</div>
+
+<template data-texto-error-general>{textos.errores.general} <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>.</template>
+<template data-texto-revisa>{textos.errores.revisa}</template>
+<template data-texto-demasiados>{textos.errores.demasiados}</template>
+<template data-texto-verificacion>{textos.errores.verificacion}</template>
+
+{TURNSTILE_SITE_KEY && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+<script>
+	type Campo = 'nombre' | 'correo' | 'mensaje' | 'consentimiento';
+
+	const formulario = document.querySelector<HTMLFormElement>('[data-formulario-contacto]');
+	if (formulario) {
+		// Marca de tiempo para el control de "llenado demasiado rápido".
+		formulario.querySelector<HTMLInputElement>('[name=cargado]')!.value = String(Date.now());
+
+		const aviso = formulario.querySelector<HTMLElement>('[data-aviso]')!;
+		const boton = formulario.querySelector<HTMLButtonElement>('button[type=submit]')!;
+		const plantilla = (nombre: string) => document.querySelector<HTMLTemplateElement>(`[data-texto-${nombre}]`)!.innerHTML;
+
+		const mostrarErrores = (campos: Campo[]) => {
+			for (const error of formulario.querySelectorAll<HTMLElement>('[data-error]')) {
+				const campo = error.dataset.error as Campo;
+				const conError = campos.includes(campo);
+				error.hidden = !conError;
+				formulario.querySelector(`[name=${campo}]`)!.setAttribute('aria-invalid', String(conError));
+			}
+			if (campos.length) formulario.querySelector<HTMLElement>(`[name=${campos[0]}]`)!.focus();
+		};
+
+		const mostrarAviso = (html: string | null) => {
+			aviso.hidden = !html;
+			aviso.innerHTML = html ?? '';
+		};
+
+		const validarEnNavegador = (): Campo[] =>
+			(['nombre', 'correo', 'mensaje', 'consentimiento'] as Campo[]).filter((campo) => {
+				const elemento = formulario.querySelector<HTMLInputElement>(`[name=${campo}]`)!;
+				if (campo === 'nombre' || campo === 'mensaje') elemento.value = elemento.value.trim();
+				return !elemento.checkValidity();
+			});
+
+		formulario.addEventListener('submit', async (evento) => {
+			evento.preventDefault();
+			const conError = validarEnNavegador();
+			mostrarErrores(conError);
+			if (conError.length) {
+				mostrarAviso(plantilla('revisa'));
+				return;
+			}
+			mostrarAviso(null);
+			boton.disabled = true;
+			boton.textContent = formulario.dataset.textoEnviando!;
+			try {
+				const respuesta = await fetch(formulario.action, {
+					method: 'POST',
+					body: new FormData(formulario),
+					headers: { Accept: 'application/json' },
+				});
+				const resultado = (await respuesta.json()) as { ok: boolean; error?: string; campos?: Campo[] };
+				if (resultado.ok) {
+					formulario.hidden = true;
+					const exito = document.querySelector<HTMLElement>('[data-exito]')!;
+					exito.hidden = false;
+					exito.setAttribute('tabindex', '-1');
+					exito.focus();
+					return;
+				}
+				if (resultado.error === 'campos') {
+					mostrarErrores(resultado.campos ?? []);
+					mostrarAviso(plantilla('revisa'));
+				} else if (resultado.error === 'demasiados' || resultado.error === 'verificacion') {
+					mostrarAviso(plantilla(resultado.error));
+				} else {
+					mostrarAviso(plantilla('error-general'));
+				}
+			} catch {
+				mostrarAviso(plantilla('error-general'));
+			} finally {
+				boton.disabled = false;
+				boton.textContent = formulario.dataset.textoEnviar!;
+				// Turnstile exige un token nuevo por envío.
+				(window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
+			}
+		});
+	}
+</script>
+
+<style>
+	.formulario {
+		display: grid;
+		gap: var(--espacio);
+		max-width: 36rem;
+	}
+	.campo {
+		display: grid;
+		gap: 0.25rem;
+	}
+	label {
+		font-weight: 700;
+	}
+	input,
+	select,
+	textarea {
+		font: inherit;
+		min-height: 44px;
+		padding: 0.5rem;
+		border: 1px solid var(--color-texto-suave);
+	}
+	[aria-invalid='true'] {
+		border: 2px solid #a40000;
+	}
+	.campo-casilla {
+		grid-template-columns: auto 1fr;
+		align-items: start;
+		column-gap: 0.75rem;
+	}
+	.campo-casilla input {
+		min-height: auto;
+		width: 1.25rem;
+		height: 1.25rem;
+		margin-top: 0.3rem;
+	}
+	.campo-casilla label {
+		font-weight: 400;
+	}
+	.campo-casilla .error {
+		grid-column: 1 / -1;
+	}
+	.error,
+	.aviso {
+		margin: 0;
+		color: #a40000;
+		font-weight: 700;
+	}
+	.aviso {
+		padding: 0.75rem var(--espacio);
+		border: 2px solid currentColor;
+	}
+	.exito {
+		padding: var(--espacio);
+		border: 2px solid var(--color-acento);
+		font-weight: 700;
+	}
+	button[disabled] {
+		opacity: 0.7;
+	}
+</style>

@@ -59,8 +59,14 @@ No afectan a la web, pero conviene corregirlas antes de aprobarlos:
 
 ---
 
-### 5. Crear la cuenta de Vercel
-Te avisaré cuando llegue el momento y te guiaré paso a paso. Será con el Gmail de la asociación y conectándola al GitHub `abtcc-bo`.
+### 5. Crear tres cuentas gratuitas (te guiaré paso a paso)
+Todas con el Gmail de la asociación (abtcc.bo@gmail.com). Te avisaré cuando sea el momento.
+
+- [ ] **Vercel**: donde se publica la web. Se conecta con el GitHub `abtcc-bo`.
+- [ ] **Resend**: envía a abtcc.bo@gmail.com los mensajes del formulario de contacto. Mientras no haya dominio propio, solo puede enviar al correo con el que se crea la cuenta; por eso debe ser el de la asociación.
+- [ ] **Cloudflare** (servicio Turnstile): la verificación antispam del formulario.
+
+Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en el chat**: se cargan directamente en Vercel y te mostraré dónde.
 
 ---
 
