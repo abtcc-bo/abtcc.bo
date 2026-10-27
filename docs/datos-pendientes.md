@@ -4,18 +4,19 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 
 ## Decisiones
 
-- [x] Nombre oficial: Asociación Boliviana de Terapias Cognitivo Conductuales y Contextuales (confirmar que coincide con el estatuto: la bio del Dr. Rivera dice "Terapias Cognitivas y Conductuales")
+- [x] Nombre oficial (según el estatuto): Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales. **El logo dice "Cognitivo Conductuales y Contextuales": conviene actualizar el logo.**
 - [ ] Sigla oficial (¿ABTCC?)
 - [ ] Nombre del subdominio gratuito deseado (ej. `abtcc.vercel.app`)
 - [x] Correo Gmail de la asociación: abtcc.bo@gmail.com
-- [ ] Categorías de socio y cuotas (¿se pagan fuera de la web por ahora?)
+- [x] Categorías de miembro y cuota (100 UFV anuales), tomadas del estatuto y reglamento
 - [ ] ¿Hay dirección física pública?
 - [ ] Quiénes de la comisión serán administradores de las cuentas
 
 ## Institucional
 
 - [ ] Presentación en una frase (para la portada)
-- [ ] Misión, visión, valores
+- [x] Objetivo, qué hacemos y principios (del estatuto y reglamento)
+- [ ] ¿Existen una misión y una visión aprobadas? Si no, la página usa el objetivo del estatuto
 - [ ] Historia breve
 - [ ] Enfoque (TCC y terapias contextuales)
 - [x] Comisión directiva: nombres y biografías de 5 integrantes
@@ -23,14 +24,13 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [ ] Fotos originales de los 5 (las de las capturas tienen muy poca resolución)
 - [ ] ¿"Barron" lleva tilde (Barrón)?
 - [ ] Enlaces opcionales de cada integrante (LinkedIn, ORCID, Instagram profesional)
-- [ ] Estatuto (PDF) y código de ética (PDF)
+- [ ] Estatuto y reglamento interno **aprobados** en PDF (los recibidos son borradores: la fecha de aprobación está en blanco)
 - [ ] Estado de la personería jurídica
 
 ## Membresía
 
-- [ ] Requisitos por categoría
-- [ ] Beneficios
-- [ ] Montos de cuota
+- [x] Requisitos, beneficios, cuota y proceso de admisión (del estatuto y reglamento)
+- [ ] ¿Existe ya el formulario institucional de solicitud? (el reglamento lo menciona)
 
 ## Contacto
 

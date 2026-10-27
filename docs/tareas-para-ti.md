@@ -39,14 +39,25 @@ Para la página "Comisión directiva", de cada persona:
 ### 4. Textos de las páginas institucionales
 Las páginas ya están armadas con los títulos de cada parte; solo falta el texto. Puedes escribirlo tú o pedirlo a la comisión, y pegármelo tal cual.
 
-- [ ] **Quiénes somos:** presentación (3–4 líneas), misión, visión, valores, historia y enfoque.
-- [ ] **Membresía:** categorías de socio, para quién es cada una, cuota anual, requisitos y beneficios.
-- [ ] **Aviso legal:** domicilio de la asociación, nombre del representante legal y número de personería jurídica (cuando salga).
+- [ ] **Quiénes somos:** ya completé objetivo, actividades y principios con el estatuto. Falta: 2–3 líneas de presentación (desde cuándo existe la asociación) y la historia.
+- [x] **Membresía:** completada con el estatuto y el reglamento ✔
+- [ ] **Aviso legal:** confirmar el domicilio (Calle 2, N° 1, barrio Las Palmas), nombre del representante legal (según el estatuto, quien ejerza la Presidencia) y número de personería jurídica (cuando salga).
 - [ ] **Revisión legal:** te dejé un **borrador** de Política de privacidad y de Aviso legal. Conviene que lo lea alguien con formación legal antes de publicar.
 
 ---
 
 ## 🟡 Cuando te avise (al publicar)
+
+### Para la comisión: inconsistencias que encontré en los documentos
+No afectan a la web, pero conviene corregirlas antes de aprobarlos:
+
+- [ ] **Nombre:** el estatuto dice "Terapias Cognitivas, Conductuales y Contextuales"; el logo dice "Cognitivo Conductuales y Contextuales".
+- [ ] **Recargo por mora:** el estatuto (Art. 15) dice 2 % mensual; el reglamento (Art. 34) dice 0,5 % mensual "conforme al estatuto".
+- [ ] **Quiénes pagan cuota:** el estatuto (Art. 7) dice todos menos los honorarios (incluye fundadores); el reglamento (Art. 34) dice solo asociados y adherentes.
+- [ ] **Cargos:** el estatuto define Presidencia, Vicepresidencia, Secretaría General, Tesorería y dos Vocalías, y el reglamento prohíbe otros cargos. En la web el Dr. Rivera figura como "Coordinador". ¿Qué cargo ocupa cada integrante?
+- [ ] **Fecha de aprobación** del estatuto: está en blanco.
+
+---
 
 ### 5. Crear la cuenta de Vercel
 Te avisaré cuando llegue el momento y te guiaré paso a paso. Será con el Gmail de la asociación y conectándola al GitHub `abtcc-bo`.

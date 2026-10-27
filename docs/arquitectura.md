@@ -23,7 +23,7 @@ La idea central es separar la web en dos capas. La **capa pública** (quiénes s
 
 **Preguntas abiertas antes de empezar**
 
-- [ ] Nombre oficial exacto tal como figura en el estatuto (aparece como "Terapia Cognitivo Conductual" y como "Terapias Cognitivas, Conductuales y Contextuales")
+- [x] Nombre oficial según el estatuto: Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales
 - [ ] Dominio: por ahora no hay; se publica en un subdominio gratuito. Decidir antes de la fase 3 (lo necesita el correo a socios)
 - [ ] Categorías de socio y si las cuotas se pagarán fuera de la web por ahora
 - [ ] Si la asociación tendrá dirección física pública (afecta Google Maps / Perfil de Empresa)
