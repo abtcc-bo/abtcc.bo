@@ -13,7 +13,9 @@ La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisi
 ## Stack
 
 - Astro (sitio estático; solo `/[lang]/socios/` se renderiza en el servidor, fase 3).
-- Código en GitHub. Publicación en Vercel, subdominio gratuito por ahora (sin dominio propio).
+- Código en GitHub. Publicación como Worker de Cloudflare (`@astrojs/cloudflare`, `wrangler.jsonc`, entrada `src/worker.ts`), en subdominio gratuito `workers.dev` por ahora (sin dominio propio). Se intentó Vercel y su verificación por SMS bloqueó la cuenta.
+- Casi todo es estático. Dinámicas (`prerender = false`): la portada y el listado de eventos (`SECCIONES_DINAMICAS` en `src/lib/paginas.ts`, un archivo idéntico por idioma en `src/pages/{es,en,pt}/…/index.astro`) y `/api/contacto/`. Si cambia la ruta de esas secciones en `SECCIONES`, mover esos archivos.
+- Para probar como en producción: `npm run build` y luego `npx wrangler dev --config dist/server/wrangler.json`.
 - Supabase solo para el área de socios (fase 3).
 
 ## Idiomas
@@ -54,11 +56,11 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 - Todo sale de la carpeta del evento: tarjeta en portada (3 próximos), listado `/es/eventos/` (próximos con filtros + archivo por año), detalle `/es/eventos/slug/`, `.ics` en `/es/calendario/slug.ics`, calendario suscribible `/eventos.ics`, RSS `/es/eventos.xml` y JSON-LD `Event`.
 - Lógica en `src/lib/eventos.ts` (horarios, inscripción abierta, calendario, datos para Google). Bolivia es UTC−4 fijo.
 - Un evento cancelado NO se borra: `estado: cancelado`. `solo_socios: true` lo saca de las páginas públicas.
-- Los eventos pasados se ocultan de "próximos" al reconstruir el sitio (reconstrucción diaria, pendiente al publicar) y, por si falla, con un script en el navegador.
+- Los eventos pasados salen solos de "próximos": la portada y el listado se generan en cada visita (y un script del navegador los oculta igual si una página quedó en caché).
 
 ## Formulario de contacto
 
-- Formulario: `src/components/FormularioContacto.astro` → envía a `/api/contacto/` (`src/pages/api/contacto.ts`, única ruta en servidor por ahora, `prerender = false`, adaptador Vercel). Lógica en `src/lib/contacto.ts`.
+- Formulario: `src/components/FormularioContacto.astro` → envía a `/api/contacto/` (`src/pages/api/contacto.ts`, `prerender = false`). Lógica en `src/lib/contacto.ts`.
 - Antispam: campo trampa `sitio_web`, tiempo mínimo de 3 s, límite de 5 envíos/10 min por IP y Turnstile si hay clave. Los bots reciben "ok" sin que se envíe nada.
 - Claves en variables de entorno (`astro.config.mjs` → `env.schema`, ejemplo en `.env.example`). Sin claves funciona en **modo prueba**: el mensaje se muestra en la consola del servidor y no se envía.
 - Sin dominio propio, Resend solo envía desde `onboarding@resend.dev` al correo dueño de la cuenta: no hay respuesta automática a quien escribe hasta tener dominio.
@@ -67,13 +69,14 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 
 - La lista de páginas del sitio sale de `src/lib/paginas.ts` (`paginasDelSitio`); la usan `[...ruta].astro` y `/sitemap.xml`. Solo las páginas `indexable` entran al sitemap.
 - `/robots.txt` (`src/pages/robots.txt.ts`) bloquea el área de socios y `/api/`.
-- CSP: `security.csp` en `astro.config.mjs` (meta tag con hashes que Astro calcula). Todo script `is:inline` necesita su hash en `scriptDirective.hashes`; un script externo nuevo, su dominio en `resources`. No se puede probar en `npm run dev`: construir y servir `.vercel/output/static`.
-- Resto de encabezados de seguridad en `vercel.json` (verificar en securityheaders.com al publicar).
+- CSP: `security.csp` en `astro.config.mjs` (meta tag con hashes que Astro calcula). Todo script `is:inline` necesita su hash en `scriptDirective.hashes`; un script externo nuevo, su dominio en `resources`. No se puede probar en `npm run dev`: construir y usar `npx wrangler dev --config dist/server/wrangler.json`.
+- En páginas dinámicas Astro envía la CSP como encabezado; en estáticas, como `<meta>`.
+- Resto de encabezados de seguridad: `public/_headers` (archivos estáticos) y `src/lib/seguridad.ts` (respuestas del Worker). Mantenerlos iguales. Verificar en securityheaders.com al publicar.
 
 ## Tarea diaria de mantenimiento
 
-- `/api/mantenimiento/` (`src/pages/api/mantenimiento.ts`), programada en `vercel.json` → `crons` a las 04:00 UTC (medianoche en Bolivia). Vercel la llama con `Authorization: Bearer CRON_SECRET`.
-- Hoy: llama a `VERCEL_DEPLOY_HOOK_URL` para reconstruir el sitio (eventos pasados). Fase 3: agregar ahí la consulta a Supabase para que el plan gratuito no se pause.
+- `scheduled` en `src/worker.ts`, programado en `wrangler.jsonc` → `triggers.crons` a las 04:00 UTC (medianoche en Bolivia). Corre aunque nadie entre a la web.
+- Hoy solo deja un registro (los eventos pasados ya no requieren reconstruir: la portada y el listado son dinámicos). Fase 3: agregar ahí la consulta a Supabase para que el plan gratuito no se pause.
 - No usar tareas programadas de GitHub Actions para esto: se desactivan tras 60 días sin cambios en el repositorio.
 
 ## Prohibiciones

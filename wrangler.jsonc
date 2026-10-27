@@ -1,0 +1,11 @@
+// Configuración del Worker de Cloudflare donde se publica la web.
+// La dirección gratuita es https://abtcc.<subdominio-de-la-cuenta>.workers.dev
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "abtcc",
+	"main": "./src/worker.ts",
+	"compatibility_flags": ["nodejs_compat"],
+	// Tarea diaria a las 04:00 UTC = medianoche en Bolivia (src/worker.ts → scheduled).
+	"triggers": { "crons": ["0 4 * * *"] },
+	"observability": { "enabled": true }
+}

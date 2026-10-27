@@ -1,0 +1,69 @@
+---
+// Dibuja una página del sitio (sección fija o detalle de evento) a partir de su entrada en src/lib/paginas.ts.
+// La usan [...ruta].astro (páginas estáticas) y las páginas dinámicas de src/pages/{es,en,pt}/.
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { VISTAS } from './index';
+import DetalleEvento from './DetalleEvento.astro';
+import PaginaInstitucional from './PaginaInstitucional.astro';
+import Pendiente from './Pendiente.astro';
+import type { PaginaDelSitio } from '../lib/paginas';
+import { PADRES, cadenaDeSecciones, ruta, t, type Seccion } from '../i18n';
+
+type Props = PaginaDelSitio;
+
+const props = Astro.props;
+const { idioma } = props;
+const textos = t(idioma);
+
+const migasHasta = (seccion: Seccion) => cadenaDeSecciones(seccion).map((s) => ({ nombre: textos.nav[s], href: ruta(s, idioma) }));
+
+let imagenEvento: string | undefined;
+if (props.tipo === 'evento' && props.evento.datos.imagen) {
+	imagenEvento = (await getImage({ src: props.evento.datos.imagen, width: 1200 })).src;
+}
+
+const Vista = props.tipo === 'seccion' ? VISTAS[props.seccion] : undefined;
+const pagina = props.tipo === 'seccion' ? props.pagina : undefined;
+const subsecciones =
+	props.tipo === 'seccion'
+		? (Object.entries(PADRES) as [Seccion, Seccion][]).filter(([, padre]) => padre === props.seccion).map(([hija]) => ({ nombre: textos.nav[hija], href: ruta(hija, idioma) }))
+		: [];
+
+const nombre = props.tipo === 'evento' ? props.evento.texto.data.titulo : (pagina?.data.titulo ?? textos.nav[props.seccion]);
+const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${textos.sitio.sigla} · ${textos.sitio.nombre}` : `${nombre} · ${textos.sitio.sigla}`;
+---
+
+{
+	props.tipo === 'seccion' ? (
+		<Base
+			idioma={idioma}
+			titulo={titulo}
+			descripcion={pagina?.data.descripcion}
+			alternos={props.alternos}
+			migas={migasHasta(props.seccion).slice(0, -1)}
+			nombreEnMigas={props.seccion === 'inicio' ? undefined : nombre}
+			noIndexar={!props.indexable}
+		>
+			{Vista ? (
+				<Vista idioma={idioma} pagina={pagina} />
+			) : pagina ? (
+				<PaginaInstitucional pagina={pagina} subsecciones={subsecciones} />
+			) : (
+				<Pendiente idioma={idioma} seccion={props.seccion} alternos={props.alternos} />
+			)}
+		</Base>
+	) : (
+		<Base
+			idioma={idioma}
+			titulo={titulo}
+			descripcion={props.evento.texto.data.resumen}
+			alternos={props.alternos}
+			migas={migasHasta('eventos')}
+			nombreEnMigas={nombre}
+			imagen={imagenEvento}
+		>
+			<DetalleEvento evento={props.evento} idioma={idioma} />
+		</Base>
+	)
+}

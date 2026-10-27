@@ -1,0 +1,14 @@
+# Encabezados de seguridad para los archivos estáticos (Cloudflare lee este archivo al publicar).
+# Deben coincidir con src/lib/seguridad.ts, que los aplica a las páginas generadas en el servidor.
+/*
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  X-Frame-Options: DENY
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/eventos.ics
+  Cache-Control: public, max-age=3600

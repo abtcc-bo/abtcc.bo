@@ -1,4 +1,4 @@
-// Recibe el formulario de contacto. Corre en el servidor (Vercel), no en el navegador.
+// Recibe el formulario de contacto. Corre en el servidor (Worker de Cloudflare), no en el navegador.
 // Responde JSON si la página lo pide con JavaScript; si no, una página HTML simple (funciona sin JavaScript).
 import type { APIRoute } from 'astro';
 import { RESEND_API_KEY, TURNSTILE_SECRET_KEY, CONTACTO_DESTINO } from 'astro:env/server';

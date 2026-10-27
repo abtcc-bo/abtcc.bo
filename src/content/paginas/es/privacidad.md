@@ -30,7 +30,7 @@ Tratamos tus datos porque tú nos los das con ese fin y das tu consentimiento al
 
 ## Dónde se guardan
 
-- El sitio web está alojado en Vercel.
+- El sitio web está alojado en Cloudflare.
 - Los correos que nos envías se reciben en una cuenta de Google (Gmail) de la asociación.
 - Los mensajes del formulario de contacto se reenvían a ese correo mediante Resend, un servicio de envío de correos.
 - Para filtrar mensajes automáticos (spam) usamos Cloudflare Turnstile, que verifica que quien escribe es una persona sin usar cookies de seguimiento.

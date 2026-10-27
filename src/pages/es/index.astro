@@ -1,0 +1,12 @@
+---
+// Página dinámica: se genera en cada visita para mostrar siempre los próximos eventos al día.
+// Todas las páginas dinámicas tienen este mismo contenido; ver SECCIONES_DINAMICAS en src/lib/paginas.ts.
+import Pagina from '../../vistas/Pagina.astro';
+import { buscarPagina } from '../../lib/paginas';
+
+export const prerender = false;
+
+const datos = await buscarPagina(Astro.url.pathname);
+---
+
+<Pagina {...datos} />

@@ -1,14 +1,16 @@
 // @ts-check
 import { defineConfig, envField } from 'astro/config';
-import vercel from '@astrojs/vercel';
+import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
-	// [PENDIENTE: dirección definitiva] Se usa para URLs absolutas (canonical, hreflang, sitemap).
-	site: 'https://abtcc.vercel.app',
+	// [PENDIENTE: dirección definitiva al publicar] Se usa para URLs absolutas (canonical, hreflang, sitemap).
+	site: 'https://abtcc.workers.dev',
 	trailingSlash: 'always',
-	// El sitio es estático; solo las rutas con `export const prerender = false` (p. ej. /api/contacto) corren en el servidor.
-	adapter: vercel(),
+	// Se publica como Worker de Cloudflare (configuración en wrangler.jsonc, código propio en src/worker.ts).
+	// Casi todo es estático; solo las rutas con `export const prerender = false` corren en el servidor:
+	// la portada y el listado de eventos (siempre al día) y /api/contacto/.
+	adapter: cloudflare(),
 	i18n: {
 		defaultLocale: 'es',
 		locales: ['es', 'en', 'pt'],
@@ -21,6 +23,8 @@ export default defineConfig({
 	redirects: {
 		'/': '/es/',
 	},
+	// Sin resaltado de código: Shiki usa estilos en línea que la política de seguridad bloquearía.
+	markdown: { syntaxHighlight: false },
 	// Política de seguridad de contenido (CSP): el navegador solo ejecuta los scripts y estilos de este sitio.
 	// Astro calcula las huellas (hashes) de sus propios scripts; aquí se añaden las excepciones necesarias.
 	// No funciona en `npm run dev`; se comprueba sobre la versión construida.
@@ -43,7 +47,7 @@ export default defineConfig({
 			],
 		},
 	},
-	// Claves y ajustes que se cargan en Vercel (o en un archivo .env local que nunca se sube a GitHub).
+	// Claves y ajustes que se cargan en Cloudflare (o en un archivo .env local que nunca se sube a GitHub).
 	// Sin ellas el formulario funciona en modo prueba: no envía correos y no pide verificación antispam.
 	env: {
 		schema: {
@@ -51,9 +55,6 @@ export default defineConfig({
 			TURNSTILE_SECRET_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
 			TURNSTILE_SITE_KEY: envField.string({ context: 'client', access: 'public', optional: true }),
 			CONTACTO_DESTINO: envField.string({ context: 'server', access: 'secret', optional: true }),
-			// Tarea diaria (/api/mantenimiento/): Vercel la llama con este secreto; el enlace reconstruye el sitio.
-			CRON_SECRET: envField.string({ context: 'server', access: 'secret', optional: true }),
-			VERCEL_DEPLOY_HOOK_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
 		},
 	},
 });

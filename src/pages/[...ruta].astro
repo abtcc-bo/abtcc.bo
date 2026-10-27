@@ -1,77 +1,21 @@
 ---
-// Genera todas las páginas HTML del sitio en los tres idiomas, a partir de la lista de src/lib/paginas.ts:
+// Genera las páginas estáticas del sitio en los tres idiomas, a partir de la lista de src/lib/paginas.ts:
 //  - Secciones fijas (SECCIONES en src/i18n/rutas.ts). Contenido, en orden de prioridad:
 //      1. una vista propia registrada en src/vistas/index.ts (recibe también la página de texto, si existe);
 //      2. una página de texto en src/content/paginas/{idioma}/ con `clave` igual a la sección;
 //      3. el aviso "en construcción", que no se indexa en Google.
 //  - Detalle de cada evento público, en los idiomas en que tiene texto.
-import { getImage } from 'astro:assets';
-import Base from '../layouts/Base.astro';
-import { VISTAS } from '../vistas';
-import DetalleEvento from '../vistas/DetalleEvento.astro';
-import PaginaInstitucional from '../vistas/PaginaInstitucional.astro';
-import Pendiente from '../vistas/Pendiente.astro';
+// Las secciones dinámicas (portada y listado de eventos) no se generan aquí: ver src/pages/{es,en,pt}/.
+import Pagina from '../vistas/Pagina.astro';
 import { paginasDelSitio, type PaginaDelSitio } from '../lib/paginas';
-import { PADRES, cadenaDeSecciones, ruta, t, type Seccion } from '../i18n';
 
 export async function getStaticPaths() {
-	return (await paginasDelSitio()).map(({ url, datos }) => ({ params: { ruta: url.slice(1, -1) }, props: datos }));
+	return (await paginasDelSitio())
+		.filter(({ datos }) => !datos.dinamica)
+		.map(({ url, datos }) => ({ params: { ruta: url.slice(1, -1) }, props: datos }));
 }
 
 type Props = PaginaDelSitio;
-
-const props = Astro.props;
-const { idioma } = props;
-const textos = t(idioma);
-
-const migasHasta = (seccion: Seccion) => cadenaDeSecciones(seccion).map((s) => ({ nombre: textos.nav[s], href: ruta(s, idioma) }));
-
-let imagenEvento: string | undefined;
-if (props.tipo === 'evento' && props.evento.datos.imagen) {
-	imagenEvento = (await getImage({ src: props.evento.datos.imagen, width: 1200 })).src;
-}
-
-const Vista = props.tipo === 'seccion' ? VISTAS[props.seccion] : undefined;
-const pagina = props.tipo === 'seccion' ? props.pagina : undefined;
-const subsecciones =
-	props.tipo === 'seccion'
-		? (Object.entries(PADRES) as [Seccion, Seccion][]).filter(([, padre]) => padre === props.seccion).map(([hija]) => ({ nombre: textos.nav[hija], href: ruta(hija, idioma) }))
-		: [];
-
-const nombre = props.tipo === 'evento' ? props.evento.texto.data.titulo : (pagina?.data.titulo ?? textos.nav[props.seccion]);
-const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${textos.sitio.sigla} · ${textos.sitio.nombre}` : `${nombre} · ${textos.sitio.sigla}`;
 ---
 
-{
-	props.tipo === 'seccion' ? (
-		<Base
-			idioma={idioma}
-			titulo={titulo}
-			descripcion={pagina?.data.descripcion}
-			alternos={props.alternos}
-			migas={migasHasta(props.seccion).slice(0, -1)}
-			nombreEnMigas={props.seccion === 'inicio' ? undefined : nombre}
-			noIndexar={!props.indexable}
-		>
-			{Vista ? (
-				<Vista idioma={idioma} pagina={pagina} />
-			) : pagina ? (
-				<PaginaInstitucional pagina={pagina} subsecciones={subsecciones} />
-			) : (
-				<Pendiente idioma={idioma} seccion={props.seccion} alternos={props.alternos} />
-			)}
-		</Base>
-	) : (
-		<Base
-			idioma={idioma}
-			titulo={titulo}
-			descripcion={props.evento.texto.data.resumen}
-			alternos={props.alternos}
-			migas={migasHasta('eventos')}
-			nombreEnMigas={nombre}
-			imagen={imagenEvento}
-		>
-			<DetalleEvento evento={props.evento} idioma={idioma} />
-		</Base>
-	)
-}
+<Pagina {...Astro.props} />

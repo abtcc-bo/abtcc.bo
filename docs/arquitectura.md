@@ -1,6 +1,6 @@
 # Arquitectura web ABTCC
 
-Oct 27, 2026 · @Leo · *Revisado el 27/10/2026: alojamiento en Vercel sin dominio propio por ahora, eventos en un solo archivo, ajustes de seguridad (ver sección 14).*
+Oct 27, 2026 · @Leo · *Revisado el 27/10/2026: alojamiento en Cloudflare (Worker) sin dominio propio por ahora, eventos en un solo archivo, ajustes de seguridad (ver sección 14).*
 
 ## 1. Resumen de decisiones
 
@@ -16,8 +16,8 @@ La idea central es separar la web en dos capas. La **capa pública** (quiénes s
 | Idiomas | es (principal), en, pt en subcarpetas `/es/`, `/en/`, `/pt/` | Es la estructura que Google entiende mejor para sitios multilenguaje |
 | Área de socios | Supabase (login, base de datos, archivos privados) | Autenticación segura sin programar un servidor propio |
 | Código | Repositorio en GitHub | Historial de cambios, respaldo y despliegue automático |
-| Alojamiento | Vercel (alternativas: Netlify, Cloudflare) | Red global (CDN), HTTPS gratis, publica sola cada vez que guardas cambios |
-| Dirección web | Por ahora subdominio gratuito (`abtcc.vercel.app` o similar); dominio propio más adelante | Permite publicar ya; al comprar el dominio se redirige con 301 sin perder posicionamiento |
+| Alojamiento | Cloudflare Workers (alternativas: Netlify, Vercel) | Red global (CDN), HTTPS gratis, publica sola cada vez que guardas cambios |
+| Dirección web | Por ahora subdominio gratuito (`abtcc.<cuenta>.workers.dev`); dominio propio más adelante | Permite publicar ya; al comprar el dominio se redirige con 301 sin perder posicionamiento |
 
 **Cómo usar este documento con Claude Code.** Expórtalo como Markdown y guárdalo en el proyecto como `docs/arquitectura.md`. Luego pide a Claude Code que cree un archivo `CLAUDE.md` en la raíz que resuma las convenciones (idiomas, campos de eventos, fuentes, colores). Así, cada vez que abras una sesión nueva, Claude Code lee las reglas del proyecto y no improvisa. Trabaja por fases (sección 13), no todo de una vez.
 
@@ -65,7 +65,7 @@ Las secciones públicas se rastrean en Google; la de socios queda fuera del busc
 
 ## 3. Stack técnico
 
-El stack son cinco piezas que se conectan solas: GitHub guarda el código y el contenido, Astro construye el sitio, Vercel lo publica en todo el mundo, Supabase maneja socios y datos privados, y un proveedor de correo envía los mensajes. Tú solo trabajas en la primera pieza; el resto se activa automáticamente cada vez que guardas un cambio.
+El stack son cinco piezas que se conectan solas: GitHub guarda el código y el contenido, Astro construye el sitio, Cloudflare lo publica en todo el mundo, Supabase maneja socios y datos privados, y un proveedor de correo envía los mensajes. Tú solo trabajas en la primera pieza; el resto se activa automáticamente cada vez que guardas un cambio.
 
 El flujo es así: con Claude Code creas o editas un archivo (por ejemplo, un evento nuevo); haces *commit* y *push* a GitHub; el servicio de alojamiento detecta el cambio, vuelve a construir el sitio en uno o dos minutos y lo publica. No hay que subir archivos por FTP ni entrar a ningún panel.
 
@@ -78,7 +78,7 @@ Cada cambio guardado en GitHub se publica solo; Supabase solo interviene cuando 
 | Repositorio | GitHub (privado, cuenta de la asociación) | Guarda código y contenido con historial completo; si algo se rompe, se vuelve atrás | GitLab |
 | Generador del sitio | Astro | Convierte Markdown + plantillas en HTML; manda JavaScript solo donde hace falta ("islas") | Eleventy (más simple, sin área de socios integrada) |
 | Estilos | CSS propio con variables, o Tailwind | Colores y tipografía definidos una sola vez | — |
-| Alojamiento + CDN | Vercel | Sirve el sitio desde servidores cercanos a cada visitante; HTTPS automático; ejecuta las rutas protegidas | Netlify, Cloudflare |
+| Alojamiento + CDN | Cloudflare Workers | Sirve el sitio desde servidores cercanos a cada visitante; HTTPS automático; ejecuta las rutas dinámicas y protegidas; tareas programadas | Netlify, Vercel |
 | Autenticación y datos | Supabase | Login de socios, tabla de socios y pagos de cuota, archivos privados | Firebase |
 | Correo transaccional | Resend o el SMTP del correo institucional | Envía enlaces de acceso, confirmaciones de formularios | Brevo |
 | Correo institucional | Google Workspace o Zoho Mail | `contacto@`, `secretaria@`, `socios@` con el dominio propio | — |
@@ -89,7 +89,7 @@ Cada cambio guardado en GitHub se publica solo; Supabase solo interviene cuando 
 
 **Por qué el área de socios necesita algo más.** Una página estática la puede ver cualquiera que tenga el enlace. Para que el material exclusivo sea realmente privado, el servidor debe comprobar la sesión *antes* de entregar la página o el archivo. Astro permite marcar solo esas rutas (`/socios/...`) como "renderizadas en el servidor" mientras el resto sigue siendo estático.
 
-**Regla de cuentas:** todas las cuentas (GitHub, Vercel, Supabase, correo y, cuando exista, dominio) se crean con un correo institucional, no personal, con verificación en dos pasos y al menos dos administradores de la comisión. Si una persona deja la asociación, la web no se pierde con ella.
+**Regla de cuentas:** todas las cuentas (GitHub, Cloudflare, Resend, Supabase, correo y, cuando exista, dominio) se crean con un correo institucional, no personal, con verificación en dos pasos y al menos dos administradores de la comisión. Si una persona deja la asociación, la web no se pierde con ella.
 
 ## 4. Estructura del proyecto y modelo de contenido
 
@@ -196,7 +196,7 @@ Cada evento es un archivo con campos fijos, y a partir de ese único archivo el 
 - **Calendario:** botón "Añadir a mi calendario" que descarga un archivo `.ics` (funciona en Google Calendar, Outlook y Apple) y un enlace directo a Google Calendar. Además, un calendario suscribible con todos los eventos (`/eventos.ics`) que los socios pueden agregar una sola vez y se actualiza solo.
 - **Fuente RSS de eventos** para quien quiera seguirlos y para automatizar publicaciones.
 
-**El problema de los sitios estáticos y su solución.** Como las páginas se construyen de antemano, un evento que ya pasó seguiría apareciendo como "próximo" hasta la siguiente publicación. Se resuelve de dos formas complementarias: (1) una reconstrucción automática diaria del sitio a medianoche hora de Bolivia, programada con un *deploy hook* de Vercel disparado por un cron (las tareas programadas de GitHub Actions se desactivan solas tras 60 días sin cambios en el repositorio, así que no conviene depender solo de ellas); y (2) un pequeño script en la portada que oculta en el navegador cualquier evento cuya fecha ya pasó, por si la reconstrucción falla un día.
+**El problema de los sitios estáticos y su solución.** Como las páginas se construyen de antemano, un evento que ya pasó seguiría apareciendo como "próximo" hasta la siguiente publicación. Se resuelve de dos formas complementarias: (1) una reconstrucción automática diaria del sitio a medianoche hora de Bolivia, resuelta generando la portada y el listado de eventos en cada visita (páginas dinámicas en el Worker), sin necesidad de reconstruir; y (2) un pequeño script en la portada que oculta en el navegador cualquier evento cuya fecha ya pasó, por si la reconstrucción falla un día.
 
 **Para que Google muestre los eventos.** Cada página de detalle incluye datos estructurados `Event` de schema.org (formato JSON-LD) con nombre, fechas con zona horaria, `eventStatus` (programado, cancelado, pospuesto), `eventAttendanceMode` (online, presencial, mixto), lugar o URL virtual, precio y organizador. Con eso, el evento puede aparecer en la experiencia de búsqueda de eventos de Google. Si un evento se cancela, **no se borra la página**: se cambia el estado a cancelado, para que Google actualice la información en vez de mostrar un enlace roto.
 
@@ -237,7 +237,7 @@ El área de socios es la única parte del sitio que maneja datos personales, as�
 - **Datos mínimos:** pedir solo lo que se usa. No guardar números de carnet ni datos bancarios en la web.
 - **Sesiones:** cierre de sesión visible, expiración automática y cookies seguras.
 - **Registro abierto desactivado:** en Supabase se desactiva "Allow new users to sign up" y el enlace mágico se pide con `shouldCreateUser: false`. Si no, cualquiera podría crearse una cuenta solo pidiendo un enlace.
-- **Pausa del plan gratuito:** Supabase pausa los proyectos gratuitos tras una semana sin actividad. Se evita con la tarea diaria de mantenimiento (`/api/mantenimiento/`, cron de Vercel), que hará una consulta a Supabase; alternativa: plan de pago.
+- **Pausa del plan gratuito:** Supabase pausa los proyectos gratuitos tras una semana sin actividad. Se evita con la tarea diaria de mantenimiento (`scheduled` en `src/worker.ts`, cron de Cloudflare), que hará una consulta a Supabase; alternativa: plan de pago.
 
 **Tablas básicas en Supabase:** `socios` (perfil, categoría, estado, fechas), `cuotas` (año, monto, fecha de pago, registrado por), `materiales` (título, archivo, categoría, visible para), `inscripciones` (socio, evento, asistencia, certificado). Claude Code puede crearlas con migraciones versionadas para que la estructura quede documentada en el repositorio.
 
@@ -279,7 +279,7 @@ Google usa estas métricas como factor de posicionamiento, así que rendimiento 
 
 **Entrega**
 
-- CDN de Vercel: el sitio se sirve desde el servidor más cercano al visitante (São Paulo, Santiago, Miami…).
+- CDN de Cloudflare: el sitio se sirve desde el servidor más cercano al visitante (São Paulo, Santiago, Miami…).
 - Archivos con nombres únicos por versión y caché de larga duración; HTML con caché corta para que los cambios se vean enseguida.
 - Compresión automática (Brotli), activada por defecto en esos servicios.
 
@@ -369,7 +369,7 @@ La mayoría de los problemas de seguridad de webs pequeñas no vienen de ataques
 
 - Registrar el dominio a nombre de la asociación, con renovación automática y un correo institucional de contacto. Un dominio vencido es la forma más común de perder una web.
 - Si se usa `.org.bo`, verificar con NIC Bolivia los requisitos documentales (puede pedir la personería jurídica, que está en trámite). Mientras tanto, puede registrarse un `.org` y redirigir después.
-- Gestionar el DNS en Cloudflare o en Vercel cuando exista el dominio.
+- Gestionar el DNS en Cloudflare cuando exista el dominio.
 - **Mientras no haya dominio:** se usa un correo Gmail de la asociación (no personal) para las cuentas y para recibir formularios. Para enviar correos a terceros (enlaces de acceso a socios) hace falta dominio verificado, por eso el dominio debe estar antes de la fase 3.
 
 **Correo institucional que no caiga en spam**
@@ -379,7 +379,7 @@ La mayoría de los problemas de seguridad de webs pequeñas no vienen de ataques
 
 **Formularios (contacto, membresía, boletín)**
 
-- Procesados en el servidor (una función de Vercel o de Supabase; en la fase 1 puede usarse un servicio de formularios que reenvía al correo de la asociación), nunca enviando el correo directamente desde el navegador.
+- Procesados en el servidor (el Worker de Cloudflare o Supabase; en la fase 1 puede usarse un servicio de formularios que reenvía al correo de la asociación), nunca enviando el correo directamente desde el navegador.
 - Antispam: Cloudflare Turnstile (verificación invisible) más un campo oculto "trampa" que solo llenan los bots.
 - Límite de envíos por minuto desde una misma dirección.
 - Validación de datos tanto en el navegador como en el servidor.
@@ -390,12 +390,12 @@ La mayoría de los problemas de seguridad de webs pequeñas no vienen de ataques
 - HTTPS obligatorio en todo el sitio, con HSTS.
 - `Content-Security-Policy` que limite de dónde pueden cargarse scripts.
 - `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`.
-- Se configuran una sola vez en `vercel.json`; Claude Code puede generarlo y luego se verifica en securityheaders.com.
+- Se configuran una sola vez en `public/_headers` y `src/lib/seguridad.ts`; Claude Code puede generarlo y luego se verifica en securityheaders.com.
 
 **Claves y cuentas**
 
 - Archivo `.env` incluido en `.gitignore` desde el primer día; las claves de producción se cargan en el panel del alojamiento.
-- Verificación en dos pasos en GitHub, Vercel, Supabase, correo y dominio.
+- Verificación en dos pasos en GitHub, Cloudflare, Resend, Supabase, correo y dominio.
 - Un documento interno (fuera de la web) con quién administra cada cuenta, guardado en un gestor de contraseñas compartido de la asociación.
 - Actualizaciones de dependencias automáticas con Dependabot de GitHub.
 
@@ -416,8 +416,7 @@ Una vez publicada, la web se mantiene con una rutina corta: cargar eventos y art
 
 | Opción | Ventaja | Limitación |
 | --- | --- | --- |
-| Vercel Web Analytics | Sin cookies, integrada en Vercel | El plan gratuito tiene cupo limitado de eventos |
-| Cloudflare Web Analytics | Gratis, sin cookies, funciona en cualquier alojamiento | Métricas básicas |
+| Cloudflare Web Analytics | Gratis, sin cookies, integrada en Cloudflare | Métricas básicas |
 | Plausible o Umami | Sin cookies, más detalle (orígenes, campañas, clics en "Inscribirme") | Plausible es de pago; Umami requiere alojarlo |
 | Google Analytics 4 | Muy completo | Usa cookies, exige banner de consentimiento y añade peso |
 
@@ -486,10 +485,10 @@ Conviene construir en cuatro fases y publicar al terminar la primera: una web se
 
 **27/10/2026 — Revisión inicial**
 
-- Alojamiento: Vercel en lugar de Cloudflare Pages. Sin dominio propio por ahora: subdominio gratuito; el dominio pasa a ser requisito de la fase 3.
+- Alojamiento: Cloudflare Workers. Se intentó Vercel, pero su verificación por SMS bloqueó la creación de la cuenta; Cloudflare además permite el uso de una asociación en su plan gratuito y ya se usaba para Turnstile. Sin dominio propio por ahora: subdominio gratuito; el dominio pasa a ser requisito de la fase 3.
+- Portada y listado de eventos dinámicos: los eventos pasados salen de "próximos" sin reconstruir el sitio.
 - Eventos: una carpeta por evento con `evento.yaml` (datos comunes) y un `.md` por idioma (antes: un archivo completo por idioma, con riesgo de fechas distintas).
 - Personas: cargo y biografía por idioma.
 - Socios: el solicitante no crea cuenta; se desactiva el registro abierto de Supabase; se contempla la pausa del plan gratuito.
-- Reconstrucción diaria: cron con *deploy hook* en lugar de depender solo de GitHub Actions.
+- Tarea diaria (cron del Worker) reservada para mantener activo Supabase en la fase 3.
 
-**Pendiente de verificar:** el plan gratuito (Hobby) de Vercel está pensado para uso personal y no comercial. Como la asociación cobra cuotas y eventos, confirmar si corresponde el plan gratuito o si conviene Netlify/Cloudflare (que sí permiten este uso gratis). La parte pública es estática, así que cambiar de alojamiento es sencillo.

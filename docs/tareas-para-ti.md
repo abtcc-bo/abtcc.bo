@@ -8,7 +8,7 @@ Cuando termines algo, márcalo con [x] o simplemente avísame en el chat.
 ## 🔴 Pronto (antes de publicar la primera versión)
 
 ### 1. Crear un Gmail de la asociación
-Sirve para abrir las cuentas de la web (Vercel, más adelante Supabase) y para recibir los mensajes del formulario de contacto. **No uses tu correo personal**: si algún día dejas la comisión, la web no debe depender de ti.
+Sirve para abrir las cuentas de la web (Cloudflare, Resend y más adelante Supabase) y para recibir los mensajes del formulario de contacto. **No uses tu correo personal**: si algún día dejas la comisión, la web no debe depender de ti.
 
 - [x] Crear el Gmail ✔
 - [ ] Activa la verificación en dos pasos (Cuenta de Google → Seguridad → Verificación en 2 pasos).
@@ -59,14 +59,13 @@ No afectan a la web, pero conviene corregirlas antes de aprobarlos:
 
 ---
 
-### 5. Crear tres cuentas gratuitas (te guiaré paso a paso)
+### 5. Crear dos cuentas gratuitas (te guiaré paso a paso)
 Todas con el Gmail de la asociación (abtcc.bo@gmail.com). Te avisaré cuando sea el momento.
 
-- [ ] **Vercel**: donde se publica la web. Se conecta con el GitHub `abtcc-bo`.
 - [ ] **Resend**: envía a abtcc.bo@gmail.com los mensajes del formulario de contacto. Mientras no haya dominio propio, solo puede enviar al correo con el que se crea la cuenta; por eso debe ser el de la asociación.
-- [ ] **Cloudflare** (servicio Turnstile): la verificación antispam del formulario.
+- [ ] **Cloudflare**: donde se publica la web (se conecta con el GitHub `abtcc-bo`) y, con su servicio Turnstile, la verificación antispam del formulario.
 
-Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en el chat**: se cargan directamente en Vercel y te mostraré dónde.
+Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en el chat**: se cargan directamente en Cloudflare y te mostraré dónde.
 
 ---
 
@@ -82,10 +81,10 @@ Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en
 
 ## 🔁 Para que nada se desactive en los meses sin actividad
 
-La web se mantiene sola: cada medianoche (hora de Bolivia) Vercel ejecuta una tarea automática que la reconstruye y, cuando exista el área de socios, mantiene activo Supabase. No hace falta entrar a la web. Lo que sí depende de personas, una vez al año (por ejemplo, en enero, al iniciar la gestión):
+La web se mantiene sola: la portada y los eventos se actualizan solos en cada visita, y cada medianoche (hora de Bolivia) Cloudflare ejecuta una tarea automática que, cuando exista el área de socios, mantendrá activo Supabase. No hace falta entrar a la web. Lo que sí depende de personas, una vez al año (por ejemplo, en enero, al iniciar la gestión):
 
-- [ ] **Iniciar sesión en abtcc.bo@gmail.com** y revisar que la verificación en dos pasos siga activa. Google borra las cuentas que pasan 2 años sin uso, y con ella se perderían Vercel, Resend y Cloudflare.
-- [ ] **Entrar una vez a Vercel, Resend y Cloudflare** con ese Gmail, para confirmar que todo sigue en orden.
+- [ ] **Iniciar sesión en abtcc.bo@gmail.com** y revisar que la verificación en dos pasos siga activa. Google borra las cuentas que pasan 2 años sin uso, y con ella se perderían Cloudflare y Resend.
+- [ ] **Entrar una vez a Cloudflare y Resend** con ese Gmail, para confirmar que todo sigue en orden.
 - [ ] **Renovar el dominio** (cuando exista): dejar activada la renovación automática y revisar que la tarjeta o el pago siga vigente.
 - [ ] **Revisar que la comisión nueva tenga acceso** a las cuentas, si cambió la directiva.
 
