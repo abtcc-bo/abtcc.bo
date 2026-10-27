@@ -1,5 +1,6 @@
 ---
-// Resumen de un evento para portada y listados.
+// Resumen de un evento para portada y listados. Si el evento tiene afiche, se muestra arriba.
+import { Image } from 'astro:assets';
 import { ruta, t, type Idioma } from '../i18n';
 import { fechaDelEvento, inscripcionAbierta } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
@@ -24,6 +25,7 @@ const abierta = inscripcionAbierta(evento);
 	data-modalidad={datos.modalidad}
 	data-fin={(datos.fin ?? datos.inicio).toISOString()}
 >
+	{datos.imagen && <Image src={datos.imagen} alt="" widths={[400, 800]} sizes="(max-width: 48rem) 100vw, 24rem" class="afiche" />}
 	<p class="etiquetas">
 		<span>{textos.tipos[datos.tipo]}</span>
 		{datos.modalidad && <span>{textos.modalidades[datos.modalidad]}</span>}
@@ -45,6 +47,15 @@ const abierta = inscripcionAbierta(evento);
 	.tarjeta-evento {
 		border: 1px solid var(--color-borde);
 		padding: var(--espacio);
+	}
+	/* Decorativo (alt vacío): el título del evento ya está en la tarjeta. */
+	.afiche {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 1;
+		object-fit: cover;
+		margin-bottom: var(--espacio);
 	}
 	.etiquetas {
 		display: flex;
