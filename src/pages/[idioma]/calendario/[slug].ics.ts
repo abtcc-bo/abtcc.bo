@@ -7,7 +7,7 @@ import { IDIOMAS, type Idioma } from '../../../i18n';
 export async function getStaticPaths() {
 	const rutas = await Promise.all(
 		IDIOMAS.map(async (idioma) =>
-			(await obtenerEventosPublicos(idioma)).map((evento) => ({ params: { idioma, slug: evento.slug }, props: { evento } })),
+			(await obtenerEventosPublicos(idioma)).filter((e) => !e.datos.por_confirmar).map((evento) => ({ params: { idioma, slug: evento.slug }, props: { evento } })),
 		),
 	);
 	return rutas.flat();

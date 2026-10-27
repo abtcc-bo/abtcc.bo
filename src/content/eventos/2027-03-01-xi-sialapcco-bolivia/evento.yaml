@@ -1,0 +1,11 @@
+# XI SIALAPCCO en Bolivia, junto con ALAPCCO. Anuncio previo: solo se conoce el mes.
+# [PENDIENTE: fechas exactas, horario, sede, costos, enlace de inscripción, horas y aval]
+# Cuando se confirmen: cambiar inicio/fin, quitar `por_confirmar` y agregar costos e inscripción.
+tipo: congreso
+inicio: "2027-03-01T09:00-04:00"
+fin: "2027-03-31T18:00-04:00"
+por_confirmar: true
+modalidad: presencial
+lugar:
+  ciudad: Santa Cruz
+imagen: ./afiche.webp

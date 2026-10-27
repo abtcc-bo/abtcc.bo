@@ -59,6 +59,11 @@ export function formatearRangoFechas(inicio: Date, fin: Date | undefined, idioma
 	return fin ? formato.formatRange(inicio, fin) : formato.format(inicio);
 }
 
+/** "marzo de 2027". */
+export function formatearMes(fecha: Date, idioma: Idioma): string {
+	return new Intl.DateTimeFormat(LOCALE_INTL[idioma], { timeZone: ZONA_HORARIA, month: 'long', year: 'numeric' }).format(fecha);
+}
+
 export function formatearMoneda(monto: number, moneda: 'BOB' | 'USD', idioma: Idioma): string {
 	const decimales = Number.isInteger(monto) ? 0 : 2;
 	return new Intl.NumberFormat(LOCALE_INTL[idioma], {

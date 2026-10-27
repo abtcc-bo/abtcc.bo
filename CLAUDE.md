@@ -46,7 +46,8 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 - **Eventos:** una carpeta por evento, `src/content/eventos/AAAA-MM-DD-slug/`, con `evento.yaml` (datos comunes: fechas, modalidad, costos, estado...), `es.md` obligatorio y `en.md`/`pt.md` opcionales (título, resumen y descripción de cada idioma), y el afiche en la misma carpeta. La URL es el nombre de la carpeta sin la fecha. Un evento sale en un idioma solo si tiene su .md.
 - **Fechas y horas** de eventos siempre entre comillas y con zona: `"2026-11-14T09:00-04:00"`.
 - **Blog:** `src/content/blog/{es,en,pt}/slug.md`; las traducciones comparten `clave`. `borrador: true` lo oculta al publicar.
-- **Personas:** `src/content/personas/nombre-apellido.yaml`; cargo y bio por idioma; `comision: true` para la comisión directiva. Eventos y artículos las referencian por el nombre del archivo.
+- **Personas:** `src/content/personas/nombre-apellido.yaml`, foto en `personas/fotos/` (cuadrada, 600 px); `comision: true` para la comisión directiva. Eventos y artículos las referencian por el nombre del archivo.
+- **Hoja de vida, mismo formato para todos** (detalle en `content.config.ts`): `bio` de 3 oraciones (profesión y enfoque → experiencia → cargos y aportes), `formacion` (máx. 4 títulos, "Título — Institución (país)") y `areas` (3–5). Nunca datos privados de los CV (carnet, dirección, teléfono, nacimiento).
 - **Páginas:** `src/content/paginas/{es,en,pt}/nombre.md`; `clave` = sección de `SECCIONES` donde se muestra.
 - Contenido de muestra: lleva `[EJEMPLO]` en el título; se borra cuando llegue el real.
 - Nombres de archivo y carpeta en minúsculas, sin tildes ni espacios, con guiones.
@@ -55,6 +56,7 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 
 - Todo sale de la carpeta del evento: tarjeta en portada (3 próximos), listado `/es/eventos/` (próximos con filtros + archivo por año), detalle `/es/eventos/slug/`, `.ics` en `/es/calendario/slug.ics`, calendario suscribible `/eventos.ics`, RSS `/es/eventos.xml` y JSON-LD `Event`.
 - Lógica en `src/lib/eventos.ts` (horarios, inscripción abierta, calendario, datos para Google). Bolivia es UTC−4 fijo.
+- Anuncio sin fecha exacta: `por_confirmar: true`, `inicio` día 1 y `fin` último día del mes. Muestra solo mes y año, sin calendario ni datos para Google; costos y sede pueden faltar.
 - Un evento cancelado NO se borra: `estado: cancelado`. `solo_socios: true` lo saca de las páginas públicas.
 - Los eventos pasados salen solos de "próximos": la portada y el listado se generan en cada visita (y un script del navegador los oculta igual si una página quedó en caché).
 

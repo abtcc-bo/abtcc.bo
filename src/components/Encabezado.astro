@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import SelectorIdioma from './SelectorIdioma.astro';
+import logo from '../assets/logo-encabezado.png';
 import { MENU, ruta, t, type Alternos, type Idioma } from '../i18n';
 
 interface Props {
@@ -14,7 +16,9 @@ const actual = Astro.url.pathname;
 
 <header class="encabezado">
 	<div class="contenedor fila">
-		<a class="logo" href={ruta('inicio', idioma)}>{textos.sitio.sigla}</a>
+		<a class="logo" href={ruta('inicio', idioma)}>
+			<Image src={logo} alt={textos.sitio.sigla} height={44} densities={[1, 2]} loading="eager" />
+		</a>
 		<button class="boton-menu" type="button" aria-expanded="false" aria-controls="panel-menu">{textos.nav.menu}</button>
 		<div class="panel" id="panel-menu">
 			<nav aria-label={textos.nav.principal}>
@@ -66,9 +70,12 @@ const actual = Astro.url.pathname;
 		padding-block: var(--espacio);
 	}
 	.logo {
-		font-weight: 700;
-		text-decoration: none;
 		margin-right: auto;
+		line-height: 0;
+	}
+	.logo img {
+		height: 2.75rem;
+		width: auto;
 	}
 	.panel {
 		display: flex;

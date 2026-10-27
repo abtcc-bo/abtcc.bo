@@ -1,5 +1,5 @@
 // Cálculos sobre eventos que no dependen de la plantilla: horarios, inscripción, calendario y datos para Google.
-import { formatearHora, ruta, t, type Idioma } from '../i18n';
+import { formatearHora, formatearMes, formatearRangoFechas, formato, ruta, t, type Idioma } from '../i18n';
 import type { Evento } from './contenido';
 
 /** Bolivia está en UTC−4 todo el año (sin horario de verano). */
@@ -15,6 +15,13 @@ export function horario(inicio: Date, fin: Date | undefined, idioma: Idioma): st
 	const desde = formatearHora(inicio, idioma);
 	const hasta = fin ? ` – ${formatearHora(fin, idioma)}` : '';
 	return `${desde}${hasta} ${t(idioma).hora.zonaBolivia}`;
+}
+
+/** "14–15 de noviembre de 2026", o "marzo de 2027 (fecha exacta por confirmar)" en los anuncios previos. */
+export function fechaDelEvento(evento: Evento, idioma: Idioma): string {
+	const { inicio, fin, por_confirmar } = evento.datos;
+	if (por_confirmar) return formato(t(idioma).eventos.fechaPorConfirmar, { mes: formatearMes(inicio, idioma) });
+	return formatearRangoFechas(inicio, fin, idioma);
 }
 
 /** Si un evento no tiene fin, para el calendario se asumen 2 horas. */
@@ -147,7 +154,7 @@ export function datosEstructurados(
 	if (datos.lugar) {
 		lugares.push({
 			'@type': 'Place',
-			name: datos.lugar.nombre,
+			name: datos.lugar.nombre ?? datos.lugar.ciudad,
 			address: {
 				'@type': 'PostalAddress',
 				...(datos.lugar.direccion && { streetAddress: datos.lugar.direccion }),

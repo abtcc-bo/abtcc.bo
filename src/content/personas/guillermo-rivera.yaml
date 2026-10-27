@@ -2,13 +2,22 @@ nombre: Guillermo Rivera Arroyo
 titulo_profesional: Ph. D. · Médico psiquiatra
 comision: true
 orden: 1
-# foto: [PENDIENTE: foto original]
+foto: ./fotos/guillermo-rivera.webp
 textos:
   es:
     cargo: Coordinador
     bio: >-
-      Médico psiquiatra, psicoterapeuta, docente e investigador, con más de veinte años de
-      experiencia clínica y académica. Es Coordinador de la ABTCC, Jefe del Servicio de
-      Psiquiatría y Psicología del Hospital Universitario Japonés, Director de la Revista
-      Boliviana de Psiquiatría y Académico de Número de la Academia Nacional de Ciencias de
-      Bolivia. Su trabajo integra psicoterapia, psicofarmacología, docencia e investigación.
+      Médico psiquiatra y psicoterapeuta, con más de veinte años de experiencia clínica y
+      académica. Su trabajo integra la psicoterapia, la psicofarmacología, la docencia y la
+      investigación. Es Coordinador de la ABTCC, Jefe del Servicio de Psiquiatría y Psicología
+      del Hospital Universitario Japonés, Director de la Revista Boliviana de Psiquiatría y
+      Académico de Número de la Academia Nacional de Ciencias de Bolivia.
+    formacion:
+      - "Doctorado (Ph. D.) — [PENDIENTE: área, universidad y país]"
+      - "Especialidad en Psiquiatría — [PENDIENTE: institución y país]"
+      - "Medicina — [PENDIENTE: universidad y país]"
+    areas:
+      - Psiquiatría y psicoterapia
+      - Psicofarmacología
+      - Docencia universitaria
+      - Investigación

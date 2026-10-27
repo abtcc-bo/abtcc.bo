@@ -26,7 +26,8 @@ const iniciales = (nombre: string) =>
 <ul class="integrantes">
 	{
 		comision.map((persona) => {
-			const { cargo, bio, idioma: idiomaTexto } = textosDePersona(persona, idioma);
+			const { cargo, bio, formacion, areas, idioma: idiomaTexto } = textosDePersona(persona, idioma);
+			const langTexto = idiomaTexto !== idioma ? idiomaTexto : undefined;
 			const { nombre, foto, titulo_profesional, enlaces } = persona.data;
 			const listaEnlaces = Object.entries(enlaces).filter(([, url]) => url);
 			return (
@@ -41,10 +42,26 @@ const iniciales = (nombre: string) =>
 					<div>
 						<h2>{nombre}</h2>
 						{titulo_profesional && <p class="titulo">{titulo_profesional}</p>}
-						<p class="cargo" lang={idiomaTexto !== idioma ? idiomaTexto : undefined}>
+						<p class="cargo" lang={langTexto}>
 							{cargo}
 						</p>
-						<p lang={idiomaTexto !== idioma ? idiomaTexto : undefined}>{bio}</p>
+						<p lang={langTexto}>{bio}</p>
+						{formacion.length > 0 && (
+							<>
+								<h3>{textos.comision.formacion}</h3>
+								<ul lang={langTexto}>
+									{formacion.map((titulo) => (
+										<li>{titulo}</li>
+									))}
+								</ul>
+							</>
+						)}
+						{areas.length > 0 && (
+							<>
+								<h3>{textos.comision.areas}</h3>
+								<p lang={langTexto}>{areas.join(' · ')}</p>
+							</>
+						)}
 						{listaEnlaces.length > 0 && (
 							<ul class="enlaces">
 								{listaEnlaces.map(([red, url]) => (
@@ -102,6 +119,10 @@ const iniciales = (nombre: string) =>
 	}
 	h2 {
 		margin: 0;
+	}
+	h3 {
+		font-size: 1rem;
+		margin: var(--espacio) 0 0.25rem;
 	}
 	.titulo,
 	.cargo {

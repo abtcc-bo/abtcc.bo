@@ -35,7 +35,8 @@ const eventos = defineCollection({
 				modalidad: z.enum(['presencial', 'online', 'hibrido']),
 				lugar: z
 					.object({
-						nombre: z.string(),
+						/** Puede faltar si la sede aún no está definida (se muestra solo la ciudad). */
+						nombre: z.string().optional(),
 						direccion: z.string().optional(),
 						ciudad: z.string(),
 						mapa: z.url().optional(),
@@ -60,10 +61,16 @@ const eventos = defineCollection({
 				certificacion: z.object({ horas: z.number().positive().optional(), aval: z.string().optional() }).optional(),
 				imagen: image().optional(),
 				solo_socios: z.boolean().default(false),
+				/**
+				 * Anuncio previo: solo se conoce el mes. Se muestra "marzo de 2027 (fecha exacta por confirmar)", sin horario,
+				 * sin botones de calendario ni datos para Google, y los costos pueden faltar.
+				 * Poner `inicio` el día 1 y `fin` el último día del mes; quitar este campo cuando se confirme la fecha.
+				 */
+				por_confirmar: z.boolean().default(false),
 			})
 			.refine((e) => e.modalidad === 'online' || e.lugar, { error: 'Un evento presencial o híbrido necesita "lugar".', path: ['lugar'] })
 			.refine((e) => !e.fin || e.fin > e.inicio, { error: '"fin" debe ser posterior a "inicio".', path: ['fin'] })
-			.refine((e) => e.gratuito || e.costos.length > 0 || e.solo_socios, {
+			.refine((e) => e.gratuito || e.costos.length > 0 || e.solo_socios || e.por_confirmar, {
 				error: 'Indica los "costos" o marca "gratuito: true".',
 				path: ['costos'],
 			}),
@@ -98,7 +105,20 @@ const blog = defineCollection({
 		}),
 });
 
-const textoPersona = z.object({ cargo: z.string(), bio: z.string() });
+/**
+ * Hoja de vida resumida, con el mismo formato para todas las personas:
+ *  - bio: un párrafo en tercera persona, de 3 oraciones (60–90 palabras), en este orden:
+ *    1) profesión y enfoque, 2) experiencia y temas clínicos, 3) cargos actuales y aportes.
+ *  - formacion: títulos principales, del más alto al más antiguo, "Título — Institución (país)". Máximo 4.
+ *  - areas: 3 a 5 áreas de trabajo, cortas.
+ * Nunca datos privados (documento de identidad, dirección, teléfono, fecha de nacimiento).
+ */
+const textoPersona = z.object({
+	cargo: z.string(),
+	bio: z.string(),
+	formacion: z.array(z.string()).max(4, 'Como máximo 4 títulos en "formacion".').default([]),
+	areas: z.array(z.string()).max(5, 'Como máximo 5 "areas".').default([]),
+});
 
 /** Personas: comisión directiva, facilitadores y autores. `src/content/personas/nombre-apellido.yaml`. */
 const personas = defineCollection({

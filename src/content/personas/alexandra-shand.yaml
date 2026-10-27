@@ -1,16 +1,26 @@
 nombre: Alexandra Shand
 titulo_profesional: MSc. · Licenciada en Fonoaudiología
 comision: true
-orden: 2
-# foto: [PENDIENTE: foto original]
+orden: 5
+# foto: [PENDIENTE: foto original, la envía Alix]
 textos:
   es:
     cargo: "[PENDIENTE: cargo]"
     bio: >-
-      Licenciada en Fonoaudiología, con maestrías en Salud Pública y Psicología. Especializada
-      en Terapia Dialéctico Conductual (DBT), cuenta con formación avanzada en DBT Next Steps y
-      DBT-Sleep. Su trayectoria integra una perspectiva interdisciplinaria y contextual de la
-      salud mental, con énfasis en desregulación emocional, trauma complejo, conducta suicida y
-      trastornos de personalidad. Es autora de un curso práctico de habilidades DBT para
-      familiares y pionera en Latinoamérica en la adaptación e implementación de DBT Next Steps,
-      además de docente y formadora.
+      Licenciada en Fonoaudiología, con maestrías en Psicología y en Salud Pública, especializada
+      en Terapia Dialéctico Conductual (DBT). Trabaja desde un marco DBT informado por trauma, con
+      énfasis en la desregulación emocional, el trauma complejo, la conducta suicida y los
+      trastornos de personalidad. Es autora de «Terapia Dialéctico Conductual: un curso de 25
+      habilidades prácticas para familiares», pionera en Latinoamérica en la adaptación e
+      implementación de DBT Next Steps, docente y formadora, y miembro fundadora de la ABTCC.
+    formacion:
+      - MSc. en Psicología (con distinción) — Northumbria University (Inglaterra)
+      - Maestría en Salud Pública — Universidad Autónoma Tomás Frías (Bolivia)
+      - Licenciatura en Fonoaudiología — Manchester Polytechnic, hoy Manchester Metropolitan University (Inglaterra)
+      - Certificación en Terapia Dialéctica Conductual — Behavioral Tech
+    areas:
+      - Terapia dialéctico conductual (DBT)
+      - Desregulación emocional
+      - Trauma complejo
+      - Conducta suicida
+      - Trastornos de personalidad

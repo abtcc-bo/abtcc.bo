@@ -21,6 +21,6 @@ export const ORGANIZACION: {
 	ciudades: ['Santa Cruz', 'Cochabamba', 'La Paz'],
 	pais: 'Bolivia',
 	redes: [], // [PENDIENTE: redes sociales] p. ej. { nombre: 'Instagram', url: 'https://instagram.com/...' }
-	logo: null, // [PENDIENTE: archivo original del logo]
-	imagenRedes: null,
+	logo: '/logo.png', // [PENDIENTE: reemplazar por el archivo original del diseñador (SVG) cuando llegue]
+	imagenRedes: '/imagen-redes.png',
 };

@@ -58,6 +58,8 @@
 		"todos": "All",
 		"sinResultados": "No events match those filters.",
 		"fecha": "Date",
+		"porConfirmar": "To be confirmed",
+		"fechaPorConfirmar": "{mes} (exact date to be confirmed)",
 		"horario": "Time",
 		"lugar": "Venue",
 		"modalidad": "Format",
@@ -148,5 +150,9 @@
 				"verificacion": "We could not verify that you are not a robot. Reload the page and try again."
 			}
 		}
+	},
+	"comision": {
+		"formacion": "Education",
+		"areas": "Areas of practice"
 	}
 }

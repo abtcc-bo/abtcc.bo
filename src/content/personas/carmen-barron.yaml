@@ -1,16 +1,25 @@
-nombre: Carmen Barron
+nombre: Carmen Barrón
 titulo_profesional: MSc. · Psicóloga clínica
 comision: true
-orden: 5
-# foto: [PENDIENTE: foto original]
+orden: 3
+foto: ./fotos/carmen-barron.webp
 textos:
   es:
     cargo: "[PENDIENTE: cargo]"
     bio: >-
-      Licenciada en Psicología por excelencia de la Universidad Mayor de San Simón. Psicóloga
-      clínica y psicoterapeuta especializada en TCC. Cuenta con formación avanzada en TREC, DBT,
-      EP, EPR y Mindfulness, además de experiencia en la intervención de trastornos de ansiedad,
-      TOC, trauma, depresión, TEPT y TLP. Es directora del Centro de Terapia Cognitivo Conductual
-      KAIROS, fundadora de TOC Bolivia, coordinadora de grupo de habilidades para personas con
-      TLP y fundadora de la Red de Adopción Bolivia. Se desempeña también en la docencia
-      universitaria de pre y posgrado y en supervisión.
+      Psicóloga clínica y psicoterapeuta especializada en terapia cognitivo-conductual. Tiene
+      experiencia en el tratamiento de trastornos de ansiedad, TOC, trauma, depresión, TEPT y
+      trastorno límite de la personalidad, y se desempeña en la docencia universitaria de pregrado
+      y posgrado y en supervisión clínica. Es directora del Centro de Terapia Cognitivo Conductual
+      KAIROS, fundadora de TOC Bolivia y de la Red de Adopción Bolivia, y coordina un grupo de
+      habilidades para personas con TLP.
+    formacion:
+      - "Maestría — [PENDIENTE: nombre, universidad y país]"
+      - Licenciatura en Psicología (por excelencia) — Universidad Mayor de San Simón (Bolivia)
+      - Formación avanzada en TREC, DBT, exposición prolongada, exposición con prevención de respuesta y mindfulness
+    areas:
+      - Ansiedad y TOC
+      - Trauma y TEPT
+      - Depresión
+      - Trastorno límite de la personalidad
+      - Supervisión clínica

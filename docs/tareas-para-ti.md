@@ -32,9 +32,11 @@ Para la página "Comisión directiva", de cada persona:
 - [x] Nombre completo ✔
 - [ ] **Cargo** de cada uno (falta de 4 personas).
 - [x] Título profesional y formación ✔
-- [ ] **Fotos originales** (no capturas de pantalla): de frente, buena luz, todas con estilo parecido.
+- [x] Fotos de Guillermo, Halder, Carmen y Leonardo ✔
+- [ ] **Foto de Alix.**
+- [ ] **Hojas de vida** de Guillermo, Halder, Carmen y Leonardo (como la que mandó Alix). Con ellas completo la parte de "Formación", que ahora tiene datos [PENDIENTE]. Todas quedan con el mismo formato: un párrafo corto, la lista de títulos y las áreas de trabajo.
 - [ ] Enlaces opcionales: LinkedIn, ORCID, Instagram profesional.
-- [ ] **Su permiso** para publicar su foto y datos.
+- [ ] **Su permiso** para publicar su foto y datos. Las hojas de vida traen datos privados (carnet, dirección, teléfono, fecha de nacimiento): esos **nunca** se publican.
 
 ### 4. Textos de las páginas institucionales
 Las páginas ya están armadas con los títulos de cada parte; solo falta el texto. Puedes escribirlo tú o pedirlo a la comisión, y pegármelo tal cual.

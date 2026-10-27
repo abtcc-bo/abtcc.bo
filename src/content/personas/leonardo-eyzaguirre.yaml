@@ -1,16 +1,22 @@
 nombre: Leonardo Eyzaguirre
 titulo_profesional: MSc. · Psicólogo
 comision: true
-orden: 3
-# foto: [PENDIENTE: foto original]
+orden: 4
+foto: ./fotos/leonardo-eyzaguirre.webp
 textos:
   es:
     cargo: "[PENDIENTE: cargo]"
     bio: >-
-      Psicólogo y psicoterapeuta especialista en psicoterapia conductual-contextual, con
-      experiencia en práctica clínica, docencia y divulgación. Licenciado en Psicología por la
-      Universidad Católica Boliviana "San Pablo", con una especialización en Psicología Clínica
-      Sistémica y Terapias Breves, Especialista en Psicoterapias Conductuales y Contextuales por
-      CIPCO y Máster en Análisis Funcional del Comportamiento por SAVECC. Se desempeña como
-      docente y supervisor en formación clínica contextual y es divulgador de Psicología
-      Contextual en redes sociales.
+      Psicólogo y psicoterapeuta especialista en psicoterapia conductual-contextual. Su
+      experiencia abarca la práctica clínica, la docencia y la supervisión en formación clínica
+      contextual. Es divulgador de Psicología Contextual en redes sociales.
+    formacion:
+      - Máster en Análisis Funcional del Comportamiento — SAVECC
+      - Especialista en Psicoterapias Conductuales y Contextuales — CIPCO
+      - "Especialización en Psicología Clínica Sistémica y Terapias Breves — [PENDIENTE: institución]"
+      - Licenciatura en Psicología — Universidad Católica Boliviana "San Pablo" (Bolivia)
+    areas:
+      - Psicoterapia conductual-contextual
+      - Análisis funcional
+      - Formación y supervisión clínica
+      - Divulgación científica

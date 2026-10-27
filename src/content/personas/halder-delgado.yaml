@@ -1,15 +1,21 @@
 nombre: Halder Delgado
 titulo_profesional: MSc. · Psicólogo clínico
 comision: true
-orden: 4
-# foto: [PENDIENTE: foto original]
+orden: 2
+foto: ./fotos/halder-delgado.webp
 textos:
   es:
     cargo: "[PENDIENTE: cargo]"
     bio: >-
-      Psicólogo clínico y psicoterapeuta con siete años de experiencia en práctica privada.
-      Docente de posgrado en instituciones de Bolivia y México, destaca por su labor formativa y
-      su aporte al desarrollo académico. Actualmente es Director General del Instituto de
-      Psicología y Terapias Conductuales y diseñador del Programa de Maestría en Terapia
-      Cognitivo-Conductual y Contextual de la UAGRM, impulsando la psicología basada en
-      evidencia en Bolivia.
+      Psicólogo clínico y psicoterapeuta, con siete años de experiencia en práctica privada.
+      Es docente de posgrado en instituciones de Bolivia y México, con una labor sostenida en la
+      formación de profesionales en psicología basada en evidencia. Es Director General del
+      Instituto de Psicología y Terapias Conductuales y diseñador del programa de Maestría en
+      Terapia Cognitivo-Conductual y Contextual de la UAGRM.
+    formacion:
+      - "Maestría — [PENDIENTE: nombre, universidad y país]"
+      - "Licenciatura en Psicología — [PENDIENTE: universidad y país]"
+    areas:
+      - Terapia cognitivo-conductual y contextual
+      - Docencia de posgrado
+      - Diseño de programas de formación

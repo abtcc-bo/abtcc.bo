@@ -1,7 +1,7 @@
 ---
 // Resumen de un evento para portada y listados.
-import { formatearRangoFechas, ruta, t, type Idioma } from '../i18n';
-import { inscripcionAbierta } from '../lib/eventos';
+import { ruta, t, type Idioma } from '../i18n';
+import { fechaDelEvento, inscripcionAbierta } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
 
 interface Props {
@@ -31,7 +31,7 @@ const abierta = inscripcionAbierta(evento);
 	</p>
 	<Titulo><a href={href}>{evento.texto.data.titulo}</a></Titulo>
 	<p class="fecha">
-		<time datetime={datos.inicio.toISOString()}>{formatearRangoFechas(datos.inicio, datos.fin, idioma)}</time>
+		<time datetime={datos.inicio.toISOString()}>{fechaDelEvento(evento, idioma)}</time>
 		{datos.lugar && <span> · {datos.lugar.ciudad}</span>}
 	</p>
 	<p>{evento.texto.data.resumen}</p>

@@ -3,8 +3,8 @@
 import { Image, getImage } from 'astro:assets';
 import { getEntries, render } from 'astro:content';
 import JsonLd from '../components/JsonLd.astro';
-import { formatearFecha, formatearMoneda, formatearRangoFechas, formato, t, type Idioma } from '../i18n';
-import { datosEstructurados, enlaceGoogleCalendar, horario, inscripcionAbierta, isoBolivia } from '../lib/eventos';
+import { formatearFecha, formatearMoneda, formato, t, type Idioma } from '../i18n';
+import { datosEstructurados, enlaceGoogleCalendar, fechaDelEvento, horario, inscripcionAbierta, isoBolivia } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
 
 interface Props {
@@ -42,13 +42,13 @@ const compartir = [
 
 	<dl class="ficha">
 		<dt>{ev.fecha}</dt>
-		<dd>{formatearRangoFechas(datos.inicio, datos.fin, idioma)}</dd>
+		<dd>{fechaDelEvento(evento, idioma)}</dd>
 
 		<dt>{ev.horario}</dt>
 		<dd>
-			{horario(datos.inicio, datos.fin, idioma)}
+			{datos.por_confirmar ? ev.porConfirmar : horario(datos.inicio, datos.fin, idioma)}
 			{
-				datos.modalidad !== 'presencial' && (
+				!datos.por_confirmar && datos.modalidad !== 'presencial' && (
 					<span class="hora-local" data-hora-local data-inicio={isoBolivia(datos.inicio)} hidden>
 						{ev.tuHoraLocal} <span data-valor />
 					</span>
@@ -81,8 +81,7 @@ const compartir = [
 				<>
 					<dt>{ev.lugar}</dt>
 					<dd>
-						{datos.lugar.nombre}
-						{datos.lugar.direccion && <>, {datos.lugar.direccion}</>}, {datos.lugar.ciudad}
+						{[datos.lugar.nombre, datos.lugar.direccion, datos.lugar.ciudad].filter(Boolean).join(', ')}
 						{datos.lugar.mapa && (
 							<>
 								{' '}
@@ -110,6 +109,8 @@ const compartir = [
 			{
 				datos.gratuito ? (
 					ev.gratuito
+				) : datos.costos.length === 0 ? (
+					ev.porConfirmar
 				) : (
 					<ul class="costos">
 						{datos.costos.map((c) => (
@@ -207,7 +208,7 @@ const compartir = [
 	}
 
 	{
-		datos.estado !== 'cancelado' && (
+		datos.estado !== 'cancelado' && !datos.por_confirmar && (
 			<section aria-labelledby="titulo-calendario">
 				<h2 id="titulo-calendario">{ev.calendario}</h2>
 				<ul class="en-linea">
@@ -242,7 +243,12 @@ const compartir = [
 	</section>
 </article>
 
-<JsonLd datos={datosEstructurados(evento, idioma, sitio, { facilitadores: facilitadores.map((p) => p.data.nombre), imagen: imagenRedes })} />
+{
+	// Sin fecha exacta no se declara el evento a Google (pide fecha y hora reales).
+	!datos.por_confirmar && (
+		<JsonLd datos={datosEstructurados(evento, idioma, sitio, { facilitadores: facilitadores.map((p) => p.data.nombre), imagen: imagenRedes })} />
+	)
+}
 
 <script>
 	// Para eventos en línea: si el visitante está en otra zona horaria, muestra la hora del evento en la suya.

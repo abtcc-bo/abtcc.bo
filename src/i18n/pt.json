@@ -58,6 +58,8 @@
 		"todos": "Todos",
 		"sinResultados": "Não há eventos com esses filtros.",
 		"fecha": "Data",
+		"porConfirmar": "A confirmar",
+		"fechaPorConfirmar": "{mes} (data exata a confirmar)",
 		"horario": "Horário",
 		"lugar": "Local",
 		"modalidad": "Modalidade",
@@ -148,5 +150,9 @@
 				"verificacion": "Não foi possível verificar que você não é um robô. Recarregue a página e tente novamente."
 			}
 		}
+	},
+	"comision": {
+		"formacion": "Formação",
+		"areas": "Áreas de atuação"
 	}
 }
