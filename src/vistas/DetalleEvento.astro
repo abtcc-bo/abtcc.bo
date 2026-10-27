@@ -1,0 +1,343 @@
+---
+// Página completa de un evento.
+import { Image, getImage } from 'astro:assets';
+import { getEntries, render } from 'astro:content';
+import JsonLd from '../components/JsonLd.astro';
+import { formatearFecha, formatearMoneda, formatearRangoFechas, formato, t, type Idioma } from '../i18n';
+import { datosEstructurados, enlaceGoogleCalendar, horario, inscripcionAbierta, isoBolivia } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+}
+
+const { evento, idioma } = Astro.props;
+const textos = t(idioma);
+const ev = textos.eventos;
+const { datos } = evento;
+const { titulo, dirigido_a, preguntas } = evento.texto.data;
+const { Content } = await render(evento.texto);
+const facilitadores = await getEntries(datos.facilitadores);
+const abierta = inscripcionAbierta(evento);
+const sitio = Astro.site!;
+const urlPagina = new URL(Astro.url.pathname, sitio).href;
+const imagenRedes = datos.imagen ? new URL((await getImage({ src: datos.imagen, width: 1200 })).src, sitio).href : undefined;
+
+const compartir = [
+	{ nombre: 'WhatsApp', url: `https://wa.me/?text=${encodeURIComponent(`${titulo} ${urlPagina}`)}` },
+	{ nombre: 'LinkedIn', url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(urlPagina)}` },
+	{ nombre: 'Facebook', url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlPagina)}` },
+];
+---
+
+<article class="evento">
+	<p class="etiquetas">
+		<span>{ev.tipos[datos.tipo]}</span> · <span>{ev.modalidades[datos.modalidad]}</span>
+	</p>
+	<h1>{titulo}</h1>
+	{datos.estado !== 'programado' && <p class={`aviso-estado estado-${datos.estado}`} role="status">{ev.estados[datos.estado]}</p>}
+
+	{datos.imagen && <Image src={datos.imagen} alt={titulo} widths={[400, 800]} sizes="(max-width: 48rem) 100vw, 40rem" class="afiche" loading="eager" />}
+
+	<dl class="ficha">
+		<dt>{ev.fecha}</dt>
+		<dd>{formatearRangoFechas(datos.inicio, datos.fin, idioma)}</dd>
+
+		<dt>{ev.horario}</dt>
+		<dd>
+			{horario(datos.inicio, datos.fin, idioma)}
+			{
+				datos.modalidad !== 'presencial' && (
+					<span class="hora-local" data-hora-local data-inicio={isoBolivia(datos.inicio)} hidden>
+						{ev.tuHoraLocal} <span data-valor />
+					</span>
+				)
+			}
+		</dd>
+
+		{
+			datos.sesiones.length > 0 && (
+				<>
+					<dt>{ev.sesiones}</dt>
+					<dd>
+						<ol>
+							{datos.sesiones.map((s) => (
+								<li>
+									{formatearFecha(s.inicio, idioma)}, {horario(s.inicio, s.fin, idioma)}
+								</li>
+							))}
+						</ol>
+					</dd>
+				</>
+			)
+		}
+
+		<dt>{ev.modalidad}</dt>
+		<dd>{ev.modalidades[datos.modalidad]}</dd>
+
+		{
+			datos.lugar && (
+				<>
+					<dt>{ev.lugar}</dt>
+					<dd>
+						{datos.lugar.nombre}
+						{datos.lugar.direccion && <>, {datos.lugar.direccion}</>}, {datos.lugar.ciudad}
+						{datos.lugar.mapa && (
+							<>
+								{' '}
+								· <a href={datos.lugar.mapa} rel="noopener">{ev.verMapa}</a>
+							</>
+						)}
+					</dd>
+				</>
+			)
+		}
+
+		{
+			datos.modalidad !== 'presencial' && (
+				<>
+					<dt>{ev.plataforma}</dt>
+					<dd>
+						{datos.plataforma ?? ev.modalidades.online}. {ev.enlaceInscritos}
+					</dd>
+				</>
+			)
+		}
+
+		<dt>{ev.costos}</dt>
+		<dd>
+			{
+				datos.gratuito ? (
+					ev.gratuito
+				) : (
+					<ul class="costos">
+						{datos.costos.map((c) => (
+							<li>
+								{ev.categorias[c.categoria]}:{' '}
+								{[c.bob !== undefined && formatearMoneda(c.bob, 'BOB', idioma), c.usd !== undefined && formatearMoneda(c.usd, 'USD', idioma)]
+									.filter(Boolean)
+									.join(' / ')}
+							</li>
+						))}
+					</ul>
+				)
+			}
+		</dd>
+
+		{
+			datos.cupos && (
+				<>
+					<dt>{ev.cupos}</dt>
+					<dd>{formato(ev.cuposValor, { n: datos.cupos })}</dd>
+				</>
+			)
+		}
+
+		{
+			datos.certificacion && (
+				<>
+					<dt>{ev.certificacion}</dt>
+					<dd>
+						{[datos.certificacion.horas && formato(ev.horas, { n: datos.certificacion.horas }), datos.certificacion.aval && formato(ev.aval, { aval: datos.certificacion.aval })]
+							.filter(Boolean)
+							.join('. ')}
+					</dd>
+				</>
+			)
+		}
+
+		{
+			dirigido_a && (
+				<>
+					<dt>{ev.dirigidoA}</dt>
+					<dd>{dirigido_a}</dd>
+				</>
+			)
+		}
+	</dl>
+
+	<div class="inscripcion">
+		{
+			abierta && datos.inscripcion ? (
+				<>
+					<a class="boton" href={datos.inscripcion.url} rel="noopener">
+						{textos.comun.inscribirme}
+					</a>
+					{datos.inscripcion.limite && <span>{formato(ev.limite, { fecha: formatearFecha(datos.inscripcion.limite, idioma) })}</span>}
+				</>
+			) : (
+				datos.inscripcion && <span>{ev.cerradas}</span>
+			)
+		}
+	</div>
+
+	<div class="descripcion">
+		<Content />
+	</div>
+
+	{
+		facilitadores.length > 0 && (
+			<section aria-labelledby="titulo-facilitadores">
+				<h2 id="titulo-facilitadores">{ev.facilitadores}</h2>
+				<ul class="facilitadores">
+					{facilitadores.map((persona) => (
+						<li>
+							<strong>{persona.data.nombre}</strong>
+							{persona.data.titulo_profesional && <span> · {persona.data.titulo_profesional}</span>}
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	{
+		preguntas.length > 0 && (
+			<section aria-labelledby="titulo-preguntas">
+				<h2 id="titulo-preguntas">{ev.preguntas}</h2>
+				{preguntas.map((p) => (
+					<details>
+						<summary>{p.pregunta}</summary>
+						<p>{p.respuesta}</p>
+					</details>
+				))}
+			</section>
+		)
+	}
+
+	{
+		datos.estado !== 'cancelado' && (
+			<section aria-labelledby="titulo-calendario">
+				<h2 id="titulo-calendario">{ev.calendario}</h2>
+				<ul class="en-linea">
+					<li>
+						<a href={enlaceGoogleCalendar(evento, idioma, sitio)} rel="noopener">
+							{ev.googleCalendar}
+						</a>
+					</li>
+					<li>
+						<a href={`/${idioma}/calendario/${evento.slug}.ics`} download>
+							{ev.descargarIcs}
+						</a>
+					</li>
+				</ul>
+			</section>
+		)
+	}
+
+	<section aria-labelledby="titulo-compartir">
+		<h2 id="titulo-compartir">{ev.compartir}</h2>
+		<ul class="en-linea">
+			{
+				compartir.map((red) => (
+					<li>
+						<a href={red.url} rel="noopener" target="_blank">
+							{red.nombre}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</article>
+
+<JsonLd datos={datosEstructurados(evento, idioma, sitio, { facilitadores: facilitadores.map((p) => p.data.nombre), imagen: imagenRedes })} />
+
+<script>
+	// Para eventos en línea: si el visitante está en otra zona horaria, muestra la hora del evento en la suya.
+	const elemento = document.querySelector<HTMLElement>('[data-hora-local]');
+	if (elemento) {
+		const inicio = new Date(elemento.dataset.inicio!);
+		if (inicio.getTimezoneOffset() !== 240) {
+			const formato = new Intl.DateTimeFormat(document.documentElement.lang, { dateStyle: 'long', timeStyle: 'short', timeZoneName: 'short' });
+			elemento.querySelector('[data-valor]')!.textContent = formato.format(inicio);
+			elemento.hidden = false;
+		}
+	}
+</script>
+
+<style>
+	.etiquetas {
+		margin: var(--espacio) 0 0;
+		color: var(--color-texto-suave);
+	}
+	h1 {
+		margin-top: 0.25rem;
+	}
+	.aviso-estado {
+		padding: 0.75rem var(--espacio);
+		border: 2px solid currentColor;
+		font-weight: 700;
+	}
+	.estado-cancelado,
+	.estado-pospuesto {
+		color: #a40000;
+	}
+	.afiche {
+		max-width: 100%;
+		height: auto;
+	}
+	.ficha {
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		gap: 0.5rem var(--espacio);
+	}
+	dt {
+		font-weight: 700;
+	}
+	dd {
+		margin: 0;
+	}
+	.ficha ul,
+	.ficha ol {
+		margin: 0;
+		padding-left: 1.25rem;
+	}
+	.hora-local {
+		display: block;
+		color: var(--color-texto-suave);
+	}
+	.inscripcion {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--espacio);
+		padding-block: var(--espacio);
+		background: var(--color-fondo);
+	}
+	.inscripcion:empty {
+		display: none;
+	}
+	.en-linea,
+	.facilitadores {
+		list-style: none;
+		padding: 0;
+	}
+	.en-linea {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--espacio);
+	}
+	summary {
+		cursor: pointer;
+		font-weight: 700;
+		min-height: 44px;
+		display: flex;
+		align-items: center;
+	}
+	@media (max-width: 48rem) {
+		.ficha {
+			grid-template-columns: 1fr;
+		}
+		dd {
+			margin-bottom: 0.5rem;
+		}
+		/* Botón de inscripción siempre a mano en el celular. */
+		.inscripcion {
+			position: sticky;
+			bottom: 0;
+			border-top: 1px solid var(--color-borde);
+		}
+	}
+</style>

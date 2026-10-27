@@ -1,57 +1,91 @@
 ---
-// Genera todas las secciones fijas en los tres idiomas a partir de SECCIONES (src/i18n/rutas.ts).
-// Contenido de cada sección, en orden de prioridad:
-//   1. una vista propia registrada en VISTAS (p. ej. la portada);
-//   2. una página de texto en src/content/paginas/{idioma}/ con `clave` igual a la sección;
-//   3. el aviso "en construcción".
-// Los contenidos con su propia página (eventos, artículos) tienen rutas aparte.
+// Genera todas las páginas HTML del sitio en los tres idiomas:
+//  - Secciones fijas (SECCIONES en src/i18n/rutas.ts). Contenido, en orden de prioridad:
+//      1. una vista propia registrada en VISTAS (p. ej. la portada);
+//      2. una página de texto en src/content/paginas/{idioma}/ con `clave` igual a la sección;
+//      3. el aviso "en construcción".
+//  - Detalle de cada evento público, en los idiomas en que tiene texto.
+import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Inicio from '../vistas/Inicio.astro';
 import Comision from '../vistas/Comision.astro';
+import Eventos from '../vistas/Eventos.astro';
+import DetalleEvento from '../vistas/DetalleEvento.astro';
 import PaginaInstitucional from '../vistas/PaginaInstitucional.astro';
 import Pendiente from '../vistas/Pendiente.astro';
-import { paginaDeSeccion } from '../lib/contenido';
+import { obtenerEventosPublicos, paginaDeSeccion, type Evento } from '../lib/contenido';
 import { IDIOMAS, SECCIONES, alternosDeSeccion, cadenaDeSecciones, ruta, t, type Idioma, type Seccion } from '../i18n';
 
-export function getStaticPaths() {
-	return IDIOMAS.flatMap((idioma) =>
+export async function getStaticPaths() {
+	const secciones = IDIOMAS.flatMap((idioma) =>
 		(Object.keys(SECCIONES) as Seccion[]).map((seccion) => ({
 			params: { ruta: ruta(seccion, idioma).slice(1, -1) },
-			props: { idioma, seccion },
+			props: { tipo: 'seccion' as const, idioma, seccion },
 		})),
 	);
+	const eventos = (
+		await Promise.all(
+			IDIOMAS.map(async (idioma) =>
+				(await obtenerEventosPublicos(idioma)).map((evento) => ({
+					params: { ruta: ruta('eventos', idioma, evento.slug).slice(1, -1) },
+					props: { tipo: 'evento' as const, idioma, evento },
+				})),
+			),
+		)
+	).flat();
+	return [...secciones, ...eventos];
 }
 
-interface Props {
-	idioma: Idioma;
-	seccion: Seccion;
-}
+type Props = { tipo: 'seccion'; idioma: Idioma; seccion: Seccion } | { tipo: 'evento'; idioma: Idioma; evento: Evento };
 
-const { idioma, seccion } = Astro.props;
+const props = Astro.props;
+const { idioma } = props;
 const textos = t(idioma);
 
 const VISTAS: Partial<Record<Seccion, typeof Inicio>> = {
 	inicio: Inicio,
 	comision: Comision,
+	eventos: Eventos,
 };
-const Vista = VISTAS[seccion];
-const pagina = Vista ? undefined : await paginaDeSeccion(seccion, idioma);
 
-const nombre = pagina?.data.titulo ?? textos.nav[seccion];
-const titulo = seccion === 'inicio' ? `${textos.sitio.sigla} · ${textos.sitio.nombre}` : `${nombre} · ${textos.sitio.sigla}`;
-const migas = cadenaDeSecciones(seccion)
-	.slice(0, -1)
-	.map((s) => ({ nombre: textos.nav[s], href: ruta(s, idioma) }));
+const migasHasta = (seccion: Seccion) => cadenaDeSecciones(seccion).map((s) => ({ nombre: textos.nav[s], href: ruta(s, idioma) }));
+
+let pagina, Vista, imagenEvento: string | undefined;
+if (props.tipo === 'seccion') {
+	Vista = VISTAS[props.seccion];
+	pagina = Vista ? undefined : await paginaDeSeccion(props.seccion, idioma);
+} else if (props.evento.datos.imagen) {
+	imagenEvento = (await getImage({ src: props.evento.datos.imagen, width: 1200 })).src;
+}
+
+const nombre = props.tipo === 'evento' ? props.evento.texto.data.titulo : (pagina?.data.titulo ?? textos.nav[props.seccion]);
+const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${textos.sitio.sigla} · ${textos.sitio.nombre}` : `${nombre} · ${textos.sitio.sigla}`;
 ---
 
-<Base
-	idioma={idioma}
-	titulo={titulo}
-	descripcion={pagina?.data.descripcion}
-	alternos={alternosDeSeccion(seccion)}
-	migas={migas}
-	nombreEnMigas={seccion === 'inicio' ? undefined : nombre}
-	noIndexar={seccion === 'socios'}
->
-	{Vista ? <Vista idioma={idioma} /> : pagina ? <PaginaInstitucional pagina={pagina} /> : <Pendiente idioma={idioma} seccion={seccion} />}
-</Base>
+{
+	props.tipo === 'seccion' ? (
+		<Base
+			idioma={idioma}
+			titulo={titulo}
+			descripcion={pagina?.data.descripcion}
+			alternos={alternosDeSeccion(props.seccion)}
+			migas={migasHasta(props.seccion).slice(0, -1)}
+			nombreEnMigas={props.seccion === 'inicio' ? undefined : nombre}
+			noIndexar={props.seccion === 'socios'}
+		>
+			{Vista ? <Vista idioma={idioma} /> : pagina ? <PaginaInstitucional pagina={pagina} /> : <Pendiente idioma={idioma} seccion={props.seccion} />}
+		</Base>
+	) : (
+		<Base
+			idioma={idioma}
+			titulo={titulo}
+			descripcion={props.evento.texto.data.resumen}
+			alternos={props.evento.alternos}
+			migas={migasHasta('eventos')}
+			nombreEnMigas={nombre}
+			imagen={imagenEvento}
+		>
+			<DetalleEvento evento={props.evento} idioma={idioma} />
+		</Base>
+	)
+}

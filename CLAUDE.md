@@ -49,6 +49,13 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 - Contenido de muestra: lleva `[EJEMPLO]` en el título; se borra cuando llegue el real.
 - Nombres de archivo y carpeta en minúsculas, sin tildes ni espacios, con guiones.
 
+## Eventos (cómo se muestran)
+
+- Todo sale de la carpeta del evento: tarjeta en portada (3 próximos), listado `/es/eventos/` (próximos con filtros + archivo por año), detalle `/es/eventos/slug/`, `.ics` en `/es/calendario/slug.ics`, calendario suscribible `/eventos.ics`, RSS `/es/eventos.xml` y JSON-LD `Event`.
+- Lógica en `src/lib/eventos.ts` (horarios, inscripción abierta, calendario, datos para Google). Bolivia es UTC−4 fijo.
+- Un evento cancelado NO se borra: `estado: cancelado`. `solo_socios: true` lo saca de las páginas públicas.
+- Los eventos pasados se ocultan de "próximos" al reconstruir el sitio (reconstrucción diaria, pendiente al publicar) y, por si falla, con un script en el navegador.
+
 ## Prohibiciones
 
 - No subir `.env` ni claves a GitHub.

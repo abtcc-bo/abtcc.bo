@@ -47,5 +47,72 @@
 		"titulo": "Page not found",
 		"texto": "The page you are looking for does not exist or has moved.",
 		"volver": "Go to home page"
+	},
+	"eventos": {
+		"proximos": "Upcoming events",
+		"realizados": "Past events",
+		"sinProximos": "There are no events scheduled at the moment.",
+		"avisame": "Write to us and we will let you know about the next event.",
+		"filtros": "Filter events",
+		"tipo": "Type",
+		"todos": "All",
+		"sinResultados": "No events match those filters.",
+		"fecha": "Date",
+		"horario": "Time",
+		"lugar": "Venue",
+		"modalidad": "Format",
+		"plataforma": "Platform",
+		"enlaceInscritos": "The access link is sent to registered participants.",
+		"costos": "Fees",
+		"gratuito": "Free",
+		"inscripcion": "Registration",
+		"limite": "Registration open until {fecha}",
+		"cerradas": "Registration closed",
+		"cupos": "Places",
+		"cuposValor": "{n} participants",
+		"certificacion": "Certificate",
+		"horas": "{n} academic hours",
+		"aval": "Endorsed by: {aval}",
+		"dirigidoA": "Intended for",
+		"facilitadores": "Facilitators",
+		"sesiones": "Sessions",
+		"preguntas": "Frequently asked questions",
+		"calendario": "Add to my calendar",
+		"googleCalendar": "Google Calendar",
+		"descargarIcs": "Apple / Outlook (.ics)",
+		"suscribirse": "Subscribe to the events calendar",
+		"compartir": "Share",
+		"tuHoraLocal": "In your local time:",
+		"verDetalle": "See details",
+		"verMapa": "View map",
+		"rss": "Events RSS feed",
+		"rssDescripcion": "Upcoming ABTCC training events",
+		"tipos": {
+			"taller": "Workshop",
+			"curso": "Course",
+			"diplomado": "Diploma programme",
+			"jornada": "Conference day",
+			"congreso": "Congress",
+			"webinar": "Webinar",
+			"supervision": "Supervision",
+			"asamblea": "General assembly"
+		},
+		"modalidades": {
+			"presencial": "In person",
+			"online": "Online",
+			"hibrido": "Hybrid"
+		},
+		"estados": {
+			"programado": "Scheduled",
+			"agotado": "Sold out",
+			"pospuesto": "Postponed",
+			"cancelado": "Cancelled"
+		},
+		"categorias": {
+			"general": "General",
+			"socio": "Members",
+			"no_socio": "Non-members",
+			"estudiante": "Students"
+		}
 	}
 }

@@ -14,6 +14,11 @@ export function t(idioma: Idioma): Diccionario {
 	return DICCIONARIOS[idioma];
 }
 
+/** Reemplaza {variables} en un texto: formato('{n} horas', { n: 4 }) → "4 horas". */
+export function formato(texto: string, variables: Record<string, string | number>): string {
+	return texto.replace(/\{(\w+)\}/g, (_, nombre) => String(variables[nombre] ?? `{${nombre}}`));
+}
+
 // Si a en.json o pt.json le falta (o le sobra) una clave respecto a es.json, la construcción falla.
 function claves(objeto: object, prefijo = ''): string[] {
 	return Object.entries(objeto).flatMap(([clave, valor]) =>
@@ -48,6 +53,18 @@ export function formatearHora(fecha: Date, idioma: Idioma): string {
 	return new Intl.DateTimeFormat(LOCALE_INTL[idioma], { timeZone: ZONA_HORARIA, hour: '2-digit', minute: '2-digit', hour12: false }).format(fecha);
 }
 
+/** "14 de noviembre de 2026" o "14–15 de noviembre de 2026" si dura varios días. */
+export function formatearRangoFechas(inicio: Date, fin: Date | undefined, idioma: Idioma): string {
+	const formato = new Intl.DateTimeFormat(LOCALE_INTL[idioma], { timeZone: ZONA_HORARIA, dateStyle: 'long' });
+	return fin ? formato.formatRange(inicio, fin) : formato.format(inicio);
+}
+
 export function formatearMoneda(monto: number, moneda: 'BOB' | 'USD', idioma: Idioma): string {
-	return new Intl.NumberFormat(LOCALE_INTL[idioma], { style: 'currency', currency: moneda }).format(monto);
+	const decimales = Number.isInteger(monto) ? 0 : 2;
+	return new Intl.NumberFormat(LOCALE_INTL[idioma], {
+		style: 'currency',
+		currency: moneda,
+		minimumFractionDigits: decimales,
+		maximumFractionDigits: decimales,
+	}).format(monto);
 }

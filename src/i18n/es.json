@@ -47,5 +47,72 @@
 		"titulo": "Página no encontrada",
 		"texto": "La página que buscas no existe o cambió de dirección.",
 		"volver": "Ir al inicio"
+	},
+	"eventos": {
+		"proximos": "Próximos eventos",
+		"realizados": "Eventos realizados",
+		"sinProximos": "No hay eventos programados por ahora.",
+		"avisame": "Escríbenos y te avisamos del próximo evento.",
+		"filtros": "Filtrar eventos",
+		"tipo": "Tipo",
+		"todos": "Todos",
+		"sinResultados": "No hay eventos con esos filtros.",
+		"fecha": "Fecha",
+		"horario": "Horario",
+		"lugar": "Lugar",
+		"modalidad": "Modalidad",
+		"plataforma": "Plataforma",
+		"enlaceInscritos": "El enlace de acceso se envía a las personas inscritas.",
+		"costos": "Inversión",
+		"gratuito": "Gratuito",
+		"inscripcion": "Inscripción",
+		"limite": "Inscripciones hasta el {fecha}",
+		"cerradas": "Inscripciones cerradas",
+		"cupos": "Cupos",
+		"cuposValor": "{n} participantes",
+		"certificacion": "Certificación",
+		"horas": "{n} horas académicas",
+		"aval": "Aval: {aval}",
+		"dirigidoA": "Dirigido a",
+		"facilitadores": "Facilitadores",
+		"sesiones": "Sesiones",
+		"preguntas": "Preguntas frecuentes",
+		"calendario": "Añadir a mi calendario",
+		"googleCalendar": "Google Calendar",
+		"descargarIcs": "Apple / Outlook (.ics)",
+		"suscribirse": "Suscribirse al calendario de eventos",
+		"compartir": "Compartir",
+		"tuHoraLocal": "En tu hora local:",
+		"verDetalle": "Ver detalle",
+		"verMapa": "Ver mapa",
+		"rss": "Fuente RSS de eventos",
+		"rssDescripcion": "Próximos eventos de formación de la ABTCC",
+		"tipos": {
+			"taller": "Taller",
+			"curso": "Curso",
+			"diplomado": "Diplomado",
+			"jornada": "Jornada",
+			"congreso": "Congreso",
+			"webinar": "Webinar",
+			"supervision": "Supervisión",
+			"asamblea": "Asamblea"
+		},
+		"modalidades": {
+			"presencial": "Presencial",
+			"online": "En línea",
+			"hibrido": "Híbrido"
+		},
+		"estados": {
+			"programado": "Programado",
+			"agotado": "Cupos agotados",
+			"pospuesto": "Pospuesto",
+			"cancelado": "Cancelado"
+		},
+		"categorias": {
+			"general": "General",
+			"socio": "Socios",
+			"no_socio": "No socios",
+			"estudiante": "Estudiantes"
+		}
 	}
 }

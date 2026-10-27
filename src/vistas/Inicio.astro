@@ -1,5 +1,7 @@
 ---
-import { t, type Idioma } from '../i18n';
+import ListaProximos from '../components/ListaProximos.astro';
+import { obtenerEventosPublicos, yaPaso } from '../lib/contenido';
+import { ruta, t, type Idioma } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
@@ -7,12 +9,14 @@ interface Props {
 
 const { idioma } = Astro.props;
 const textos = t(idioma);
+const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)).slice(0, 3);
 ---
 
 <h1>{textos.sitio.nombre} ({textos.sitio.sigla})</h1>
 <p>{textos.sitio.descripcion}</p>
 
-<section>
-	<h2>{textos.comun.proximosEventos}</h2>
-	<p>{textos.comun.enConstruccion}</p>
+<section aria-labelledby="titulo-proximos">
+	<h2 id="titulo-proximos">{textos.comun.proximosEventos}</h2>
+	<ListaProximos eventos={proximos} idioma={idioma} />
+	<p><a href={ruta('eventos', idioma)}>{textos.comun.verTodos}</a></p>
 </section>

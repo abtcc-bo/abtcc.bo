@@ -78,6 +78,11 @@ export async function obtenerEventos(idioma: Idioma): Promise<Evento[]> {
 	return lista.sort((a, b) => a.datos.inicio.getTime() - b.datos.inicio.getTime());
 }
 
+/** Eventos visibles para el público (sin los exclusivos para socios). */
+export async function obtenerEventosPublicos(idioma: Idioma): Promise<Evento[]> {
+	return (await obtenerEventos(idioma)).filter((e) => !e.datos.solo_socios);
+}
+
 /** Un evento ya terminó cuando pasó su fin (o su inicio, si no tiene fin). */
 export function yaPaso(evento: Evento, ahora = new Date()): boolean {
 	return (evento.datos.fin ?? evento.datos.inicio) < ahora;

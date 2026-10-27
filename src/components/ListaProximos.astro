@@ -1,0 +1,51 @@
+---
+// Lista de próximos eventos. Si la reconstrucción diaria falla, el script oculta igual los que ya pasaron
+// y, si no queda ninguno, muestra el mensaje de "no hay eventos".
+import TarjetaEvento from './TarjetaEvento.astro';
+import { ruta, t, type Idioma } from '../i18n';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	eventos: Evento[];
+	idioma: Idioma;
+	nivel?: 'h2' | 'h3';
+}
+
+const { eventos, idioma, nivel } = Astro.props;
+const textos = t(idioma).eventos;
+---
+
+<div class="lista-proximos" data-lista-proximos>
+	<ul class="rejilla">
+		{
+			eventos.map((evento) => (
+				<li>
+					<TarjetaEvento evento={evento} idioma={idioma} nivel={nivel} />
+				</li>
+			))
+		}
+	</ul>
+	<p class="vacio" hidden={eventos.length > 0} data-vacio>
+		{textos.sinProximos} <a href={ruta('contacto', idioma)}>{textos.avisame}</a>
+	</p>
+</div>
+
+<script>
+	for (const lista of document.querySelectorAll<HTMLElement>('[data-lista-proximos]')) {
+		const ahora = Date.now();
+		for (const tarjeta of lista.querySelectorAll<HTMLElement>('[data-fin]')) {
+			if (Date.parse(tarjeta.dataset.fin!) < ahora) tarjeta.closest('li')?.remove();
+		}
+		if (!lista.querySelector('li')) lista.querySelector<HTMLElement>('[data-vacio]')!.hidden = false;
+	}
+</script>
+
+<style>
+	.rejilla {
+		list-style: none;
+		padding: 0;
+		display: grid;
+		gap: var(--espacio);
+		grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+	}
+</style>
