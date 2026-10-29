@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import SelectorIdioma from './SelectorIdioma.astro';
 import logo from '../assets/logo-encabezado.png';
-import { render } from 'astro:content';
 import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
 import { MENU, hijasDe, ruta, t, type Alternos, type Idioma, type Seccion } from '../i18n';
 
@@ -35,11 +34,10 @@ submenus.eventos = [
 	...proximos.map((e) => ({ nombre: e.texto.data.titulo, href: ruta('eventos', idioma, e.slug), fin: (e.datos.fin ?? e.datos.inicio).toISOString() })),
 	...(eventos.length > proximos.length ? [{ nombre: textos.eventos.realizados, href: `${ruta('eventos', idioma)}#titulo-realizados` }] : []),
 ];
-// Membresía: los títulos de su página (Categorías, Beneficios, Cuota...).
+// Membresía: los apartados de su página (Categorías, Beneficios, Cuota...).
 const paginaMembresia = await paginaDeSeccion('membresia', idioma);
-if (paginaMembresia) {
-	const { headings } = await render(paginaMembresia);
-	submenus.membresia = headings.filter((h) => h.depth === 2).map((h) => ({ nombre: h.text, href: `${ruta('membresia', idioma)}#${h.slug}` }));
+if (paginaMembresia?.data.membresia) {
+	submenus.membresia = Object.entries(textos.membresiaVista.secciones).map(([id, nombre]) => ({ nombre, href: `${ruta('membresia', idioma)}#${id}` }));
 }
 ---
 
@@ -47,6 +45,7 @@ if (paginaMembresia) {
 	<div class="contenedor fila">
 		<a class="logo" href={ruta('inicio', idioma)}>
 			<Image src={logo} alt={textos.sitio.sigla} height={44} densities={[1, 2]} loading="eager" />
+			<span class="afiliacion" aria-hidden="true">{textos.sitio.afiliacion}</span>
 		</a>
 		<button class="boton-menu" type="button" aria-expanded="false" aria-controls="panel-menu">{textos.nav.menu}</button>
 		<div class="panel" id="panel-menu">
@@ -87,7 +86,10 @@ if (paginaMembresia) {
 				</ul>
 			</nav>
 			<SelectorIdioma idioma={idioma} alternos={alternos} />
-			<a class="boton-socios" href={ruta('socios', idioma)}>{textos.nav.socios}</a>
+			<a class="boton-socios" href={ruta('socios', idioma)}>
+				<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 11h12v9H6z M8.5 11V8a3.5 3.5 0 0 1 7 0v3" /></svg>
+				{textos.nav.socios}
+			</a>
 		</div>
 	</div>
 </header>
@@ -108,7 +110,7 @@ if (paginaMembresia) {
 	// Desplegables (<details>): en pantallas grandes con mouse se abren al pasar por encima;
 	// se cierran al abrir otro, al hacer clic fuera o con Escape.
 	const desplegables = [...document.querySelectorAll<HTMLDetailsElement>('.encabezado .desplegable')];
-	const conMouse = matchMedia('(hover: hover) and (min-width: 48.01rem)');
+	const conMouse = matchMedia('(hover: hover) and (min-width: 64.01rem)');
 	const abiertosPorMouse = new WeakSet<HTMLDetailsElement>();
 	for (const desplegable of desplegables) {
 		desplegable.addEventListener('mouseenter', () => {
@@ -156,9 +158,9 @@ if (paginaMembresia) {
 		position: sticky;
 		top: 0;
 		z-index: 20;
-		background: rgb(255 255 255 / 0.96);
+		background: rgb(245 242 234 / 0.94);
 		border-bottom: 1px solid var(--color-borde);
-		backdrop-filter: blur(6px);
+		backdrop-filter: blur(8px);
 	}
 	/* Franja con los tres colores del logo. */
 	.encabezado::before {
@@ -175,12 +177,27 @@ if (paginaMembresia) {
 		padding-block: 0.6rem;
 	}
 	.logo {
+		display: flex;
+		align-items: center;
+		gap: 0.85rem;
 		margin-right: auto;
-		line-height: 0;
+		line-height: 1.3;
+		text-decoration: none;
 	}
 	.logo img {
-		height: 2.75rem;
+		height: 2.6rem;
 		width: auto;
+	}
+	/* "Grupo de trabajo ALAPCCO" junto al logo, separado por una línea fina. */
+	.afiliacion {
+		max-width: 7.5rem;
+		padding-left: 0.85rem;
+		border-left: 1px solid var(--color-division);
+		font-size: 0.625rem;
+		font-weight: 500;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-texto-suave);
 	}
 	.panel {
 		display: flex;
@@ -202,8 +219,11 @@ if (paginaMembresia) {
 	.panel :global(.selector-idioma summary) {
 		color: var(--color-texto);
 		text-decoration: none;
-		font-size: 1rem;
+		font-size: 0.875rem;
 		font-weight: 500;
+	}
+	nav > ul {
+		gap: 1.5rem;
 	}
 	nav > ul > li > a,
 	nav summary {
@@ -216,26 +236,42 @@ if (paginaMembresia) {
 	nav summary:hover {
 		color: var(--color-acento);
 	}
+	/* Sección actual: subrayado dorado. */
 	[aria-current='page'],
 	.actual {
 		color: var(--color-acento);
-		border-bottom-color: var(--color-acento) !important;
+		border-bottom-color: var(--color-dorado-claro) !important;
 	}
 	.boton-socios {
 		display: inline-flex;
 		align-items: center;
+		gap: 0.45rem;
 		min-height: 40px;
-		padding-inline: 1rem;
-		border: 1px solid var(--color-acento);
-		border-radius: var(--radio);
-		color: var(--color-acento);
-		font-size: 0.9375rem;
-		font-weight: 600;
-		text-decoration: none;
-	}
-	.boton-socios:hover {
+		padding-inline: 1.1rem;
+		border-radius: 999px;
 		background: var(--color-acento);
 		color: #fff;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		text-decoration: none;
+		transition: background-color 0.2s;
+	}
+	.boton-socios:hover {
+		background: var(--color-acento-hover);
+		color: #fff;
+	}
+	.boton-socios svg {
+		width: 0.95rem;
+		height: 0.95rem;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linejoin: round;
+	}
+	@media (max-width: 80rem) {
+		.afiliacion {
+			display: none;
+		}
 	}
 	.boton-menu {
 		display: none;
@@ -249,7 +285,7 @@ if (paginaMembresia) {
 		border-radius: var(--radio);
 	}
 
-	@media (max-width: 48rem) {
+	@media (max-width: 64rem) {
 		:global(.js) .boton-menu {
 			display: block;
 		}

@@ -3,8 +3,11 @@
 // La usan [...ruta].astro (páginas estáticas) y las páginas dinámicas de src/pages/{es,en,pt}/.
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import CabeceraPagina from '../components/CabeceraPagina.astro';
 import { VISTAS } from './index';
 import DetalleEvento from './DetalleEvento.astro';
+import Membresia from './Membresia.astro';
+import Nosotros from './Nosotros.astro';
 import PaginaInstitucional from './PaginaInstitucional.astro';
 import Pendiente from './Pendiente.astro';
 import type { PaginaDelSitio } from '../lib/paginas';
@@ -31,6 +34,14 @@ const subsecciones =
 		: [];
 
 const nombre = props.tipo === 'evento' ? props.evento.texto.data.titulo : (pagina?.data.titulo ?? textos.nav[props.seccion]);
+// Cabecera verde (todas las secciones menos la portada): rótulo, entradilla y atajos propios de cada sección.
+const seccion = props.tipo === 'seccion' ? props.seccion : undefined;
+const cabecera = seccion && seccion !== 'inicio' ? textos.cabeceras[seccion] : undefined;
+const entradilla = pagina?.data.nosotros?.presentacion.join(' ') || cabecera?.entradilla || pagina?.data.descripcion;
+const atajos =
+	seccion === 'nosotros' && pagina?.data.nosotros
+		? Object.entries(textos.nosotros.atajos).map(([id, nombre]) => ({ nombre, href: `#${id}` }))
+		: subsecciones;
 const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${textos.sitio.sigla} · ${textos.sitio.nombre}` : `${nombre} · ${textos.sitio.sigla}`;
 ---
 
@@ -44,11 +55,49 @@ const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${texto
 			migas={migasHasta(props.seccion).slice(0, -1)}
 			nombreEnMigas={props.seccion === 'inicio' ? undefined : nombre}
 			noIndexar={!props.indexable}
+			conCabecera={Boolean(cabecera)}
 		>
+			{cabecera && (
+				<CabeceraPagina slot="cabecera" antetitulo={cabecera.antetitulo} titulo={nombre} entradilla={entradilla}>
+					{seccion === 'eventos' && (
+						<>
+							<a class="enlace-accion" href="/eventos.ics">
+								{textos.eventos.suscribirse}
+							</a>
+							<a class="enlace-accion" href={`/${idioma}/eventos.xml`}>
+								{textos.eventos.rss}
+							</a>
+						</>
+					)}
+					{seccion === 'membresia' && pagina?.data.membresia && (
+						<>
+							<a class="boton boton-dorado" href="#solicitar">
+								{textos.membresia.solicitar} <span class="flecha" aria-hidden="true">→</span>
+							</a>
+							<a class="boton boton-contorno" href="#requisitos">
+								{textos.membresia.verRequisitos}
+							</a>
+						</>
+					)}
+					{atajos.length > 0 && (
+						<ul class="atajos">
+							{atajos.map((a) => (
+								<li>
+									<a href={a.href}>{a.nombre}</a>
+								</li>
+							))}
+						</ul>
+					)}
+				</CabeceraPagina>
+			)}
 			{Vista ? (
 				<Vista idioma={idioma} pagina={pagina} />
+			) : pagina?.data.nosotros ? (
+				<Nosotros idioma={idioma} pagina={pagina} />
+			) : pagina?.data.membresia ? (
+				<Membresia idioma={idioma} pagina={pagina} />
 			) : pagina ? (
-				<PaginaInstitucional pagina={pagina} subsecciones={subsecciones} />
+				<PaginaInstitucional pagina={pagina} />
 			) : (
 				<Pendiente idioma={idioma} seccion={props.seccion} alternos={props.alternos} />
 			)}
@@ -67,3 +116,30 @@ const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${texto
 		</Base>
 	)
 }
+
+<style>
+	/* Atajos en píldoras dentro de la cabecera verde. */
+	.atajos {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.atajos a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 36px;
+		padding-inline: 0.9rem;
+		border: 1px solid rgb(255 255 255 / 0.35);
+		border-radius: 999px;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		text-decoration: none;
+		transition: background-color 0.2s;
+	}
+	.atajos a:hover {
+		background: rgb(255 255 255 / 0.12);
+	}
+</style>

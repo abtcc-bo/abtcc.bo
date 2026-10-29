@@ -243,7 +243,9 @@ const varios = eventos.length > 1;
 	.pista::-webkit-scrollbar {
 		display: none;
 	}
+	/* position: relative contiene el texto oculto para lectores de pantalla dentro de la pista (si no, desborda la página). */
 	.diapositiva {
+		position: relative;
 		flex: 0 0 100%;
 		scroll-snap-align: start;
 		display: grid;

@@ -1,0 +1,54 @@
+---
+// Cabecera verde de cada sección (rótulo, título con la última palabra en cursiva y entradilla).
+// Va en el slot "cabecera" de Base.astro, que le agrega las migas. Las acciones (botones o atajos) van en el slot.
+import RegistroAcumulativo from './RegistroAcumulativo.astro';
+
+interface Props {
+	antetitulo?: string;
+	titulo: string;
+	entradilla?: string;
+}
+
+const { antetitulo, titulo, entradilla } = Astro.props;
+const palabras = titulo.trim().split(' ');
+const ultima = palabras.pop();
+---
+
+<div class="cabecera">
+	{antetitulo && <p class="antetitulo">{antetitulo}</p>}
+	<h1>
+		{palabras.length > 0 && <>{palabras.join(' ')} </>}<span class="cursiva">{ultima}</span>
+	</h1>
+	{entradilla && <p class="entradilla">{entradilla}</p>}
+	{Astro.slots.has('default') && (
+		<div class="acciones">
+			<slot />
+		</div>
+	)}
+</div>
+<RegistroAcumulativo />
+
+<style>
+	.cabecera {
+		position: relative;
+		z-index: 1;
+		max-width: 44rem;
+		padding-block: 0.5rem 0.5rem;
+	}
+	h1 {
+		margin: 1rem 0 1.25rem;
+		font-size: clamp(2.8rem, 1.8rem + 3.8vw, 4.25rem);
+		line-height: 1.02;
+	}
+	.entradilla {
+		margin: 0;
+		font-size: 1.0625rem;
+		color: #d5e1da;
+	}
+	.acciones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin-top: 1.75rem;
+	}
+</style>

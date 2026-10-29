@@ -8,9 +8,13 @@ lugar:
   ciudad: Cochabamba
 facilitadores:
   - karen-szupszynski
+  - guillermo-rivera
   - halder-delgado
   - carmen-barron
+  - leonardo-eyzaguirre
   - alexandra-shand
+# Imagen de portada del evento (tarjetas y encabezado de la página).
+imagen: ./galeria/15.webp
 galeria:
   - imagen: ./galeria/01.webp
     descripcion: Halder Delgado expone sobre prevención de recaídas ante un auditorio lleno.

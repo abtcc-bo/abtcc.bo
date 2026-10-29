@@ -29,13 +29,13 @@ const textos = t(idioma).contacto.formulario;
 
 	<p class="aviso" role="alert" data-aviso hidden></p>
 
-	<div class="campo">
+	<div class="campo campo-mitad">
 		<label for="contacto-nombre">{textos.nombre}</label>
 		<input id="contacto-nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="100" aria-describedby="error-nombre" />
 		<p class="error" id="error-nombre" data-error="nombre" hidden>{textos.errores.nombre}</p>
 	</div>
 
-	<div class="campo">
+	<div class="campo campo-mitad">
 		<label for="contacto-correo">{textos.correo}</label>
 		<input id="contacto-correo" name="correo" type="email" autocomplete="email" required maxlength="200" aria-describedby="error-correo" />
 		<p class="error" id="error-correo" data-error="correo" hidden>{textos.errores.correo}</p>
@@ -70,7 +70,7 @@ const textos = t(idioma).contacto.formulario;
 
 	{TURNSTILE_SITE_KEY && <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-language={idioma}></div>}
 
-	<button class="boton" type="submit">{textos.enviar}</button>
+	<button class="boton" type="submit">{textos.enviar} <span class="flecha" aria-hidden="true">→</span></button>
 </form>
 
 <div class="exito" role="status" data-exito hidden>
@@ -165,25 +165,50 @@ const textos = t(idioma).contacto.formulario;
 </script>
 
 <style>
+	/* Nombre y correo lado a lado en pantallas anchas; el resto ocupa todo el ancho. */
 	.formulario {
 		display: grid;
-		gap: var(--espacio);
-		max-width: 36rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1.1rem 1rem;
+	}
+	.formulario > :not(.campo-mitad) {
+		grid-column: 1 / -1;
+	}
+	@media (max-width: 36rem) {
+		.formulario {
+			grid-template-columns: 1fr;
+		}
 	}
 	.campo {
 		display: grid;
 		gap: 0.25rem;
 	}
 	label {
-		font-weight: 700;
+		font-size: 0.8125rem;
+		font-weight: 600;
 	}
 	input,
 	select,
 	textarea {
 		font: inherit;
 		min-height: 44px;
-		padding: 0.5rem;
-		border: 1px solid var(--color-texto-suave);
+		padding: 0.6rem 0.75rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		background: #fff;
+		transition:
+			border-color 0.2s,
+			box-shadow 0.2s;
+	}
+	input:focus,
+	select:focus,
+	textarea:focus {
+		border-color: var(--color-acento);
+		box-shadow: 0 0 0 3px var(--color-acento-suave);
+		outline: none;
+	}
+	button {
+		justify-self: start;
 	}
 	[aria-invalid='true'] {
 		border: 2px solid #a40000;

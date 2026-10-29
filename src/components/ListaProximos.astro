@@ -24,6 +24,8 @@ const textos = t(idioma).eventos;
 				</li>
 			))
 		}
+		<!-- Elemento extra al final de la cuadrícula (p. ej. "suscríbete al calendario"). -->
+		<slot />
 	</ul>
 	<p class="vacio" hidden={eventos.length > 0} data-vacio>
 		{textos.sinProximos} <a href={ruta('contacto', idioma)}>{textos.avisame}</a>
@@ -36,7 +38,7 @@ const textos = t(idioma).eventos;
 		for (const tarjeta of lista.querySelectorAll<HTMLElement>('[data-fin]')) {
 			if (Date.parse(tarjeta.dataset.fin!) < ahora) tarjeta.closest('li')?.remove();
 		}
-		if (!lista.querySelector('li')) lista.querySelector<HTMLElement>('[data-vacio]')!.hidden = false;
+		if (!lista.querySelector('li:not(.extra)')) lista.querySelector<HTMLElement>('[data-vacio]')!.hidden = false;
 	}
 </script>
 

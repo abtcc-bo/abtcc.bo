@@ -35,7 +35,7 @@ for (const idioma of IDIOMAS) {
 	}
 }
 
-const LOCALE_INTL: Record<Idioma, string> = { es: 'es-BO', en: 'en-US', pt: 'pt-BR' };
+export const LOCALE_INTL: Record<Idioma, string> = { es: 'es-BO', en: 'en-US', pt: 'pt-BR' };
 
 /** Formato de idioma para Open Graph (es_BO, en_US, pt_BR). */
 export function localeOpenGraph(idioma: Idioma): string {

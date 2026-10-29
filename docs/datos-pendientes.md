@@ -61,3 +61,9 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [x] Imagen para compartir en redes: generada con el logo ✔ (se puede reemplazar por una diseñada)
 - [ ] Colores
 - [ ] Fuentes (2–3)
+
+## Rediseño (portada y Quiénes somos)
+
+- [ ] Logo de ALAPCCO (para la sección "Red internacional" de la portada)
+- [ ] Año de fundación de la ABTCC e hitos para la línea de tiempo de "Quiénes somos"
+- [ ] Revisar los textos nuevos de la portada (`src/content/paginas/es/inicio.md`), incluida la lista de conceptos de la cinta animada

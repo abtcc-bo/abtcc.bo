@@ -1,9 +1,10 @@
 ---
 // Listado: próximos eventos con filtros arriba, archivo de eventos realizados por año abajo.
 import ListaProximos from '../components/ListaProximos.astro';
+import TarjetaDestacada from '../components/TarjetaDestacada.astro';
 import TarjetaEvento from '../components/TarjetaEvento.astro';
 import { obtenerEventosPublicos, yaPaso } from '../lib/contenido';
-import { t, type Idioma } from '../i18n';
+import { ruta, t, type Idioma } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
@@ -15,6 +16,7 @@ const ev = textos.eventos;
 const eventos = await obtenerEventosPublicos(idioma);
 const proximos = eventos.filter((e) => !yaPaso(e));
 const pasados = eventos.filter((e) => yaPaso(e)).reverse();
+const destacado = proximos.find((e) => e.datos.destacado);
 
 const porAnio = new Map<number, typeof pasados>();
 for (const evento of pasados) {
@@ -27,10 +29,18 @@ const tipos = [...new Set(proximos.map((e) => e.datos.tipo))];
 const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? []))];
 ---
 
-<h1>{textos.nav.eventos}</h1>
+{
+	destacado && (
+		<section class="banda destacado" aria-label={textos.destacado.etiqueta}>
+			<p class="antetitulo">{textos.destacado.etiqueta}</p>
+			<TarjetaDestacada evento={destacado} idioma={idioma} forma="horizontal" />
+		</section>
+	)
+}
 
-<section aria-labelledby="titulo-proximos">
-	<h2 id="titulo-proximos">{ev.proximos}</h2>
+<section class="banda proximos" aria-labelledby="titulo-proximos">
+	<div class="cabecera-seccion">
+		<h2 id="titulo-proximos">{ev.proximos}</h2>
 
 	{
 		proximos.length > 1 && (
@@ -59,13 +69,22 @@ const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? [])
 			</form>
 		)
 	}
+	</div>
 
-	<ListaProximos eventos={proximos} idioma={idioma} />
+	<ListaProximos eventos={proximos} idioma={idioma}>
+		<li class="extra">
+			<aside class="no-te-pierdas tarjeta">
+				<h3>{ev.noTePierdasTitulo}</h3>
+				<p>{ev.noTePierdasTexto}</p>
+				<a class="enlace-accion" href="/eventos.ics">{ev.suscribirse}</a>
+			</aside>
+		</li>
+	</ListaProximos>
 </section>
 
 {
 	pasados.length > 0 && (
-		<section aria-labelledby="titulo-realizados">
+		<section class="banda banda-clara" aria-labelledby="titulo-realizados">
 			<h2 id="titulo-realizados">{ev.realizados}</h2>
 			{[...porAnio].map(([anio, lista]) => (
 				<>
@@ -83,9 +102,15 @@ const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? [])
 	)
 }
 
-<p class="suscripciones">
-	<a href="/eventos.ics">{ev.suscribirse}</a> · <a href={`/${idioma}/eventos.xml`}>{ev.rss}</a>
-</p>
+<section class="banda banda-azul miembros" aria-labelledby="titulo-miembros">
+	<div>
+		<p class="antetitulo">{ev.miembrosAntetitulo}</p>
+		<h2 id="titulo-miembros">{ev.miembrosTitulo}</h2>
+	</div>
+	<a class="boton boton-dorado" href={ruta('membresia', idioma)}>
+		{ev.miembrosBoton} <span class="flecha" aria-hidden="true">→</span>
+	</a>
+</section>
 
 <script>
 	// Filtros por tipo y modalidad. Sin JavaScript no se muestran y se ven todos los eventos.
@@ -110,37 +135,83 @@ const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? [])
 </script>
 
 <style>
+	.destacado {
+		padding-bottom: 2rem;
+	}
+	.destacado .antetitulo {
+		margin-bottom: 1.25rem;
+	}
+	.cabecera-seccion {
+		margin-bottom: 1.5rem;
+	}
+	.cabecera-seccion h2 {
+		margin: 0;
+	}
 	.filtros {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--espacio);
+		gap: 0.75rem;
 		align-items: end;
-		margin-bottom: var(--espacio);
 	}
 	label {
 		display: grid;
 		gap: 0.25rem;
-		font-weight: 700;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-texto-suave);
 	}
 	select {
+		min-width: 10rem;
 		min-height: 44px;
+		padding-inline: 0.75rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		background: var(--color-tarjeta);
 		font: inherit;
+		font-size: 0.9375rem;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--color-texto);
+	}
+	.sin-resultados {
+		flex-basis: 100%;
+		margin: 0;
+	}
+	.no-te-pierdas {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		height: 100%;
+		padding: 1.75rem;
+		border-style: dashed;
+	}
+	.no-te-pierdas h3 {
+		margin: 0 0 0.5rem;
+	}
+	.no-te-pierdas p {
+		margin: 0 0 1rem;
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
 	}
 	.archivo {
 		list-style: none;
 		padding: 0;
 		display: grid;
-		gap: var(--espacio);
+		gap: 1.5rem;
+		grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
 	}
-	.suscripciones {
-		margin-top: calc(var(--espacio) * 2);
-		font-size: 0.9375rem;
+	.miembros {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		margin-bottom: -3rem;
 	}
-	/* Divisiones claras entre próximos, realizados y suscripciones. */
-	section + section,
-	.suscripciones {
-		margin-top: calc(var(--espacio) * 3);
-		padding-top: calc(var(--espacio) * 2);
-		border-top: 1px solid var(--color-division);
+	.miembros h2 {
+		max-width: 32rem;
+		margin: 0.75rem 0 0;
 	}
 </style>

@@ -1,5 +1,6 @@
 ---
 import '@fontsource-variable/cormorant-garamond';
+import '@fontsource-variable/cormorant-garamond/wght-italic.css';
 import '@fontsource-variable/inter';
 import '../styles/global.css';
 import Encabezado from '../components/Encabezado.astro';
@@ -19,6 +20,8 @@ interface Props {
 	alternos: Alternos;
 	/** Migas de pan sin incluir la página actual al final; se omiten en la portada. */
 	migas?: Miga[];
+	/** true = la página trae cabecera verde (slot "cabecera"); las migas van dentro de ella. */
+	conCabecera?: boolean;
 	/** Nombre de la página actual en las migas. */
 	nombreEnMigas?: string;
 	/** Imagen para redes (1200×630). Ruta en /public o URL. */
@@ -34,6 +37,7 @@ const {
 	descripcion = t(idioma).sitio.descripcion,
 	alternos,
 	migas = [],
+	conCabecera = false,
 	nombreEnMigas,
 	imagen = ORGANIZACION.imagenRedes,
 	tipo = 'website',
@@ -104,7 +108,16 @@ const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href:
 		<a class="saltar" href="#contenido">{textos.comun.saltarAlContenido}</a>
 		<Encabezado idioma={idioma} alternos={alternos} />
 		<main id="contenido" class="contenedor">
-			{migasCompletas.length > 1 && <Migas idioma={idioma} migas={migasCompletas} />}
+			{
+				conCabecera ? (
+					<section class="cabecera-pagina banda banda-verde">
+						{migasCompletas.length > 1 && <Migas idioma={idioma} migas={migasCompletas} />}
+						<slot name="cabecera" />
+					</section>
+				) : (
+					migasCompletas.length > 1 && <Migas idioma={idioma} migas={migasCompletas} />
+				)
+			}
 			<slot />
 		</main>
 		<Pie idioma={idioma} />

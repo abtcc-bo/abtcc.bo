@@ -21,7 +21,6 @@ const iniciales = (nombre: string) =>
 		.join('');
 ---
 
-<h1>{textos.nav.comision}</h1>
 
 <ul class="integrantes">
 	{
@@ -31,7 +30,7 @@ const iniciales = (nombre: string) =>
 			const { nombre, foto, titulo_profesional, enlaces } = persona.data;
 			const listaEnlaces = Object.entries(enlaces).filter(([, url]) => url);
 			return (
-				<li class="integrante">
+				<li class="integrante" id={persona.id}>
 					{foto ? (
 						<Image src={foto} alt={nombre} width={240} height={240} class="foto" />
 					) : (
@@ -94,7 +93,7 @@ const iniciales = (nombre: string) =>
 	.integrantes {
 		list-style: none;
 		padding: 0;
-		margin: calc(var(--espacio) * 2) 0 0;
+		margin: 3rem 0 0;
 		display: grid;
 		gap: 1.5rem;
 	}

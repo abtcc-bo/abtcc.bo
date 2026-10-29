@@ -153,6 +153,48 @@ const personas = defineCollection({
 		}),
 });
 
+const textoTitulado = z.object({ titulo: z.string(), texto: z.string() });
+
+/** Contenido estructurado de "Quiénes somos" (vista Nosotros.astro). */
+const nosotros = z.object({
+	/** Párrafos de presentación (arriba de todo). */
+	presentacion: z.array(z.string()),
+	objetivo: z.string(),
+	lineas: z.array(textoTitulado),
+	congreso: z.object({ antetitulo: z.string(), titulo: z.string() }),
+	evidencia: z.object({ titulo: z.string(), texto: z.string(), pilares: z.array(z.string()) }),
+	principios: z.array(z.string()),
+	/** Línea de tiempo. Año como texto para admitir "[PENDIENTE]". */
+	hitos: z.array(z.object({ anio: z.string(), texto: z.string() })),
+});
+
+/** Contenido estructurado de "Membresía" (vista Membresia.astro). */
+const membresia = z.object({
+	categorias: z.array(z.object({ nombre: z.string(), participacion: z.string(), texto: z.string() })),
+	beneficios: z.array(z.string()),
+	cuota: z.object({ monto: z.number(), unidad: z.string(), texto: z.string(), detalles: z.array(textoTitulado) }),
+	requisitos: z.array(z.object({ icono: z.enum(['documento', 'titulo', 'hoja', 'compromiso']), texto: z.string() })),
+	pasos: z.array(textoTitulado),
+	solicitud: z.object({ titulo: z.string(), texto: z.string() }),
+});
+
+/** Textos de la portada (vista Inicio.astro), en src/content/paginas/{idioma}/inicio.md. */
+const portada = z.object({
+	antetitulo: z.string(),
+	/** Título en tres partes: "Asociación Boliviana de" (cursiva dorada) + "Terapias Cognitivas, Conductuales y" + "Contextuales" (cursiva). */
+	tituloPrevio: z.string(),
+	titulo: z.string(),
+	tituloCursiva: z.string(),
+	bajada: z.string(),
+	datos: z.array(z.string()),
+	/** Conceptos de la ciencia del comportamiento que pasan en la cinta animada. */
+	conceptos: z.array(z.string()),
+	quienes: z.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string(), puntos: z.array(textoTitulado) }),
+	cita: z.object({ texto: z.string(), fuente: z.string() }),
+	membresia: z.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string(), beneficios: z.array(z.string()) }),
+	red: z.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string() }),
+});
+
 /** Páginas institucionales: `src/content/paginas/{es,en,pt}/nombre.md`. `clave` es la sección donde se muestra. */
 const paginas = defineCollection({
 	loader: glob({ pattern: '{es,en,pt}/*.md', base: './src/content/paginas', generateId: sinExtension }),
@@ -162,6 +204,12 @@ const paginas = defineCollection({
 			clave: z.enum(Object.keys(SECCIONES) as [keyof typeof SECCIONES, ...(keyof typeof SECCIONES)[]]),
 			descripcion: z.string().max(160, 'La descripción para Google debe tener como máximo 160 caracteres.'),
 			imagen: image().optional(),
+			/** Solo en la página de Quiénes somos. */
+			nosotros: nosotros.optional(),
+			/** Solo en la página de Membresía. */
+			membresia: membresia.optional(),
+			/** Solo en la portada. */
+			portada: portada.optional(),
 		}),
 });
 

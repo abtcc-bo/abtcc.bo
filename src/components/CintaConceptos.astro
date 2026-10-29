@@ -1,0 +1,85 @@
+---
+// Cinta que se desliza lentamente con conceptos de la ciencia del comportamiento (bajo la presentación de la portada).
+// Se detiene al pasar el mouse y queda quieta con "reducir movimiento". La copia para el bucle continuo se oculta
+// a los lectores de pantalla.
+
+interface Props {
+	conceptos: string[];
+	/** Nombre de la lista para lectores de pantalla. */
+	etiqueta: string;
+}
+
+const { conceptos, etiqueta } = Astro.props;
+---
+
+<div class="cinta-conceptos" role="region" aria-label={etiqueta}>
+	<div class="pista">
+		<ul>
+			{conceptos.map((c) => <li>{c}</li>)}
+		</ul>
+		<ul aria-hidden="true">
+			{conceptos.map((c) => <li>{c}</li>)}
+		</ul>
+	</div>
+</div>
+
+<style>
+	.cinta-conceptos {
+		margin-inline: calc(50% - 50vw);
+		overflow: hidden;
+		padding-block: 1.1rem;
+		background: var(--color-oscuro);
+		border-top: 1px solid rgb(255 255 255 / 0.06);
+		mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+	}
+	.pista {
+		display: flex;
+		width: max-content;
+		animation: pasar 60s linear infinite;
+	}
+	.cinta-conceptos:hover .pista {
+		animation-play-state: paused;
+	}
+	ul {
+		display: flex;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	li {
+		display: flex;
+		align-items: center;
+		white-space: nowrap;
+		font-family: var(--fuente-titulos);
+		font-size: 1.35rem;
+		font-style: italic;
+		color: #dfe4ee;
+	}
+	/* Separador: punto dorado entre conceptos. */
+	li::after {
+		content: '';
+		width: 5px;
+		height: 5px;
+		margin-inline: 1.75rem;
+		border-radius: 50%;
+		background: var(--color-dorado-claro);
+	}
+	@keyframes pasar {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.pista {
+			width: auto;
+		}
+		.pista ul {
+			flex-wrap: wrap;
+			justify-content: center;
+			row-gap: 0.5rem;
+		}
+		.pista ul[aria-hidden] {
+			display: none;
+		}
+	}
+</style>

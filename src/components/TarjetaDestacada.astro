@@ -1,0 +1,283 @@
+---
+// Tarjeta del próximo evento destacado (`destacado: true`), con cuenta regresiva.
+//  - `vertical`: en la portada, junto al título. `horizontal`: en Formación y eventos.
+//  - Con fecha exacta: días, horas, minutos y segundos en vivo. Con `por_confirmar`: "Faltan unos N meses".
+import { Image } from 'astro:assets';
+import { LOCALE_INTL, ZONA_HORARIA, formato, ruta, t, type Idioma } from '../i18n';
+import { fechaDelEvento } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+	forma?: 'vertical' | 'horizontal';
+}
+
+const { evento, idioma, forma = 'vertical' } = Astro.props;
+const textos = t(idioma);
+const d = textos.destacado;
+const ev = textos.eventos;
+const { datos } = evento;
+const { titulo, resumen } = evento.texto.data;
+const href = ruta('eventos', idioma, evento.slug);
+const mesAnio = new Intl.DateTimeFormat(LOCALE_INTL[idioma], { timeZone: ZONA_HORARIA, month: 'long', year: 'numeric' }).format(datos.inicio);
+
+const restanteMs = Math.max(0, datos.inicio.getTime() - Date.now());
+const DIA = 86_400_000;
+const meses = Math.round(restanteMs / (30.44 * DIA));
+const partes = [
+	{ clave: 'dias', valor: Math.floor(restanteMs / DIA), nombre: d.dias },
+	{ clave: 'horas', valor: Math.floor((restanteMs % DIA) / 3_600_000), nombre: d.horas },
+	{ clave: 'minutos', valor: Math.floor((restanteMs % 3_600_000) / 60_000), nombre: d.minutos },
+	{ clave: 'segundos', valor: Math.floor((restanteMs % 60_000) / 1000), nombre: d.segundos },
+];
+---
+
+<article class:list={['destacada', forma]} aria-labelledby={`destacado-${forma}`}>
+	{
+		forma === 'vertical' && (
+			<p class="barra">
+				<span>{d.etiqueta}</span>
+				<span class="mes-anio">{mesAnio}</span>
+			</p>
+		)
+	}
+	{
+		datos.imagen && (
+			<div class="visual">
+				<Image src={datos.imagen} alt="" widths={[320, 640]} sizes={forma === 'vertical' ? '20rem' : '(max-width: 48rem) 80vw, 24rem'} loading="eager" />
+			</div>
+		)
+	}
+	<div class="texto">
+		<p class="etiquetas">
+			<span class="etiqueta">{ev.tipos[datos.tipo]}</span>
+			{datos.modalidad && <span class="etiqueta">{ev.modalidades[datos.modalidad]}</span>}
+			{forma === 'horizontal' && <span class="etiqueta etiqueta-dorada">{d.etiqueta}</span>}
+		</p>
+		<h2 id={`destacado-${forma}`}>
+			<a href={href}>{titulo}</a>
+		</h2>
+		<p class="fecha">
+			{fechaDelEvento(evento, idioma)}
+			{datos.lugar && <> · {datos.lugar.ciudad}</>}
+		</p>
+		<p class="resumen">{resumen}</p>
+
+		{
+			datos.por_confirmar ? (
+				<p class="faltan-aprox">
+					<span class="reloj-icono" aria-hidden="true" />
+					{meses <= 1 ? d.menosDeUnMes : formato(d.faltanMeses, { n: meses })}
+				</p>
+			) : (
+				<div class="reloj" data-cuenta-regresiva data-inicio={datos.inicio.toISOString()}>
+					<p class="visualmente-oculto">{d.faltan}</p>
+					<ul role="timer" aria-live="off">
+						{partes.map((p) => (
+							<li>
+								<span class="numero" data-parte={p.clave}>
+									{String(p.valor).padStart(2, '0')}
+								</span>
+								<span class="unidad">{p.nombre}</span>
+							</li>
+						))}
+					</ul>
+				</div>
+			)
+		}
+
+		<p class="acciones">
+			<a class:list={forma === 'horizontal' ? 'boton' : 'enlace-accion'} href={href}>
+				{d.verEvento} <span class="flecha" aria-hidden="true">→</span>
+			</a>
+		</p>
+	</div>
+</article>
+
+<script>
+	for (const reloj of document.querySelectorAll<HTMLElement>('[data-cuenta-regresiva]')) {
+		const inicio = Date.parse(reloj.dataset.inicio!);
+		const campo = (clave: string) => reloj.querySelector<HTMLElement>(`[data-parte="${clave}"]`)!;
+		const actualizar = () => {
+			const ms = Math.max(0, inicio - Date.now());
+			const valores = {
+				dias: Math.floor(ms / 86_400_000),
+				horas: Math.floor((ms % 86_400_000) / 3_600_000),
+				minutos: Math.floor((ms % 3_600_000) / 60_000),
+				segundos: Math.floor((ms % 60_000) / 1000),
+			};
+			for (const [clave, valor] of Object.entries(valores)) campo(clave).textContent = String(valor).padStart(2, '0');
+			if (ms === 0) clearInterval(intervalo);
+		};
+		const intervalo = setInterval(actualizar, 1000);
+		actualizar();
+	}
+</script>
+
+<style>
+	.destacada {
+		overflow: hidden;
+		background: var(--color-tarjeta);
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		box-shadow: var(--sombra-grande);
+		color: var(--color-texto);
+	}
+	.barra {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		margin: 0;
+		padding: 0.8rem 1.25rem;
+		background: var(--color-oscuro);
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: #fff;
+	}
+	.mes-anio {
+		color: var(--color-dorado-claro);
+	}
+	.visual {
+		display: grid;
+		place-items: center;
+		padding: 1.25rem;
+		background: #fff;
+	}
+	.visual img {
+		display: block;
+		width: 100%;
+		max-width: 16rem;
+		height: auto;
+		transition: transform 0.6s;
+	}
+	.destacada:hover .visual img {
+		transform: scale(1.03) rotate(-1deg);
+	}
+	.texto {
+		padding: 1.25rem 1.5rem 1.5rem;
+		border-top: 1px solid var(--color-borde);
+	}
+	.etiquetas {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin: 0;
+	}
+	h2 {
+		margin: 0.75rem 0 0.4rem;
+		font-size: 1.9rem;
+	}
+	h2 a {
+		color: var(--color-titulos);
+		text-decoration: none;
+	}
+	h2 a:hover {
+		color: var(--color-acento);
+	}
+	.fecha {
+		margin: 0;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: var(--color-dorado);
+	}
+	.resumen {
+		margin: 0.75rem 0;
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+	.faltan-aprox {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 0.35rem 0.85rem;
+		border-radius: 999px;
+		background: var(--color-acento-suave);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: var(--color-acento);
+	}
+	/* Reloj de arena dibujado con CSS que gira despacio. */
+	.reloj-icono {
+		width: 0.7rem;
+		height: 0.7rem;
+		border: 2px solid currentColor;
+		border-radius: 50%;
+		border-top-color: transparent;
+		animation: girar 2.4s linear infinite;
+	}
+	@keyframes girar {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+	.reloj ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.reloj li {
+		display: grid;
+		justify-items: center;
+		min-width: 3.6rem;
+		padding: 0.45rem 0.4rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		background: var(--color-fondo);
+	}
+	.numero {
+		font-family: var(--fuente-titulos);
+		font-size: 1.75rem;
+		line-height: 1;
+		color: var(--color-acento);
+		font-variant-numeric: tabular-nums;
+	}
+	.unidad {
+		font-size: 0.625rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-texto-suave);
+	}
+	.acciones {
+		margin: 1.25rem 0 0;
+	}
+
+	/* Forma horizontal: imagen a la izquierda y texto a la derecha. */
+	.horizontal {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		box-shadow: var(--sombra);
+	}
+	.horizontal .visual {
+		padding: 2rem;
+	}
+	.horizontal .visual img {
+		max-width: 20rem;
+	}
+	.horizontal .texto {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: clamp(1.5rem, 4vw, 2.5rem);
+		border-top: 0;
+		border-left: 1px solid var(--color-borde);
+	}
+	.horizontal h2 {
+		font-size: clamp(2.2rem, 1.6rem + 2vw, 3rem);
+	}
+	@media (max-width: 48rem) {
+		.horizontal {
+			grid-template-columns: 1fr;
+		}
+		.horizontal .texto {
+			border-left: 0;
+			border-top: 1px solid var(--color-borde);
+		}
+	}
+</style>

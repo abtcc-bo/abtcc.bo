@@ -13,8 +13,7 @@ const textos = t(idioma);
 const otros = IDIOMAS.filter((otro) => otro !== idioma && alternos[otro]);
 ---
 
-<h1>{textos.nav[seccion]}</h1>
-<p>{textos.comun.enConstruccion}</p>
+<p class="pendiente">{textos.comun.enConstruccion}</p>
 {
 	otros.length > 0 && (
 		<ul>
@@ -28,3 +27,4 @@ const otros = IDIOMAS.filter((otro) => otro !== idioma && alternos[otro]);
 		</ul>
 	)
 }
+<style>.pendiente{margin-top:3rem;font-size:1.125rem}</style>

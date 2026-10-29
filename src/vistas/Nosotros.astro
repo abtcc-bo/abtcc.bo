@@ -1,0 +1,354 @@
+---
+// Quiénes somos: contenido en bloques del frontmatter de src/content/paginas/{idioma}/nosotros.md (campo `nosotros`).
+// La cabecera verde (título, presentación y atajos) la pone Pagina.astro.
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import Contingencia from '../components/Contingencia.astro';
+import { obtenerComision, textosDePersona } from '../lib/contenido';
+import { ruta, t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+	pagina: CollectionEntry<'paginas'>;
+}
+
+const { idioma, pagina } = Astro.props;
+const n = pagina.data.nosotros!;
+const textos = t(idioma);
+const v = textos.nosotros;
+const comision = await obtenerComision();
+const romanos = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+---
+
+<section id="objetivo" class="banda objetivo" aria-labelledby="titulo-objetivo">
+	<div>
+		<p class="antetitulo">{v.objetivoAntetitulo}</p>
+		<h2 id="titulo-objetivo">{v.objetivoTitulo}</h2>
+		<Contingencia idioma={idioma} />
+	</div>
+	<p class="cita">{n.objetivo}</p>
+</section>
+
+<section id="que-hacemos" class="banda banda-clara" aria-labelledby="titulo-que-hacemos">
+	<p class="antetitulo">{v.queHacemosAntetitulo}</p>
+	<h2 id="titulo-que-hacemos">{v.queHacemosTitulo}</h2>
+	<ol class="lineas">
+		{
+			n.lineas.map((linea, i) => (
+				<li>
+					<span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+					<h3>{linea.titulo}</h3>
+					<p>{linea.texto}</p>
+				</li>
+			))
+		}
+		<li class="congreso">
+			<p class="antetitulo">{n.congreso.antetitulo}</p>
+			<p class="congreso-titulo">{n.congreso.titulo}</p>
+			<a class="enlace-accion" href={ruta('eventos', idioma)}>
+				{v.verEventos} <span class="flecha" aria-hidden="true">→</span>
+			</a>
+		</li>
+	</ol>
+</section>
+
+<section id="evidencia" class="banda banda-azul evidencia" aria-labelledby="titulo-evidencia">
+	<div>
+		<p class="antetitulo">{v.evidenciaAntetitulo}</p>
+		<h2 id="titulo-evidencia">{n.evidencia.titulo}</h2>
+		<p class="texto-evidencia">{n.evidencia.texto}</p>
+	</div>
+	<ul class="pilares">
+		{
+			n.evidencia.pilares.map((pilar, i) => (
+				<li>
+					<span class="numeral">{romanos[i]}</span>
+					<span class="pilar">{pilar}</span>
+				</li>
+			))
+		}
+	</ul>
+</section>
+
+<section id="principios" class="banda" aria-labelledby="titulo-principios">
+	<p class="antetitulo">{v.principiosAntetitulo}</p>
+	<h2 id="titulo-principios">{v.principiosTitulo}</h2>
+	<ul class="principios">
+		{n.principios.map((p) => <li>{p}</li>)}
+	</ul>
+	<a class="boton boton-contorno" href={ruta('transparencia', idioma)}>{v.leerEstatuto}</a>
+</section>
+
+<section id="comision" class="banda banda-clara" aria-labelledby="titulo-comision">
+	<div class="cabecera-seccion">
+		<div>
+			<p class="antetitulo">{v.comisionAntetitulo}</p>
+			<h2 id="titulo-comision">{v.comisionTitulo}</h2>
+		</div>
+		<a class="enlace-accion" href={ruta('comision', idioma)}>
+			{v.verComision} <span class="flecha" aria-hidden="true">→</span>
+		</a>
+	</div>
+	<ul class="personas">
+		{
+			comision.map((persona) => {
+				const { cargo } = textosDePersona(persona, idioma);
+				return (
+					<li>
+						<a href={`${ruta('comision', idioma)}#${persona.id}`}>
+							<span class="foto">
+								{persona.data.foto && <Image src={persona.data.foto} alt="" widths={[300, 600]} sizes="(max-width: 40rem) 45vw, 14rem" />}
+							</span>
+							<span class="nombre">{persona.data.nombre}</span>
+							<span class="cargo">{cargo}</span>
+						</a>
+					</li>
+				);
+			})
+		}
+	</ul>
+</section>
+
+<section id="historia" class="banda historia" aria-labelledby="titulo-historia">
+	<div>
+		<p class="antetitulo">{v.historiaAntetitulo}</p>
+		<h2 id="titulo-historia">{v.historiaTitulo}</h2>
+	</div>
+	<ol class="linea-tiempo">
+		{
+			n.hitos.map((hito) => (
+				<li>
+					<span class="anio">{hito.anio}</span>
+					<p>{hito.texto}</p>
+				</li>
+			))
+		}
+	</ol>
+</section>
+
+<style>
+	h2 {
+		margin-top: 0.75rem;
+	}
+	/* Dos columnas: título a la izquierda, contenido a la derecha. */
+	.objetivo,
+	.evidencia,
+	.historia {
+		display: grid;
+		grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+		gap: 2rem 4rem;
+		align-items: start;
+	}
+	.cita {
+		margin: 0;
+		font-family: var(--fuente-titulos);
+		font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+		line-height: 1.45;
+		color: var(--color-titulos);
+	}
+
+	.lineas {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
+		gap: 2.5rem 2rem;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.lineas > li {
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--color-division);
+	}
+	.lineas h3 {
+		margin: 0.5rem 0 0.4rem;
+		font-family: var(--fuente-texto);
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	.lineas p {
+		margin: 0;
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+	.lineas .congreso {
+		padding: 1.5rem;
+		border: 0;
+		border-radius: var(--radio);
+		background: var(--color-verde);
+		color: #fff;
+	}
+	.congreso .antetitulo {
+		color: var(--color-dorado-claro);
+	}
+	.congreso .antetitulo::before {
+		display: none;
+	}
+	.congreso-titulo {
+		margin: 0.75rem 0 1.25rem !important;
+		font-family: var(--fuente-titulos);
+		font-size: 1.5rem !important;
+		line-height: 1.2;
+		color: #fff !important;
+	}
+	.congreso a {
+		color: #fff;
+	}
+
+	.texto-evidencia {
+		color: #c9d1e3;
+	}
+	.pilares {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.pilares li {
+		display: grid;
+		gap: 0.4rem;
+		padding: 1.25rem;
+		border: 1px solid rgb(255 255 255 / 0.12);
+		border-radius: var(--radio);
+		background: rgb(255 255 255 / 0.03);
+		transition:
+			background-color 0.3s,
+			transform 0.3s;
+	}
+	.pilares li:hover {
+		background: rgb(255 255 255 / 0.08);
+		transform: translateY(-3px);
+	}
+	.pilar {
+		font-family: var(--fuente-titulos);
+		font-size: 1.3rem;
+		line-height: 1.2;
+		color: #fff;
+	}
+
+	.principios {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin: 2rem 0;
+		padding: 0;
+		list-style: none;
+	}
+	.principios li {
+		padding: 0.4rem 1rem;
+		border: 1px solid var(--color-division);
+		border-radius: 999px;
+		background: var(--color-tarjeta);
+		font-family: var(--fuente-titulos);
+		font-size: 1.125rem;
+		font-style: italic;
+		transition:
+			border-color 0.2s,
+			color 0.2s,
+			transform 0.2s;
+	}
+	.principios li:hover {
+		border-color: var(--color-acento);
+		color: var(--color-acento);
+		transform: translateY(-2px);
+	}
+
+	.personas {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(10.5rem, 45%), 1fr));
+		gap: 1.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.personas a {
+		display: grid;
+		gap: 0.25rem;
+		color: inherit;
+		text-decoration: none;
+	}
+	.foto {
+		display: block;
+		overflow: hidden;
+		aspect-ratio: 4 / 5;
+		margin-bottom: 0.6rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		background: #efe9dc;
+	}
+	.foto img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: grayscale(0.35);
+		transition:
+			transform 0.5s,
+			filter 0.5s;
+	}
+	.personas a:hover img {
+		transform: scale(1.05);
+		filter: none;
+	}
+	.nombre {
+		font-family: var(--fuente-titulos);
+		font-size: 1.3rem;
+		line-height: 1.2;
+		color: var(--color-titulos);
+	}
+	.cargo {
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-dorado);
+	}
+
+	.linea-tiempo {
+		margin: 0;
+		padding: 0 0 0 2rem;
+		border-left: 1px solid var(--color-division);
+		list-style: none;
+	}
+	.linea-tiempo li {
+		position: relative;
+		display: grid;
+		grid-template-columns: 5rem 1fr;
+		gap: 1.5rem;
+		align-items: baseline;
+		padding-block: 0.75rem;
+	}
+	/* Punto sobre la línea de tiempo. */
+	.linea-tiempo li::before {
+		content: '';
+		position: absolute;
+		left: calc(-2rem - 5px);
+		top: 1.45rem;
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: var(--color-dorado-claro);
+		box-shadow: 0 0 0 4px var(--color-fondo);
+	}
+	.anio {
+		font-family: var(--fuente-titulos);
+		font-size: 1.5rem;
+		color: var(--color-acento);
+	}
+	.linea-tiempo p {
+		margin: 0;
+		color: var(--color-texto-suave);
+	}
+
+	@media (max-width: 52rem) {
+		.objetivo,
+		.evidencia,
+		.historia {
+			grid-template-columns: 1fr;
+		}
+		.pilares {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

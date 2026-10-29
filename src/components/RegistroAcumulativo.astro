@@ -1,0 +1,102 @@
+---
+// Figura decorativa: un registro acumulativo, el gráfico clásico del análisis experimental del comportamiento
+// (Skinner): cada respuesta eleva la línea un paso y el tiempo la desplaza a la derecha. El patrón de "escalera"
+// —pausa tras el reforzamiento y luego una racha de respuestas— es el típico de un programa de razón fija.
+// Las marcas cortas señalan cada reforzador. Se dibuja sola al cargar; decorativa (oculta a lectores de pantalla).
+
+interface Props {
+	/** Posición dentro de una banda con `position: relative`. */
+	clase?: string;
+}
+
+const { clase = '' } = Astro.props;
+
+// Escalera: pausa (horizontal) + racha (pendiente fuerte) + marca de reforzador.
+let x = 20;
+let y = 280;
+const tramos: string[] = [`M ${x} ${y}`];
+const marcas: string[] = [];
+const pausas = [38, 30, 46, 26, 40, 34, 44, 30];
+for (const pausa of pausas) {
+	x += pausa;
+	tramos.push(`L ${x} ${y}`);
+	x += 22;
+	y -= 30;
+	tramos.push(`L ${x} ${y}`);
+	marcas.push(`M ${x} ${y} l 9 9`);
+}
+const linea = tramos.join(' ');
+---
+
+<svg class={`registro ${clase}`} viewBox="0 0 600 300" aria-hidden="true" focusable="false">
+	<defs>
+		<pattern id="cuadricula-registro" width="20" height="20" patternUnits="userSpaceOnUse">
+			<path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.35" />
+		</pattern>
+	</defs>
+	<rect width="600" height="300" fill="url(#cuadricula-registro)" class="cuadricula" />
+	<path d="M 20 10 L 20 280 L 590 280" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7" />
+	<path class="trazo" d={linea} fill="none" stroke="currentColor" stroke-width="2" pathLength="1" />
+	<g class="marcas" stroke="#d6b45f" stroke-width="2">
+		{marcas.map((m) => <path class="marca" d={m} />)}
+	</g>
+</svg>
+
+<style>
+	.registro {
+		position: absolute;
+		right: max(1rem, calc(50vw - 36rem));
+		bottom: 1.5rem;
+		width: min(46vw, 34rem);
+		height: auto;
+		color: #fff;
+		opacity: 0.16;
+		pointer-events: none;
+	}
+	/* La cuadrícula se desvanece hacia los bordes para no formar un recuadro. */
+	.cuadricula {
+		mask: radial-gradient(closest-side, #fff, transparent);
+	}
+	.trazo {
+		stroke-dasharray: 1;
+		stroke-dashoffset: 1;
+		animation: dibujar 3.2s ease-out 0.3s forwards;
+	}
+	/* Cada reforzador aparece cuando la línea llega a él (sin estilos en línea, por la política de seguridad). */
+	.marca {
+		opacity: 0;
+		animation: aparecer-marca 0.4s ease-out forwards;
+	}
+	.marca:nth-child(1) { animation-delay: 0.7s; }
+	.marca:nth-child(2) { animation-delay: 1.05s; }
+	.marca:nth-child(3) { animation-delay: 1.45s; }
+	.marca:nth-child(4) { animation-delay: 1.75s; }
+	.marca:nth-child(5) { animation-delay: 2.15s; }
+	.marca:nth-child(6) { animation-delay: 2.5s; }
+	.marca:nth-child(7) { animation-delay: 2.9s; }
+	.marca:nth-child(8) { animation-delay: 3.2s; }
+	@keyframes dibujar {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+	@keyframes aparecer-marca {
+		to {
+			opacity: 1;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.trazo {
+			stroke-dashoffset: 0;
+		}
+		.marca {
+			opacity: 1;
+		}
+	}
+	@media (max-width: 48rem) {
+		.registro {
+			width: 80vw;
+			opacity: 0.1;
+		}
+	}
+</style>

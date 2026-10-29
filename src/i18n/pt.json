@@ -2,7 +2,8 @@
 	"sitio": {
 		"nombre": "Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales",
 		"sigla": "ABTCC",
-		"descripcion": "[PENDENTE: apresentação da associação em uma frase]"
+		"descripcion": "[PENDENTE: apresentação da associação em uma frase]",
+		"afiliacion": "Grupo de trabalho ALAPCCO"
 	},
 	"idioma": {
 		"nombre": "Português",
@@ -41,7 +42,9 @@
 		"contacto": "Contato",
 		"redes": "Redes sociais",
 		"legal": "Informações legais",
-		"derechos": "Todos os direitos reservados."
+		"derechos": "Todos os direitos reservados.",
+		"explorar": "Explorar",
+		"formulario": "Formulário de contato"
 	},
 	"error404": {
 		"titulo": "Página não encontrada",
@@ -115,7 +118,12 @@
 			"socio": "Sócios",
 			"no_socio": "Não sócios",
 			"estudiante": "Estudantes"
-		}
+		},
+		"noTePierdasTitulo": "Não quer perder o próximo?",
+		"noTePierdasTexto": "Assine o calendário e receba cada novo evento da ABTCC na sua agenda.",
+		"miembrosAntetitulo": "Para membros",
+		"miembrosTitulo": "Pelo menos 10 % de desconto e acesso preferencial a toda a agenda",
+		"miembrosBoton": "Conhecer a filiação"
 	},
 	"contacto": {
 		"correo": "E-mail",
@@ -149,7 +157,10 @@
 				"demasiados": "Recebemos várias mensagens da sua conexão. Aguarde alguns minutos antes de tentar novamente.",
 				"verificacion": "Não foi possível verificar que você não é um robô. Recarregue a página e tente novamente."
 			}
-		}
+		},
+		"obligatorios": "Todos os campos são obrigatórios.",
+		"quieresSerMiembro": "Quer ser membro?",
+		"conoceRequisitos": "Conheça requisitos e processo"
 	},
 	"comision": {
 		"formacion": "Formação",
@@ -186,5 +197,118 @@
 		"faltanMeses": "Faltam cerca de {n} meses",
 		"menosDeUnMes": "Falta menos de um mês",
 		"verEvento": "Ver o evento"
+	},
+	"cabeceras": {
+		"nosotros": {
+			"antetitulo": "A associação",
+			"entradilla": ""
+		},
+		"comision": {
+			"antetitulo": "A associação",
+			"entradilla": "Quem conduz a ABTCC: sua formação, sua trajetória e seu trabalho nas terapias cognitivas, comportamentais e contextuais."
+		},
+		"transparencia": {
+			"antetitulo": "A associação",
+			"entradilla": ""
+		},
+		"eventos": {
+			"antetitulo": "Agenda acadêmica",
+			"entradilla": "Congressos, jornadas, seminários, oficinas e cursos para profissionais e estudantes das terapias cognitivas, comportamentais e contextuais."
+		},
+		"membresia": {
+			"antetitulo": "Junte-se à ABTCC",
+			"entradilla": ""
+		},
+		"blog": {
+			"antetitulo": "Divulgação",
+			"entradilla": ""
+		},
+		"recursos": {
+			"antetitulo": "Recursos",
+			"entradilla": ""
+		},
+		"contacto": {
+			"antetitulo": "Fale conosco",
+			"entradilla": "Escreva-nos sobre a associação, a filiação ou nossa agenda de formação e eventos."
+		},
+		"socios": {
+			"antetitulo": "Área de sócios",
+			"entradilla": ""
+		},
+		"privacidad": {
+			"antetitulo": "Informação legal",
+			"entradilla": ""
+		},
+		"avisoLegal": {
+			"antetitulo": "Informação legal",
+			"entradilla": ""
+		}
+	},
+	"nosotros": {
+		"atajos": {
+			"objetivo": "Objetivo",
+			"que-hacemos": "O que fazemos",
+			"evidencia": "Prática baseada em evidências",
+			"principios": "Princípios",
+			"comision": "Diretoria",
+			"historia": "História"
+		},
+		"objetivoAntetitulo": "Nosso objetivo",
+		"objetivoTitulo": "Por que existimos",
+		"queHacemosAntetitulo": "O que fazemos",
+		"queHacemosTitulo": "Nossas linhas de trabalho",
+		"evidenciaAntetitulo": "Prática baseada em evidências",
+		"principiosAntetitulo": "Princípios",
+		"principiosTitulo": "O que orienta nosso trabalho",
+		"leerEstatuto": "Ler o Estatuto e o Código de Ética",
+		"comisionAntetitulo": "Diretoria",
+		"comisionTitulo": "Quem conduz a associação",
+		"verComision": "Conheça a diretoria",
+		"historiaAntetitulo": "História",
+		"historiaTitulo": "Como chegamos até aqui",
+		"verEventos": "Ver formação e eventos"
+	},
+	"membresia": {
+		"solicitar": "Solicitar filiação",
+		"verRequisitos": "Ver requisitos"
+	},
+	"ciencia": {
+		"antecedente": "Antecedente",
+		"conducta": "Comportamento",
+		"consecuencia": "Consequência",
+		"contingencia": "Tríplice contingência: a unidade básica de análise da ciência do comportamento."
+	},
+	"membresiaVista": {
+		"categoriasAntetitulo": "Categorias",
+		"categoriasTitulo": "Formas de fazer parte",
+		"beneficiosAntetitulo": "Benefícios",
+		"beneficiosTitulo": "O que você recebe como membro",
+		"cuotaAntetitulo": "Anuidade",
+		"requisitosAntetitulo": "Requisitos",
+		"requisitosTitulo": "O que você precisa para se candidatar",
+		"procesoAntetitulo": "O processo",
+		"procesoTitulo": "Passos claros, prazos claros",
+		"escribir": "Escrever à ABTCC",
+		"secciones": {
+			"categorias": "Categorias",
+			"beneficios": "Benefícios",
+			"cuota": "Anuidade",
+			"requisitos": "Requisitos",
+			"proceso": "O processo",
+			"solicitar": "Solicitar filiação"
+		}
+	},
+	"inicio": {
+		"verEventos": "Ver formação e eventos",
+		"hazteMiembro": "Seja membro",
+		"verComision": "Conheça a diretoria",
+		"estatuto": "Estatuto e ética",
+		"agenda": "Agenda",
+		"verTodosEventos": "Ver todos os eventos",
+		"verRequisitos": "Ver requisitos e processo",
+		"cuota": "Anuidade: o equivalente em bolivianos a {monto} {unidad}",
+		"exentos": "Honorários isentos",
+		"logoAlapcco": "[Logo da ALAPCCO pendente]",
+		"conceptos": "Conceitos da ciência do comportamento"
 	}
 }

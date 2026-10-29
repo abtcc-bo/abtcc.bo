@@ -1,7 +1,7 @@
 ---
 // Resumen de un evento para portada y listados. Si el evento tiene afiche, se muestra arriba.
 import { Image } from 'astro:assets';
-import { ruta, t, type Idioma } from '../i18n';
+import { LOCALE_INTL, ZONA_HORARIA, ruta, t, type Idioma } from '../i18n';
 import { fechaDelEvento, inscripcionAbierta } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
 
@@ -17,6 +17,9 @@ const textos = t(idioma).eventos;
 const { datos } = evento;
 const href = ruta('eventos', idioma, evento.slug);
 const abierta = inscripcionAbierta(evento);
+// Cabecera de la tarjeta: mes abreviado y año ("Dic 2026").
+const mes = new Intl.DateTimeFormat(LOCALE_INTL[idioma], { timeZone: ZONA_HORARIA, month: 'short' }).format(datos.inicio).replace('.', '');
+const anio = new Intl.DateTimeFormat(LOCALE_INTL[idioma], { timeZone: ZONA_HORARIA, year: 'numeric' }).format(datos.inicio);
 ---
 
 <article
@@ -25,22 +28,31 @@ const abierta = inscripcionAbierta(evento);
 	data-modalidad={datos.modalidad}
 	data-fin={(datos.fin ?? datos.inicio).toISOString()}
 >
-	{datos.imagen && <Image src={datos.imagen} alt="" widths={[400, 800]} sizes="(max-width: 48rem) 100vw, 24rem" class="afiche" />}
-	<p class="etiquetas">
-		<span>{textos.tipos[datos.tipo]}</span>
-		{datos.modalidad && <span>{textos.modalidades[datos.modalidad]}</span>}
-		{datos.estado !== 'programado' && <strong class={`estado estado-${datos.estado}`}>{textos.estados[datos.estado]}</strong>}
-	</p>
-	<Titulo><a href={href}>{evento.texto.data.titulo}</a></Titulo>
-	<p class="fecha">
-		<time datetime={datos.inicio.toISOString()}>{fechaDelEvento(evento, idioma)}</time>
-		{datos.lugar && <span> · {datos.lugar.ciudad}</span>}
-	</p>
-	<p class="resumen">{evento.texto.data.resumen}</p>
-	<p class="acciones">
-		{abierta && datos.inscripcion && <a class="boton" href={datos.inscripcion.url} rel="noopener">{t(idioma).comun.inscribirme}</a>}
-		<a href={href}>{textos.verDetalle} <span aria-hidden="true">→</span><span class="visualmente-oculto">: {evento.texto.data.titulo}</span></a>
-	</p>
+	<div class:list={['cabecera', datos.imagen ? 'con-imagen' : datos.tipo === 'congreso' ? 'verde' : 'azul']}>
+		{datos.imagen && <Image src={datos.imagen} alt="" widths={[400, 800]} sizes="(max-width: 48rem) 100vw, 24rem" class="imagen" />}
+		<p class="mes" aria-hidden="true">
+			<span class="mes-nombre">{mes}</span>
+			<span class="anio">{anio}</span>
+		</p>
+		<span class="tipo">{textos.tipos[datos.tipo]}</span>
+	</div>
+	<div class="cuerpo">
+		{datos.estado !== 'programado' && <p class={`estado estado-${datos.estado}`}>{textos.estados[datos.estado]}</p>}
+		<Titulo><a href={href}>{evento.texto.data.titulo}</a></Titulo>
+		<p class="resumen">{evento.texto.data.resumen}</p>
+		<p class="fecha">
+			<time datetime={datos.inicio.toISOString()}>{fechaDelEvento(evento, idioma)}</time>
+			{datos.lugar && <span> · {datos.lugar.ciudad}</span>}
+			{datos.modalidad && <span> · {textos.modalidades[datos.modalidad]}</span>}
+		</p>
+		<p class="acciones">
+			{abierta && datos.inscripcion && <a class="boton" href={datos.inscripcion.url} rel="noopener">{t(idioma).comun.inscribirme}</a>}
+			<a class="ver" href={href}>
+				{textos.verDetalle} <span class="flecha" aria-hidden="true">→</span>
+				<span class="visualmente-oculto">: {evento.texto.data.titulo}</span>
+			</a>
+		</p>
+	</div>
 </article>
 
 <style>
@@ -48,53 +60,103 @@ const abierta = inscripcionAbierta(evento);
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		padding: 1.25rem;
-		background: var(--color-superficie);
+		overflow: hidden;
+		background: var(--color-tarjeta);
 		border: 1px solid var(--color-borde);
 		border-radius: var(--radio);
-		transition: box-shadow 0.2s, transform 0.2s;
+		transition:
+			box-shadow 0.3s,
+			transform 0.3s;
 	}
 	.tarjeta-evento:hover {
 		box-shadow: var(--sombra);
-		transform: translateY(-2px);
+		transform: translateY(-4px);
 	}
-	/* Decorativo (alt vacío): el título del evento ya está en la tarjeta. Ocupa el ancho completo de la tarjeta. */
-	.afiche {
-		display: block;
-		width: calc(100% + 2.5rem);
-		max-width: none;
-		height: auto;
-		aspect-ratio: 1;
-		object-fit: cover;
-		margin: -1.25rem -1.25rem 1.25rem;
-		border-radius: var(--radio) var(--radio) 0 0;
-		background: var(--color-fondo);
-	}
-	.etiquetas {
+	/* Cabecera de color con el mes; si el evento tiene imagen, la imagen hace de fondo. */
+	.cabecera {
+		position: relative;
 		display: flex;
-		flex-wrap: wrap;
-		gap: 0.4rem;
-		margin: 0;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1rem;
+		min-height: 6.5rem;
+		padding: 1.1rem 1.25rem;
+		color: #fff;
+		isolation: isolate;
 	}
-	.etiquetas > * {
-		padding: 0.1rem 0.55rem;
-		border-radius: 999px;
-		background: var(--color-acento-suave);
-		color: var(--color-acento-hover);
+	.verde {
+		background: var(--color-verde);
+	}
+	.azul {
+		background: var(--color-oscuro);
+	}
+	.con-imagen {
+		min-height: 11rem;
+		background: var(--color-oscuro);
+	}
+	.imagen {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.6s;
+	}
+	/* Sombra para que el mes se lea sobre la foto. */
+	.con-imagen::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: linear-gradient(180deg, transparent 35%, rgb(10 18 35 / 0.75));
+	}
+	.tarjeta-evento:hover .imagen {
+		transform: scale(1.05);
+	}
+	.mes {
+		display: grid;
+		margin: 0;
+		line-height: 1;
+	}
+	.mes-nombre {
+		font-family: var(--fuente-titulos);
+		font-size: 2.4rem;
+		text-transform: capitalize;
+	}
+	.anio {
+		margin-top: 0.35rem;
 		font-size: 0.75rem;
 		font-weight: 600;
-		letter-spacing: 0.06em;
+		letter-spacing: 0.12em;
+		color: var(--color-dorado-claro);
+	}
+	.tipo {
+		padding: 0.15rem 0.6rem;
+		border: 1px solid rgb(255 255 255 / 0.5);
+		border-radius: 999px;
+		font-size: 0.625rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
 		text-transform: uppercase;
 	}
-	.etiquetas .estado-cancelado,
-	.etiquetas .estado-pospuesto {
-		background: #fdecec;
+	.cuerpo {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		padding: 1.25rem;
+	}
+	.estado {
+		margin: 0;
+		font-size: 0.75rem;
+		font-weight: 700;
+		text-transform: uppercase;
 		color: #a40000;
 	}
 	h2,
 	h3 {
-		margin: 0.75rem 0 0.5rem;
-		font-size: 1.625rem;
+		margin: 0 0 0.5rem;
+		font-size: 1.6rem;
 	}
 	h2 a,
 	h3 a {
@@ -105,15 +167,16 @@ const abierta = inscripcionAbierta(evento);
 	h3 a:hover {
 		color: var(--color-acento);
 	}
+	.resumen {
+		margin: 0 0 0.75rem;
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
 	.fecha {
 		margin: 0;
-		font-size: 0.9375rem;
+		font-size: 0.8125rem;
 		font-weight: 600;
-		color: var(--color-acento-hover);
-	}
-	.resumen {
-		color: var(--color-texto-suave);
-		font-size: 1rem;
+		color: var(--color-dorado);
 	}
 	.acciones {
 		display: flex;
@@ -121,9 +184,10 @@ const abierta = inscripcionAbierta(evento);
 		align-items: center;
 		gap: var(--espacio);
 		margin: auto 0 0;
-		padding-top: 0.5rem;
+		padding-top: 1rem;
 	}
-	.acciones a:not(.boton) {
+	.ver {
+		font-size: 0.9375rem;
 		font-weight: 600;
 		text-decoration: none;
 	}

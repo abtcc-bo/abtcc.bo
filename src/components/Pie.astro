@@ -1,6 +1,6 @@
 ---
 import { ORGANIZACION } from '../datos/organizacion';
-import { MENU_LEGAL, ruta, t, type Idioma } from '../i18n';
+import { IDIOMAS, MENU, MENU_LEGAL, ruta, t, type Idioma } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
@@ -14,40 +14,50 @@ const anio = new Date().getFullYear();
 
 <footer class="pie">
 	<div class="contenedor columnas">
-		<section>
-			<p class="nombre">{textos.sitio.nombre} ({textos.sitio.sigla})</p>
-			<p>{ORGANIZACION.pais}</p>
+		<section class="marca">
+			<span class="puntos" aria-hidden="true"></span>
+			<p class="nombre">{textos.sitio.nombre}</p>
+			<p class="suave">{ORGANIZACION.pais}</p>
 		</section>
 
-		<section>
-			<h2>{textos.pie.contacto}</h2>
-			<p>
-				{ORGANIZACION.correo ? <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a> : textos.comun.pendiente}
-			</p>
-			<p><a href={ruta('contacto', idioma)}>{textos.nav.contacto}</a></p>
-		</section>
+		<nav aria-labelledby="pie-explorar">
+			<h2 id="pie-explorar">{textos.pie.explorar}</h2>
+			<ul>
+				{
+					MENU.filter((s) => s !== 'contacto').map((seccion) => (
+						<li>
+							<a href={ruta(seccion, idioma)}>{textos.nav[seccion]}</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
 
-		<section>
-			<h2>{textos.pie.redes}</h2>
-			{
-				ORGANIZACION.redes.length ? (
-					<ul>
-						{ORGANIZACION.redes.map((red) => (
+		<section aria-labelledby="pie-contacto">
+			<h2 id="pie-contacto">{textos.pie.contacto}</h2>
+			<ul>
+				<li>{ORGANIZACION.correo ? <a class="correo" href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a> : textos.comun.pendiente}</li>
+				<li><a href={`${ruta('contacto', idioma)}#formulario`}>{textos.pie.formulario}</a></li>
+				{
+					ORGANIZACION.redes.length ? (
+						ORGANIZACION.redes.map((red) => (
 							<li>
 								<a href={red.url} rel="noopener">
 									{red.nombre}
 								</a>
 							</li>
-						))}
-					</ul>
-				) : (
-					<p>{textos.comun.pendiente}</p>
-				)
-			}
+						))
+					) : (
+						<li class="suave">
+							{textos.pie.redes}: {textos.comun.pendiente}
+						</li>
+					)
+				}
+			</ul>
 		</section>
 
-		<section>
-			<h2>{textos.pie.legal}</h2>
+		<nav aria-labelledby="pie-legal">
+			<h2 id="pie-legal">{textos.pie.legal}</h2>
 			<ul>
 				{
 					MENU_LEGAL.map((seccion) => (
@@ -57,16 +67,29 @@ const anio = new Date().getFullYear();
 					))
 				}
 			</ul>
-		</section>
+		</nav>
 	</div>
-	<p class="contenedor derechos">© {anio} {textos.sitio.sigla}. {textos.pie.derechos}</p>
+	<div class="contenedor final">
+		<p>© {anio} {textos.sitio.sigla} · {textos.sitio.afiliacion}</p>
+		<ul class="idiomas">
+			{
+				IDIOMAS.map((otro) => (
+					<li>
+						<a href={ruta('inicio', otro)} hreflang={otro} lang={otro} aria-current={otro === idioma ? 'true' : undefined}>
+							{t(otro).idioma.nombre}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
 </footer>
 
 <style>
 	.pie {
-		background: var(--color-oscuro);
+		background: var(--color-oscuro-profundo);
 		color: var(--color-oscuro-texto);
-		font-size: 0.9375rem;
+		font-size: 0.875rem;
 	}
 	/* Franja con los tres colores del logo. */
 	.pie::before {
@@ -77,53 +100,90 @@ const anio = new Date().getFullYear();
 	}
 	.columnas {
 		display: grid;
-		gap: calc(var(--espacio) * 2);
+		gap: 2rem;
 		grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-		padding-block: calc(var(--espacio) * 3) calc(var(--espacio) * 2);
+		padding-block: 3.5rem 2.5rem;
 	}
 	h2 {
-		margin: 0 0 0.75rem;
+		margin: 0 0 1rem;
 		font-family: var(--fuente-texto);
-		font-size: 0.8125rem;
+		font-size: 0.6875rem;
 		font-weight: 600;
-		letter-spacing: 0.12em;
+		letter-spacing: 0.16em;
 		text-transform: uppercase;
-		color: #aab3c5;
+		color: var(--color-dorado-claro);
 	}
-	p,
-	ul {
-		margin: 0 0 0.4rem;
+	p {
+		margin: 0;
 	}
 	ul {
-		list-style: none;
+		margin: 0;
 		padding: 0;
+		list-style: none;
 	}
 	li + li {
-		margin-top: 0.4rem;
+		margin-top: 0.55rem;
 	}
 	a {
 		color: #fff;
-		text-decoration-color: rgb(255 255 255 / 0.35);
+		text-decoration: none;
 	}
 	a:hover {
-		color: #fff;
-		text-decoration-color: #fff;
+		color: var(--color-dorado-claro);
+	}
+	.correo {
+		text-decoration: underline;
+		text-decoration-color: rgb(255 255 255 / 0.4);
+	}
+	.puntos {
+		display: block;
+		width: 2.6rem;
+		height: 0.6rem;
+		margin-bottom: 1rem;
+		background:
+			radial-gradient(circle, var(--logo-rojo) 0.25rem, transparent 0.27rem) 0 50% / 0.85rem 0.6rem no-repeat,
+			radial-gradient(circle, var(--logo-amarillo) 0.25rem, transparent 0.27rem) 0.85rem 50% / 0.85rem 0.6rem no-repeat,
+			radial-gradient(circle, var(--logo-verde) 0.25rem, transparent 0.27rem) 1.7rem 50% / 0.85rem 0.6rem no-repeat;
 	}
 	.nombre {
+		max-width: 16rem;
+		margin-bottom: 0.5rem;
 		font-family: var(--fuente-titulos);
-		font-size: 1.375rem;
-		font-weight: 600;
+		font-size: 1.25rem;
 		line-height: 1.25;
 		color: #fff;
 	}
-	.derechos {
-		margin: 0;
-		padding-block: var(--espacio) calc(var(--espacio) * 1.5);
-		border-top: 1px solid rgb(255 255 255 / 0.12);
-		font-size: 0.875rem;
-		color: #aab3c5;
+	.suave {
+		color: var(--color-oscuro-suave);
+	}
+	.final {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-block: 1.25rem 1.75rem;
+		border-top: 1px solid rgb(255 255 255 / 0.08);
+		font-size: 0.75rem;
+		color: var(--color-oscuro-suave);
+	}
+	.idiomas {
+		display: flex;
+		gap: 0.4rem;
+	}
+	.idiomas li + li {
+		margin-top: 0;
+	}
+	.idiomas li + li::before {
+		content: '·';
+		margin-right: 0.4rem;
+	}
+	.idiomas a {
+		color: var(--color-oscuro-suave);
+	}
+	.idiomas [aria-current] {
+		color: #fff;
 	}
 	:focus-visible {
-		outline-color: var(--logo-amarillo);
+		outline-color: var(--color-dorado-claro);
 	}
 </style>

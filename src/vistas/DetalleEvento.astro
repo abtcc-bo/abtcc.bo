@@ -34,6 +34,7 @@ const compartir = [
 ---
 
 <article class="evento">
+	{datos.imagen && <Image src={datos.imagen} alt={titulo} widths={[480, 960, 1400]} sizes="(max-width: 52rem) 100vw, 50rem" class="afiche" loading="eager" />}
 	<p class="etiquetas">
 		<span>{ev.tipos[datos.tipo]}</span>
 		{datos.modalidad && (
@@ -44,8 +45,6 @@ const compartir = [
 	</p>
 	<h1>{titulo}</h1>
 	{datos.estado !== 'programado' && <p class={`aviso-estado estado-${datos.estado}`} role="status">{ev.estados[datos.estado]}</p>}
-
-	{datos.imagen && <Image src={datos.imagen} alt={titulo} widths={[400, 800]} sizes="(max-width: 48rem) 100vw, 40rem" class="afiche" loading="eager" />}
 
 	<dl class="ficha">
 		<dt>{ev.fecha}</dt>
@@ -197,8 +196,19 @@ const compartir = [
 				<ul class="facilitadores">
 					{facilitadores.map((persona) => (
 						<li>
+							{persona.data.foto ? (
+								<Image src={persona.data.foto} alt="" width={120} height={120} class="foto" />
+							) : (
+								<span class="foto sin-foto" aria-hidden="true">
+									{persona.data.nombre
+										.split(' ')
+										.slice(0, 2)
+										.map((parte) => parte[0])
+										.join('')}
+								</span>
+							)}
 							<strong>{persona.data.nombre}</strong>
-							{persona.data.titulo_profesional && <span> · {persona.data.titulo_profesional}</span>}
+							{persona.data.titulo_profesional && <span class="titulo">{persona.data.titulo_profesional}</span>}
 						</li>
 					))}
 				</ul>
@@ -296,13 +306,17 @@ const compartir = [
 	.estado-pospuesto {
 		color: #a40000;
 	}
+	/* Imagen de portada del evento, antes del título. */
 	.afiche {
 		display: block;
-		max-width: min(100%, 32rem);
+		width: auto;
+		max-width: 100%;
+		max-height: 32rem;
 		height: auto;
-		margin-block: var(--espacio) 1.5rem;
+		margin-top: 2rem;
 		border-radius: var(--radio);
 		box-shadow: var(--sombra);
+		background: #fff;
 	}
 	.ficha {
 		display: grid;
@@ -346,9 +360,47 @@ const compartir = [
 		display: none;
 	}
 	.en-linea,
+	/* Ponentes: foto redonda (o iniciales), nombre y título. */
 	.facilitadores {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(9rem, 45%), 1fr));
+		gap: 1.5rem 1rem;
 		list-style: none;
 		padding: 0;
+	}
+	.facilitadores li {
+		display: grid;
+		justify-items: center;
+		gap: 0.2rem;
+		text-align: center;
+	}
+	.foto {
+		width: 5.5rem;
+		height: 5.5rem;
+		margin-bottom: 0.5rem;
+		border-radius: 50%;
+		object-fit: cover;
+		box-shadow: 0 0 0 3px var(--color-tarjeta), 0 0 0 4px var(--color-borde);
+	}
+	.sin-foto {
+		display: grid;
+		place-items: center;
+		background: var(--color-verde);
+		font-family: var(--fuente-titulos);
+		font-size: 1.75rem;
+		font-style: italic;
+		color: #fff;
+	}
+	.facilitadores strong {
+		font-family: var(--fuente-titulos);
+		font-size: 1.15rem;
+		font-weight: 500;
+		line-height: 1.2;
+		color: var(--color-titulos);
+	}
+	.facilitadores .titulo {
+		font-size: 0.75rem;
+		color: var(--color-texto-suave);
 	}
 	.en-linea {
 		display: flex;

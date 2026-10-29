@@ -1,0 +1,378 @@
+---
+// Membresía: contenido en bloques del frontmatter de src/content/paginas/{idioma}/membresia.md (campo `membresia`).
+// La cabecera verde (título, entradilla y botones) la pone Pagina.astro. Los ids de las secciones los usa el
+// submenú del encabezado.
+import type { CollectionEntry } from 'astro:content';
+import { ORGANIZACION } from '../datos/organizacion';
+import { t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+	pagina: CollectionEntry<'paginas'>;
+}
+
+const { idioma, pagina } = Astro.props;
+const m = pagina.data.membresia!;
+const v = t(idioma).membresiaVista;
+const correo = ORGANIZACION.correo;
+
+// Iconos de línea simples (decorativos) para los requisitos.
+const ICONOS = {
+	documento: 'M4 5h16v14H4z M8 10h3 M8 14h8 M14 9.5h3',
+	titulo: 'M2 9l10-5 10 5-10 5z M6 11v5c3 2 9 2 12 0v-5',
+	hoja: 'M6 3h9l4 4v14H6z M14 3v5h5 M9 12h7 M9 16h7',
+	compromiso: 'M12 3l7 3v6c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6z M9 12l2 2 4-4',
+} as const;
+---
+
+<section id="categorias" class="banda" aria-labelledby="titulo-categorias">
+	<p class="antetitulo">{v.categoriasAntetitulo}</p>
+	<h2 id="titulo-categorias">{v.categoriasTitulo}</h2>
+	<ul class="categorias">
+		{
+			m.categorias.map((c) => (
+				<li>
+					<p class="participacion">{c.participacion}</p>
+					<h3>{c.nombre}</h3>
+					<p>{c.texto}</p>
+				</li>
+			))
+		}
+	</ul>
+</section>
+
+<section id="beneficios" class="banda banda-clara dos-columnas" aria-labelledby="titulo-beneficios">
+	<div>
+		<p class="antetitulo">{v.beneficiosAntetitulo}</p>
+		<h2 id="titulo-beneficios">{v.beneficiosTitulo}</h2>
+	</div>
+	<ol class="beneficios">
+		{
+			m.beneficios.map((b, i) => (
+				<li>
+					<span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+					<span>{b}</span>
+				</li>
+			))
+		}
+	</ol>
+</section>
+
+<section id="cuota" class="banda banda-azul dos-columnas" aria-labelledby="titulo-cuota">
+	<div>
+		<p class="antetitulo" id="titulo-cuota">{v.cuotaAntetitulo}</p>
+		<p class="monto">
+			<span class="cifra" data-contar={m.cuota.monto}>{m.cuota.monto}</span>
+			<span class="unidad">{m.cuota.unidad}</span>
+		</p>
+		<p class="texto-cuota">{m.cuota.texto}</p>
+	</div>
+	<dl class="detalles">
+		{
+			m.cuota.detalles.map((d) => (
+				<div>
+					<dt>{d.titulo}</dt>
+					<dd>{d.texto}</dd>
+				</div>
+			))
+		}
+	</dl>
+</section>
+
+<section id="requisitos" class="banda dos-columnas" aria-labelledby="titulo-requisitos">
+	<div>
+		<p class="antetitulo">{v.requisitosAntetitulo}</p>
+		<h2 id="titulo-requisitos">{v.requisitosTitulo}</h2>
+	</div>
+	<ul class="requisitos">
+		{
+			m.requisitos.map((r) => (
+				<li>
+					<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+						<path d={ICONOS[r.icono]} />
+					</svg>
+					<span>{r.texto}</span>
+				</li>
+			))
+		}
+	</ul>
+</section>
+
+<section id="proceso" class="banda" aria-labelledby="titulo-proceso">
+	<p class="antetitulo">{v.procesoAntetitulo}</p>
+	<h2 id="titulo-proceso">{v.procesoTitulo}</h2>
+	<ol class="pasos">
+		{
+			m.pasos.map((p, i) => (
+				<li>
+					<span class="numero">{i + 1}</span>
+					<h3>{p.titulo}</h3>
+					<p>{p.texto}</p>
+				</li>
+			))
+		}
+	</ol>
+</section>
+
+<section id="solicitar" class="banda banda-verde solicitar" aria-labelledby="titulo-solicitar">
+	<span class="puntos" aria-hidden="true"></span>
+	<h2 id="titulo-solicitar">{m.solicitud.titulo}</h2>
+	<p>{m.solicitud.texto}</p>
+	{
+		correo && (
+			<a class="boton boton-dorado" href={`mailto:${correo}`}>
+				{v.escribir}: {correo}
+			</a>
+		)
+	}
+</section>
+
+<script>
+	// La cifra de la cuota "cuenta" desde 0 cuando aparece en pantalla (solo si no se pidió reducir movimiento).
+	const cifra = document.querySelector<HTMLElement>('[data-contar]');
+	if (cifra && !matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+		const final = Number(cifra.dataset.contar);
+		const observador = new IntersectionObserver(([entrada]) => {
+			if (!entrada.isIntersecting) return;
+			observador.disconnect();
+			const inicio = performance.now();
+			const paso = (ahora: number) => {
+				const avance = Math.min(1, (ahora - inicio) / 1200);
+				cifra.textContent = String(Math.round(final * (1 - Math.pow(1 - avance, 3))));
+				if (avance < 1) requestAnimationFrame(paso);
+			};
+			requestAnimationFrame(paso);
+		});
+		observador.observe(cifra);
+	}
+</script>
+
+<style>
+	h2 {
+		margin-top: 0.75rem;
+	}
+	.dos-columnas {
+		display: grid;
+		grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+		gap: 2rem 4rem;
+		align-items: start;
+	}
+
+	.categorias {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr));
+		gap: 1rem;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.categorias li {
+		padding: 1.5rem;
+		background: var(--color-tarjeta);
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		transition:
+			background-color 0.3s,
+			color 0.3s,
+			transform 0.3s,
+			box-shadow 0.3s;
+	}
+	/* Al pasar el mouse la tarjeta se vuelve verde, como la destacada del diseño. */
+	.categorias li:hover {
+		background: var(--color-verde);
+		color: #dfe9e3;
+		transform: translateY(-4px);
+		box-shadow: var(--sombra);
+	}
+	.categorias li:hover h3 {
+		color: #fff;
+	}
+	.participacion {
+		margin: 0;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-dorado);
+	}
+	.categorias li:hover .participacion {
+		color: var(--color-dorado-claro);
+	}
+	.categorias h3 {
+		margin: 0.75rem 0 0.75rem;
+		transition: color 0.3s;
+	}
+	.categorias p:last-child {
+		margin: 0;
+		font-size: 0.875rem;
+	}
+
+	.beneficios {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.beneficios li {
+		display: grid;
+		grid-template-columns: 3rem 1fr;
+		align-items: baseline;
+		padding-block: 1rem;
+		border-top: 1px solid var(--color-division);
+	}
+	.beneficios li:last-child {
+		border-bottom: 1px solid var(--color-division);
+	}
+
+	.monto {
+		display: flex;
+		align-items: baseline;
+		gap: 0.75rem;
+		margin: 1.5rem 0 0.5rem;
+		font-family: var(--fuente-titulos);
+	}
+	.cifra {
+		font-size: clamp(4rem, 3rem + 4vw, 6rem);
+		line-height: 1;
+		color: var(--color-dorado-claro);
+		font-variant-numeric: tabular-nums;
+	}
+	.unidad {
+		font-size: 2.25rem;
+		font-style: italic;
+		color: #fff;
+	}
+	.texto-cuota {
+		color: #c9d1e3;
+	}
+	.detalles {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1.5rem 2rem;
+		margin: 0;
+	}
+	.detalles div {
+		padding-top: 1rem;
+		border-top: 1px solid rgb(255 255 255 / 0.15);
+	}
+	dt {
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-dorado-claro);
+	}
+	dd {
+		margin: 0.4rem 0 0;
+		font-size: 0.9375rem;
+	}
+
+	.requisitos {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.requisitos li {
+		display: grid;
+		grid-template-columns: 1.5rem 1fr;
+		gap: 0.75rem;
+		padding: 1.25rem;
+		background: var(--color-tarjeta);
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		font-size: 0.9375rem;
+	}
+	.requisitos svg {
+		width: 1.5rem;
+		height: 1.5rem;
+		fill: none;
+		stroke: var(--color-acento);
+		stroke-width: 1.5;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.pasos {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+		gap: 2rem;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		counter-reset: paso;
+	}
+	.pasos li {
+		position: relative;
+	}
+	/* Línea que une los pasos. */
+	.pasos li:not(:last-child)::after {
+		content: '';
+		position: absolute;
+		top: 1.2rem;
+		left: 3.25rem;
+		right: -1rem;
+		height: 1px;
+		background: var(--color-division);
+	}
+	.numero {
+		display: grid;
+		place-items: center;
+		width: 2.4rem;
+		height: 2.4rem;
+		border-radius: 50%;
+		background: var(--color-verde);
+		color: #fff;
+		font-family: var(--fuente-titulos);
+		font-size: 1.2rem;
+	}
+	.pasos li:last-child .numero {
+		background: var(--color-dorado-claro);
+		color: var(--color-oscuro);
+	}
+	.pasos h3 {
+		margin: 1rem 0 0.5rem;
+		font-family: var(--fuente-texto);
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	.pasos p {
+		margin: 0;
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+
+	.solicitar {
+		text-align: center;
+	}
+	.solicitar h2 {
+		margin: 1rem 0 0.75rem;
+	}
+	.solicitar p {
+		max-width: 36rem;
+		margin: 0 auto 1.75rem;
+		color: #d5e1da;
+	}
+	.puntos {
+		display: block;
+		width: 3rem;
+		height: 0.6rem;
+		margin: 0 auto;
+		background:
+			radial-gradient(circle, var(--logo-rojo) 0.22rem, transparent 0.24rem) 0 50% / 1rem 0.6rem no-repeat,
+			radial-gradient(circle, var(--logo-amarillo) 0.22rem, transparent 0.24rem) 1rem 50% / 1rem 0.6rem no-repeat,
+			radial-gradient(circle, var(--logo-verde) 0.22rem, transparent 0.24rem) 2rem 50% / 1rem 0.6rem no-repeat;
+	}
+
+	@media (max-width: 52rem) {
+		.dos-columnas,
+		.detalles,
+		.requisitos {
+			grid-template-columns: 1fr;
+		}
+		.pasos li::after {
+			display: none;
+		}
+	}
+</style>

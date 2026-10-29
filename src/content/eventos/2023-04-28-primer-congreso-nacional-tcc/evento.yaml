@@ -7,7 +7,13 @@ lugar:
   ciudad: Santa Cruz
 facilitadores:
   - carmem-neufeld
+  - guillermo-rivera
+  - halder-delgado
+  - carmen-barron
+  - leonardo-eyzaguirre
   - alexandra-shand
+# Imagen de portada del evento (tarjetas y encabezado de la página).
+imagen: ./galeria/02.webp
 galeria:
   - imagen: ./galeria/01.webp
     descripcion: "La Dra. Carmem Beatriz Neufeld presenta el «Taller práctico sobre terapia grupal para la depresión»."

@@ -2,7 +2,8 @@
 	"sitio": {
 		"nombre": "Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales",
 		"sigla": "ABTCC",
-		"descripcion": "[PENDING: one-sentence description of the association]"
+		"descripcion": "[PENDING: one-sentence description of the association]",
+		"afiliacion": "ALAPCCO working group"
 	},
 	"idioma": {
 		"nombre": "English",
@@ -41,7 +42,9 @@
 		"contacto": "Contact",
 		"redes": "Social media",
 		"legal": "Legal information",
-		"derechos": "All rights reserved."
+		"derechos": "All rights reserved.",
+		"explorar": "Explore",
+		"formulario": "Contact form"
 	},
 	"error404": {
 		"titulo": "Page not found",
@@ -115,7 +118,12 @@
 			"socio": "Members",
 			"no_socio": "Non-members",
 			"estudiante": "Students"
-		}
+		},
+		"noTePierdasTitulo": "Don't want to miss the next one?",
+		"noTePierdasTexto": "Subscribe to the calendar and get every new ABTCC event in your agenda.",
+		"miembrosAntetitulo": "For members",
+		"miembrosTitulo": "At least 10% off and priority access to the whole agenda",
+		"miembrosBoton": "About membership"
 	},
 	"contacto": {
 		"correo": "Email",
@@ -149,7 +157,10 @@
 				"demasiados": "We received several messages from your connection. Please wait a few minutes before trying again.",
 				"verificacion": "We could not verify that you are not a robot. Reload the page and try again."
 			}
-		}
+		},
+		"obligatorios": "All fields are required.",
+		"quieresSerMiembro": "Want to become a member?",
+		"conoceRequisitos": "See requirements and process"
 	},
 	"comision": {
 		"formacion": "Education",
@@ -186,5 +197,118 @@
 		"faltanMeses": "About {n} months to go",
 		"menosDeUnMes": "Less than a month to go",
 		"verEvento": "See the event"
+	},
+	"cabeceras": {
+		"nosotros": {
+			"antetitulo": "The association",
+			"entradilla": ""
+		},
+		"comision": {
+			"antetitulo": "The association",
+			"entradilla": "The people who lead ABTCC: their training, experience and work in cognitive, behavioral and contextual therapies."
+		},
+		"transparencia": {
+			"antetitulo": "The association",
+			"entradilla": ""
+		},
+		"eventos": {
+			"antetitulo": "Academic agenda",
+			"entradilla": "Congresses, seminars, workshops and courses for professionals and students of cognitive, behavioral and contextual therapies."
+		},
+		"membresia": {
+			"antetitulo": "Join ABTCC",
+			"entradilla": ""
+		},
+		"blog": {
+			"antetitulo": "Outreach",
+			"entradilla": ""
+		},
+		"recursos": {
+			"antetitulo": "Resources",
+			"entradilla": ""
+		},
+		"contacto": {
+			"antetitulo": "Let's talk",
+			"entradilla": "Write to us about the association, membership or our training and events agenda."
+		},
+		"socios": {
+			"antetitulo": "Members area",
+			"entradilla": ""
+		},
+		"privacidad": {
+			"antetitulo": "Legal information",
+			"entradilla": ""
+		},
+		"avisoLegal": {
+			"antetitulo": "Legal information",
+			"entradilla": ""
+		}
+	},
+	"nosotros": {
+		"atajos": {
+			"objetivo": "Purpose",
+			"que-hacemos": "What we do",
+			"evidencia": "Evidence-based practice",
+			"principios": "Principles",
+			"comision": "Board",
+			"historia": "History"
+		},
+		"objetivoAntetitulo": "Our purpose",
+		"objetivoTitulo": "Why we exist",
+		"queHacemosAntetitulo": "What we do",
+		"queHacemosTitulo": "Our lines of work",
+		"evidenciaAntetitulo": "Evidence-based practice",
+		"principiosAntetitulo": "Principles",
+		"principiosTitulo": "What guides our work",
+		"leerEstatuto": "Read the Statute and Code of Ethics",
+		"comisionAntetitulo": "Board",
+		"comisionTitulo": "Who leads the association",
+		"verComision": "Meet the board",
+		"historiaAntetitulo": "History",
+		"historiaTitulo": "How we got here",
+		"verEventos": "See training and events"
+	},
+	"membresia": {
+		"solicitar": "Apply for membership",
+		"verRequisitos": "See requirements"
+	},
+	"ciencia": {
+		"antecedente": "Antecedent",
+		"conducta": "Behavior",
+		"consecuencia": "Consequence",
+		"contingencia": "Three-term contingency: the basic unit of analysis of behavioral science."
+	},
+	"membresiaVista": {
+		"categoriasAntetitulo": "Categories",
+		"categoriasTitulo": "Ways to be part of it",
+		"beneficiosAntetitulo": "Benefits",
+		"beneficiosTitulo": "What you receive as a member",
+		"cuotaAntetitulo": "Annual fee",
+		"requisitosAntetitulo": "Requirements",
+		"requisitosTitulo": "What you need to apply",
+		"procesoAntetitulo": "The process",
+		"procesoTitulo": "Clear steps, clear deadlines",
+		"escribir": "Write to ABTCC",
+		"secciones": {
+			"categorias": "Categories",
+			"beneficios": "Benefits",
+			"cuota": "Annual fee",
+			"requisitos": "Requirements",
+			"proceso": "The process",
+			"solicitar": "Apply"
+		}
+	},
+	"inicio": {
+		"verEventos": "See training and events",
+		"hazteMiembro": "Become a member",
+		"verComision": "Meet the board",
+		"estatuto": "Statute and ethics",
+		"agenda": "Agenda",
+		"verTodosEventos": "See all events",
+		"verRequisitos": "See requirements and process",
+		"cuota": "Annual fee: the equivalent in bolivianos of {monto} {unidad}",
+		"exentos": "Honorary members exempt",
+		"logoAlapcco": "[ALAPCCO logo pending]",
+		"conceptos": "Concepts from behavioral science"
 	}
 }

@@ -5,7 +5,8 @@ La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisi
 
 ## Estado y forma de trabajo
 
-- Etapa actual: **construir la estructura funcional**, con un **diseño de prueba** ("elegancia y ciencia"): fondo de puntos con luces suaves en movimiento (se detiene con "reducir movimiento"), tinta azul, verde del logo como acento, títulos Cormorant Garamond y texto Inter (autoalojadas con @fontsource), bandas de ancho completo (`.banda`) para separar secciones, y los colores del logo como franja tricolor y puntos. Todo en variables CSS (`src/styles/global.css`) para poder rediseñar sin tocar la estructura.
+- Etapa actual: estructura funcional con el **diseño "Rediseño ABTCC"** (PDF del usuario): crema, verde profundo (#134e36), azul noche y dorado; títulos Cormorant Garamond (con cursivas) y texto Inter (autoalojadas con @fontsource); cabecera verde en cada sección (`CabeceraPagina`, slot "cabecera" de `Base` con `conCabecera`); bandas `.banda` / `.banda-clara` / `.banda-verde` / `.banda-azul`; los colores del logo solo como franja tricolor y puntos. Todo en variables CSS (`src/styles/global.css`).
+- Movimiento (elegante, siempre con "reducir movimiento"): fondo de puntos con luces, aparición al bajar, carrusel de eventos, franja de fotos, cinta de conceptos y figuras de ciencia del comportamiento (`RegistroAcumulativo`: registro acumulativo de Skinner; `Contingencia`: triple relación de contingencia). Sin estilos en línea (`style=""`): la CSP los bloquea.
 - Los datos reales se cargan al final. Mientras tanto se usa relleno marcado con `[PENDIENTE: ...]` y cada dato faltante se anota en `docs/datos-pendientes.md`.
 - Se avanza paso a paso; cada paso termina con algo que se pueda ver funcionando en el navegador.
 - El usuario escribe en español; responder en español. No programa: avisarle claramente cuando tenga que hacer algo y mantener `docs/tareas-para-ti.md` al día.
@@ -49,7 +50,7 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 - **Blog:** `src/content/blog/{es,en,pt}/slug.md`; las traducciones comparten `clave`. `borrador: true` lo oculta al publicar.
 - **Personas:** `src/content/personas/nombre-apellido.yaml`, foto en `personas/fotos/` (cuadrada, 600 px); `comision: true` para la comisión directiva. Eventos y artículos las referencian por el nombre del archivo.
 - **Hoja de vida, mismo formato para todos** (detalle en `content.config.ts`): `bio` de 3 oraciones (profesión y enfoque → experiencia → cargos y aportes), `formacion` (máx. 4 títulos, "Título — Institución (país)") y `areas` (3–5). Nunca datos privados de los CV (carnet, dirección, teléfono, nacimiento).
-- **Páginas:** `src/content/paginas/{es,en,pt}/nombre.md`; `clave` = sección de `SECCIONES` donde se muestra.
+- **Páginas:** `src/content/paginas/{es,en,pt}/nombre.md`; `clave` = sección de `SECCIONES` donde se muestra. Portada, Quiénes somos y Membresía tienen su contenido en bloques del frontmatter (`portada`, `nosotros`, `membresia`) que dibujan `Inicio.astro`, `Nosotros.astro` y `Membresia.astro`.
 - Contenido de muestra: lleva `[EJEMPLO]` en el título; se borra cuando llegue el real.
 - Nombres de archivo y carpeta en minúsculas, sin tildes ni espacios, con guiones.
 

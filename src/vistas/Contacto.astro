@@ -3,7 +3,7 @@
 import { render, type CollectionEntry } from 'astro:content';
 import FormularioContacto from '../components/FormularioContacto.astro';
 import { ORGANIZACION } from '../datos/organizacion';
-import { t, type Idioma } from '../i18n';
+import { ruta, t, type Idioma } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
@@ -16,56 +16,123 @@ const Content = pagina ? (await render(pagina)).Content : undefined;
 const correo = ORGANIZACION.correo;
 ---
 
-<h1>{pagina?.data.titulo ?? textos.nav.contacto}</h1>
-{Content && <Content />}
+<div class="contacto">
+	<div class="datos">
+		<div class="dato tarjeta">
+			<p class="rotulo">{textos.contacto.correo}</p>
+			<p class="valor">{correo ? <a href={`mailto:${correo}`}>{correo}</a> : textos.comun.pendiente}</p>
+		</div>
+		<div class="dato tarjeta">
+			<p class="rotulo">{textos.contacto.sede}</p>
+			<p class="valor">{ORGANIZACION.sede}, {ORGANIZACION.pais}</p>
+		</div>
+		<div class="dato tarjeta">
+			<p class="rotulo">{textos.contacto.redes}</p>
+			<p>
+				{
+					ORGANIZACION.redes.length
+						? ORGANIZACION.redes.map((red, i) => (
+								<>
+									{i > 0 && ' · '}
+									<a href={red.url} rel="noopener">
+										{red.nombre}
+									</a>
+								</>
+							))
+						: textos.comun.pendiente
+				}
+			</p>
+		</div>
+		<a class="miembro" href={ruta('membresia', idioma)}>
+			<span class="rotulo">{textos.contacto.quieresSerMiembro}</span>
+			<span class="valor">{textos.contacto.conoceRequisitos}</span>
+			<span class="flecha" aria-hidden="true">→</span>
+		</a>
+		{Content && <div class="texto-extra"><Content /></div>}
+	</div>
 
-<dl class="datos">
-	<dt>{textos.contacto.correo}</dt>
-	<dd>{correo ? <a href={`mailto:${correo}`}>{correo}</a> : textos.comun.pendiente}</dd>
-
-	<dt>{textos.contacto.sede}</dt>
-	<dd>{ORGANIZACION.sede}, {ORGANIZACION.pais}</dd>
-
-	<dt>{textos.contacto.redes}</dt>
-	<dd>
-		{
-			ORGANIZACION.redes.length
-				? ORGANIZACION.redes.map((red, i) => (
-						<>
-							{i > 0 && ' · '}
-							<a href={red.url} rel="noopener">
-								{red.nombre}
-							</a>
-						</>
-					))
-				: textos.comun.pendiente
-		}
-	</dd>
-</dl>
-
-<section aria-labelledby="titulo-formulario" id="formulario">
-	<h2 id="titulo-formulario">{textos.contacto.formulario.titulo}</h2>
-	<FormularioContacto idioma={idioma} />
-</section>
+	<section class="formulario tarjeta" aria-labelledby="titulo-formulario" id="formulario">
+		<h2 id="titulo-formulario">{textos.contacto.formulario.titulo}</h2>
+		<p class="obligatorios">{textos.contacto.obligatorios}</p>
+		<FormularioContacto idioma={idioma} />
+	</section>
+</div>
 
 <style>
+	/* Datos a la izquierda y formulario a la derecha, montados sobre el borde de la cabecera verde. */
+	.contacto {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+		gap: 1.25rem;
+		align-items: start;
+		margin-top: -2rem;
+		position: relative;
+	}
 	.datos {
 		display: grid;
-		grid-template-columns: max-content 1fr;
-		gap: 0.5rem var(--espacio);
+		gap: 0.75rem;
 	}
-	dt {
-		font-weight: 700;
+	.dato {
+		padding: 1.25rem 1.25rem 1rem;
+		box-shadow: var(--sombra);
 	}
-	dd {
+	.rotulo {
+		margin: 0;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-dorado);
+	}
+	.dato p:last-child {
+		margin: 0.4rem 0 0;
+	}
+	.valor {
+		font-family: var(--fuente-titulos);
+		font-size: 1.35rem;
+		line-height: 1.25;
+		color: var(--color-titulos);
+	}
+	.miembro {
+		position: relative;
+		display: grid;
+		gap: 0.3rem;
+		padding: 1.25rem 3rem 1.25rem 1.25rem;
+		border-radius: var(--radio);
+		background: var(--color-oscuro);
+		text-decoration: none;
+	}
+	.miembro .rotulo {
+		color: var(--color-dorado-claro);
+	}
+	.miembro .valor {
+		color: #fff;
+	}
+	.miembro .flecha {
+		position: absolute;
+		right: 1.25rem;
+		top: 50%;
+		translate: 0 -50%;
+		color: #fff;
+	}
+	.miembro:hover .flecha {
+		transform: translateX(4px);
+	}
+	.formulario {
+		padding: clamp(1.5rem, 4vw, 2.5rem);
+		box-shadow: var(--sombra-grande);
+	}
+	.formulario h2 {
 		margin: 0;
 	}
-	@media (max-width: 36rem) {
-		.datos {
+	.obligatorios {
+		margin: 0.25rem 0 1.5rem;
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+	@media (max-width: 52rem) {
+		.contacto {
 			grid-template-columns: 1fr;
-		}
-		dd {
-			margin-bottom: 0.5rem;
 		}
 	}
 </style>

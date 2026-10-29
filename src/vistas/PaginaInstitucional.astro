@@ -1,31 +1,16 @@
 ---
 // Página de texto (nosotros, legales, etc.) escrita en src/content/paginas/.
 import { render, type CollectionEntry } from 'astro:content';
-import type { Miga } from '../components/Migas.astro';
 
 interface Props {
 	pagina: CollectionEntry<'paginas'>;
-	/** Páginas que cuelgan de esta (p. ej. Comisión directiva dentro de Quiénes somos). */
-	subsecciones?: Miga[];
 }
 
-const { pagina, subsecciones = [] } = Astro.props;
+const { pagina } = Astro.props;
 const { Content } = await render(pagina);
 ---
 
 <article class="pagina">
-	<h1>{pagina.data.titulo}</h1>
-	{
-		subsecciones.length > 0 && (
-			<ul class="subsecciones">
-				{subsecciones.map((s) => (
-					<li>
-						<a href={s.href}>{s.nombre}</a>
-					</li>
-				))}
-			</ul>
-		)
-	}
 	<Content />
 </article>
 
@@ -33,7 +18,7 @@ const { Content } = await render(pagina);
 	/* La página de texto va sobre una hoja blanca, separada del fondo. */
 	.pagina {
 		max-width: calc(var(--ancho-lectura) + 6rem);
-		margin-top: var(--espacio);
+		margin-top: 3rem;
 		padding: clamp(1.5rem, 5vw, 3rem);
 		background: var(--color-superficie);
 		border: 1px solid var(--color-borde);

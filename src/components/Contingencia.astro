@@ -1,0 +1,117 @@
+---
+// Figura: la triple relación de contingencia (antecedente → conducta → consecuencia), unidad básica de análisis
+// de la ciencia del comportamiento. Un punto recorre la secuencia y la consecuencia "vuelve" sobre la conducta,
+// como en el reforzamiento. Se detiene con "reducir movimiento".
+import { t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+}
+
+const c = t(Astro.props.idioma).ciencia;
+---
+
+<figure class="contingencia">
+	<ol class="nodos">
+		<li><span class="letra" aria-hidden="true">A</span>{c.antecedente}</li>
+		<li><span class="letra" aria-hidden="true">B</span>{c.conducta}</li>
+		<li><span class="letra" aria-hidden="true">C</span>{c.consecuencia}</li>
+	</ol>
+	<svg class="flujo" viewBox="0 0 300 60" aria-hidden="true" focusable="false">
+		<path class="camino" d="M 50 20 H 250" />
+		<path class="retorno" d="M 250 8 C 230 -26, 170 -26, 150 8" />
+		<circle class="pulso" r="4" />
+	</svg>
+	<figcaption>{c.contingencia}</figcaption>
+</figure>
+
+<style>
+	.contingencia {
+		position: relative;
+		margin: 3rem 0 0;
+		max-width: 22rem;
+	}
+	.nodos {
+		position: relative;
+		z-index: 1;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		text-align: center;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--color-texto-suave);
+	}
+	.letra {
+		display: grid;
+		place-items: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		margin: 0 auto 0.4rem;
+		border: 1px solid var(--color-acento);
+		border-radius: 50%;
+		background: var(--color-tarjeta);
+		font-family: var(--fuente-titulos);
+		font-size: 1.25rem;
+		font-style: italic;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--color-acento);
+	}
+	/* La figura queda detrás de los círculos: sus centros están en x = 50, 150 y 250 de 300. */
+	.flujo {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: auto;
+		overflow: visible;
+	}
+	.camino,
+	.retorno {
+		fill: none;
+		stroke: var(--color-division);
+		stroke-width: 1.5;
+	}
+	.retorno {
+		stroke: var(--color-dorado);
+		stroke-dasharray: 3 4;
+	}
+	/* El pulso recorre A → B → C y vuelve sobre B (la consecuencia modifica la conducta). */
+	.pulso {
+		fill: var(--color-dorado);
+		offset-path: path('M 50 20 H 250 C 230 -26, 170 -26, 150 8');
+		animation: recorrer 5s ease-in-out infinite;
+	}
+	@keyframes recorrer {
+		0% {
+			offset-distance: 0%;
+			opacity: 0;
+		}
+		8% {
+			opacity: 1;
+		}
+		92% {
+			opacity: 1;
+		}
+		100% {
+			offset-distance: 100%;
+			opacity: 0;
+		}
+	}
+	figcaption {
+		margin-top: 0.75rem;
+		font-size: 0.8125rem;
+		font-style: italic;
+		color: var(--color-texto-suave);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.pulso {
+			display: none;
+		}
+	}
+</style>

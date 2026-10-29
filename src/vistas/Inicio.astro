@@ -1,105 +1,485 @@
 ---
+// Portada. Textos en src/content/paginas/{idioma}/inicio.md (campo `portada`); sin ese archivo se muestran solo
+// el título, la agenda y las fotos. Se mantienen el carrusel de próximos eventos, la franja de fotos y las animaciones.
+import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import logo from '../assets/logo-completo.webp';
 import CarruselEventos from '../components/CarruselEventos.astro';
-import EventoDestacado from '../components/EventoDestacado.astro';
+import CintaConceptos from '../components/CintaConceptos.astro';
 import FranjaFotos from '../components/FranjaFotos.astro';
-import { ORGANIZACION } from '../datos/organizacion';
-import { obtenerEventosPublicos, yaPaso } from '../lib/contenido';
-import { ruta, t, type Idioma } from '../i18n';
+import RegistroAcumulativo from '../components/RegistroAcumulativo.astro';
+import TarjetaDestacada from '../components/TarjetaDestacada.astro';
+import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
+import { formato, ruta, t, type Idioma } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
+	pagina?: CollectionEntry<'paginas'>;
 }
 
-const { idioma } = Astro.props;
+const { idioma, pagina } = Astro.props;
 const textos = t(idioma);
+const v = textos.inicio;
+const p = pagina?.data.portada;
+const membresia = (await paginaDeSeccion('membresia', idioma))?.data.membresia;
+
 const eventos = await obtenerEventosPublicos(idioma);
 const proximos = eventos.filter((e) => !yaPaso(e)).slice(0, 6);
 const destacado = proximos.find((e) => e.datos.destacado);
 const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 ---
 
-<section class="portada banda banda-clara" aria-labelledby="titulo-portada">
+<section class="portada banda banda-verde" aria-labelledby="titulo-portada">
+	<RegistroAcumulativo />
 	<div class="presentacion">
-		<p class="antetitulo">{textos.sitio.sigla} · {ORGANIZACION.pais}</p>
-		<h1 id="titulo-portada">{textos.sitio.nombre}</h1>
-		<p class="bajada">{textos.sitio.descripcion}</p>
+		{p && <p class="antetitulo">{p.antetitulo}</p>}
+		<h1 id="titulo-portada">
+			{
+				p ? (
+					<>
+						<span class="previo">{p.tituloPrevio}</span> {p.titulo} <span class="cursiva">{p.tituloCursiva}</span>
+					</>
+				) : (
+					textos.sitio.nombre
+				)
+			}
+		</h1>
+		<p class="bajada">{p?.bajada ?? textos.sitio.descripcion}</p>
 		<p class="acciones">
-			<a class="boton" href={ruta('eventos', idioma)}>{textos.nav.eventos}</a>
-			<a class="boton boton-secundario" href={ruta('membresia', idioma)}>{textos.nav.membresia}</a>
+			<a class="boton boton-dorado" href={ruta('eventos', idioma)}>
+				{v.verEventos} <span class="flecha" aria-hidden="true">→</span>
+			</a>
+			<a class="boton boton-contorno" href={ruta('membresia', idioma)}>{v.hazteMiembro}</a>
 		</p>
+		{
+			p && (
+				<ul class="datos">
+					{p.datos.map((dato) => (
+						<li>{dato}</li>
+					))}
+				</ul>
+			)
+		}
 	</div>
-	<!-- Decorativo: el nombre de la asociación ya está en el título. -->
-	<Image src={logo} alt="" widths={[400, 800]} sizes="(max-width: 48rem) 16rem, 24rem" class="logo-portada" loading="eager" />
+	<div class="lateral">
+		{destacado ? <TarjetaDestacada evento={destacado} idioma={idioma} /> : <Image src={logo} alt="" widths={[400, 800]} sizes="24rem" class="logo-portada" />}
+	</div>
 </section>
 
-{destacado && <EventoDestacado evento={destacado} idioma={idioma} />}
+{p && <CintaConceptos conceptos={p.conceptos} etiqueta={v.conceptos} />}
 
-<section class="proximos banda" aria-labelledby="titulo-proximos">
-	<div class="cabecera">
-		<h2 id="titulo-proximos">{textos.comun.proximosEventos}</h2>
-		<a href={ruta('eventos', idioma)}>{textos.comun.verTodos} <span aria-hidden="true">→</span></a>
+{
+	p && (
+		<section class="banda quienes" aria-labelledby="titulo-quienes">
+			<div>
+				<p class="antetitulo">{p.quienes.antetitulo}</p>
+				<h2 id="titulo-quienes">{p.quienes.titulo}</h2>
+				<p class="texto">{p.quienes.texto}</p>
+				<p class="enlaces">
+					<a class="enlace-accion" href={ruta('comision', idioma)}>
+						{v.verComision} <span class="flecha" aria-hidden="true">→</span>
+					</a>
+					<a class="enlace-accion" href={ruta('transparencia', idioma)}>
+						{v.estatuto}
+					</a>
+				</p>
+			</div>
+			<ol class="puntos">
+				{p.quienes.puntos.map((punto, i) => (
+					<li>
+						<span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+						<h3>{punto.titulo}</h3>
+						<p>{punto.texto}</p>
+					</li>
+				))}
+			</ol>
+		</section>
+	)
+}
+
+<section class="proximos banda banda-clara" aria-labelledby="titulo-proximos">
+	<div class="cabecera-seccion">
+		<div>
+			<p class="antetitulo">{v.agenda}</p>
+			<h2 id="titulo-proximos">{textos.comun.proximosEventos}</h2>
+		</div>
+		<p class="enlaces">
+			<a class="enlace-accion" href="/eventos.ics">{textos.eventos.suscribirse}</a>
+			<a class="enlace-accion" href={ruta('eventos', idioma)}>
+				{v.verTodosEventos} <span class="flecha" aria-hidden="true">→</span>
+			</a>
+		</p>
 	</div>
 	<CarruselEventos eventos={proximos} idioma={idioma} />
 </section>
 
+{
+	p && (
+		<section class="banda cita" aria-label={p.cita.fuente}>
+			<span class="puntos-logo" aria-hidden="true" />
+			<blockquote>
+				<p>{p.cita.texto}</p>
+			</blockquote>
+			<p class="fuente">{p.cita.fuente}</p>
+		</section>
+	)
+}
+
+{
+	p && (
+		<section class="banda banda-azul membresia" aria-labelledby="titulo-membresia">
+			<div>
+				<p class="antetitulo">{p.membresia.antetitulo}</p>
+				<h2 id="titulo-membresia">{p.membresia.titulo}</h2>
+				<p class="texto-claro">{p.membresia.texto}</p>
+				<ul class="beneficios">
+					{p.membresia.beneficios.map((b) => (
+						<li>{b}</li>
+					))}
+				</ul>
+				<p class="acciones">
+					<a class="boton boton-dorado" href={`${ruta('membresia', idioma)}#solicitar`}>
+						{textos.membresia.solicitar} <span class="flecha" aria-hidden="true">→</span>
+					</a>
+					<a class="enlace-accion" href={`${ruta('membresia', idioma)}#requisitos`}>
+						{v.verRequisitos}
+					</a>
+				</p>
+			</div>
+			{membresia && (
+				<div>
+					<ul class="categorias">
+						{membresia.categorias.slice(0, 3).map((c) => (
+							<li>
+								<p class="categoria">
+									<span class="nombre">{c.nombre}</span>
+									<span class="participacion">{c.participacion}</span>
+								</p>
+								<p>{c.texto}</p>
+							</li>
+						))}
+					</ul>
+					<p class="cuota">
+						<span>{formato(v.cuota, { monto: membresia.cuota.monto, unidad: membresia.cuota.unidad })}</span>
+						<span>{v.exentos}</span>
+					</p>
+				</div>
+			)}
+		</section>
+	)
+}
+
 <FranjaFotos eventos={realizados} idioma={idioma} />
 
+{
+	p && (
+		<section class="banda red" aria-labelledby="titulo-red">
+			<div>
+				<p class="antetitulo">{p.red.antetitulo}</p>
+				<h2 id="titulo-red">{p.red.titulo}</h2>
+				<p class="texto">{p.red.texto}</p>
+			</div>
+			<div class="logos">
+				<div class="logo-caja tarjeta">
+					<Image src={logo} alt={textos.sitio.sigla} widths={[200, 400]} sizes="10rem" />
+				</div>
+				<div class="logo-caja tarjeta pendiente">{v.logoAlapcco}</div>
+			</div>
+		</section>
+	)
+}
+
 <style>
+	/* ---------- Presentación ---------- */
 	.portada {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
 		align-items: center;
-		gap: 2rem 4rem;
-		padding-block: clamp(3.5rem, 9vw, 7rem);
-		border-top: 0;
+		gap: 3rem 4rem;
+		padding-block: clamp(3.5rem, 8vw, 6rem);
+		overflow: hidden;
 	}
-	.logo-portada {
-		width: clamp(16rem, 28vw, 24rem);
-		height: auto;
-	}
-	@media (max-width: 56rem) {
-		.portada {
-			grid-template-columns: 1fr;
-		}
-		/* En pantallas angostas el logo va arriba del texto. */
-		.logo-portada {
-			order: -1;
-			width: min(15rem, 70%);
-		}
+	.presentacion,
+	.lateral {
+		position: relative;
+		z-index: 1;
 	}
 	.portada h1 {
-		max-width: 18ch;
-		margin: 1rem 0 1.25rem;
-		font-size: clamp(2.75rem, 1.6rem + 4.2vw, 4.75rem);
-		line-height: 1.02;
+		margin: 1.25rem 0 1.5rem;
+		font-size: clamp(2.8rem, 1.6rem + 4.4vw, 4.6rem);
+		line-height: 1.04;
+	}
+	.previo {
+		display: block;
+		margin-bottom: 0.35rem;
+		font-size: 0.5em;
+		font-style: italic;
+		color: var(--color-dorado-claro);
 	}
 	.bajada {
-		max-width: 40rem;
+		max-width: 34rem;
 		margin: 0;
-		font-size: 1.25rem;
-		color: var(--color-texto-suave);
+		font-size: 1.0625rem;
+		color: #d5e1da;
 	}
-	.acciones {
+	.portada .acciones {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.75rem;
 		margin: 2rem 0 0;
 	}
-	.cabecera {
+	.datos {
 		display: flex;
 		flex-wrap: wrap;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 0.5rem var(--espacio);
-		margin: 0 0 calc(var(--espacio) * 1.5);
+		gap: 0.5rem 1.75rem;
+		margin: 2rem 0 0;
+		padding: 1.25rem 0 0;
+		border-top: 1px solid rgb(255 255 255 / 0.15);
+		list-style: none;
+		font-size: 0.8125rem;
+		color: #c2d3c9;
 	}
-	.cabecera h2 {
+	.datos li::before {
+		content: '';
+		display: inline-block;
+		width: 6px;
+		height: 6px;
+		margin-right: 0.5rem;
+		border-radius: 50%;
+		background: var(--color-dorado-claro);
+		vertical-align: middle;
+	}
+	.lateral {
+		max-width: 26rem;
+		justify-self: end;
+		width: 100%;
+	}
+	.logo-portada {
+		width: 100%;
+		height: auto;
+		padding: 2rem;
+		border-radius: var(--radio);
+		background: var(--color-tarjeta);
+	}
+
+	/* ---------- Quiénes somos ---------- */
+	.quienes,
+	.membresia,
+	.red {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: 2.5rem 4rem;
+		align-items: start;
+	}
+	.quienes h2,
+	.membresia h2,
+	.red h2 {
+		margin-top: 0.75rem;
+	}
+	.texto {
+		color: var(--color-texto-suave);
+	}
+	.enlaces {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem 1.5rem;
+		margin: 1.5rem 0 0;
+	}
+	.puntos {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 2rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.puntos li {
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--color-division);
+	}
+	.puntos h3 {
+		margin: 0.4rem 0;
+		font-family: var(--fuente-texto);
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	.puntos p {
+		margin: 0;
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+
+	/* ---------- Agenda ---------- */
+	.proximos .enlaces {
 		margin: 0;
 	}
-	.cabecera a {
+
+	/* ---------- Cita ---------- */
+	.cita {
+		text-align: center;
+	}
+	.puntos-logo {
+		display: block;
+		width: 3rem;
+		height: 0.6rem;
+		margin: 0 auto 1.5rem;
+		background:
+			radial-gradient(circle, var(--logo-rojo) 0.22rem, transparent 0.24rem) 0 50% / 1rem 0.6rem no-repeat,
+			radial-gradient(circle, var(--logo-amarillo) 0.22rem, transparent 0.24rem) 1rem 50% / 1rem 0.6rem no-repeat,
+			radial-gradient(circle, var(--logo-verde) 0.22rem, transparent 0.24rem) 2rem 50% / 1rem 0.6rem no-repeat;
+	}
+	blockquote {
+		max-width: 50rem;
+		margin: 0 auto;
+	}
+	blockquote p {
+		margin: 0;
+		font-family: var(--fuente-titulos);
+		font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.2rem);
+		font-style: italic;
+		line-height: 1.4;
+		color: var(--color-titulos);
+	}
+	.fuente {
+		margin: 1.5rem 0 0;
+		font-size: 0.6875rem;
 		font-weight: 600;
-		text-decoration: none;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--color-dorado);
+	}
+
+	/* ---------- Membresía ---------- */
+	.texto-claro {
+		color: #c9d1e3;
+	}
+	.beneficios {
+		margin: 1.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		font-size: 0.875rem;
+	}
+	.beneficios li {
+		position: relative;
+		padding-left: 1.6rem;
+	}
+	.beneficios li + li {
+		margin-top: 0.6rem;
+	}
+	/* Marca de verificación dibujada con bordes. */
+	.beneficios li::before {
+		content: '';
+		position: absolute;
+		left: 0.2rem;
+		top: 0.3rem;
+		width: 0.45rem;
+		height: 0.8rem;
+		border-right: 2px solid var(--color-dorado-claro);
+		border-bottom: 2px solid var(--color-dorado-claro);
+		transform: rotate(45deg);
+	}
+	.membresia .acciones {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 1rem 1.5rem;
+		margin: 2rem 0 0;
+	}
+	.categorias {
+		display: grid;
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.categorias li {
+		padding: 1.25rem 1.4rem;
+		border: 1px solid rgb(255 255 255 / 0.12);
+		border-radius: var(--radio);
+		background: rgb(255 255 255 / 0.03);
+		transition:
+			background-color 0.3s,
+			transform 0.3s;
+	}
+	.categorias li:hover {
+		background: rgb(255 255 255 / 0.08);
+		transform: translateX(4px);
+	}
+	.categoria {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 0.5rem;
+		margin: 0 0 0.4rem;
+	}
+	.nombre {
+		font-family: var(--fuente-titulos);
+		font-size: 1.4rem;
+		color: #fff;
+	}
+	.participacion {
+		font-size: 0.625rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-dorado-claro);
+	}
+	.categorias li > p:last-child {
+		margin: 0;
+		font-size: 0.8125rem;
+		color: #c9d1e3;
+	}
+	.cuota {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin: 1rem 0 0;
+		font-size: 0.8125rem;
+		color: #c9d1e3;
+	}
+
+	/* ---------- Red internacional ---------- */
+	.logos {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+	.logo-caja {
+		display: grid;
+		place-items: center;
+		min-height: 7rem;
+		padding: 1.25rem;
+	}
+	.logo-caja img {
+		width: 9rem;
+		height: auto;
+	}
+	.pendiente {
+		border-style: dashed;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		text-align: center;
+		color: var(--color-texto-suave);
+	}
+
+	@media (max-width: 56rem) {
+		.portada,
+		.quienes,
+		.membresia,
+		.red {
+			grid-template-columns: 1fr;
+		}
+		.lateral {
+			justify-self: start;
+		}
+	}
+	@media (max-width: 36rem) {
+		.puntos {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>
