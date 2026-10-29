@@ -71,15 +71,7 @@ const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? [])
 	}
 	</div>
 
-	<ListaProximos eventos={proximos} idioma={idioma}>
-		<li class="extra">
-			<aside class="no-te-pierdas tarjeta">
-				<h3>{ev.noTePierdasTitulo}</h3>
-				<p>{ev.noTePierdasTexto}</p>
-				<a class="enlace-accion" href="/eventos.ics">{ev.suscribirse}</a>
-			</aside>
-		</li>
-	</ListaProximos>
+	<ListaProximos eventos={proximos} idioma={idioma} />
 </section>
 
 {
@@ -178,22 +170,6 @@ const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? [])
 	.sin-resultados {
 		flex-basis: 100%;
 		margin: 0;
-	}
-	.no-te-pierdas {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		height: 100%;
-		padding: 1.75rem;
-		border-style: dashed;
-	}
-	.no-te-pierdas h3 {
-		margin: 0 0 0.5rem;
-	}
-	.no-te-pierdas p {
-		margin: 0 0 1rem;
-		font-size: 0.9375rem;
-		color: var(--color-texto-suave);
 	}
 	.archivo {
 		list-style: none;

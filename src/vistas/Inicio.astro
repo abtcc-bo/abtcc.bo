@@ -104,7 +104,6 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 			<h2 id="titulo-proximos">{textos.comun.proximosEventos}</h2>
 		</div>
 		<p class="enlaces">
-			<a class="enlace-accion" href="/eventos.ics">{textos.eventos.suscribirse}</a>
 			<a class="enlace-accion" href={ruta('eventos', idioma)}>
 				{v.verTodosEventos} <span class="flecha" aria-hidden="true">→</span>
 			</a>

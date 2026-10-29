@@ -67,3 +67,4 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [ ] Logo de ALAPCCO (para la sección "Red internacional" de la portada)
 - [ ] Año de fundación de la ABTCC e hitos para la línea de tiempo de "Quiénes somos"
 - [ ] Revisar los textos nuevos de la portada (`src/content/paginas/es/inicio.md`), incluida la lista de conceptos de la cinta animada
+- [ ] Cuando haya envío de correos (boletín): volver a ofrecer en la web la suscripción a los eventos. El calendario (/eventos.ics) y la fuente RSS siguen funcionando, pero ya no se muestran enlaces

@@ -59,16 +59,6 @@ const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${texto
 		>
 			{cabecera && (
 				<CabeceraPagina slot="cabecera" antetitulo={cabecera.antetitulo} titulo={nombre} entradilla={entradilla}>
-					{seccion === 'eventos' && (
-						<>
-							<a class="enlace-accion" href="/eventos.ics">
-								{textos.eventos.suscribirse}
-							</a>
-							<a class="enlace-accion" href={`/${idioma}/eventos.xml`}>
-								{textos.eventos.rss}
-							</a>
-						</>
-					)}
 					{seccion === 'membresia' && pagina?.data.membresia && (
 						<>
 							<a class="boton boton-dorado" href="#solicitar">
