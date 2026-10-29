@@ -119,7 +119,7 @@
 	},
 	"contacto": {
 		"correo": "Correo electrónico",
-		"ciudades": "Presencia en",
+		"sede": "Sede",
 		"redes": "Redes sociales",
 		"formulario": {
 			"titulo": "Escríbenos",
@@ -154,5 +154,15 @@
 	"comision": {
 		"formacion": "Formación",
 		"areas": "Áreas de trabajo"
+	},
+	"carrusel": {
+		"carrusel": "carrusel",
+		"diapositiva": "diapositiva",
+		"posicion": "{n} de {total}",
+		"anterior": "Evento anterior",
+		"siguiente": "Evento siguiente",
+		"pausar": "Pausar",
+		"reanudar": "Reanudar",
+		"irA": "Ir al evento {n}"
 	}
 }

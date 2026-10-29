@@ -1,0 +1,410 @@
+---
+// Carrusel de próximos eventos para la portada: un evento grande por vez que pasa solo al siguiente.
+// Sin bibliotecas: desplazamiento con "scroll-snap" y un script pequeño.
+//  - Sin JavaScript: se desliza a mano (con el dedo o la barra) y se ven todos los eventos.
+//  - Accesible: botón de pausa, flechas, puntos, se detiene al pasar el mouse o al enfocar con el teclado,
+//    y no avanza solo si el usuario pidió "reducir movimiento".
+import { Image } from 'astro:assets';
+import { formato, ruta, t, type Idioma } from '../i18n';
+import { fechaDelEvento, inscripcionAbierta } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	eventos: Evento[];
+	idioma: Idioma;
+}
+
+const { eventos, idioma } = Astro.props;
+const textos = t(idioma);
+const ev = textos.eventos;
+const c = textos.carrusel;
+const varios = eventos.length > 1;
+---
+
+<div class="carrusel" data-carrusel role="region" aria-roledescription={c.carrusel} aria-label={textos.comun.proximosEventos}>
+	{
+		varios && (
+			<div class="controles" data-controles hidden>
+				<button type="button" class="control pausa" data-pausa aria-pressed="false">
+					<span data-texto-pausar>{c.pausar}</span>
+					<span data-texto-reanudar hidden>{c.reanudar}</span>
+				</button>
+				<div class="flechas">
+					<button type="button" class="control" data-anterior aria-label={c.anterior}>
+						<span aria-hidden="true">←</span>
+					</button>
+					<button type="button" class="control" data-siguiente aria-label={c.siguiente}>
+						<span aria-hidden="true">→</span>
+					</button>
+				</div>
+			</div>
+		)
+	}
+
+	<ul class="pista" data-pista aria-live="off">
+		{
+			eventos.map((evento, i) => {
+				const { datos } = evento;
+				const { titulo, resumen } = evento.texto.data;
+				const href = ruta('eventos', idioma, evento.slug);
+				return (
+					<li
+						class="diapositiva"
+						role="group"
+						aria-roledescription={c.diapositiva}
+						aria-label={formato(c.posicion, { n: i + 1, total: eventos.length })}
+						data-fin={(datos.fin ?? datos.inicio).toISOString()}
+					>
+						<div class="visual">
+							{datos.imagen ? (
+								<Image src={datos.imagen} alt="" widths={[400, 800]} sizes="(max-width: 48rem) 100vw, 28rem" loading={i === 0 ? 'eager' : 'lazy'} />
+							) : (
+								<div class="sin-afiche" aria-hidden="true">
+									<span class="tipo-grande">{ev.tipos[datos.tipo]}</span>
+									<span class="puntos" />
+								</div>
+							)}
+						</div>
+						<div class="texto">
+							<p class="etiquetas">
+								<span>{ev.tipos[datos.tipo]}</span>
+								{datos.modalidad && <span>{ev.modalidades[datos.modalidad]}</span>}
+							</p>
+							<h3>
+								<a href={href}>{titulo}</a>
+							</h3>
+							<p class="fecha">
+								{fechaDelEvento(evento, idioma)}
+								{datos.lugar && <> · {datos.lugar.ciudad}</>}
+							</p>
+							<p class="resumen">{resumen}</p>
+							<p class="acciones">
+								{inscripcionAbierta(evento) && datos.inscripcion && (
+									<a class="boton" href={datos.inscripcion.url} rel="noopener">
+										{textos.comun.inscribirme}
+									</a>
+								)}
+								<a class="boton boton-secundario" href={href}>
+									{ev.verDetalle}
+									<span class="visualmente-oculto">: {titulo}</span>
+								</a>
+							</p>
+						</div>
+					</li>
+				);
+			})
+		}
+	</ul>
+
+	{
+		varios && (
+			<div class="puntos-navegacion" data-puntos hidden>
+				{eventos.map((_, i) => (
+					<button type="button" class="punto" data-ir={i} aria-label={formato(c.irA, { n: i + 1 })} />
+				))}
+			</div>
+		)
+	}
+
+	<p class="vacio" hidden={eventos.length > 0} data-vacio>
+		{ev.sinProximos} <a href={ruta('contacto', idioma)}>{ev.avisame}</a>
+	</p>
+</div>
+
+<script>
+	const INTERVALO_MS = 6000;
+	const reducirMovimiento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	for (const carrusel of document.querySelectorAll<HTMLElement>('[data-carrusel]')) {
+		const pista = carrusel.querySelector<HTMLElement>('[data-pista]')!;
+
+		// Si la página quedó en caché, quitar los eventos que ya terminaron.
+		const ahora = Date.now();
+		for (const d of pista.querySelectorAll<HTMLElement>('[data-fin]')) {
+			if (Date.parse(d.dataset.fin!) < ahora) d.remove();
+		}
+		const diapositivas = [...pista.querySelectorAll<HTMLElement>('.diapositiva')];
+		if (!diapositivas.length) carrusel.querySelector<HTMLElement>('[data-vacio]')!.hidden = false;
+		if (diapositivas.length < 2) {
+			carrusel.querySelector<HTMLElement>('[data-controles]')?.remove();
+			carrusel.querySelector<HTMLElement>('[data-puntos]')?.remove();
+			continue;
+		}
+
+		const controles = carrusel.querySelector<HTMLElement>('[data-controles]')!;
+		const puntosNav = carrusel.querySelector<HTMLElement>('[data-puntos]')!;
+		const puntos = [...puntosNav.querySelectorAll<HTMLButtonElement>('[data-ir]')];
+		puntos.slice(diapositivas.length).forEach((p) => p.remove());
+		const botonPausa = carrusel.querySelector<HTMLButtonElement>('[data-pausa]')!;
+		controles.hidden = false;
+		puntosNav.hidden = false;
+
+		let actual = 0;
+		let pausadoPorUsuario = reducirMovimiento;
+		let enUso = false; // mouse encima o foco dentro
+		let temporizador: number | undefined;
+
+		const marcar = () => {
+			puntos.forEach((p, i) => p.setAttribute('aria-current', String(i === actual)));
+		};
+		const ir = (indice: number) => {
+			actual = (indice + diapositivas.length) % diapositivas.length;
+			pista.scrollTo({ left: diapositivas[actual].offsetLeft - pista.offsetLeft, behavior: reducirMovimiento ? 'auto' : 'smooth' });
+			marcar();
+		};
+		const programar = () => {
+			clearInterval(temporizador);
+			const activo = !pausadoPorUsuario && !enUso;
+			pista.setAttribute('aria-live', activo ? 'off' : 'polite');
+			if (activo) temporizador = window.setInterval(() => ir(actual + 1), INTERVALO_MS);
+		};
+		const mostrarPausa = () => {
+			botonPausa.setAttribute('aria-pressed', String(pausadoPorUsuario));
+			botonPausa.querySelector<HTMLElement>('[data-texto-pausar]')!.hidden = pausadoPorUsuario;
+			botonPausa.querySelector<HTMLElement>('[data-texto-reanudar]')!.hidden = !pausadoPorUsuario;
+		};
+
+		carrusel.querySelector('[data-anterior]')!.addEventListener('click', () => {
+			ir(actual - 1);
+			programar();
+		});
+		carrusel.querySelector('[data-siguiente]')!.addEventListener('click', () => {
+			ir(actual + 1);
+			programar();
+		});
+		puntos.forEach((p, i) =>
+			p.addEventListener('click', () => {
+				ir(i);
+				programar();
+			}),
+		);
+		botonPausa.addEventListener('click', () => {
+			pausadoPorUsuario = !pausadoPorUsuario;
+			mostrarPausa();
+			programar();
+		});
+
+		// Pausa mientras se usa (mouse encima o teclado dentro).
+		carrusel.addEventListener('mouseenter', () => {
+			enUso = true;
+			programar();
+		});
+		carrusel.addEventListener('mouseleave', () => {
+			enUso = carrusel.contains(document.activeElement);
+			programar();
+		});
+		carrusel.addEventListener('focusin', () => {
+			enUso = true;
+			programar();
+		});
+		carrusel.addEventListener('focusout', (e) => {
+			if (!carrusel.contains(e.relatedTarget as Node)) {
+				enUso = carrusel.matches(':hover');
+				programar();
+			}
+		});
+
+		// Si se desliza a mano (dedo o barra), actualizar el punto activo.
+		let espera: number | undefined;
+		pista.addEventListener('scroll', () => {
+			clearTimeout(espera);
+			espera = window.setTimeout(() => {
+				actual = Math.round(pista.scrollLeft / pista.clientWidth);
+				marcar();
+			}, 100);
+		});
+
+		// No avanzar mientras la pestaña está oculta.
+		document.addEventListener('visibilitychange', () => {
+			if (document.hidden) clearInterval(temporizador);
+			else programar();
+		});
+
+		marcar();
+		mostrarPausa();
+		programar();
+	}
+</script>
+
+<style>
+	.carrusel {
+		position: relative;
+	}
+	.pista {
+		display: flex;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		border-radius: var(--radio);
+	}
+	.pista::-webkit-scrollbar {
+		display: none;
+	}
+	.diapositiva {
+		flex: 0 0 100%;
+		scroll-snap-align: start;
+		display: grid;
+		grid-template-columns: minmax(0, 28rem) minmax(0, 1fr);
+		background: var(--color-superficie);
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		overflow: hidden;
+	}
+	.visual {
+		aspect-ratio: 1;
+		background: var(--color-fondo);
+	}
+	.visual img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	/* Sin afiche: recuadro con el tipo de evento y los tres puntos del logo. */
+	.sin-afiche {
+		display: grid;
+		place-content: center;
+		justify-items: center;
+		gap: 1.25rem;
+		height: 100%;
+		padding: 2rem;
+		background:
+			radial-gradient(circle at 30% 25%, rgb(3 127 54 / 0.14), transparent 55%),
+			radial-gradient(circle at 75% 80%, rgb(252 222 88 / 0.25), transparent 50%),
+			var(--color-oscuro);
+		color: #fff;
+		text-align: center;
+	}
+	.tipo-grande {
+		font-family: var(--fuente-titulos);
+		font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+		font-weight: 600;
+		line-height: 1;
+	}
+	.puntos {
+		width: 4.2rem;
+		height: 1.1rem;
+		background:
+			radial-gradient(circle, var(--logo-rojo) 0.5rem, transparent 0.53rem) 0 50% / 1.4rem 1.1rem no-repeat,
+			radial-gradient(circle, var(--logo-amarillo) 0.5rem, transparent 0.53rem) 1.4rem 50% / 1.4rem 1.1rem no-repeat,
+			radial-gradient(circle, var(--logo-verde) 0.5rem, transparent 0.53rem) 2.8rem 50% / 1.4rem 1.1rem no-repeat;
+	}
+	.texto {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: clamp(1.5rem, 4vw, 3rem);
+	}
+	.etiquetas {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin: 0;
+	}
+	.etiquetas > * {
+		padding: 0.1rem 0.55rem;
+		border-radius: 999px;
+		background: var(--color-acento-suave);
+		color: var(--color-acento-hover);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	h3 {
+		margin: 1rem 0 0.5rem;
+		font-size: clamp(2rem, 1.5rem + 2vw, 2.9rem);
+	}
+	h3 a {
+		color: var(--color-titulos);
+		text-decoration: none;
+	}
+	h3 a:hover {
+		color: var(--color-acento);
+	}
+	.fecha {
+		margin: 0;
+		font-weight: 600;
+		color: var(--color-acento-hover);
+	}
+	.resumen {
+		color: var(--color-texto-suave);
+	}
+	.acciones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin: 0.5rem 0 0;
+	}
+
+	/* Controles: pausa a la izquierda, flechas a la derecha; puntos debajo. */
+	.controles {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: var(--espacio);
+		margin-bottom: 0.75rem;
+	}
+	.flechas {
+		display: flex;
+		gap: 0.5rem;
+	}
+	.control {
+		min-width: 44px;
+		min-height: 44px;
+		padding-inline: 0.9rem;
+		border: 1px solid var(--color-borde);
+		border-radius: 999px;
+		background: var(--color-superficie);
+		color: var(--color-titulos);
+		font: inherit;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.control:hover {
+		border-color: var(--color-acento);
+		color: var(--color-acento);
+	}
+	.puntos-navegacion {
+		display: flex;
+		justify-content: center;
+		gap: 0.25rem;
+		margin-top: 0.75rem;
+	}
+	/* Área de toque de 44 px con un punto visible pequeño. */
+	.punto {
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+	.punto::before {
+		content: '';
+		display: block;
+		width: 10px;
+		height: 10px;
+		margin: auto;
+		border-radius: 999px;
+		background: var(--color-division);
+		transition: width 0.2s, background-color 0.2s;
+	}
+	.punto[aria-current='true']::before {
+		width: 28px;
+		background: var(--color-acento);
+	}
+
+	@media (max-width: 48rem) {
+		.diapositiva {
+			grid-template-columns: 1fr;
+		}
+		.visual {
+			aspect-ratio: 4 / 3;
+		}
+	}
+</style>

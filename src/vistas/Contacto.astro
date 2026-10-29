@@ -23,8 +23,8 @@ const correo = ORGANIZACION.correo;
 	<dt>{textos.contacto.correo}</dt>
 	<dd>{correo ? <a href={`mailto:${correo}`}>{correo}</a> : textos.comun.pendiente}</dd>
 
-	<dt>{textos.contacto.ciudades}</dt>
-	<dd>{ORGANIZACION.ciudades.join(' · ')} — {ORGANIZACION.pais}</dd>
+	<dt>{textos.contacto.sede}</dt>
+	<dd>{ORGANIZACION.sede}, {ORGANIZACION.pais}</dd>
 
 	<dt>{textos.contacto.redes}</dt>
 	<dd>

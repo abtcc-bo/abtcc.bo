@@ -8,8 +8,8 @@ export interface Red {
 
 export const ORGANIZACION: {
 	correo: string | null;
-	/** La primera es la ciudad principal (la que se declara a Google). */
-	ciudades: string[];
+	/** Sede legal. Solo se muestra en Contacto y en los datos para Google: la asociación trabaja en todo el país. */
+	sede: string;
 	pais: string;
 	redes: Red[];
 	/** Ruta en /public o URL; idealmente un PNG cuadrado de al menos 112 px para Google. */
@@ -18,7 +18,7 @@ export const ORGANIZACION: {
 	imagenRedes: string | null;
 } = {
 	correo: 'abtcc.bo@gmail.com',
-	ciudades: ['Santa Cruz', 'Cochabamba', 'La Paz'],
+	sede: 'Santa Cruz de la Sierra',
 	pais: 'Bolivia',
 	redes: [], // [PENDIENTE: redes sociales] p. ej. { nombre: 'Instagram', url: 'https://instagram.com/...' }
 	logo: '/logo.png', // [PENDIENTE: reemplazar por el archivo original del diseñador (SVG) cuando llegue]

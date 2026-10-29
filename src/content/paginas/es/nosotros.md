@@ -4,7 +4,7 @@ clave: nosotros
 descripcion: Asociación sin fines de lucro que impulsa la formación, la investigación y la práctica ética de las terapias cognitivas, conductuales y contextuales en Bolivia.
 ---
 
-La Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales (ABTCC) es una asociación civil sin fines de lucro, de ámbito nacional, con sede en Santa Cruz de la Sierra y actividad en Cochabamba y La Paz.
+La Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales (ABTCC) es una asociación civil sin fines de lucro, de ámbito nacional, con sede en Santa Cruz de la Sierra.
 
 [PENDIENTE: 2–3 líneas más de presentación: desde cuándo existimos y a quiénes reunimos]
 

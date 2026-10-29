@@ -33,7 +33,7 @@ La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisi
 - Título: "Nombre de la página · ABTCC" (hasta ~60 caracteres). Descripción: ~150 caracteres.
 - Migas: se pasan `migas` (ancestros) y `nombreEnMigas` (página actual). La jerarquía de secciones está en `PADRES` (`src/i18n/rutas.ts`).
 - `noIndexar` para área de socios y 404.
-- Datos institucionales sin idioma (correo, ciudad, redes, logo, imagen para redes) en `src/datos/organizacion.ts`; `null` = pendiente.
+- Datos institucionales sin idioma (correo, sede, redes, logo, imagen para redes). No listar ciudades: la asociación trabaja en todo el país; la sede solo va en Contacto y en los datos para Google en `src/datos/organizacion.ts`; `null` = pendiente.
 - Menú de celular: botón con `aria-expanded`; sin JavaScript el menú queda visible (clase `js` en `<html>`).
 - Desplegables del menú y del idioma con `<details>` (estilos en `global.css`, comportamiento en `Encabezado.astro`). Submenús: subsecciones de `PADRES`, próximos eventos (hasta 4) y los títulos `##` de la página de Membresía.
 - Fechas y monedas con `Intl`. Horas siempre con zona horaria (`2026-11-14T09:00-04:00`), mostradas como "hora de Bolivia (UTC−4)".
@@ -55,7 +55,7 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 
 ## Eventos (cómo se muestran)
 
-- Todo sale de la carpeta del evento: tarjeta en portada (3 próximos), listado `/es/eventos/` (próximos con filtros + archivo por año), detalle `/es/eventos/slug/`, `.ics` en `/es/calendario/slug.ics`, calendario suscribible `/eventos.ics`, RSS `/es/eventos.xml` y JSON-LD `Event`.
+- Todo sale de la carpeta del evento: carrusel automático en portada (hasta 6 próximos, `CarruselEventos.astro`, sin bibliotecas, con pausa y respetando "reducir movimiento"), listado `/es/eventos/` (próximos con filtros + archivo por año), detalle `/es/eventos/slug/`, `.ics` en `/es/calendario/slug.ics`, calendario suscribible `/eventos.ics`, RSS `/es/eventos.xml` y JSON-LD `Event`.
 - Lógica en `src/lib/eventos.ts` (horarios, inscripción abierta, calendario, datos para Google). Bolivia es UTC−4 fijo.
 - Anuncio sin fecha exacta: `por_confirmar: true`, `inicio` día 1 y `fin` último día del mes. Muestra solo mes y año, sin calendario ni datos para Google; costos y sede pueden faltar.
 - Un evento cancelado NO se borra: `estado: cancelado`. `solo_socios: true` lo saca de las páginas públicas.

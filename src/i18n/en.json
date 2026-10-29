@@ -119,7 +119,7 @@
 	},
 	"contacto": {
 		"correo": "Email",
-		"ciudades": "Present in",
+		"sede": "Headquarters",
 		"redes": "Social media",
 		"formulario": {
 			"titulo": "Write to us",
@@ -154,5 +154,15 @@
 	"comision": {
 		"formacion": "Education",
 		"areas": "Areas of practice"
+	},
+	"carrusel": {
+		"carrusel": "carousel",
+		"diapositiva": "slide",
+		"posicion": "{n} of {total}",
+		"anterior": "Previous event",
+		"siguiente": "Next event",
+		"pausar": "Pause",
+		"reanudar": "Resume",
+		"irA": "Go to event {n}"
 	}
 }

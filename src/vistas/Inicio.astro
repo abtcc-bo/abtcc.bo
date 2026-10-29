@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../assets/logo-completo.webp';
-import ListaProximos from '../components/ListaProximos.astro';
+import CarruselEventos from '../components/CarruselEventos.astro';
 import { ORGANIZACION } from '../datos/organizacion';
 import { obtenerEventosPublicos, yaPaso } from '../lib/contenido';
 import { ruta, t, type Idioma } from '../i18n';
@@ -12,12 +12,12 @@ interface Props {
 
 const { idioma } = Astro.props;
 const textos = t(idioma);
-const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)).slice(0, 3);
+const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)).slice(0, 6);
 ---
 
 <section class="portada banda banda-clara" aria-labelledby="titulo-portada">
 	<div class="presentacion">
-		<p class="antetitulo">{textos.sitio.sigla} · {ORGANIZACION.ciudades.join(' · ')}</p>
+		<p class="antetitulo">{textos.sitio.sigla} · {ORGANIZACION.pais}</p>
 		<h1 id="titulo-portada">{textos.sitio.nombre}</h1>
 		<p class="bajada">{textos.sitio.descripcion}</p>
 		<p class="acciones">
@@ -34,7 +34,7 @@ const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)
 		<h2 id="titulo-proximos">{textos.comun.proximosEventos}</h2>
 		<a href={ruta('eventos', idioma)}>{textos.comun.verTodos} <span aria-hidden="true">→</span></a>
 	</div>
-	<ListaProximos eventos={proximos} idioma={idioma} />
+	<CarruselEventos eventos={proximos} idioma={idioma} />
 </section>
 
 <style>
