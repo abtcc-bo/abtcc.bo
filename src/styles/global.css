@@ -11,7 +11,7 @@
 	--color-acento: #134e36;
 	--color-acento-hover: #0d3b28;
 	--color-acento-suave: #e6efe9;
-	--color-dorado: #a8822c;
+	--color-dorado: #846520; /* contraste 4,8:1 sobre crema (accesible en texto pequeño) */
 	--color-dorado-claro: #d6b45f;
 	--color-borde: #e5e0d3;
 	--color-division: #ddd6c6;

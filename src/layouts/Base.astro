@@ -62,6 +62,18 @@ const organizacion = {
 	areaServed: { '@type': 'Country', name: ORGANIZACION.pais },
 };
 
+// Nombre del sitio en los resultados de Google: solo en la portada de cada idioma.
+const esPortada = Astro.url.pathname === ruta('inicio', idioma);
+const sitioWeb = {
+	'@type': 'WebSite',
+	'@id': absoluta(`${ruta('inicio', idioma)}#sitio`),
+	name: textos.sitio.sigla,
+	alternateName: textos.sitio.nombre,
+	url: absoluta(ruta('inicio', idioma)),
+	inLanguage: idioma,
+	publisher: { '@id': absoluta('/#organizacion') },
+};
+
 const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href: Astro.url.pathname }] : [];
 ---
 
@@ -92,6 +104,7 @@ const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href:
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
 		<JsonLd datos={organizacion} />
+		{esPortada && <JsonLd datos={sitioWeb} />}
 		{
 			migasCompletas.length > 1 && (
 				<JsonLd

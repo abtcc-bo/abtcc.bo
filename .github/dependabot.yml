@@ -1,0 +1,12 @@
+# Actualizaciones automáticas: una vez al mes GitHub propone (en un "pull request") las versiones nuevas
+# de las dependencias, agrupadas en un solo cambio. Las de seguridad llegan apenas se publican.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      dependencias:
+        patterns: ['*']
+    open-pull-requests-limit: 3
