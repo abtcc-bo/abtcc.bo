@@ -492,3 +492,19 @@ Conviene construir en cuatro fases y publicar al terminar la primera: una web se
 - Socios: el solicitante no crea cuenta; se desactiva el registro abierto de Supabase; se contempla la pausa del plan gratuito.
 - Tarea diaria (cron del Worker) reservada para mantener activo Supabase en la fase 3.
 
+
+**29/10/2026 — Estado frente a este plan**
+
+Hecho: fase 1 casi completa (plantilla con SEO, rediseño, portada, Quiénes somos, Comisión, Eventos con calendario, galerías y datos estructurados, Membresía, Contacto, legales en borrador, 404, seguridad, publicación en Cloudflare).
+
+Falta de la fase 1:
+- Formulario de contacto enviando de verdad (cuentas de Resend y claves de Turnstile).
+- Search Console y Bing Webmaster; dato estructurado `WebSite` en la portada.
+- Analítica sin cookies (Cloudflare Web Analytics) y monitor de disponibilidad.
+- Dependabot (actualizaciones automáticas) y revisión de accesibilidad, PageSpeed y resultados enriquecidos.
+- Estatuto y código de ética en PDF; condiciones de inscripción a eventos; revisión legal de privacidad y aviso legal.
+- Verificación en dos pasos y dos administradores por cuenta.
+
+Fase 2: blog (listado, artículos con autor, `BlogPosting`), páginas en inglés y portugués revisadas por personas, glosario, boletín (y con él, volver a ofrecer la suscripción a eventos), página de Recursos.
+Fase 3: dominio propio y correo verificado, Supabase, formulario de solicitud de membresía, área de socios.
+Fase 4: certificados, directorio de profesionales, inscripción y pago en línea.

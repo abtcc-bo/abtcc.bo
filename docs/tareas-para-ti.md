@@ -76,8 +76,38 @@ Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en
 - [ ] **Traducciones:** si alguien de la asociación habla inglés o portugués, que revise los nombres del menú y las páginas. Te pasaré una lista.
 - [ ] **Dominio propio** (ej. `abtcc.org.bo`): averiguar con NIC Bolivia los requisitos y el costo. Se necesita antes del área de socios (fase 3).
 - [ ] **Estatuto y código de ética** en PDF.
-- [ ] **Membresía:** categorías de socio, requisitos, beneficios y cuotas.
+- [x] Membresía: categorías, requisitos, beneficios y cuotas ✔ (sacados del estatuto y el reglamento)
 - [ ] **Logo** en buena calidad (idealmente el archivo original del diseñador: SVG, AI o PDF).
+
+---
+
+## 🔎 Para aparecer en Google
+
+Primer lugar nadie lo garantiza, pero **buscando "ABTCC" o el nombre completo** es muy alcanzable en pocas semanas. En búsquedas generales ("terapia cognitivo conductual Bolivia", "curso DBT Bolivia") se sube poco a poco con contenido y enlaces. La parte técnica ya está hecha (velocidad, celular, mapa del sitio, datos para Google de la asociación, las personas y los eventos).
+
+**Lo tuyo** (en este orden):
+
+- [ ] **Dominio propio** (`abtcc.org.bo` o `abtcc.org`): conviene tenerlo *antes* de promocionar la web, porque al mudarse se pierde parte de lo que Google ya aprendió. (Mismo punto que en "Sin apuro", pero es el más importante para Google.)
+- [ ] **Completar los [PENDIENTE]** visibles (cargos, frase de presentación, historia, redes): Google ya puede leer la web.
+- [ ] **Google Search Console** (gratis, 10 minutos, te guío): le avisa a Google que la web existe y muestra con qué búsquedas aparecen. Yo pongo el código de verificación.
+- [ ] **Bing Webmaster Tools** (gratis, 5 minutos; alimenta también a otros buscadores y asistentes de IA).
+- [ ] **Perfil de Empresa de Google** (gratis): la ficha con logo y sede que sale a la derecha de los resultados y en Google Maps.
+- [ ] **Pedir enlaces a la web** (cada enlace es un "voto de confianza" para Google):
+  - [ ] ALAPCCO: que figure la ABTCC como grupo de trabajo en Bolivia, con enlace.
+  - [ ] Universidades e institutos con los que trabajan (Unifranz, UAGRM, Instituto de Halder, KAIROS).
+  - [ ] Bio de Instagram y Facebook de la asociación.
+  - [ ] Perfiles de los cinco integrantes (LinkedIn, Instagram profesional).
+  - [ ] Notas de prensa sobre el XI SIALAPCCO.
+- [ ] **Pasarme los enlaces de las redes sociales** de la asociación (también ayudan a que Google la reconozca).
+- [ ] **Artículos para el blog:** 1 o 2 por mes, escritos por la comisión (yo los publico). Ideas: "¿Qué es la terapia de aceptación y compromiso?", "DBT en Bolivia: dónde formarse", "Diferencias entre TCC y terapias contextuales".
+
+**Lo mío** (avísame cuándo):
+
+- [ ] Una página propia para cada integrante de la comisión (la gente busca a los profesionales por su nombre).
+- [ ] Armar el blog, listo para publicar artículos.
+- [ ] Preguntas frecuentes de membresía y formación, marcadas para que Google pueda mostrarlas en los resultados.
+- [ ] Conectar las redes sociales a los datos de la asociación.
+- [ ] Revisar con las herramientas de Google (resultados enriquecidos, velocidad en celular) y en securityheaders.com.
 
 ---
 
