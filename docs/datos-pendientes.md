@@ -47,7 +47,12 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [ ] Próximos eventos (datos + afiche)
 - [ ] III Jornadas Navideñas (diciembre 2026): ya publicado como anuncio. Faltan fechas exactas, horario, modalidad (presencial / en línea), ciudad y sede, costos, inscripción, afiche, tema y ponentes
 - [ ] XI SIALAPCCO Bolivia (marzo 2027, Santa Cruz): ya publicado como anuncio con afiche. Faltan fechas exactas, horario, sede, costos, enlace de inscripción, programa, horas y aval, y qué significa la sigla SIALAPCCO
-- [ ] Eventos pasados para el archivo (opcional). En la hoja de vida de Alix aparecen: Primer Congreso Nacional de TCC y Terapia Contextual (28–29 abr. 2023), Congreso "Suicidio y Depresión a través de la Lente de la TCC y la Tercera Ola" (1–2 ago. 2025), 2.ª Jornada de Actualización "Sanando el trauma" (6 dic. 2025) y II Encuentro Internacional "Nuevos caminos para la Psicoterapia" (4–5 sep. 2026)
+- [x] Eventos realizados con galería ✔: II Encuentro Internacional (Cochabamba, 4–5 sep. 2026) y Primer Congreso Nacional (Santa Cruz, 2023)
+- [ ] Primer Congreso Nacional: confirmar fechas (puse 28 y 29 de abril de 2023, según la hoja de vida de Alix), sede y nombre exacto
+- [ ] II Encuentro Internacional: confirmar sede (las fotos muestran Unifranz) y nombres de los ponentes que no identifiqué (ponencias sobre el ecosistema de la salud mental, ACT-RFT y metáforas, terapia de pareja, inteligencia artificial)
+- [ ] Breve presentación de la Dra. Karen Szupszynski y de la Dra. Carmem Beatriz Neufeld (ponentes invitadas)
+- [ ] Permiso de publicación de las fotos de eventos (ponentes y participantes que aparecen)
+- [ ] Otros eventos realizados: Congreso "Suicidio y Depresión…" (1–2 ago. 2025) y 2.ª Jornada "Sanando el trauma" (6 dic. 2025): fotos y datos
 
 ## Identidad (al final, con el diseño)
 

@@ -2,6 +2,8 @@
 import { Image } from 'astro:assets';
 import logo from '../assets/logo-completo.webp';
 import CarruselEventos from '../components/CarruselEventos.astro';
+import EventoDestacado from '../components/EventoDestacado.astro';
+import FranjaFotos from '../components/FranjaFotos.astro';
 import { ORGANIZACION } from '../datos/organizacion';
 import { obtenerEventosPublicos, yaPaso } from '../lib/contenido';
 import { ruta, t, type Idioma } from '../i18n';
@@ -12,7 +14,10 @@ interface Props {
 
 const { idioma } = Astro.props;
 const textos = t(idioma);
-const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)).slice(0, 6);
+const eventos = await obtenerEventosPublicos(idioma);
+const proximos = eventos.filter((e) => !yaPaso(e)).slice(0, 6);
+const destacado = proximos.find((e) => e.datos.destacado);
+const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 ---
 
 <section class="portada banda banda-clara" aria-labelledby="titulo-portada">
@@ -29,6 +34,8 @@ const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)
 	<Image src={logo} alt="" widths={[400, 800]} sizes="(max-width: 48rem) 16rem, 24rem" class="logo-portada" loading="eager" />
 </section>
 
+{destacado && <EventoDestacado evento={destacado} idioma={idioma} />}
+
 <section class="proximos banda" aria-labelledby="titulo-proximos">
 	<div class="cabecera">
 		<h2 id="titulo-proximos">{textos.comun.proximosEventos}</h2>
@@ -36,6 +43,8 @@ const proximos = (await obtenerEventosPublicos(idioma)).filter((e) => !yaPaso(e)
 	</div>
 	<CarruselEventos eventos={proximos} idioma={idioma} />
 </section>
+
+<FranjaFotos eventos={realizados} idioma={idioma} />
 
 <style>
 	.portada {

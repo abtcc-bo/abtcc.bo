@@ -1,0 +1,185 @@
+---
+// Galería de fotos de un evento: cuadrícula de miniaturas. Cada miniatura enlaza a la foto grande;
+// con JavaScript se abre en un visor (con flechas, teclado y Escape) sin salir de la página.
+import { Image, getImage } from 'astro:assets';
+import { formato, t, type Idioma } from '../i18n';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	fotos: Evento['datos']['galeria'];
+	idioma: Idioma;
+}
+
+const { fotos, idioma } = Astro.props;
+const g = t(idioma).galeria;
+const grandes = await Promise.all(fotos.map((f) => getImage({ src: f.imagen, width: 1600, format: 'webp' })));
+---
+
+<section class="galeria" aria-labelledby="titulo-galeria" data-galeria>
+	<h2 id="titulo-galeria">{g.titulo}</h2>
+	<ul class="miniaturas">
+		{
+			fotos.map((foto, i) => (
+				<li>
+					<a href={grandes[i].src} data-foto={i} data-descripcion={foto.descripcion}>
+						<Image src={foto.imagen} alt={foto.descripcion} widths={[320, 640]} sizes="(max-width: 40rem) 50vw, 18rem" loading="lazy" />
+					</a>
+				</li>
+			))
+		}
+	</ul>
+
+	<dialog class="visor" aria-label={g.visor} data-visor>
+		<figure>
+			<img alt="" data-visor-imagen />
+			<figcaption>
+				<span data-visor-texto></span>
+				<span class="contador" data-visor-contador></span>
+			</figcaption>
+		</figure>
+		<button type="button" class="cerrar" data-visor-cerrar aria-label={g.cerrar}>×</button>
+		<button type="button" class="flecha anterior" data-visor-anterior aria-label={g.anterior}>←</button>
+		<button type="button" class="flecha siguiente" data-visor-siguiente aria-label={g.siguiente}>→</button>
+		<template data-formato-contador>{formato(g.contador, { n: '{n}', total: fotos.length })}</template>
+	</dialog>
+</section>
+
+<script>
+	for (const galeria of document.querySelectorAll<HTMLElement>('[data-galeria]')) {
+		const enlaces = [...galeria.querySelectorAll<HTMLAnchorElement>('[data-foto]')];
+		const visor = galeria.querySelector<HTMLDialogElement>('[data-visor]')!;
+		const imagen = visor.querySelector<HTMLImageElement>('[data-visor-imagen]')!;
+		const texto = visor.querySelector<HTMLElement>('[data-visor-texto]')!;
+		const contador = visor.querySelector<HTMLElement>('[data-visor-contador]')!;
+		const plantilla = visor.querySelector<HTMLTemplateElement>('[data-formato-contador]')!.innerHTML;
+		let actual = 0;
+
+		const mostrar = (i: number) => {
+			actual = (i + enlaces.length) % enlaces.length;
+			const enlace = enlaces[actual];
+			imagen.src = enlace.href;
+			imagen.alt = enlace.dataset.descripcion ?? '';
+			texto.textContent = enlace.dataset.descripcion ?? '';
+			contador.textContent = plantilla.replace('{n}', String(actual + 1));
+		};
+
+		enlaces.forEach((enlace, i) =>
+			enlace.addEventListener('click', (e) => {
+				if (typeof visor.showModal !== 'function') return; // navegador antiguo: abre la foto normal
+				e.preventDefault();
+				mostrar(i);
+				visor.showModal();
+			}),
+		);
+		visor.querySelector('[data-visor-cerrar]')!.addEventListener('click', () => visor.close());
+		visor.querySelector('[data-visor-anterior]')!.addEventListener('click', () => mostrar(actual - 1));
+		visor.querySelector('[data-visor-siguiente]')!.addEventListener('click', () => mostrar(actual + 1));
+		visor.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowLeft') mostrar(actual - 1);
+			if (e.key === 'ArrowRight') mostrar(actual + 1);
+		});
+		// Clic fuera de la foto (en el fondo oscuro) cierra el visor.
+		visor.addEventListener('click', (e) => {
+			if (e.target === visor) visor.close();
+		});
+		// Al cerrar, el foco vuelve a la miniatura que se estaba viendo.
+		visor.addEventListener('close', () => enlaces[actual].focus());
+	}
+</script>
+
+<style>
+	.miniaturas {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(11rem, 45%), 1fr));
+		gap: 0.6rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.miniaturas a {
+		display: block;
+		overflow: hidden;
+		border-radius: var(--radio);
+	}
+	.miniaturas img {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 1;
+		object-fit: cover;
+		transition: transform 0.3s;
+	}
+	.miniaturas a:hover img {
+		transform: scale(1.05);
+	}
+
+	.visor {
+		width: 100vw;
+		max-width: 100vw;
+		height: 100dvh;
+		max-height: 100dvh;
+		margin: 0;
+		padding: 3.5rem 1rem 1rem;
+		border: 0;
+		background: rgb(10 16 30 / 0.94);
+		color: #fff;
+	}
+	.visor::backdrop {
+		background: rgb(10 16 30 / 0.6);
+	}
+	.visor figure {
+		display: grid;
+		grid-template-rows: 1fr auto;
+		gap: 0.75rem;
+		height: 100%;
+		margin: 0;
+	}
+	.visor img {
+		width: 100%;
+		height: 100%;
+		min-height: 0;
+		object-fit: contain;
+	}
+	.visor figcaption {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--espacio);
+		max-width: 60rem;
+		margin-inline: auto;
+		width: 100%;
+		font-size: 0.9375rem;
+	}
+	.contador {
+		flex-shrink: 0;
+		color: #aab3c5;
+	}
+	.visor button {
+		position: absolute;
+		min-width: 44px;
+		min-height: 44px;
+		border: 1px solid rgb(255 255 255 / 0.3);
+		border-radius: 999px;
+		background: rgb(255 255 255 / 0.08);
+		color: #fff;
+		font: inherit;
+		font-size: 1.25rem;
+		cursor: pointer;
+	}
+	.visor button:hover {
+		background: rgb(255 255 255 / 0.2);
+	}
+	.cerrar {
+		top: 0.75rem;
+		right: 0.75rem;
+	}
+	.flecha {
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	.anterior {
+		left: 0.75rem;
+	}
+	.siguiente {
+		right: 0.75rem;
+	}
+</style>

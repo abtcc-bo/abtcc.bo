@@ -57,6 +57,9 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 
 - Todo sale de la carpeta del evento: carrusel automático en portada (hasta 6 próximos, `CarruselEventos.astro`, sin bibliotecas, con pausa y respetando "reducir movimiento"), listado `/es/eventos/` (próximos con filtros + archivo por año), detalle `/es/eventos/slug/`, `.ics` en `/es/calendario/slug.ics`, calendario suscribible `/eventos.ics`, RSS `/es/eventos.xml` y JSON-LD `Event`.
 - Lógica en `src/lib/eventos.ts` (horarios, inscripción abierta, calendario, datos para Google). Bolivia es UTC−4 fijo.
+- Fotos de un evento: `galeria` en `evento.yaml` (fotos en `galeria/NN.webp`, hasta 1600 px, sin EXIF, con `descripcion`) y una miniatura con el mismo nombre en `galeria/mini/` (360 px de alto) para la franja de la portada. Nunca terceros reconocibles.
+- `destacado: true`: el evento aparece en la portada con cuenta regresiva (días/horas/min/seg; "faltan unos N meses" si está `por_confirmar`).
+- Animación al bajar por la página: script al final de `Base.astro` (clase `.aparecer`); nunca anima lo que ya está en pantalla y se desactiva con "reducir movimiento".
 - Anuncio sin fecha exacta: `por_confirmar: true`, `inicio` día 1 y `fin` último día del mes. Muestra solo mes y año, sin calendario ni datos para Google; costos y sede pueden faltar.
 - Un evento cancelado NO se borra: `estado: cancelado`. `solo_socios: true` lo saca de las páginas públicas.
 - Los eventos pasados salen solos de "próximos": la portada y el listado se generan en cada visita (y un script del navegador los oculta igual si una página quedó en caché).

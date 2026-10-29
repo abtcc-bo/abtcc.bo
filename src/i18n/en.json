@@ -164,5 +164,27 @@
 		"pausar": "Pause",
 		"reanudar": "Resume",
 		"irA": "Go to event {n}"
+	},
+	"galeria": {
+		"titulo": "Gallery",
+		"visor": "Photo viewer",
+		"cerrar": "Close",
+		"anterior": "Previous photo",
+		"siguiente": "Next photo",
+		"contador": "{n} of {total}",
+		"portada": "Moments from our events",
+		"pausar": "Pause photos",
+		"reanudar": "Play photos"
+	},
+	"destacado": {
+		"etiqueta": "Featured event",
+		"faltan": "Time left",
+		"dias": "days",
+		"horas": "hours",
+		"minutos": "min",
+		"segundos": "sec",
+		"faltanMeses": "About {n} months to go",
+		"menosDeUnMes": "Less than a month to go",
+		"verEvento": "See the event"
 	}
 }

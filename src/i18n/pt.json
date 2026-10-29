@@ -164,5 +164,27 @@
 		"pausar": "Pausar",
 		"reanudar": "Retomar",
 		"irA": "Ir para o evento {n}"
+	},
+	"galeria": {
+		"titulo": "Galeria",
+		"visor": "Visualizador de fotos",
+		"cerrar": "Fechar",
+		"anterior": "Foto anterior",
+		"siguiente": "Próxima foto",
+		"contador": "{n} de {total}",
+		"portada": "Momentos dos nossos eventos",
+		"pausar": "Pausar fotos",
+		"reanudar": "Mover fotos"
+	},
+	"destacado": {
+		"etiqueta": "Evento em destaque",
+		"faltan": "Faltam",
+		"dias": "dias",
+		"horas": "horas",
+		"minutos": "min",
+		"segundos": "seg",
+		"faltanMeses": "Faltam cerca de {n} meses",
+		"menosDeUnMes": "Falta menos de um mês",
+		"verEvento": "Ver o evento"
 	}
 }

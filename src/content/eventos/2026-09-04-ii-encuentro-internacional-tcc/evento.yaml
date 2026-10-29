@@ -1,0 +1,44 @@
+# Evento realizado. [PENDIENTE: confirmar horario, sede exacta y lista completa de ponentes]
+tipo: congreso
+inicio: "2026-09-04T09:00-04:00"
+fin: "2026-09-05T18:00-04:00"
+modalidad: presencial
+lugar:
+  nombre: Unifranz
+  ciudad: Cochabamba
+facilitadores:
+  - karen-szupszynski
+  - halder-delgado
+  - carmen-barron
+  - alexandra-shand
+galeria:
+  - imagen: ./galeria/01.webp
+    descripcion: Halder Delgado expone sobre prevención de recaídas ante un auditorio lleno.
+  - imagen: ./galeria/02.webp
+    descripcion: Halder Delgado cierra su ponencia frente al público.
+  - imagen: ./galeria/03.webp
+    descripcion: Halder Delgado explica el condicionamiento operante con un gráfico en pantalla.
+  - imagen: ./galeria/04.webp
+    descripcion: Un ponente presenta el ecosistema de la salud mental moderna.
+  - imagen: ./galeria/05.webp
+    descripcion: Ponencia sobre ACT y la teoría de los marcos relacionales, proyectada en tres pantallas.
+  - imagen: ./galeria/06.webp
+    descripcion: Ponencia sobre el uso de metáforas en la terapia contextual.
+  - imagen: ./galeria/07.webp
+    descripcion: Ponencia sobre terapia conductual integrativa de pareja.
+  - imagen: ./galeria/08.webp
+    descripcion: Carmen Barrón explica el modelo transaccional de la desregulación emocional.
+  - imagen: ./galeria/09.webp
+    descripcion: "Carmen Barrón presenta «Validar sin ceder: estrategias DBT para familias»."
+  - imagen: ./galeria/10.webp
+    descripcion: Carmen Barrón repasa los programas para familias de personas con desregulación emocional.
+  - imagen: ./galeria/11.webp
+    descripcion: Ponencia sobre el uso de la inteligencia artificial en Bolivia.
+  - imagen: ./galeria/12.webp
+    descripcion: "Alexandra Shand expone «De la estabilización a la recuperación»."
+  - imagen: ./galeria/13.webp
+    descripcion: Alexandra Shand explica las habilidades de la DBT estándar.
+  - imagen: ./galeria/14.webp
+    descripcion: Alexandra Shand frente al auditorio del encuentro.
+  - imagen: ./galeria/15.webp
+    descripcion: Equipo organizador del II Encuentro Internacional frente a la pantalla del evento.

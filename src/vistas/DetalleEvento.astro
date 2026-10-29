@@ -2,10 +2,11 @@
 // Página completa de un evento.
 import { Image, getImage } from 'astro:assets';
 import { getEntries, render } from 'astro:content';
+import GaleriaEvento from '../components/GaleriaEvento.astro';
 import JsonLd from '../components/JsonLd.astro';
 import { formatearFecha, formatearMoneda, formato, t, type Idioma } from '../i18n';
 import { datosEstructurados, enlaceGoogleCalendar, fechaDelEvento, horario, inscripcionAbierta, isoBolivia } from '../lib/eventos';
-import type { Evento } from '../lib/contenido';
+import { yaPaso, type Evento } from '../lib/contenido';
 
 interface Props {
 	evento: Evento;
@@ -20,6 +21,7 @@ const { titulo, dirigido_a, preguntas } = evento.texto.data;
 const { Content } = await render(evento.texto);
 const facilitadores = await getEntries(datos.facilitadores);
 const abierta = inscripcionAbierta(evento);
+const pasado = yaPaso(evento);
 const sitio = Astro.site!;
 const urlPagina = new URL(Astro.url.pathname, sitio).href;
 const imagenRedes = datos.imagen ? new URL((await getImage({ src: datos.imagen, width: 1200 })).src, sitio).href : undefined;
@@ -109,6 +111,8 @@ const compartir = [
 			)
 		}
 
+		{!(pasado && !datos.gratuito && datos.costos.length === 0) && (
+		<>
 		<dt>{ev.costos}</dt>
 		<dd>
 			{
@@ -130,6 +134,8 @@ const compartir = [
 				)
 			}
 		</dd>
+		</>
+		)}
 
 		{
 			datos.cupos && (
@@ -182,6 +188,8 @@ const compartir = [
 		<Content />
 	</div>
 
+	{datos.galeria.length > 0 && <GaleriaEvento fotos={datos.galeria} idioma={idioma} />}
+
 	{
 		facilitadores.length > 0 && (
 			<section aria-labelledby="titulo-facilitadores">
@@ -213,7 +221,7 @@ const compartir = [
 	}
 
 	{
-		datos.estado !== 'cancelado' && !datos.por_confirmar && (
+		datos.estado !== 'cancelado' && !datos.por_confirmar && !pasado && (
 			<section aria-labelledby="titulo-calendario">
 				<h2 id="titulo-calendario">{ev.calendario}</h2>
 				<ul class="en-linea">

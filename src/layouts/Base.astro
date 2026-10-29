@@ -108,5 +108,28 @@ const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href:
 			<slot />
 		</main>
 		<Pie idioma={idioma} />
+		<script>
+			// Animación suave al bajar: lo que todavía no está en pantalla aparece con un leve deslizamiento.
+			// Solo si el usuario no pidió "reducir movimiento". Sin JavaScript todo se ve normal.
+			const SELECTOR = 'main :is(.banda > *, .integrante, .pagina, .rejilla > li, .miniaturas li, .ficha, .archivo li)';
+			if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+				const observador = new IntersectionObserver(
+					(entradas) => {
+						for (const entrada of entradas) {
+							if (!entrada.isIntersecting) continue;
+							entrada.target.classList.add('visible');
+							observador.unobserve(entrada.target);
+						}
+					},
+					{ rootMargin: '0px 0px -8% 0px' },
+				);
+				for (const elemento of document.querySelectorAll(SELECTOR)) {
+					// Lo que ya se ve al cargar no se anima (evita parpadeos).
+					if (elemento.getBoundingClientRect().top < innerHeight) continue;
+					elemento.classList.add('aparecer');
+					observador.observe(elemento);
+				}
+			}
+		</script>
 	</body>
 </html>

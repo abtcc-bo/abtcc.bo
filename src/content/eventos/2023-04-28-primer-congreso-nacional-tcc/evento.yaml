@@ -1,0 +1,29 @@
+# Evento realizado. [PENDIENTE: confirmar fechas (según la hoja de vida de Alexandra Shand, 28 y 29 de abril de 2023), horario y sede]
+tipo: congreso
+inicio: "2023-04-28T09:00-04:00"
+fin: "2023-04-29T18:00-04:00"
+modalidad: presencial
+lugar:
+  ciudad: Santa Cruz
+facilitadores:
+  - carmem-neufeld
+  - alexandra-shand
+galeria:
+  - imagen: ./galeria/01.webp
+    descripcion: "La Dra. Carmem Beatriz Neufeld presenta el «Taller práctico sobre terapia grupal para la depresión»."
+  - imagen: ./galeria/02.webp
+    descripcion: La Dra. Carmem Beatriz Neufeld junto a integrantes de la ABTCC.
+  - imagen: ./galeria/03.webp
+    descripcion: Ponentes del congreso se toman una foto con el auditorio de fondo.
+  - imagen: ./galeria/04.webp
+    descripcion: Alexandra Shand guía un grupo de trabajo durante el taller.
+  - imagen: ./galeria/05.webp
+    descripcion: Participantes del taller trabajan en círculo.
+  - imagen: ./galeria/06.webp
+    descripcion: Un grupo del taller analiza un caso con su coordinador.
+  - imagen: ./galeria/07.webp
+    descripcion: Una coordinadora explica una consigna a su grupo de trabajo.
+  - imagen: ./galeria/08.webp
+    descripcion: Cena de bienvenida con la Dra. Neufeld y ponentes del congreso.
+  - imagen: ./galeria/09.webp
+    descripcion: Cena con la invitada internacional al cierre del congreso.

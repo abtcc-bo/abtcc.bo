@@ -1,0 +1,155 @@
+---
+// Franja de fotos de eventos realizados que se desliza lentamente en la portada.
+// Usa las miniaturas de `galeria/mini/` (mismo nombre que la foto grande) para que la portada cargue rápido.
+// Se detiene al pasar el mouse o con el teclado, tiene botón de pausa y queda quieta con "reducir movimiento".
+import type { ImageMetadata } from 'astro';
+import { ruta, t, type Idioma } from '../i18n';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	/** Eventos realizados, del más reciente al más antiguo. */
+	eventos: Evento[];
+	idioma: Idioma;
+	maximo?: number;
+}
+
+const { eventos, idioma, maximo = 14 } = Astro.props;
+const g = t(idioma).galeria;
+
+const miniaturas = import.meta.glob<{ default: ImageMetadata }>('/src/content/eventos/*/galeria/mini/*.webp', { eager: true });
+const fotos = eventos
+	.flatMap((evento) =>
+		evento.datos.galeria.map((foto, i) => {
+			const archivo = `/src/content/eventos/${evento.id}/galeria/mini/${String(i + 1).padStart(2, '0')}.webp`;
+			const mini = miniaturas[archivo]?.default;
+			return mini && { mini, descripcion: foto.descripcion, href: ruta('eventos', idioma, evento.slug), evento: evento.texto.data.titulo };
+		}),
+	)
+	.filter((f): f is NonNullable<typeof f> => Boolean(f))
+	.slice(0, maximo);
+---
+
+{
+	fotos.length > 3 && (
+		<section class="fotos banda" aria-labelledby="titulo-fotos" data-franja>
+			<div class="cabecera">
+				<h2 id="titulo-fotos">{g.portada}</h2>
+				<button type="button" class="pausa" data-pausa-franja aria-pressed="false" hidden>
+					<span data-texto-pausar>{g.pausar}</span>
+					<span data-texto-reanudar hidden>{g.reanudar}</span>
+				</button>
+			</div>
+			<div class="ventana">
+				<ul class="cinta">
+					{fotos.map((f) => (
+						<li>
+							<a href={f.href}>
+								<img src={f.mini.src} width={f.mini.width} height={f.mini.height} alt={f.descripcion} loading="lazy" decoding="async" />
+								<span class="visualmente-oculto"> ({f.evento})</span>
+							</a>
+						</li>
+					))}
+					{/* Copia decorativa para que el movimiento sea continuo; oculta para lectores de pantalla y teclado. */}
+					{fotos.map((f) => (
+						<li class="copia" aria-hidden="true">
+							<a href={f.href} tabindex="-1">
+								<img src={f.mini.src} width={f.mini.width} height={f.mini.height} alt="" loading="lazy" decoding="async" />
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		</section>
+	)
+}
+
+<script>
+	for (const franja of document.querySelectorAll<HTMLElement>('[data-franja]')) {
+		const boton = franja.querySelector<HTMLButtonElement>('[data-pausa-franja]')!;
+		if (matchMedia('(prefers-reduced-motion: reduce)').matches) continue;
+		boton.hidden = false;
+		boton.addEventListener('click', () => {
+			const pausado = !franja.classList.contains('pausada');
+			franja.classList.toggle('pausada', pausado);
+			boton.setAttribute('aria-pressed', String(pausado));
+			boton.querySelector<HTMLElement>('[data-texto-pausar]')!.hidden = pausado;
+			boton.querySelector<HTMLElement>('[data-texto-reanudar]')!.hidden = !pausado;
+		});
+	}
+</script>
+
+<style>
+	.cabecera {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem var(--espacio);
+		margin-bottom: 1.5rem;
+	}
+	.cabecera h2 {
+		margin: 0;
+	}
+	.pausa {
+		min-height: 44px;
+		padding-inline: 0.9rem;
+		border: 1px solid var(--color-borde);
+		border-radius: 999px;
+		background: var(--color-superficie);
+		color: var(--color-titulos);
+		font: inherit;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	/* La cinta ocupa todo el ancho de la pantalla. */
+	.ventana {
+		margin-inline: calc(50% - 50vw);
+		overflow: hidden;
+		mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+	}
+	.cinta {
+		display: flex;
+		gap: 1rem;
+		width: max-content;
+		margin: 0;
+		padding: 0.5rem 0;
+		list-style: none;
+		animation: desplazar 70s linear infinite;
+	}
+	.fotos:hover .cinta,
+	.fotos:focus-within .cinta,
+	.fotos.pausada .cinta {
+		animation-play-state: paused;
+	}
+	@keyframes desplazar {
+		to {
+			/* Media cinta (la original) más medio espacio entre fotos: empalma con la copia. */
+			transform: translateX(calc(-50% - 0.5rem));
+		}
+	}
+	.cinta a {
+		display: block;
+		overflow: hidden;
+		border-radius: var(--radio);
+		box-shadow: var(--sombra);
+	}
+	.cinta img {
+		display: block;
+		height: clamp(11rem, 18vw, 15rem);
+		width: auto;
+		transition: transform 0.4s;
+	}
+	.cinta a:hover img {
+		transform: scale(1.04);
+	}
+	/* Sin movimiento: la cinta se desliza a mano y no se muestra la copia. */
+	@media (prefers-reduced-motion: reduce) {
+		.ventana {
+			overflow-x: auto;
+		}
+		.copia {
+			display: none;
+		}
+	}
+</style>

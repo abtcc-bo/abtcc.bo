@@ -68,12 +68,19 @@ const eventos = defineCollection({
 				 * Poner `inicio` el día 1 y `fin` el último día del mes; quitar este campo cuando se confirme la fecha.
 				 */
 				por_confirmar: z.boolean().default(false),
+				/** Evento principal del año: aparece en la portada con cuenta regresiva. */
+				destacado: z.boolean().default(false),
+				/**
+				 * Fotos del evento, en la subcarpeta `galeria/` (WebP de hasta 1600 px). `descripcion` describe la foto para
+				 * quien no la ve (lectores de pantalla y Google). Solo personas que aceptaron aparecer; nunca terceros reconocibles.
+				 */
+				galeria: z.array(z.object({ imagen: image(), descripcion: z.string() })).default([]),
 			})
 			.refine((e) => e.modalidad || e.por_confirmar, { error: 'Indica la "modalidad" (presencial, online o hibrido).', path: ['modalidad'] })
 			.refine((e) => !e.modalidad || e.modalidad === 'online' || e.lugar, { error: 'Un evento presencial o híbrido necesita "lugar".', path: ['lugar'] })
 			.refine((e) => !e.fin || e.fin > e.inicio, { error: '"fin" debe ser posterior a "inicio".', path: ['fin'] })
-			.refine((e) => e.gratuito || e.costos.length > 0 || e.solo_socios || e.por_confirmar, {
-				error: 'Indica los "costos" o marca "gratuito: true".',
+			.refine((e) => e.gratuito || e.costos.length > 0 || e.solo_socios || e.por_confirmar || (e.fin ?? e.inicio) < new Date(), {
+				error: 'Indica los "costos" o marca "gratuito: true" (no hace falta en eventos ya realizados).',
 				path: ['costos'],
 			}),
 });
