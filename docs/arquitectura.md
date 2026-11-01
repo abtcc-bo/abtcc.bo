@@ -498,7 +498,8 @@ Conviene construir en cuatro fases y publicar al terminar la primera: una web se
 Hecho: fase 1 casi completa (plantilla con SEO, rediseño, portada, Quiénes somos, Comisión, Eventos con calendario, galerías y datos estructurados, Membresía, Contacto, legales en borrador, 404, seguridad, publicación en Cloudflare).
 
 Falta de la fase 1:
-- Formulario de contacto enviando de verdad (cuentas de Resend y claves de Turnstile).
+- ~~Formulario de contacto enviando de verdad~~ ✔ (01/11/2026, Resend + Turnstile).
+- ~~Dato estructurado `WebSite` y Dependabot~~ ✔
 - Search Console y Bing Webmaster; dato estructurado `WebSite` en la portada.
 - Analítica sin cookies (Cloudflare Web Analytics) y monitor de disponibilidad.
 - Dependabot (actualizaciones automáticas) y revisión de accesibilidad, PageSpeed y resultados enriquecidos.

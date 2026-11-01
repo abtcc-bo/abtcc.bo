@@ -64,7 +64,7 @@ No afectan a la web, pero conviene corregirlas antes de aprobarlos:
 ### 5. Cuentas gratuitas (te guío paso a paso)
 Todas con el Gmail de la asociación (abtcc.bo@gmail.com).
 
-- [x] **Resend** ✔ (claves cargadas en Cloudflare): envía a abtcc.bo@gmail.com los mensajes del formulario de contacto. Mientras no haya dominio propio, solo puede enviar al correo con el que se crea la cuenta; por eso debe ser el de la asociación.
+- [x] **Resend y Turnstile** ✔ (formulario funcionando desde el 01/11/2026; los mensajes llegan a abtcc.bo@gmail.com desde onboarding@resend.dev): envía a abtcc.bo@gmail.com los mensajes del formulario de contacto. Mientras no haya dominio propio, solo puede enviar al correo con el que se crea la cuenta; por eso debe ser el de la asociación.
 - [x] **Cloudflare** ✔ (web publicada en https://abtcc.abtcc-bo.workers.dev): donde se publica la web (se conecta con el GitHub `abtcc-bo`) y, con su servicio Turnstile, la verificación antispam del formulario.
 
 Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en el chat**: se cargan directamente en Cloudflare y te mostraré dónde.

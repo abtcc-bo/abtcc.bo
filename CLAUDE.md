@@ -16,6 +16,7 @@ La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisi
 - Astro (sitio estático; solo `/[lang]/socios/` se renderiza en el servidor, fase 3).
 - Código en GitHub. Publicación como Worker de Cloudflare (`@astrojs/cloudflare`, `wrangler.jsonc`, entrada `src/worker.ts`), en subdominio gratuito `workers.dev` por ahora (sin dominio propio). Se intentó Vercel y su verificación por SMS bloqueó la cuenta.
 - Casi todo es estático. Dinámicas (`prerender = false`): la portada y el listado de eventos (`SECCIONES_DINAMICAS` en `src/lib/paginas.ts`, un archivo idéntico por idioma en `src/pages/{es,en,pt}/…/index.astro`) y `/api/contacto/`. Si cambia la ruta de esas secciones en `SECCIONES`, mover esos archivos.
+- `session: false` en `astro.config.mjs`: sin sesiones de Astro (el almacén KV que creaba el adaptador hacía fallar la publicación).
 - Para probar como en producción: `npm run build` y luego `npx wrangler dev --config dist/server/wrangler.json`.
 - Supabase solo para el área de socios (fase 3).
 
@@ -69,7 +70,8 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 
 - Formulario: `src/components/FormularioContacto.astro` → envía a `/api/contacto/` (`src/pages/api/contacto.ts`, `prerender = false`). Lógica en `src/lib/contacto.ts`.
 - Antispam: campo trampa `sitio_web`, tiempo mínimo de 3 s, límite de 5 envíos/10 min por IP y Turnstile si hay clave. Los bots reciben "ok" sin que se envíe nada.
-- Claves en variables de entorno (`astro.config.mjs` → `env.schema`, ejemplo en `.env.example`). Sin claves funciona en **modo prueba**: el mensaje se muestra en la consola del servidor y no se envía.
+- **Funciona en producción desde el 01/11/2026.** `RESEND_API_KEY` y `TURNSTILE_SECRET_KEY` son secretos del Worker en Cloudflare (tipo Secreto: los de tipo Texto se borran al publicar). `TURNSTILE_SITE_KEY` es pública y su valor está en `astro.config.mjs`. Sin claves (p. ej. en local) funciona en **modo prueba**: el mensaje se muestra en la consola del servidor y no se envía.
+- Si Turnstile rechaza, la respuesta JSON trae `detalle` con el código de Cloudflare (`invalid-input-secret` = clave secreta mal cargada).
 - Sin dominio propio, Resend solo envía desde `onboarding@resend.dev` al correo dueño de la cuenta: no hay respuesta automática a quien escribe hasta tener dominio.
 
 ## SEO técnico y seguridad
