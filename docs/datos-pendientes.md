@@ -20,7 +20,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [ ] Historia breve
 - [ ] Enfoque (TCC y terapias contextuales)
 - [x] Comisión directiva: nombres y biografías de 5 integrantes
-- [x] Cargos ✔ (01/11/2026): Guillermo Rivera, Coordinador; Alexandra Shand, Coordinadora; Carmen Barrón, Tesorera; Halder Delgado, Vocal; Leonardo Eyzaguirre, Segundo vocal
+- [x] Cargos ✔ (01/11/2026): Guillermo Rivera, Coordinador; Alexandra Shand, Coordinadora; Carmen Barrón, Tesorera; Halder Delgado, Primer vocal; Leonardo Eyzaguirre, Segundo vocal
 - [x] Fotos de Guillermo Rivera, Halder Delgado, Carmen Barrón y Leonardo Eyzaguirre ✔
 - [x] Foto de Alexandra Shand (Alix) ✔
 - [ ] Hojas de vida completas de Guillermo, Halder, Carmen y Leonardo, para llenar "Formación" (universidad y país de cada título; ver los [PENDIENTE] en `src/content/personas/`). La de Alix ya está cargada
