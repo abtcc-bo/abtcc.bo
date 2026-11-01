@@ -30,7 +30,7 @@ Puedes pegármelos en el chat tal cual, sin formato. Yo los acomodo.
 Para la página "Comisión directiva", de cada persona:
 
 - [x] Nombre completo ✔
-- [ ] **Cargo** de cada uno (falta de 4 personas).
+- [x] **Cargo** de cada uno ✔
 - [x] Título profesional y formación ✔
 - [x] Fotos de Guillermo, Halder, Carmen y Leonardo ✔
 - [x] Foto de Alix ✔
