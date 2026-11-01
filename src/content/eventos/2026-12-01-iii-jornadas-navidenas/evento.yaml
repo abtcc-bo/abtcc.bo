@@ -5,3 +5,4 @@ tipo: jornada
 inicio: "2026-12-01T09:00-04:00"
 fin: "2026-12-31T18:00-04:00"
 por_confirmar: true
+destacado: true
