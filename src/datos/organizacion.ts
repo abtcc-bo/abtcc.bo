@@ -14,6 +14,8 @@ export const ORGANIZACION: {
 	redes: Red[];
 	/** Ruta en /public o URL; idealmente un PNG cuadrado de al menos 112 px para Google. */
 	logo: string | null;
+	/** Códigos de verificación de Google Search Console y Bing Webmaster (no son secretos). */
+	verificacion: { google: string | null; bing: string | null };
 	/** Imagen por defecto al compartir en redes (1200×630 px), en /public. */
 	imagenRedes: string | null;
 } = {
@@ -23,4 +25,5 @@ export const ORGANIZACION: {
 	redes: [], // [PENDIENTE: redes sociales] p. ej. { nombre: 'Instagram', url: 'https://instagram.com/...' }
 	logo: '/logo.png', // [PENDIENTE: reemplazar por el archivo original del diseñador (SVG) cuando llegue]
 	imagenRedes: '/imagen-redes.png',
+	verificacion: { google: 'V9OL9wlucNdBPWscqwSMv0mwMaWHn3NrqgMFUkCtdkE', bing: null },
 };

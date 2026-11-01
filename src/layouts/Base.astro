@@ -100,6 +100,8 @@ const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href:
 		{imagenAbsoluta && <meta property="og:image" content={imagenAbsoluta} />}
 		<meta name="twitter:card" content={imagenAbsoluta ? 'summary_large_image' : 'summary'} />
 
+		{ORGANIZACION.verificacion.google && <meta name="google-site-verification" content={ORGANIZACION.verificacion.google} />}
+		{ORGANIZACION.verificacion.bing && <meta name="msvalidate.01" content={ORGANIZACION.verificacion.bing} />}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
