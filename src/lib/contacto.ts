@@ -66,15 +66,19 @@ export function superaLimite(ip: string, ahora = Date.now()): boolean {
 
 // ---------- Verificación antispam (Cloudflare Turnstile) ----------
 
-export async function verificarTurnstile(token: string, secreto: string, ip?: string): Promise<boolean> {
-	if (!token) return false;
+/**
+ * Verifica el token de Turnstile. Devuelve también los códigos de error de Cloudflare
+ * (p. ej. "invalid-input-secret" = la clave secreta cargada no es válida; "timeout-or-duplicate" = token vencido o reusado).
+ */
+export async function verificarTurnstile(token: string, secreto: string, ip?: string): Promise<{ ok: boolean; codigos: string[] }> {
+	if (!token) return { ok: false, codigos: ['sin-token'] };
 	const cuerpo = new URLSearchParams({ secret: secreto, response: token, ...(ip && { remoteip: ip }) });
 	try {
 		const respuesta = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body: cuerpo });
-		const resultado = (await respuesta.json()) as { success?: boolean };
-		return resultado.success === true;
+		const resultado = (await respuesta.json()) as { success?: boolean; 'error-codes'?: string[] };
+		return { ok: resultado.success === true, codigos: resultado['error-codes'] ?? [] };
 	} catch {
-		return false;
+		return { ok: false, codigos: ['sin-conexion'] };
 	}
 }
 

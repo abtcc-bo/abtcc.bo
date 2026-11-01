@@ -30,17 +30,21 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 	if (resultado.tipo === 'invalido') return responder({ quiereJson, idioma, estado: 422, error: 'campos', campos: resultado.campos });
 
 	if (TURNSTILE_SECRET_KEY) {
-		const valido = await verificarTurnstile(String(datos.get('cf-turnstile-response') ?? ''), TURNSTILE_SECRET_KEY, ip);
-		if (!valido) return responder({ quiereJson, idioma, estado: 403, error: 'verificacion' });
+		const verificacion = await verificarTurnstile(String(datos.get('cf-turnstile-response') ?? ''), TURNSTILE_SECRET_KEY, ip);
+		if (!verificacion.ok) {
+			// Queda en el registro de Cloudflare y en la respuesta (no revela nada secreto) para diagnosticar.
+			console.warn('[contacto] Turnstile rechazó el envío:', verificacion.codigos.join(', '));
+			return responder({ quiereJson, idioma, estado: 403, error: 'verificacion', detalle: verificacion.codigos.join(',') });
+		}
 	}
 
 	const enviado = await enviar(resultado.mensaje, { claveResend: RESEND_API_KEY, destino: correoDestino(CONTACTO_DESTINO) });
 	return enviado ? responder({ quiereJson, idioma, estado: 200 }) : responder({ quiereJson, idioma, estado: 502, error: 'general' });
 };
 
-function responder(r: { quiereJson: boolean; idioma: Idioma; estado: number; error?: TipoError; campos?: CampoConError[] }): Response {
+function responder(r: { quiereJson: boolean; idioma: Idioma; estado: number; error?: TipoError; campos?: CampoConError[]; detalle?: string }): Response {
 	if (r.quiereJson) {
-		return new Response(JSON.stringify({ ok: !r.error, error: r.error, campos: r.campos }), {
+		return new Response(JSON.stringify({ ok: !r.error, error: r.error, campos: r.campos, detalle: r.detalle }), {
 			status: r.estado,
 			headers: { 'Content-Type': 'application/json; charset=utf-8' },
 		});
