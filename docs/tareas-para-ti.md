@@ -89,7 +89,7 @@ Primer lugar nadie lo garantiza, pero **buscando "ABTCC" o el nombre completo** 
 
 - [ ] **Dominio propio** (`abtcc.org.bo` o `abtcc.org`): conviene tenerlo *antes* de promocionar la web, porque al mudarse se pierde parte de lo que Google ya aprendió. (Mismo punto que en "Sin apuro", pero es el más importante para Google.)
 - [ ] **Completar los [PENDIENTE]** visibles (cargos, frase de presentación, historia, redes): Google ya puede leer la web.
-- [ ] **Google Search Console** (gratis, 10 minutos, te guío): le avisa a Google que la web existe y muestra con qué búsquedas aparecen. Yo pongo el código de verificación.
+- [x] **Google Search Console** ✔ verificada el 01/11/2026 (propiedad https://abtcc.abtcc-bo.workers.dev/, con abtcc.bo@gmail.com). Revisarla una vez al mes. Al tener dominio propio, registrar la nueva dirección.
 - [ ] **Bing Webmaster Tools** (gratis, 5 minutos; alimenta también a otros buscadores y asistentes de IA).
 - [ ] **Perfil de Empresa de Google** (gratis): la ficha con logo y sede que sale a la derecha de los resultados y en Google Maps.
 - [ ] **Pedir enlaces a la web** (cada enlace es un "voto de confianza" para Google):
