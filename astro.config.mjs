@@ -12,6 +12,9 @@ export default defineConfig({
 	// la portada y el listado de eventos (siempre al día) y /api/contacto/.
 	// Imágenes optimizadas al construir (`compile`), sin el servicio de pago Cloudflare Images.
 	adapter: cloudflare({ imageService: 'compile' }),
+	// Sin sesiones de Astro: la web no las usa y el adaptador crearía un almacén KV ("SESSION") que hacía fallar
+	// la publicación. El área de socios (fase 3) usará Supabase.
+	session: false,
 	i18n: {
 		defaultLocale: 'es',
 		locales: ['es', 'en', 'pt'],
