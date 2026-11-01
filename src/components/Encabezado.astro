@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import SelectorIdioma from './SelectorIdioma.astro';
-import logo from '../assets/logo-encabezado.png';
+import logo from '../assets/logo-simbolo.png';
 import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
 import { MENU, hijasDe, ruta, t, type Alternos, type Idioma, type Seccion } from '../i18n';
 
@@ -44,7 +44,7 @@ if (paginaMembresia?.data.membresia) {
 <header class="encabezado">
 	<div class="contenedor fila">
 		<a class="logo" href={ruta('inicio', idioma)}>
-			<Image src={logo} alt={textos.sitio.sigla} height={44} densities={[1, 2]} loading="eager" />
+			<Image src={logo} alt={textos.sitio.sigla} height={52} densities={[1, 2]} loading="eager" />
 			<span class="afiliacion" aria-hidden="true">{textos.sitio.afiliacion}</span>
 		</a>
 		<button class="boton-menu" type="button" aria-expanded="false" aria-controls="panel-menu">{textos.nav.menu}</button>
@@ -185,7 +185,7 @@ if (paginaMembresia?.data.membresia) {
 		text-decoration: none;
 	}
 	.logo img {
-		height: 2.6rem;
+		height: 3.1rem;
 		width: auto;
 	}
 	/* "Grupo de trabajo ALAPCCO" junto al logo, separado por una línea fina. */
@@ -237,11 +237,11 @@ if (paginaMembresia?.data.membresia) {
 	nav summary:hover {
 		color: var(--color-acento);
 	}
-	/* Sección actual: subrayado dorado. */
+	/* Sección actual: subrayado con la barra tricolor del logo. */
 	[aria-current='page'],
 	.actual {
 		color: var(--color-acento);
-		border-bottom-color: var(--color-dorado-claro) !important;
+		border-image: var(--franja-tricolor) 1;
 	}
 	.boton-socios {
 		display: inline-flex;

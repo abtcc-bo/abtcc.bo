@@ -1,34 +1,35 @@
-/* Diseño "Rediseño ABTCC": crema, verde profundo, azul noche y dorado. Tres letras: Playfair Display en títulos (con
-   cursivas), Source Serif 4 en los textos de lectura e Inter en la interfaz (menú, botones, formularios y rótulos en
-   mayúsculas). Los tres colores del logo solo como firma (franja tricolor y puntos). Todo se ajusta desde estas
+/* Diseño "Rediseño ABTCC" con los colores del logo oficial: azul noche (portada y cabeceras), verde y amarillo del
+   logo, sobre fondo crema. Tres letras: Fraunces en títulos (versión de puntas suaves, con cursivas), Source Serif 4
+   en los textos de lectura y Poppins, la letra del logo, en la interfaz (menú, botones, formularios y rótulos en
+   mayúsculas). Los tres colores del logo como firma: franja y barras tricolor, y las tres esferas. Todo se ajusta desde estas
    variables. Hay movimiento suave (fondo, aparición al bajar, figuras científicas) que se detiene con "reducir movimiento". */
 :root {
 	--color-fondo: #f5f2ea;
 	--color-superficie: #fdfcf7;
 	--color-tarjeta: #fffdf8;
-	--color-texto: #1f2a44;
+	--color-texto: #1c2940;
 	--color-texto-suave: #4a5263; /* contraste 7:1 sobre crema: cómodo para leer párrafos largos */
-	--color-titulos: #14213d;
-	--color-acento: #134e36;
-	--color-acento-hover: #0d3b28;
-	--color-acento-suave: #e6efe9;
-	--color-dorado: #846520; /* contraste 4,8:1 sobre crema (accesible en texto pequeño) */
-	--color-dorado-claro: #d6b45f;
+	--color-titulos: #0b233b;
+	--color-acento: #0e6a3d; /* verde del logo, oscurecido para leerse sobre crema */
+	--color-acento-hover: #0a5230;
+	--color-acento-suave: #e3efe7;
+	--color-dorado: #85620f; /* amarillo del logo oscurecido: contraste accesible sobre crema en texto pequeño */
+	--color-dorado-claro: #ebba3c; /* amarillo del logo */
 	--color-borde: #e5e0d3;
 	--color-division: #ddd6c6;
-	--color-verde: #134e36;
-	--color-oscuro: #14213d;
-	--color-oscuro-profundo: #0f1a30;
+	--color-verde: #0e5233;
+	--color-oscuro: #0b233b; /* azul del logo */
+	--color-oscuro-profundo: #071a2d;
 	--color-oscuro-texto: #e9ecf2;
 	--color-oscuro-suave: #aab3c5;
-	/* Colores del logo. */
-	--logo-rojo: #fe1616;
-	--logo-amarillo: #fcde58;
-	--logo-verde: #037f36;
+	/* Colores del logo oficial. */
+	--logo-rojo: #b7282a;
+	--logo-amarillo: #ebba3c;
+	--logo-verde: #138b4e;
 	--franja-tricolor: linear-gradient(90deg, var(--logo-rojo) 0 33.33%, var(--logo-amarillo) 33.33% 66.66%, var(--logo-verde) 66.66%);
-	--fuente-titulos: 'Playfair Display Variable', Georgia, serif;
+	--fuente-titulos: 'Fraunces Variable', Georgia, serif;
 	--fuente-texto: 'Source Serif 4 Variable', Georgia, serif;
-	--fuente-interfaz: 'Inter Variable', system-ui, sans-serif;
+	--fuente-interfaz: 'Poppins', system-ui, sans-serif;
 	--ancho-maximo: 72rem;
 	--ancho-lectura: 46rem;
 	--espacio: 1rem;
@@ -71,6 +72,8 @@ body {
 	background: var(--color-fondo);
 	overflow-x: clip;
 	-webkit-font-smoothing: antialiased;
+	/* Fraunces con las puntas redondeadas al máximo: más amable. Las otras letras ignoran este ajuste. */
+	font-variation-settings: 'SOFT' 100;
 }
 
 /* Fondo vivo y sutil: cuadrícula de puntos (papel científico) y luces muy suaves que se desplazan lentamente. */
@@ -123,10 +126,15 @@ body::after {
 	position: relative;
 	color: var(--color-oscuro-texto);
 }
+/* Texto secundario sobre cada color de banda (bajadas, migas, descripciones). */
 .banda-verde {
+	--texto-banda: #d5e5db;
+	--texto-banda-suave: #b4cdbf;
 	background: var(--color-verde);
 }
 .banda-azul {
+	--texto-banda: #d3dbe8;
+	--texto-banda-suave: #aebbd0;
 	background: var(--color-oscuro);
 }
 :is(.banda-verde, .banda-azul) :is(h1, h2, h3) {
@@ -143,18 +151,18 @@ body::after {
 	border-start-start-radius: var(--radio-hoja);
 	border-end-end-radius: var(--radio-hoja);
 }
-/* Cabecera verde de cada sección: borde inferior en curva suave. */
+/* Cabecera azul de cada sección: borde inferior en curva suave. */
 .cabecera-pagina {
 	overflow: hidden;
 	border-end-start-radius: 50% var(--curva);
 	border-end-end-radius: 50% var(--curva);
 }
-/* Migas dentro de la cabecera verde. */
+/* Migas dentro de la cabecera azul. */
 .cabecera-pagina .migas {
 	position: relative;
 	z-index: 1;
 	margin-top: -1.5rem;
-	color: #c2d3c9;
+	color: var(--texto-banda-suave);
 }
 /* Encabezado de sección dentro de una banda: rótulo + título, con acciones opcionales a la derecha. */
 .cabecera-seccion {
@@ -230,7 +238,7 @@ a:hover {
 	text-decoration-thickness: 2px;
 }
 
-/* Rótulo pequeño sobre un título: línea dorada y mayúsculas espaciadas. */
+/* Rótulo pequeño sobre un título: barra tricolor y mayúsculas espaciadas. */
 .antetitulo {
 	display: flex;
 	align-items: center;
@@ -243,12 +251,29 @@ a:hover {
 	font-family: var(--fuente-interfaz);
 	color: var(--color-dorado);
 }
+/* La línea es la barra tricolor del logo, con puntas redondeadas. */
 .antetitulo::before {
 	content: '';
 	flex-shrink: 0;
-	width: 1.75rem;
-	height: 1px;
-	background: currentColor;
+	width: 2.25rem;
+	height: 3px;
+	border-radius: 2px;
+	background: var(--franja-tricolor);
+}
+
+/* Las tres esferas del logo, centradas: adorno sobre citas y cierres de sección. */
+.puntos-logo {
+	display: block;
+	width: 3rem;
+	height: 0.8rem;
+	margin: 0 auto 1.5rem;
+	background:
+		radial-gradient(circle at 35% 35%, rgb(255 255 255 / 0.55) 0.06rem, transparent 0.12rem) 0 50% / 1rem 0.8rem no-repeat,
+		radial-gradient(circle at 35% 35%, rgb(255 255 255 / 0.55) 0.06rem, transparent 0.12rem) 1rem 50% / 1rem 0.8rem no-repeat,
+		radial-gradient(circle at 35% 35%, rgb(255 255 255 / 0.55) 0.06rem, transparent 0.12rem) 2rem 50% / 1rem 0.8rem no-repeat,
+		radial-gradient(circle, var(--logo-rojo) 0.3rem, transparent 0.32rem) 0 50% / 1rem 0.8rem no-repeat,
+		radial-gradient(circle, var(--logo-amarillo) 0.3rem, transparent 0.32rem) 1rem 50% / 1rem 0.8rem no-repeat,
+		radial-gradient(circle, var(--logo-verde) 0.3rem, transparent 0.32rem) 2rem 50% / 1rem 0.8rem no-repeat;
 }
 :is(.banda-verde, .banda-azul) .antetitulo {
 	color: var(--color-dorado-claro);
@@ -384,7 +409,7 @@ li:hover > .marca .circulo {
 	color: var(--color-oscuro);
 }
 .boton-dorado:hover {
-	background: #e3c677;
+	background: #f2c95b;
 	color: var(--color-oscuro);
 }
 .boton-secundario,

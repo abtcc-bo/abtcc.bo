@@ -84,7 +84,7 @@ Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en
 - [ ] **Dominio propio** (ej. `abtcc.org.bo`): averiguar con NIC Bolivia los requisitos y el costo. Se necesita antes del área de socios (fase 3).
 - [ ] **Estatuto y código de ética** en PDF.
 - [x] Membresía: categorías, requisitos, beneficios y cuotas ✔ (sacados del estatuto y el reglamento)
-- [ ] **Logo** en buena calidad (idealmente el archivo original del diseñador: SVG, AI o PDF).
+- [ ] **Logo** en buena calidad: pide al diseñador el archivo original (SVG, o PNG grande con fondo transparente) y una versión blanca para fondos oscuros. El de la web ya es el nuevo, pero recortado de una imagen.
 
 ---
 

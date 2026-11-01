@@ -2,12 +2,13 @@
 // Portada. Textos en src/content/paginas/{idioma}/inicio.md (campo `portada`); sin ese archivo se muestran solo
 // el título, la agenda y las fotos. Se mantienen el carrusel de próximos eventos, la franja de fotos y las animaciones.
 import type { CollectionEntry } from 'astro:content';
-import { Image } from 'astro:assets';
-import logo from '../assets/logo-completo.webp';
 import CarruselEventos from '../components/CarruselEventos.astro';
 import CintaConceptos from '../components/CintaConceptos.astro';
 import FranjaFotos from '../components/FranjaFotos.astro';
 import Icono from '../components/Icono.astro';
+import { Image } from 'astro:assets';
+import logoCompleto from '../assets/logo-completo.png';
+import logoSimbolo from '../assets/logo-simbolo.png';
 import RegistroAcumulativo from '../components/RegistroAcumulativo.astro';
 import TarjetaDestacada from '../components/TarjetaDestacada.astro';
 import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
@@ -30,7 +31,7 @@ const destacado = proximos.find((e) => e.datos.destacado);
 const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 ---
 
-<section class="portada banda banda-verde" aria-labelledby="titulo-portada">
+<section class="portada banda banda-azul" aria-labelledby="titulo-portada">
 	<RegistroAcumulativo />
 	<div class="presentacion">
 		{p && <p class="antetitulo">{p.antetitulo}</p>}
@@ -63,7 +64,9 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		}
 	</div>
 	<div class="lateral">
-		{destacado ? <TarjetaDestacada evento={destacado} idioma={idioma} /> : <Image src={logo} alt="" widths={[400, 800]} sizes="24rem" class="logo-portada" />}
+		{destacado ? <TarjetaDestacada evento={destacado} idioma={idioma} /> : <div class="logo-portada">
+				<Image src={logoCompleto} alt={textos.sitio.nombre} widths={[400, 800]} sizes="24rem" />
+			</div>}
 	</div>
 </section>
 
@@ -158,7 +161,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 
 {
 	p && (
-		<section class="banda banda-azul banda-hoja membresia" aria-labelledby="titulo-membresia">
+		<section class="banda banda-verde banda-hoja membresia" aria-labelledby="titulo-membresia">
 			<div>
 				<p class="antetitulo">{p.membresia.antetitulo}</p>
 				<h2 id="titulo-membresia">{p.membresia.titulo}</h2>
@@ -212,7 +215,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 			</div>
 			<div class="logos">
 				<div class="logo-caja tarjeta">
-					<Image src={logo} alt={textos.sitio.sigla} widths={[200, 400]} sizes="10rem" />
+					<Image src={logoSimbolo} alt={textos.sitio.sigla} widths={[200, 400]} sizes="10rem" />
 				</div>
 				<div class="logo-caja tarjeta pendiente">{v.logoAlapcco}</div>
 			</div>
@@ -251,7 +254,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		max-width: 34rem;
 		margin: 0;
 		font-size: 1.0625rem;
-		color: #d5e1da;
+		color: var(--texto-banda);
 	}
 	.portada .acciones {
 		display: flex;
@@ -268,7 +271,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		border-top: 1px solid rgb(255 255 255 / 0.15);
 		list-style: none;
 		font-size: 0.8125rem;
-		color: #c2d3c9;
+		color: var(--texto-banda-suave);
 	}
 	.datos li::before {
 		content: '';
@@ -286,9 +289,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		width: 100%;
 	}
 	.logo-portada {
-		width: 100%;
-		height: auto;
-		padding: 2rem;
+		padding: 2.5rem;
 		border-radius: var(--radio);
 		background: var(--color-tarjeta);
 	}
@@ -406,16 +407,6 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 	.cita {
 		text-align: center;
 	}
-	.puntos-logo {
-		display: block;
-		width: 3rem;
-		height: 0.6rem;
-		margin: 0 auto 1.5rem;
-		background:
-			radial-gradient(circle, var(--logo-rojo) 0.22rem, transparent 0.24rem) 0 50% / 1rem 0.6rem no-repeat,
-			radial-gradient(circle, var(--logo-amarillo) 0.22rem, transparent 0.24rem) 1rem 50% / 1rem 0.6rem no-repeat,
-			radial-gradient(circle, var(--logo-verde) 0.22rem, transparent 0.24rem) 2rem 50% / 1rem 0.6rem no-repeat;
-	}
 	blockquote {
 		max-width: 50rem;
 		margin: 0 auto;
@@ -440,7 +431,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 
 	/* ---------- Membresía ---------- */
 	.texto-claro {
-		color: #c9d1e3;
+		color: var(--texto-banda);
 	}
 	.beneficios {
 		margin: 1.5rem 0 0;
@@ -518,7 +509,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 	.categorias li > p:last-child {
 		margin: 0;
 		font-size: 0.9375rem;
-		color: #c9d1e3;
+		color: var(--texto-banda);
 	}
 	.cuota {
 		display: flex;
@@ -527,7 +518,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		gap: 0.5rem;
 		margin: 1rem 0 0;
 		font-size: 0.875rem;
-		color: #c9d1e3;
+		color: var(--texto-banda);
 	}
 
 	/* ---------- Red internacional ---------- */
@@ -541,6 +532,11 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		place-items: center;
 		min-height: 7rem;
 		padding: 1.25rem;
+	}
+	.logo-portada img {
+		display: block;
+		width: 100%;
+		height: auto;
 	}
 	.logo-caja img {
 		width: 9rem;

@@ -56,11 +56,11 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 
 ## Identidad (al final, con el diseño)
 
-- [x] Logo: ya está en la web (encabezado, ícono de pestaña y datos para Google) ✔
-- [ ] Logo: archivo original del diseñador (SVG, AI o PDF) para mejor nitidez
-- [x] Imagen para compartir en redes: generada con el logo ✔ (se puede reemplazar por una diseñada)
-- [ ] Colores
-- [x] Fuentes ✔ (Playfair Display en títulos, Source Serif 4 en textos, Inter en menú y botones; elegidas el 01/11/2026)
+- [x] Logo nuevo (tres esferas) ✔ en la web desde el 01/11/2026: encabezado, portada, ícono de pestaña, datos para Google e imagen para redes
+- [ ] Logo: archivo original del diseñador (SVG o PNG con fondo transparente, y una versión blanca para fondos oscuros). El que está en la web se recortó de una imagen con fondo blanco
+- [x] Imagen para compartir en redes: generada con el logo nuevo ✔ (se puede reemplazar por una diseñada)
+- [x] Colores ✔ (del logo: azul noche, verde y amarillo; 01/11/2026)
+- [x] Fuentes ✔ (Fraunces en títulos, Source Serif 4 en textos, Poppins —la letra del logo— en menú y botones; elegidas el 01/11/2026)
 
 ## Rediseño (portada y Quiénes somos)
 
