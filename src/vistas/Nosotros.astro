@@ -4,6 +4,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import Contingencia from '../components/Contingencia.astro';
+import Icono from '../components/Icono.astro';
 import { obtenerComision, textosDePersona } from '../lib/contenido';
 import { ruta, t, type Idioma } from '../i18n';
 
@@ -36,7 +37,10 @@ const romanos = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 		{
 			n.lineas.map((linea, i) => (
 				<li>
-					<span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+					<p class="marca">
+						{linea.icono && <Icono nombre={linea.icono} circulo />}
+						<span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+					</p>
 					<h3>{linea.titulo}</h3>
 					<p>{linea.texto}</p>
 				</li>
@@ -52,7 +56,7 @@ const romanos = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 	</ol>
 </section>
 
-<section id="evidencia" class="banda banda-azul evidencia" aria-labelledby="titulo-evidencia">
+<section id="evidencia" class="banda banda-azul banda-hoja evidencia" aria-labelledby="titulo-evidencia">
 	<div>
 		<p class="antetitulo">{v.evidenciaAntetitulo}</p>
 		<h2 id="titulo-evidencia">{n.evidencia.titulo}</h2>
@@ -162,12 +166,12 @@ const romanos = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 	.lineas h3 {
 		margin: 0.5rem 0 0.4rem;
 		font-family: var(--fuente-texto);
-		font-size: 1rem;
+		font-size: 1.0625rem;
 		font-weight: 600;
 	}
 	.lineas p {
 		margin: 0;
-		font-size: 0.9375rem;
+		font-size: 1rem;
 		color: var(--color-texto-suave);
 	}
 	.lineas .congreso {
@@ -274,7 +278,7 @@ const romanos = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 		aspect-ratio: 4 / 5;
 		margin-bottom: 0.6rem;
 		border: 1px solid var(--color-borde);
-		border-radius: var(--radio);
+		border-radius: var(--radio-arco);
 		background: #efe9dc;
 	}
 	.foto img {
@@ -298,10 +302,11 @@ const romanos = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 		color: var(--color-titulos);
 	}
 	.cargo {
-		font-size: 0.6875rem;
+		font-size: 0.75rem;
 		font-weight: 600;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
 		color: var(--color-dorado);
 	}
 

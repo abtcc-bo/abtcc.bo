@@ -109,3 +109,30 @@ export async function obtenerArticulos(idioma: Idioma): Promise<CollectionEntry<
 	const articulos = await getCollection('blog', (a) => idiomaDeEntrada(a.id) === idioma && (import.meta.env.DEV || !a.data.borrador));
 	return articulos.sort((a, b) => b.data.publicado.getTime() - a.data.publicado.getTime());
 }
+
+export type Articulo = CollectionEntry<'blog'>;
+
+/** Parte de la URL de un artículo: "es/que-es-act" → "que-es-act". */
+export function slugDeArticulo(articulo: Articulo): string {
+	return articulo.id.split('/').slice(1).join('/');
+}
+
+/** URL del artículo en cada idioma en que está traducido (las traducciones comparten `clave`). */
+export async function alternosDeArticulo(articulo: Articulo): Promise<Alternos> {
+	const traducciones = await getCollection('blog', (a) => a.data.clave === articulo.data.clave && (import.meta.env.DEV || !a.data.borrador));
+	return Object.fromEntries(traducciones.map((a) => [idiomaDeEntrada(a.id), ruta('blog', idiomaDeEntrada(a.id), slugDeArticulo(a))]));
+}
+
+/** Minutos de lectura estimados (200 palabras por minuto), como mínimo 1. */
+export function minutosDeLectura(articulo: Articulo): number {
+	const palabras = (articulo.body ?? '').split(/\s+/).filter(Boolean).length;
+	return Math.max(1, Math.round(palabras / 200));
+}
+
+/** Hasta `cantidad` artículos parecidos: primero los de la misma categoría o con algún tema en común, luego los más recientes. */
+export async function articulosRelacionados(articulo: Articulo, cantidad = 3): Promise<Articulo[]> {
+	const otros = (await obtenerArticulos(idiomaDeEntrada(articulo.id))).filter((a) => a.id !== articulo.id);
+	const parecido = (a: Articulo) =>
+		(a.data.categoria === articulo.data.categoria ? 1 : 0) + a.data.etiquetas.filter((e) => articulo.data.etiquetas.includes(e)).length;
+	return otros.sort((a, b) => parecido(b) - parecido(a)).slice(0, cantidad);
+}

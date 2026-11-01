@@ -1,0 +1,394 @@
+---
+// Artículo del blog. La cabecera verde (categoría, título y resumen) la pone Pagina.astro. Ayudas de lectura:
+// barra de avance arriba de la pantalla, minutos de lectura, citas destacadas (los ">" del texto), temas,
+// referencias, quién escribe y otros artículos para seguir leyendo.
+import { Image } from 'astro:assets';
+import { getEntry, render } from 'astro:content';
+import Icono from '../components/Icono.astro';
+import JsonLd from '../components/JsonLd.astro';
+import TarjetaArticulo from '../components/TarjetaArticulo.astro';
+import { articulosRelacionados, minutosDeLectura, textosDePersona, type Articulo } from '../lib/contenido';
+import { formatearFecha, formato, ruta, t, type Idioma } from '../i18n';
+
+interface Props {
+	articulo: Articulo;
+	idioma: Idioma;
+}
+
+const { articulo, idioma } = Astro.props;
+const b = t(idioma).blog;
+const { titulo, resumen, publicado, actualizado, etiquetas, referencias, portada } = articulo.data;
+const { Content } = await render(articulo);
+const autor = await getEntry(articulo.data.autor);
+const textosAutor = autor && textosDePersona(autor, idioma);
+const relacionados = await articulosRelacionados(articulo);
+const minutos = minutosDeLectura(articulo);
+// Fechas sin hora: se muestran tal cual (UTC) para que no cambien de día por la zona horaria.
+const fecha = (d: Date) => formatearFecha(d, idioma, { dateStyle: 'long', timeZone: 'UTC' });
+const dia = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+<article class="articulo">
+	<div class="progreso" aria-hidden="true"></div>
+
+	<p class="datos">
+		{
+			autor && (
+				<span class="autor-mini">
+					{autor.data.foto && <Image src={autor.data.foto} alt="" width={64} height={64} />}
+					<span>
+						{b.por} <strong>{autor.data.nombre}</strong>
+					</span>
+				</span>
+			)
+		}
+		<span class="dato">
+			<Icono nombre="calendario" />
+			<time datetime={dia(publicado)}>{fecha(publicado)}</time>
+		</span>
+		<span class="dato">
+			<Icono nombre="reloj" />
+			{formato(b.minutos, { n: minutos })}
+		</span>
+	</p>
+
+	{portada && <Image src={portada} alt="" widths={[640, 960, 1400]} sizes="(max-width: 52rem) 100vw, 50rem" class="portada" loading="eager" />}
+
+	<div class="prosa">
+		<Content />
+	</div>
+
+	{actualizado && <p class="actualizado">{formato(b.actualizado, { fecha: fecha(actualizado) })}</p>}
+
+	{
+		etiquetas.length > 0 && (
+			<div class="temas">
+				<h2 class="rotulo">{b.etiquetas}</h2>
+				<ul>
+					{etiquetas.map((e) => (
+						<li class="etiqueta">{e}</li>
+					))}
+				</ul>
+			</div>
+		)
+	}
+
+	{
+		referencias.length > 0 && (
+			<section class="referencias" aria-labelledby="titulo-referencias">
+				<h2 id="titulo-referencias" class="rotulo">
+					{b.referencias}
+				</h2>
+				<ol>
+					{referencias.map((r) => (
+						<li>{r}</li>
+					))}
+				</ol>
+			</section>
+		)
+	}
+
+	{
+		autor && textosAutor && (
+			<aside class="autor tarjeta" aria-labelledby="titulo-autor">
+				{autor.data.foto && <Image src={autor.data.foto} alt="" width={160} height={192} class="foto" />}
+				<div>
+					<h2 id="titulo-autor" class="rotulo">
+						{b.sobreAutor}
+					</h2>
+					<p class="nombre">
+						{autor.data.comision ? <a href={`${ruta('comision', idioma)}#${autor.id}`}>{autor.data.nombre}</a> : autor.data.nombre}
+					</p>
+					<p class="cargo" lang={textosAutor.idioma !== idioma ? textosAutor.idioma : undefined}>
+						{textosAutor.cargo}
+					</p>
+					<p lang={textosAutor.idioma !== idioma ? textosAutor.idioma : undefined}>{textosAutor.bio}</p>
+				</div>
+			</aside>
+		)
+	}
+</article>
+
+{
+	relacionados.length > 0 && (
+		<section class="banda banda-clara relacionados" aria-labelledby="titulo-relacionados">
+			<h2 id="titulo-relacionados">{b.relacionados}</h2>
+			<ul>
+				{relacionados.map((a) => (
+					<li>
+						<TarjetaArticulo articulo={a} idioma={idioma} />
+					</li>
+				))}
+			</ul>
+		</section>
+	)
+}
+
+<p class="volver">
+	<a class="enlace-accion" href={ruta('blog', idioma)}>
+		<span class="flecha" aria-hidden="true">←</span>
+		{b.volver}
+	</a>
+</p>
+
+<JsonLd
+	datos={{
+		'@type': 'BlogPosting',
+		headline: titulo,
+		description: resumen,
+		datePublished: dia(publicado),
+		...(actualizado && { dateModified: dia(actualizado) }),
+		inLanguage: idioma,
+		...(autor && { author: { '@type': 'Person', name: autor.data.nombre } }),
+		publisher: { '@id': new URL('/#organizacion', Astro.site).href },
+		mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+		...(etiquetas.length && { keywords: etiquetas.join(', ') }),
+	}}
+/>
+
+<style>
+	.articulo {
+		max-width: var(--ancho-lectura);
+		margin: 0 auto;
+		padding-top: clamp(2rem, 5vw, 3.5rem);
+		/* Línea de tiempo para la barra de avance: va de 0 a 100 % mientras el artículo cubre la pantalla. */
+		view-timeline: --lectura block;
+	}
+
+	/* Barra de avance de la lectura, sobre la franja de colores del encabezado. Sin animación en los navegadores
+	   que no la admiten (o con "reducir movimiento"): ahí simplemente no se ve. */
+	.progreso {
+		position: fixed;
+		inset: 0 0 auto;
+		z-index: 30;
+		height: 4px;
+		background: var(--color-oscuro);
+		transform: scaleX(0);
+		transform-origin: left;
+		pointer-events: none;
+	}
+	@supports (animation-timeline: view()) {
+		.progreso {
+			animation: avance linear both;
+			animation-timeline: --lectura;
+			animation-range: contain 0% contain 100%;
+		}
+	}
+	@keyframes avance {
+		to {
+			transform: scaleX(1);
+		}
+	}
+
+	.datos {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1.5rem;
+		margin: 0 0 2rem;
+		padding-bottom: 1.5rem;
+		border-bottom: 1px solid var(--color-division);
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+	.autor-mini {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+	}
+	.autor-mini img {
+		width: 2.5rem;
+		height: 2.5rem;
+		object-fit: cover;
+		border-radius: 50%;
+	}
+	.autor-mini strong {
+		color: var(--color-texto);
+	}
+	.dato {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+	.dato :global(.icono) {
+		width: 1.1rem;
+		height: 1.1rem;
+	}
+	.portada {
+		display: block;
+		width: 100%;
+		height: auto;
+		margin-bottom: 2.5rem;
+		border-radius: var(--radio);
+		border-start-start-radius: 2rem;
+	}
+
+	/* ---------- Texto del artículo ---------- */
+	.prosa {
+		font-size: 1.1875rem;
+		line-height: 1.8;
+	}
+	/* El primer párrafo, un poco más grande: invita a seguir. */
+	.prosa > :global(p:first-child) {
+		font-size: 1.3125rem;
+		line-height: 1.7;
+		color: var(--color-titulos);
+	}
+	.prosa :global(p),
+	.prosa :global(ul),
+	.prosa :global(ol) {
+		margin: 0 0 1.4em;
+	}
+	.prosa :global(li + li) {
+		margin-top: 0.4em;
+	}
+	.prosa :global(h2) {
+		margin: 2.2em 0 0.6em;
+		font-size: clamp(1.9rem, 1.5rem + 1.2vw, 2.4rem);
+	}
+	.prosa :global(h3) {
+		margin: 1.8em 0 0.5em;
+		font-size: 1.6rem;
+	}
+	/* Cita destacada: lo que se escribe con ">" en el texto. */
+	.prosa :global(blockquote) {
+		position: relative;
+		margin: 2.5rem 0;
+		padding: 0.25rem 0 0.25rem 2rem;
+		border-left: 2px solid var(--color-dorado-claro);
+		font-family: var(--fuente-titulos);
+		font-size: clamp(1.6rem, 1.3rem + 1vw, 2rem);
+		font-style: italic;
+		line-height: 1.35;
+		color: var(--color-acento);
+	}
+	.prosa :global(blockquote p) {
+		margin: 0;
+	}
+	.prosa :global(strong) {
+		color: var(--color-titulos);
+	}
+	.prosa :global(img) {
+		max-width: 100%;
+		height: auto;
+		border-radius: var(--radio);
+	}
+	/* Separador "***": los tres puntos del logo. */
+	.prosa :global(hr) {
+		width: 3rem;
+		height: 0.6rem;
+		margin: 3rem auto;
+		border: 0;
+		background:
+			radial-gradient(circle, var(--logo-rojo) 0.22rem, transparent 0.24rem) 0 50% / 1rem 0.6rem no-repeat,
+			radial-gradient(circle, var(--logo-amarillo) 0.22rem, transparent 0.24rem) 1rem 50% / 1rem 0.6rem no-repeat,
+			radial-gradient(circle, var(--logo-verde) 0.22rem, transparent 0.24rem) 2rem 50% / 1rem 0.6rem no-repeat;
+	}
+
+	/* ---------- Después del texto ---------- */
+	.actualizado {
+		font-size: 0.9375rem;
+		font-style: italic;
+		color: var(--color-texto-suave);
+	}
+	.rotulo {
+		margin: 0 0 0.75rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
+		color: var(--color-dorado);
+	}
+	.temas,
+	.referencias {
+		margin-top: 2.5rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--color-division);
+	}
+	.temas ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.referencias ol {
+		margin: 0;
+		padding-left: 1.25rem;
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+	.referencias li + li {
+		margin-top: 0.5rem;
+	}
+	.autor {
+		display: grid;
+		grid-template-columns: 7rem 1fr;
+		gap: 1.75rem;
+		align-items: start;
+		margin-top: 3rem;
+		padding: clamp(1.5rem, 4vw, 2rem);
+	}
+	.autor:not(:has(.foto)) {
+		grid-template-columns: 1fr;
+	}
+	.autor .foto {
+		width: 7rem;
+		height: 8.4rem;
+		object-fit: cover;
+		border-radius: var(--radio-arco);
+	}
+	.nombre {
+		margin: 0;
+		font-family: var(--fuente-titulos);
+		font-size: 1.6rem;
+		line-height: 1.2;
+		color: var(--color-titulos);
+	}
+	.nombre a {
+		color: inherit;
+	}
+	.cargo {
+		margin: 0.3rem 0 0.75rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
+		color: var(--color-acento);
+	}
+	.autor p:last-child {
+		margin: 0;
+		color: var(--color-texto-suave);
+	}
+
+	.relacionados {
+		margin-top: 4rem;
+	}
+	.relacionados h2 {
+		margin-top: 0;
+	}
+	.relacionados ul {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+		gap: 1.5rem;
+		margin: 2rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.relacionados li {
+		display: grid;
+	}
+	.volver {
+		max-width: var(--ancho-lectura);
+		margin: 3rem auto 0;
+	}
+
+	@media (max-width: 36rem) {
+		.autor {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

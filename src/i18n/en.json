@@ -219,7 +219,7 @@
 		},
 		"blog": {
 			"antetitulo": "Outreach",
-			"entradilla": ""
+			"entradilla": "Articles to understand behavioral science and evidence-based therapies, written by ABTCC professionals."
 		},
 		"recursos": {
 			"antetitulo": "Resources",
@@ -293,6 +293,7 @@
 			"cuota": "Annual fee",
 			"requisitos": "Requirements",
 			"proceso": "The process",
+			"preguntas": "FAQ",
 			"solicitar": "Apply"
 		}
 	},
@@ -308,5 +309,32 @@
 		"exentos": "Honorary members exempt",
 		"logoAlapcco": "[ALAPCCO logo pending]",
 		"conceptos": "Concepts from behavioral science"
+	},
+	"preguntas": {
+		"antetitulo": "Frequently asked questions",
+		"titulo": "What people usually ask us",
+		"otraDuda": "Have another question?",
+		"escribenos": "Write to us"
+	},
+	"blog": {
+		"minutos": "{n} min read",
+		"publicado": "Published on {fecha}",
+		"actualizado": "Updated on {fecha}",
+		"por": "By",
+		"referencias": "References",
+		"sobreAutor": "About the author",
+		"relacionados": "Keep reading",
+		"volver": "Back to the blog",
+		"sinArticulos": "Our first articles are coming soon.",
+		"leer": "Read article",
+		"etiquetas": "Topics",
+		"progreso": "Reading progress",
+		"categorias": {
+			"divulgacion": "Outreach",
+			"clinica": "Clinical practice",
+			"investigacion": "Research",
+			"formacion": "Training",
+			"institucional": "Institutional"
+		}
 	}
 }

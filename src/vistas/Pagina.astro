@@ -1,10 +1,11 @@
 ---
-// Dibuja una página del sitio (sección fija o detalle de evento) a partir de su entrada en src/lib/paginas.ts.
-// La usan [...ruta].astro (páginas estáticas) y las páginas dinámicas de src/pages/{es,en,pt}/.
+// Dibuja una página del sitio (sección fija, detalle de evento o artículo del blog) a partir de su entrada en
+// src/lib/paginas.ts. La usan [...ruta].astro (páginas estáticas) y las páginas dinámicas de src/pages/{es,en,pt}/.
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import CabeceraPagina from '../components/CabeceraPagina.astro';
 import { VISTAS } from './index';
+import Articulo from './Articulo.astro';
 import DetalleEvento from './DetalleEvento.astro';
 import Membresia from './Membresia.astro';
 import Nosotros from './Nosotros.astro';
@@ -21,10 +22,9 @@ const textos = t(idioma);
 
 const migasHasta = (seccion: Seccion) => cadenaDeSecciones(seccion).map((s) => ({ nombre: textos.nav[s], href: ruta(s, idioma) }));
 
-let imagenEvento: string | undefined;
-if (props.tipo === 'evento' && props.evento.datos.imagen) {
-	imagenEvento = (await getImage({ src: props.evento.datos.imagen, width: 1200 })).src;
-}
+// Imagen para redes sociales: el afiche del evento o la portada del artículo.
+const imagenPropia = props.tipo === 'evento' ? props.evento.datos.imagen : props.tipo === 'articulo' ? props.articulo.data.portada : undefined;
+const imagenRedes = imagenPropia ? (await getImage({ src: imagenPropia, width: 1200 })).src : undefined;
 
 const Vista = props.tipo === 'seccion' ? VISTAS[props.seccion] : undefined;
 const pagina = props.tipo === 'seccion' ? props.pagina : undefined;
@@ -33,7 +33,12 @@ const subsecciones =
 		? hijasDe(props.seccion).map((hija) => ({ nombre: textos.nav[hija], href: ruta(hija, idioma) }))
 		: [];
 
-const nombre = props.tipo === 'evento' ? props.evento.texto.data.titulo : (pagina?.data.titulo ?? textos.nav[props.seccion]);
+const nombre =
+	props.tipo === 'evento'
+		? props.evento.texto.data.titulo
+		: props.tipo === 'articulo'
+			? props.articulo.data.titulo
+			: (pagina?.data.titulo ?? textos.nav[props.seccion]);
 // Cabecera verde (todas las secciones menos la portada): rótulo, entradilla y atajos propios de cada sección.
 const seccion = props.tipo === 'seccion' ? props.seccion : undefined;
 const cabecera = seccion && seccion !== 'inicio' ? textos.cabeceras[seccion] : undefined;
@@ -92,6 +97,25 @@ const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${texto
 				<Pendiente idioma={idioma} seccion={props.seccion} alternos={props.alternos} />
 			)}
 		</Base>
+	) : props.tipo === 'articulo' ? (
+		<Base
+			idioma={idioma}
+			titulo={titulo}
+			descripcion={props.articulo.data.resumen}
+			alternos={props.alternos}
+			migas={migasHasta('blog')}
+			nombreEnMigas={nombre}
+			imagen={imagenRedes}
+			conCabecera
+		>
+			<CabeceraPagina
+				slot="cabecera"
+				antetitulo={textos.blog.categorias[props.articulo.data.categoria]}
+				titulo={nombre}
+				entradilla={props.articulo.data.resumen}
+			/>
+			<Articulo articulo={props.articulo} idioma={idioma} />
+		</Base>
 	) : (
 		<Base
 			idioma={idioma}
@@ -100,7 +124,7 @@ const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${texto
 			alternos={props.alternos}
 			migas={migasHasta('eventos')}
 			nombreEnMigas={nombre}
-			imagen={imagenEvento}
+			imagen={imagenRedes}
 		>
 			<DetalleEvento evento={props.evento} idioma={idioma} />
 		</Base>

@@ -9,18 +9,25 @@ nosotros:
   objetivo: Promover el desarrollo, la difusión, la formación, la investigación y la aplicación ética y científicamente fundamentada de las terapias cognitivas, conductuales y contextuales, contribuyendo a la salud mental, el desarrollo científico y el bienestar de la población boliviana.
   lineas:
     - titulo: Formación
+      icono: titulo
       texto: Organizamos y apoyamos congresos, seminarios, talleres, jornadas, cursos y programas de formación.
     - titulo: Investigación
+      icono: investigacion
       texto: Fomentamos la investigación científica, las publicaciones y la colaboración con instituciones académicas nacionales e internacionales.
     - titulo: Asesoramiento técnico
+      icono: dialogo
       texto: A profesionales e instituciones vinculadas con la psicología, la salud mental y las ciencias del comportamiento.
     - titulo: Ejercicio profesional ético
+      icono: compromiso
       texto: Promovemos una práctica responsable y basada en evidencia.
     - titulo: Divulgación en salud mental
+      icono: divulgacion
       texto: Contribuimos a la educación, la prevención y la divulgación en salud mental.
     - titulo: Cooperación
+      icono: cooperacion
       texto: Establecemos convenios y redes de cooperación con entidades nacionales y extranjeras.
     - titulo: Espacios seguros
+      icono: cuidado
       texto: Desarrollamos acciones para prevenir la discriminación, el acoso y la violencia en nuestras actividades.
   congreso:
     antetitulo: Cada tres años, como mínimo

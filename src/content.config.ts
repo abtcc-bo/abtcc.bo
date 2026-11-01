@@ -4,6 +4,7 @@ import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { SECCIONES } from './i18n/rutas';
+import { NOMBRES_ICONOS } from './datos/iconos';
 
 const sinExtension = ({ entry }: { entry: string }) => entry.replace(/\.(md|ya?ml)$/, '');
 
@@ -106,7 +107,8 @@ const blog = defineCollection({
 			publicado: z.coerce.date(),
 			actualizado: z.coerce.date().optional(),
 			resumen: z.string().max(200, 'El resumen debe tener como máximo 200 caracteres.'),
-			categoria: z.string(),
+			/** Nombres que se muestran: `blog.categorias` en src/i18n/{es,en,pt}.json. */
+			categoria: z.enum(['divulgacion', 'clinica', 'investigacion', 'formacion', 'institucional']),
 			etiquetas: z.array(z.string()).default([]),
 			portada: image().optional(),
 			referencias: z.array(z.string()).default([]),
@@ -154,13 +156,15 @@ const personas = defineCollection({
 });
 
 const textoTitulado = z.object({ titulo: z.string(), texto: z.string() });
+/** Con `icono` opcional: uno de los nombres de src/datos/iconos.ts (titulo, investigacion, redes...). */
+const textoConIcono = textoTitulado.extend({ icono: z.enum(NOMBRES_ICONOS).optional() });
 
 /** Contenido estructurado de "Quiénes somos" (vista Nosotros.astro). */
 const nosotros = z.object({
 	/** Párrafos de presentación (arriba de todo). */
 	presentacion: z.array(z.string()),
 	objetivo: z.string(),
-	lineas: z.array(textoTitulado),
+	lineas: z.array(textoConIcono),
 	congreso: z.object({ antetitulo: z.string(), titulo: z.string() }),
 	evidencia: z.object({ titulo: z.string(), texto: z.string(), pilares: z.array(z.string()) }),
 	principios: z.array(z.string()),
@@ -173,9 +177,23 @@ const membresia = z.object({
 	categorias: z.array(z.object({ nombre: z.string(), participacion: z.string(), texto: z.string() })),
 	beneficios: z.array(z.string()),
 	cuota: z.object({ monto: z.number(), unidad: z.string(), texto: z.string(), detalles: z.array(textoTitulado) }),
-	requisitos: z.array(z.object({ icono: z.enum(['documento', 'titulo', 'hoja', 'compromiso']), texto: z.string() })),
+	requisitos: z.array(z.object({ icono: z.enum(NOMBRES_ICONOS), texto: z.string() })),
 	pasos: z.array(textoTitulado),
 	solicitud: z.object({ titulo: z.string(), texto: z.string() }),
+});
+
+/** Una sección del sitio por su nombre en SECCIONES (src/i18n/rutas.ts): nosotros, eventos, membresia, contacto... */
+const seccion = z.enum(Object.keys(SECCIONES) as [keyof typeof SECCIONES, ...(keyof typeof SECCIONES)[]]);
+
+/**
+ * "¿Por dónde empiezo?" de la portada: una tarjeta por tipo de visitante, con enlaces a las secciones que le sirven.
+ * `ancla` lleva a un apartado de la sección (p. ej. `categorias` en Membresía).
+ */
+const camino = z.object({
+	icono: z.enum(NOMBRES_ICONOS),
+	titulo: z.string(),
+	texto: z.string(),
+	enlaces: z.array(z.object({ texto: z.string(), seccion, ancla: z.string().optional() })),
 });
 
 /** Textos de la portada (vista Inicio.astro), en src/content/paginas/{idioma}/inicio.md. */
@@ -189,7 +207,9 @@ const portada = z.object({
 	datos: z.array(z.string()),
 	/** Conceptos de la ciencia del comportamiento que pasan en la cinta animada. */
 	conceptos: z.array(z.string()),
-	quienes: z.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string(), puntos: z.array(textoTitulado) }),
+	/** `aviso`: nota destacada debajo de las tarjetas (p. ej. qué hacer en una emergencia). */
+	caminos: z.object({ antetitulo: z.string(), titulo: z.string(), opciones: z.array(camino), aviso: z.string().optional() }).optional(),
+	quienes: z.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string(), puntos: z.array(textoConIcono) }),
 	cita: z.object({ texto: z.string(), fuente: z.string() }),
 	membresia: z.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string(), beneficios: z.array(z.string()) }),
 	red: z.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string() }),
@@ -201,7 +221,7 @@ const paginas = defineCollection({
 	schema: ({ image }) =>
 		z.object({
 			titulo: z.string().max(100),
-			clave: z.enum(Object.keys(SECCIONES) as [keyof typeof SECCIONES, ...(keyof typeof SECCIONES)[]]),
+			clave: seccion,
 			descripcion: z.string().max(160, 'La descripción para Google debe tener como máximo 160 caracteres.'),
 			imagen: image().optional(),
 			/** Solo en la página de Quiénes somos. */
@@ -210,6 +230,8 @@ const paginas = defineCollection({
 			membresia: membresia.optional(),
 			/** Solo en la portada. */
 			portada: portada.optional(),
+			/** Preguntas frecuentes, en acordeón al final de la sección (por ahora, Membresía y Eventos). */
+			preguntas: z.array(pregunta).default([]),
 		}),
 });
 

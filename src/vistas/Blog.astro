@@ -1,0 +1,56 @@
+---
+// Listado del blog: el artículo más reciente en grande y los demás en tarjetas. Los artículos están en
+// src/content/blog/{idioma}/; cada uno tiene su página (vista Articulo.astro).
+import TarjetaArticulo from '../components/TarjetaArticulo.astro';
+import { obtenerArticulos } from '../lib/contenido';
+import { t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+}
+
+const { idioma } = Astro.props;
+const b = t(idioma).blog;
+const [reciente, ...anteriores] = await obtenerArticulos(idioma);
+---
+
+<section class="banda listado">
+	{
+		reciente ? (
+			<>
+				<TarjetaArticulo articulo={reciente} idioma={idioma} grande nivel="h2" />
+				{anteriores.length > 0 && (
+					<ul class="rejilla">
+						{anteriores.map((articulo) => (
+							<li>
+								<TarjetaArticulo articulo={articulo} idioma={idioma} nivel="h2" />
+							</li>
+						))}
+					</ul>
+				)}
+			</>
+		) : (
+			<p class="vacio">{b.sinArticulos}</p>
+		)
+	}
+</section>
+
+<style>
+	.rejilla {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+		gap: 1.5rem;
+		margin: 1.5rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.rejilla li {
+		display: grid;
+	}
+	.vacio {
+		font-family: var(--fuente-titulos);
+		font-size: 1.5rem;
+		font-style: italic;
+		color: var(--color-texto-suave);
+	}
+</style>

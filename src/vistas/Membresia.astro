@@ -3,6 +3,8 @@
 // La cabecera verde (título, entradilla y botones) la pone Pagina.astro. Los ids de las secciones los usa el
 // submenú del encabezado.
 import type { CollectionEntry } from 'astro:content';
+import Icono from '../components/Icono.astro';
+import PreguntasFrecuentes from '../components/PreguntasFrecuentes.astro';
 import { ORGANIZACION } from '../datos/organizacion';
 import { t, type Idioma } from '../i18n';
 
@@ -15,14 +17,6 @@ const { idioma, pagina } = Astro.props;
 const m = pagina.data.membresia!;
 const v = t(idioma).membresiaVista;
 const correo = ORGANIZACION.correo;
-
-// Iconos de línea simples (decorativos) para los requisitos.
-const ICONOS = {
-	documento: 'M4 5h16v14H4z M8 10h3 M8 14h8 M14 9.5h3',
-	titulo: 'M2 9l10-5 10 5-10 5z M6 11v5c3 2 9 2 12 0v-5',
-	hoja: 'M6 3h9l4 4v14H6z M14 3v5h5 M9 12h7 M9 16h7',
-	compromiso: 'M12 3l7 3v6c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6z M9 12l2 2 4-4',
-} as const;
 ---
 
 <section id="categorias" class="banda" aria-labelledby="titulo-categorias">
@@ -58,7 +52,7 @@ const ICONOS = {
 	</ol>
 </section>
 
-<section id="cuota" class="banda banda-azul dos-columnas" aria-labelledby="titulo-cuota">
+<section id="cuota" class="banda banda-azul banda-hoja dos-columnas" aria-labelledby="titulo-cuota">
 	<div>
 		<p class="antetitulo" id="titulo-cuota">{v.cuotaAntetitulo}</p>
 		<p class="monto">
@@ -88,9 +82,7 @@ const ICONOS = {
 		{
 			m.requisitos.map((r) => (
 				<li>
-					<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-						<path d={ICONOS[r.icono]} />
-					</svg>
+					<Icono nombre={r.icono} />
 					<span>{r.texto}</span>
 				</li>
 			))
@@ -114,7 +106,9 @@ const ICONOS = {
 	</ol>
 </section>
 
-<section id="solicitar" class="banda banda-verde solicitar" aria-labelledby="titulo-solicitar">
+<PreguntasFrecuentes idioma={idioma} preguntas={pagina.data.preguntas} />
+
+<section id="solicitar" class="banda banda-verde banda-hoja solicitar" aria-labelledby="titulo-solicitar">
 	<span class="puntos" aria-hidden="true"></span>
 	<h2 id="titulo-solicitar">{m.solicitud.titulo}</h2>
 	<p>{m.solicitud.texto}</p>
@@ -189,10 +183,11 @@ const ICONOS = {
 	}
 	.participacion {
 		margin: 0;
-		font-size: 0.6875rem;
+		font-size: 0.75rem;
 		font-weight: 600;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
 		color: var(--color-dorado);
 	}
 	.categorias li:hover .participacion {
@@ -204,7 +199,7 @@ const ICONOS = {
 	}
 	.categorias p:last-child {
 		margin: 0;
-		font-size: 0.875rem;
+		font-size: 0.9375rem;
 	}
 
 	.beneficios {
@@ -255,15 +250,16 @@ const ICONOS = {
 		border-top: 1px solid rgb(255 255 255 / 0.15);
 	}
 	dt {
-		font-size: 0.6875rem;
+		font-size: 0.75rem;
 		font-weight: 600;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
 		color: var(--color-dorado-claro);
 	}
 	dd {
 		margin: 0.4rem 0 0;
-		font-size: 0.9375rem;
+		font-size: 1rem;
 	}
 
 	.requisitos {
@@ -282,16 +278,7 @@ const ICONOS = {
 		background: var(--color-tarjeta);
 		border: 1px solid var(--color-borde);
 		border-radius: var(--radio);
-		font-size: 0.9375rem;
-	}
-	.requisitos svg {
-		width: 1.5rem;
-		height: 1.5rem;
-		fill: none;
-		stroke: var(--color-acento);
-		stroke-width: 1.5;
-		stroke-linecap: round;
-		stroke-linejoin: round;
+		font-size: 1rem;
 	}
 
 	.pasos {
@@ -334,12 +321,12 @@ const ICONOS = {
 	.pasos h3 {
 		margin: 1rem 0 0.5rem;
 		font-family: var(--fuente-texto);
-		font-size: 1rem;
+		font-size: 1.0625rem;
 		font-weight: 600;
 	}
 	.pasos p {
 		margin: 0;
-		font-size: 0.9375rem;
+		font-size: 1rem;
 		color: var(--color-texto-suave);
 	}
 

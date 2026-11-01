@@ -1,6 +1,9 @@
 ---
-// Listado: próximos eventos con filtros arriba, archivo de eventos realizados por año abajo.
+// Listado: próximos eventos con filtros arriba, archivo de eventos realizados por año abajo y, al final, las
+// preguntas frecuentes de src/content/paginas/{idioma}/eventos.md (campo `preguntas`).
+import type { CollectionEntry } from 'astro:content';
 import ListaProximos from '../components/ListaProximos.astro';
+import PreguntasFrecuentes from '../components/PreguntasFrecuentes.astro';
 import TarjetaDestacada from '../components/TarjetaDestacada.astro';
 import TarjetaEvento from '../components/TarjetaEvento.astro';
 import { obtenerEventosPublicos, yaPaso } from '../lib/contenido';
@@ -8,9 +11,10 @@ import { ruta, t, type Idioma } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
+	pagina?: CollectionEntry<'paginas'>;
 }
 
-const { idioma } = Astro.props;
+const { idioma, pagina } = Astro.props;
 const textos = t(idioma);
 const ev = textos.eventos;
 const eventos = await obtenerEventosPublicos(idioma);
@@ -94,7 +98,9 @@ const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? [])
 	)
 }
 
-<section class="banda banda-azul miembros" aria-labelledby="titulo-miembros">
+{pagina && <PreguntasFrecuentes idioma={idioma} preguntas={pagina.data.preguntas} />}
+
+<section class="banda banda-azul banda-hoja miembros" aria-labelledby="titulo-miembros">
 	<div>
 		<p class="antetitulo">{ev.miembrosAntetitulo}</p>
 		<h2 id="titulo-miembros">{ev.miembrosTitulo}</h2>
@@ -148,10 +154,11 @@ const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? [])
 	label {
 		display: grid;
 		gap: 0.25rem;
-		font-size: 0.6875rem;
+		font-size: 0.75rem;
 		font-weight: 600;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
 		color: var(--color-texto-suave);
 	}
 	select {

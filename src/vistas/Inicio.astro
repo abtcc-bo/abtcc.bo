@@ -7,6 +7,7 @@ import logo from '../assets/logo-completo.webp';
 import CarruselEventos from '../components/CarruselEventos.astro';
 import CintaConceptos from '../components/CintaConceptos.astro';
 import FranjaFotos from '../components/FranjaFotos.astro';
+import Icono from '../components/Icono.astro';
 import RegistroAcumulativo from '../components/RegistroAcumulativo.astro';
 import TarjetaDestacada from '../components/TarjetaDestacada.astro';
 import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
@@ -69,6 +70,34 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 {p && <CintaConceptos conceptos={p.conceptos} etiqueta={v.conceptos} />}
 
 {
+	p?.caminos && (
+		<section class="banda caminos" aria-labelledby="titulo-caminos">
+			<p class="antetitulo">{p.caminos.antetitulo}</p>
+			<h2 id="titulo-caminos">{p.caminos.titulo}</h2>
+			<ul class="opciones">
+				{p.caminos.opciones.map((c) => (
+					<li class="tarjeta">
+						<Icono nombre={c.icono} circulo />
+						<h3>{c.titulo}</h3>
+						<p>{c.texto}</p>
+						<ul class="enlaces-camino">
+							{c.enlaces.map((e) => (
+								<li>
+									<a class="enlace-accion" href={`${ruta(e.seccion, idioma)}${e.ancla ? `#${e.ancla}` : ''}`}>
+										{e.texto} <span class="flecha" aria-hidden="true">→</span>
+									</a>
+								</li>
+							))}
+						</ul>
+					</li>
+				))}
+			</ul>
+			{p.caminos.aviso && <p class="aviso">{p.caminos.aviso}</p>}
+		</section>
+	)
+}
+
+{
 	p && (
 		<section class="banda quienes" aria-labelledby="titulo-quienes">
 			<div>
@@ -87,7 +116,10 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 			<ol class="puntos">
 				{p.quienes.puntos.map((punto, i) => (
 					<li>
-						<span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+						<p class="marca">
+							{punto.icono && <Icono nombre={punto.icono} circulo />}
+							<span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+						</p>
 						<h3>{punto.titulo}</h3>
 						<p>{punto.texto}</p>
 					</li>
@@ -126,7 +158,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 
 {
 	p && (
-		<section class="banda banda-azul membresia" aria-labelledby="titulo-membresia">
+		<section class="banda banda-azul banda-hoja membresia" aria-labelledby="titulo-membresia">
 			<div>
 				<p class="antetitulo">{p.membresia.antetitulo}</p>
 				<h2 id="titulo-membresia">{p.membresia.titulo}</h2>
@@ -261,6 +293,63 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		background: var(--color-tarjeta);
 	}
 
+	/* ---------- ¿Por dónde empiezo? ---------- */
+	.caminos h2 {
+		margin-top: 0.75rem;
+	}
+	.opciones {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+		gap: 1.25rem;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.opciones > li {
+		display: flex;
+		flex-direction: column;
+		padding: 1.75rem;
+		border-start-start-radius: 2rem;
+		transition:
+			transform 0.3s,
+			box-shadow 0.3s,
+			border-color 0.3s;
+	}
+	.opciones > li:hover {
+		transform: translateY(-4px);
+		border-color: var(--color-acento);
+		box-shadow: var(--sombra);
+	}
+	.opciones > li:hover :global(.circulo) {
+		background: var(--color-acento);
+		color: #fff;
+	}
+	.opciones h3 {
+		margin: 1.25rem 0 0.5rem;
+		font-size: 1.75rem;
+	}
+	.opciones p {
+		margin: 0;
+		color: var(--color-texto-suave);
+	}
+	.enlaces-camino {
+		display: grid;
+		justify-items: start;
+		gap: 0.75rem;
+		margin: auto 0 0;
+		padding: 1.5rem 0 0;
+		list-style: none;
+	}
+	.aviso {
+		margin: 1.25rem 0 0;
+		padding: 0.9rem 1.25rem;
+		border-left: 3px solid var(--color-dorado-claro);
+		border-radius: 0 var(--radio) var(--radio) 0;
+		background: #f7efd9;
+		font-size: 0.9375rem;
+		color: var(--color-texto);
+	}
+
 	/* ---------- Quiénes somos ---------- */
 	.quienes,
 	.membresia,
@@ -299,12 +388,12 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 	.puntos h3 {
 		margin: 0.4rem 0;
 		font-family: var(--fuente-texto);
-		font-size: 1rem;
+		font-size: 1.0625rem;
 		font-weight: 600;
 	}
 	.puntos p {
 		margin: 0;
-		font-size: 0.875rem;
+		font-size: 1rem;
 		color: var(--color-texto-suave);
 	}
 
@@ -341,10 +430,11 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 	}
 	.fuente {
 		margin: 1.5rem 0 0;
-		font-size: 0.6875rem;
+		font-size: 0.75rem;
 		font-weight: 600;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
 		color: var(--color-dorado);
 	}
 
@@ -356,7 +446,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		margin: 1.5rem 0 0;
 		padding: 0;
 		list-style: none;
-		font-size: 0.875rem;
+		font-size: 0.9375rem;
 	}
 	.beneficios li {
 		position: relative;
@@ -418,15 +508,16 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		color: #fff;
 	}
 	.participacion {
-		font-size: 0.625rem;
+		font-size: 0.6875rem;
 		font-weight: 600;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
 		color: var(--color-dorado-claro);
 	}
 	.categorias li > p:last-child {
 		margin: 0;
-		font-size: 0.8125rem;
+		font-size: 0.9375rem;
 		color: #c9d1e3;
 	}
 	.cuota {
@@ -435,7 +526,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		justify-content: space-between;
 		gap: 0.5rem;
 		margin: 1rem 0 0;
-		font-size: 0.8125rem;
+		font-size: 0.875rem;
 		color: #c9d1e3;
 	}
 
@@ -457,10 +548,11 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 	}
 	.pendiente {
 		border-style: dashed;
-		font-size: 0.6875rem;
+		font-size: 0.75rem;
 		font-weight: 600;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
 		text-align: center;
 		color: var(--color-texto-suave);
 	}

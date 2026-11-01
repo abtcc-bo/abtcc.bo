@@ -1,12 +1,13 @@
-/* Diseño "Rediseño ABTCC": crema, verde profundo, azul noche y dorado; títulos en Cormorant Garamond (con cursivas)
-   y texto en Inter. Los tres colores del logo solo como firma (franja tricolor y puntos). Todo se ajusta desde estas
+/* Diseño "Rediseño ABTCC": crema, verde profundo, azul noche y dorado. Tres letras: Playfair Display en títulos (con
+   cursivas), Source Serif 4 en los textos de lectura e Inter en la interfaz (menú, botones, formularios y rótulos en
+   mayúsculas). Los tres colores del logo solo como firma (franja tricolor y puntos). Todo se ajusta desde estas
    variables. Hay movimiento suave (fondo, aparición al bajar, figuras científicas) que se detiene con "reducir movimiento". */
 :root {
 	--color-fondo: #f5f2ea;
 	--color-superficie: #fdfcf7;
 	--color-tarjeta: #fffdf8;
 	--color-texto: #1f2a44;
-	--color-texto-suave: #5b6474;
+	--color-texto-suave: #4a5263; /* contraste 7:1 sobre crema: cómodo para leer párrafos largos */
 	--color-titulos: #14213d;
 	--color-acento: #134e36;
 	--color-acento-hover: #0d3b28;
@@ -25,12 +26,20 @@
 	--logo-amarillo: #fcde58;
 	--logo-verde: #037f36;
 	--franja-tricolor: linear-gradient(90deg, var(--logo-rojo) 0 33.33%, var(--logo-amarillo) 33.33% 66.66%, var(--logo-verde) 66.66%);
-	--fuente-texto: 'Inter Variable', system-ui, sans-serif;
-	--fuente-titulos: 'Cormorant Garamond Variable', Garamond, Georgia, serif;
+	--fuente-titulos: 'Playfair Display Variable', Georgia, serif;
+	--fuente-texto: 'Source Serif 4 Variable', Georgia, serif;
+	--fuente-interfaz: 'Inter Variable', system-ui, sans-serif;
 	--ancho-maximo: 72rem;
 	--ancho-lectura: 46rem;
 	--espacio: 1rem;
 	--radio: 8px;
+	/* Formas: arco (fotos de personas), hoja (bandas de color: dos esquinas opuestas redondeadas) y curva inferior
+	   de la cabecera de cada sección. */
+	--radio-arco: 999px 999px var(--radio) var(--radio);
+	--radio-hoja: clamp(2rem, 6vw, 5rem);
+	--curva: clamp(1.25rem, 3.5vw, 3rem);
+	/* Permite animar alturas hasta "auto" (despliegue de las preguntas frecuentes). */
+	interpolate-size: allow-keywords;
 	--sombra: 0 1px 2px rgb(20 33 61 / 0.04), 0 12px 32px rgb(20 33 61 / 0.08);
 	--sombra-grande: 0 30px 60px rgb(10 20 40 / 0.18);
 }
@@ -49,12 +58,14 @@
 /* El encabezado queda fijo arriba: los enlaces a un apartado (#...) no lo tapan. */
 html {
 	scroll-padding-top: 6rem;
+	/* Base de 17 px en lugar de 16: agranda en la misma proporción todos los textos (y sus espacios) del sitio. */
+	font-size: 106.25%;
 }
 
 body {
 	margin: 0;
 	font-family: var(--fuente-texto);
-	font-size: 1rem;
+	font-size: 1.0625rem; /* 18 px: cómodo para leer, sobre todo en celular */
 	line-height: 1.7;
 	color: var(--color-texto);
 	background: var(--color-fondo);
@@ -127,6 +138,17 @@ body::after {
 :is(.banda-verde, .banda-azul) :focus-visible {
 	outline-color: var(--color-dorado-claro);
 }
+/* Forma de hoja: esquinas opuestas redondeadas, para las bandas de color en medio de una página. */
+.banda-hoja {
+	border-start-start-radius: var(--radio-hoja);
+	border-end-end-radius: var(--radio-hoja);
+}
+/* Cabecera verde de cada sección: borde inferior en curva suave. */
+.cabecera-pagina {
+	overflow: hidden;
+	border-end-start-radius: 50% var(--curva);
+	border-end-end-radius: 50% var(--curva);
+}
 /* Migas dentro de la cabecera verde. */
 .cabecera-pagina .migas {
 	position: relative;
@@ -153,8 +175,8 @@ h1,
 h2,
 h3 {
 	font-family: var(--fuente-titulos);
-	font-weight: 500;
-	line-height: 1.12;
+	font-weight: 400;
+	line-height: 1.15;
 	color: var(--color-titulos);
 	text-wrap: balance;
 }
@@ -177,6 +199,22 @@ p,
 li {
 	text-wrap: pretty;
 }
+/* Letra de interfaz (Inter) para lo que se usa más que se lee: menú, pie, migas, botones y formularios. Los rótulos
+   en mayúsculas la llevan en su propio estilo. */
+button,
+input,
+select,
+textarea,
+label,
+.encabezado,
+.pie,
+.migas,
+.boton,
+.enlace-accion,
+.desplegable > summary,
+.lista-desplegable {
+	font-family: var(--fuente-interfaz);
+}
 
 main {
 	padding-bottom: calc(var(--espacio) * 3);
@@ -198,10 +236,11 @@ a:hover {
 	align-items: center;
 	gap: 0.75rem;
 	margin: 0;
-	font-size: 0.75rem;
+	font-size: 0.8125rem;
 	font-weight: 600;
 	letter-spacing: 0.16em;
 	text-transform: uppercase;
+	font-family: var(--fuente-interfaz);
 	color: var(--color-dorado);
 }
 .antetitulo::before {
@@ -225,6 +264,19 @@ a:hover {
 :is(.banda-verde, .banda-azul) .numeral {
 	color: var(--color-dorado-claro);
 }
+/* Ícono en círculo y número de orden, en una misma línea, sobre el título de cada punto de una lista. */
+.marca {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin: 0 0 0.75rem;
+}
+/* Al pasar el mouse por el punto, el círculo del ícono se llena de verde. */
+li:hover > .marca .circulo {
+	background: var(--color-acento);
+	color: #fff;
+}
 
 /* Etiqueta tipo píldora (Congreso, Presencial...). */
 .etiqueta {
@@ -232,10 +284,11 @@ a:hover {
 	padding: 0.15rem 0.6rem;
 	border: 1px solid var(--color-division);
 	border-radius: 999px;
-	font-size: 0.6875rem;
+	font-size: 0.75rem;
 	font-weight: 600;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
+	font-family: var(--fuente-interfaz);
 	color: var(--color-acento);
 }
 .etiqueta-dorada {

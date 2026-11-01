@@ -60,7 +60,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [ ] Logo: archivo original del diseñador (SVG, AI o PDF) para mejor nitidez
 - [x] Imagen para compartir en redes: generada con el logo ✔ (se puede reemplazar por una diseñada)
 - [ ] Colores
-- [ ] Fuentes (2–3)
+- [x] Fuentes ✔ (Playfair Display en títulos, Source Serif 4 en textos, Inter en menú y botones; elegidas el 01/11/2026)
 
 ## Rediseño (portada y Quiénes somos)
 
@@ -68,3 +68,11 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [ ] Año de fundación de la ABTCC e hitos para la línea de tiempo de "Quiénes somos"
 - [ ] Revisar los textos nuevos de la portada (`src/content/paginas/es/inicio.md`), incluida la lista de conceptos de la cinta animada
 - [ ] Cuando haya envío de correos (boletín): volver a ofrecer en la web la suscripción a los eventos. El calendario (/eventos.ics) y la fuente RSS siguen funcionando, pero ya no se muestran enlaces
+
+## Mejoras de diseño (noviembre 2026)
+
+- [ ] **Portada, "¿Por dónde empiezo?":** ¿la ABTCC orienta o deriva a profesionales a quien busca atención psicológica? (tarjeta "Busco atención psicológica", en `src/content/paginas/es/inicio.md`)
+- [ ] **Portada, aviso de emergencia:** número de emergencias y línea de crisis o de salud mental en Bolivia (que alguien lo confirme; no lo inventamos)
+- [ ] **Preguntas frecuentes de Membresía** (`src/content/paginas/es/membresia.md`): revisar las 6 respuestas (salen del estatuto y el reglamento)
+- [ ] **Preguntas frecuentes de Eventos** (`src/content/paginas/es/eventos.md`): condiciones para recibir certificado (p. ej. asistencia mínima) y si se comparten las grabaciones de los eventos en línea
+- [ ] **Blog:** primeros artículos reales. Al publicarlos se borran los dos de ejemplo (`src/content/blog/es/ejemplo-*.md`) y la persona de ejemplo (`ejemplo-presidencia.yaml`)

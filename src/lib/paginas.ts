@@ -1,8 +1,8 @@
-// Lista única de las páginas HTML del sitio. La usan el generador de páginas ([...ruta].astro) y el sitemap,
-// así lo que se publica y lo que se anuncia a Google nunca difieren.
+// Lista única de las páginas HTML del sitio (secciones, detalle de eventos y artículos del blog). La usan el generador
+// de páginas ([...ruta].astro) y el sitemap, así lo que se publica y lo que se anuncia a Google nunca difieren.
 import type { CollectionEntry } from 'astro:content';
 import { VISTAS } from '../vistas';
-import { obtenerEventosPublicos, paginaDeSeccion, type Evento } from './contenido';
+import { alternosDeArticulo, obtenerArticulos, obtenerEventosPublicos, paginaDeSeccion, slugDeArticulo, type Articulo, type Evento } from './contenido';
 import { IDIOMAS, SECCIONES, ruta, type Alternos, type Idioma, type Seccion } from '../i18n';
 
 /**
@@ -24,7 +24,8 @@ export type PaginaDelSitio =
 			/** true = se genera en cada visita (SECCIONES_DINAMICAS). */
 			dinamica: boolean;
 	  }
-	| { tipo: 'evento'; idioma: Idioma; evento: Evento; alternos: Alternos; indexable: true; dinamica: false };
+	| { tipo: 'evento'; idioma: Idioma; evento: Evento; alternos: Alternos; indexable: true; dinamica: false }
+	| { tipo: 'articulo'; idioma: Idioma; articulo: Articulo; alternos: Alternos; indexable: true; dinamica: false };
 
 let cache: Promise<{ url: string; datos: PaginaDelSitio }[]> | undefined;
 
@@ -58,7 +59,24 @@ export function paginasDelSitio() {
 				})),
 			),
 		);
-		return [...secciones.flat(), ...eventos.flat()];
+		const articulos = await Promise.all(
+			IDIOMAS.map(async (idioma) =>
+				Promise.all(
+					(await obtenerArticulos(idioma)).map(async (articulo) => ({
+						url: ruta('blog', idioma, slugDeArticulo(articulo)),
+						datos: {
+							tipo: 'articulo' as const,
+							idioma,
+							articulo,
+							alternos: await alternosDeArticulo(articulo),
+							indexable: true as const,
+							dinamica: false as const,
+						},
+					})),
+				),
+			),
+		);
+		return [...secciones.flat(), ...eventos.flat(), ...articulos.flat()];
 	})();
 	return cache;
 }

@@ -219,7 +219,7 @@
 		},
 		"blog": {
 			"antetitulo": "Divulgación",
-			"entradilla": ""
+			"entradilla": "Artículos para entender la ciencia del comportamiento y las terapias basadas en evidencia, escritos por profesionales de la ABTCC."
 		},
 		"recursos": {
 			"antetitulo": "Recursos",
@@ -293,6 +293,7 @@
 			"cuota": "Cuota anual",
 			"requisitos": "Requisitos",
 			"proceso": "Cómo es el proceso",
+			"preguntas": "Preguntas frecuentes",
 			"solicitar": "Solicitar la membresía"
 		}
 	},
@@ -308,5 +309,32 @@
 		"exentos": "Honorarios exentos",
 		"logoAlapcco": "[Logo de ALAPCCO pendiente]",
 		"conceptos": "Conceptos de la ciencia del comportamiento"
+	},
+	"preguntas": {
+		"antetitulo": "Preguntas frecuentes",
+		"titulo": "Lo que suelen preguntarnos",
+		"otraDuda": "¿Tienes otra duda?",
+		"escribenos": "Escríbenos"
+	},
+	"blog": {
+		"minutos": "{n} min de lectura",
+		"publicado": "Publicado el {fecha}",
+		"actualizado": "Actualizado el {fecha}",
+		"por": "Por",
+		"referencias": "Referencias",
+		"sobreAutor": "Quién escribe",
+		"relacionados": "Sigue leyendo",
+		"volver": "Volver al blog",
+		"sinArticulos": "Pronto publicaremos los primeros artículos.",
+		"leer": "Leer artículo",
+		"etiquetas": "Temas",
+		"progreso": "Avance de la lectura",
+		"categorias": {
+			"divulgacion": "Divulgación",
+			"clinica": "Práctica clínica",
+			"investigacion": "Investigación",
+			"formacion": "Formación",
+			"institucional": "Institucional"
+		}
 	}
 }

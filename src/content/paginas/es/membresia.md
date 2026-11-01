@@ -56,6 +56,19 @@ membresia:
   solicitud:
     titulo: Solicita tu membresía
     texto: "Por ahora, escríbenos indicando la categoría a la que postulas y adjuntando la documentación. [PENDIENTE: formulario institucional de solicitud]"
+preguntas:
+  - pregunta: ¿Puedo ser miembro si todavía soy estudiante?
+    respuesta: Sí, como Miembro Adherente, la categoría para personas en formación. Necesitas una constancia de estudiante de psicología o de un área afín. Cuando cumplas los requisitos, puedes pedir tu cambio a Miembro Asociado.
+  - pregunta: ¿Qué diferencia hay entre Miembro Asociado y Miembro Adherente?
+    respuesta: Los Miembros Asociados tienen voz y voto en la Asamblea General y pueden postularse a cargos directivos. Los Adherentes participan con voz, sin voto, y pueden pasar a Asociados cuando cumplan los requisitos.
+  - pregunta: ¿Tengo que vivir en Santa Cruz?
+    respuesta: No. La ABTCC es de ámbito nacional; Santa Cruz es solo su sede. Puedes asociarte desde cualquier lugar de Bolivia.
+  - pregunta: ¿Cuánto cuesta y cuándo se paga?
+    respuesta: La cuota anual es el equivalente en bolivianos a 100 UFV, al valor del día del pago. El período va del 1 de febrero al 31 de enero; si te incorporas durante el año, pagas solo la parte proporcional a los meses que faltan.
+  - pregunta: ¿Cuánto tarda la respuesta a mi solicitud?
+    respuesta: Recibes una respuesta escrita y fundamentada en un plazo de 25 días hábiles. Si falta algún documento, te avisamos y tienes 10 días hábiles para completarlo.
+  - pregunta: ¿Y si no estoy de acuerdo con la decisión?
+    respuesta: Puedes pedir que se revise. La evaluación se hace con criterios objetivos y públicos, y la respuesta siempre explica sus motivos.
 ---
 
 <!-- El contenido de esta página está arriba, en bloques (vista src/vistas/Membresia.astro). -->

@@ -32,7 +32,7 @@ const iniciales = (nombre: string) =>
 			return (
 				<li class="integrante" id={persona.id}>
 					{foto ? (
-						<Image src={foto} alt={nombre} width={240} height={240} class="foto" />
+						<Image src={foto} alt={nombre} width={240} height={288} class="foto" />
 					) : (
 						<div class="foto sin-foto" aria-hidden="true">
 							{iniciales(nombre)}
@@ -109,9 +109,9 @@ const iniciales = (nombre: string) =>
 	}
 	.foto {
 		width: 10rem;
-		height: 10rem;
+		height: 12rem;
 		object-fit: cover;
-		border-radius: 50%;
+		border-radius: var(--radio-arco);
 		box-shadow: 0 0 0 4px var(--color-superficie), 0 0 0 5px var(--color-borde);
 	}
 	.sin-foto {
@@ -136,15 +136,16 @@ const iniciales = (nombre: string) =>
 		font-weight: 600;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
 		color: var(--color-acento);
 	}
 	h3 {
 		margin: 1.25rem 0 0.4rem;
-		font-family: var(--fuente-texto);
 		font-size: 0.8125rem;
 		font-weight: 600;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
+		font-family: var(--fuente-interfaz);
 		color: var(--color-texto-suave);
 	}
 	.integrante ul:not(.enlaces) {
@@ -167,7 +168,7 @@ const iniciales = (nombre: string) =>
 		}
 		.foto {
 			width: 8rem;
-			height: 8rem;
+			height: 9.6rem;
 		}
 	}
 </style>

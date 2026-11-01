@@ -1,0 +1,142 @@
+---
+// Tarjeta de un artículo del blog (listado y "Sigue leyendo"): portada si la tiene, categoría, título, resumen,
+// fecha y minutos de lectura. Con `grande`, ocupa todo el ancho con la imagen al costado.
+import { Image } from 'astro:assets';
+import { minutosDeLectura, slugDeArticulo, type Articulo } from '../lib/contenido';
+import { formatearFecha, formato, ruta, t, type Idioma } from '../i18n';
+
+interface Props {
+	articulo: Articulo;
+	idioma: Idioma;
+	grande?: boolean;
+	nivel?: 'h2' | 'h3';
+}
+
+const { articulo, idioma, grande = false, nivel: Titulo = 'h3' } = Astro.props;
+const b = t(idioma).blog;
+const { titulo, resumen, categoria, publicado, portada } = articulo.data;
+const href = ruta('blog', idioma, slugDeArticulo(articulo));
+// La fecha se escribe sin hora: se muestra tal cual (UTC) para que no cambie de día por la zona horaria.
+const fecha = formatearFecha(publicado, idioma, { dateStyle: 'long', timeZone: 'UTC' });
+---
+
+<article class:list={['tarjeta', 'articulo', { grande }]}>
+	{
+		portada && (
+			<Image src={portada} alt="" widths={[400, 800, 1200]} sizes={grande ? '(max-width: 52rem) 100vw, 36rem' : '(max-width: 52rem) 100vw, 24rem'} class="portada" />
+		)
+	}
+	<div class="cuerpo">
+		<p class="etiqueta">{b.categorias[categoria]}</p>
+		<Titulo class="titulo">
+			<a href={href}>{titulo}</a>
+		</Titulo>
+		<p class="resumen">{resumen}</p>
+		<p class="datos">
+			<time datetime={publicado.toISOString().slice(0, 10)}>{fecha}</time>
+			<span aria-hidden="true">·</span>
+			<span>{formato(b.minutos, { n: minutosDeLectura(articulo) })}</span>
+		</p>
+	</div>
+</article>
+
+<style>
+	.articulo {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		border-start-start-radius: 2rem;
+		transition:
+			transform 0.3s,
+			box-shadow 0.3s,
+			border-color 0.3s;
+	}
+	.articulo:hover {
+		transform: translateY(-4px);
+		border-color: var(--color-acento);
+		box-shadow: var(--sombra);
+	}
+	.portada {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+	.cuerpo {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		padding: 1.5rem 1.75rem 1.75rem;
+	}
+	.titulo {
+		margin: 0.9rem 0 0.6rem;
+		font-size: 1.6rem;
+		line-height: 1.2;
+	}
+	/* Toda la tarjeta es clicable a través del enlace del título. */
+	.titulo a {
+		color: inherit;
+		text-decoration: none;
+	}
+	.titulo a::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+	.articulo:hover .titulo a {
+		color: var(--color-acento);
+	}
+	.resumen {
+		margin: 0;
+		color: var(--color-texto-suave);
+	}
+	.datos {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: auto 0 0;
+		padding-top: 1.25rem;
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+	.etiqueta {
+		align-self: flex-start;
+		margin: 0;
+	}
+
+	.grande {
+		display: grid;
+		grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+	}
+	.grande .portada {
+		height: 100%;
+		aspect-ratio: auto;
+		min-height: 18rem;
+	}
+	.grande .cuerpo {
+		justify-content: center;
+		padding: clamp(1.75rem, 4vw, 3rem);
+	}
+	.grande .titulo {
+		font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.6rem);
+	}
+	/* Sin portada, la tarjeta grande ocupa todo el ancho con el texto. */
+	.grande:not(:has(.portada)) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.grande:not(:has(.portada)) .cuerpo {
+		max-width: 48rem;
+	}
+
+	@media (max-width: 52rem) {
+		.grande {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.grande .portada {
+			min-height: 0;
+			aspect-ratio: 16 / 9;
+		}
+	}
+</style>

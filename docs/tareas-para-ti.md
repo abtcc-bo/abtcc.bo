@@ -46,6 +46,13 @@ Las páginas ya están armadas con los títulos de cada parte; solo falta el tex
 - [ ] **Aviso legal:** confirmar el domicilio (Calle 2, N° 1, barrio Las Palmas), nombre del representante legal (según el estatuto, quien ejerza la Presidencia) y número de personería jurídica (cuando salga).
 - [ ] **Revisión legal:** te dejé un **borrador** de Política de privacidad y de Aviso legal. Conviene que lo lea alguien con formación legal antes de publicar.
 
+### 5. Revisar las novedades de diseño (noviembre 2026)
+Se agregaron preguntas frecuentes, los "tres caminos" de la portada y el blog. Lo que falta está anotado en `docs/datos-pendientes.md` → "Mejoras de diseño". Lo más importante:
+
+- [ ] **Número de emergencias y línea de crisis en Bolivia** para el aviso de la portada (tarjeta "Busco atención psicológica"). Que lo confirme alguien de la comisión.
+- [ ] **¿La asociación orienta a quien busca terapia?** (por ejemplo, recomendando profesionales). Según la respuesta ajusto el texto de esa tarjeta.
+- [ ] **Leer las preguntas frecuentes** de Membresía y de Formación y eventos, y decirme qué cambiar. Faltan dos datos: condiciones del certificado y si se comparten grabaciones.
+
 ---
 
 ## 🟡 Cuando te avise (al publicar)
@@ -61,7 +68,7 @@ No afectan a la web, pero conviene corregirlas antes de aprobarlos:
 
 ---
 
-### 5. Cuentas gratuitas (te guío paso a paso)
+### 6. Cuentas gratuitas (te guío paso a paso)
 Todas con el Gmail de la asociación (abtcc.bo@gmail.com).
 
 - [x] **Resend y Turnstile** ✔ (formulario funcionando desde el 01/11/2026; los mensajes llegan a abtcc.bo@gmail.com desde onboarding@resend.dev): envía a abtcc.bo@gmail.com los mensajes del formulario de contacto. Mientras no haya dominio propio, solo puede enviar al correo con el que se crea la cuenta; por eso debe ser el de la asociación.
@@ -99,13 +106,13 @@ Primer lugar nadie lo garantiza, pero **buscando "ABTCC" o el nombre completo** 
   - [ ] Perfiles de los cinco integrantes (LinkedIn, Instagram profesional).
   - [ ] Notas de prensa sobre el XI SIALAPCCO.
 - [ ] **Pasarme los enlaces de las redes sociales** de la asociación (también ayudan a que Google la reconozca).
-- [ ] **Artículos para el blog:** 1 o 2 por mes, escritos por la comisión (yo los publico). Ideas: "¿Qué es la terapia de aceptación y compromiso?", "DBT en Bolivia: dónde formarse", "Diferencias entre TCC y terapias contextuales".
+- [ ] **Artículos para el blog:** 1 o 2 por mes, escritos por la comisión (yo los publico). Ideas: "¿Qué es la terapia de aceptación y compromiso?", "DBT en Bolivia: dónde formarse", "Diferencias entre TCC y terapias contextuales". De cada artículo pásame: el texto (con sus subtítulos), quién lo escribe, un resumen de 1–2 líneas, la categoría (divulgación, práctica clínica, investigación, formación o institucional), 2–4 temas, las referencias y, si quieren, una imagen de portada horizontal. Una frase importante del texto se puede marcar para que salga como cita destacada.
 
 **Lo mío** (avísame cuándo):
 
 - [ ] Una página propia para cada integrante de la comisión (la gente busca a los profesionales por su nombre).
-- [ ] Armar el blog, listo para publicar artículos.
-- [ ] Preguntas frecuentes de membresía y formación, marcadas para que Google pueda mostrarlas en los resultados.
+- [x] Armar el blog, listo para publicar artículos ✔ (con barra de avance, minutos de lectura, autor y "Sigue leyendo").
+- [x] Preguntas frecuentes de membresía y formación ✔ (Google ya casi no muestra preguntas frecuentes en sus resultados, así que no hace falta marcarlas para él).
 - [ ] Conectar las redes sociales a los datos de la asociación.
 - [ ] Revisar con las herramientas de Google (resultados enriquecidos, velocidad en celular) y en securityheaders.com.
 
