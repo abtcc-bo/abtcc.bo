@@ -242,7 +242,7 @@ const camino = z.object({
 /** Textos de la portada (vista Inicio.astro), en src/content/paginas/{idioma}/inicio.md. */
 const portada = z.object({
 	antetitulo: z.string(),
-	/** Título en tres partes: "Asociación Boliviana de" (cursiva dorada) + "Terapias Cognitivas, Conductuales y" + "Contextuales" (cursiva). */
+	/** Título en tres partes: "Asociación Boliviana de" (cursiva dorada) + "Terapias Cognitivas Conductuales y" + "Contextuales" (cursiva). */
 	tituloPrevio: z.string(),
 	titulo: z.string(),
 	tituloCursiva: z.string(),

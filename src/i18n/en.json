@@ -1,6 +1,6 @@
 {
 	"sitio": {
-		"nombre": "Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales",
+		"nombre": "Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales",
 		"sigla": "ABTCC",
 		"descripcion": "[PENDING: one-sentence description of the association]",
 		"afiliacion": "ALAPCCO working group"
@@ -238,7 +238,7 @@
 		},
 		"comision": {
 			"antetitulo": "The association",
-			"entradilla": "The people who lead ABTCC: their training, experience and work in cognitive, behavioral and contextual therapies."
+			"entradilla": "The people who lead ABTCC: their training, experience and work in cognitive behavioral and contextual therapies."
 		},
 		"transparencia": {
 			"antetitulo": "The association",
@@ -246,7 +246,7 @@
 		},
 		"eventos": {
 			"antetitulo": "Academic agenda",
-			"entradilla": "Congresses, seminars, workshops and courses for professionals and students of cognitive, behavioral and contextual therapies."
+			"entradilla": "Congresses, seminars, workshops and courses for professionals and students of cognitive behavioral and contextual therapies."
 		},
 		"membresia": {
 			"antetitulo": "Join ABTCC",

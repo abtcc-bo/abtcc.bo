@@ -10,7 +10,7 @@ descripcion: Qué datos personales recoge la ABTCC en su sitio web, para qué lo
 
 ## Quién es responsable de tus datos
 
-La Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales (ABTCC). Puedes escribirnos sobre cualquier tema de privacidad a [abtcc.bo@gmail.com](mailto:abtcc.bo@gmail.com).
+La Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales (ABTCC). Puedes escribirnos sobre cualquier tema de privacidad a [abtcc.bo@gmail.com](mailto:abtcc.bo@gmail.com).
 
 ## Qué datos recogemos y para qué
 

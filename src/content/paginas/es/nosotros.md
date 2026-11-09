@@ -1,12 +1,12 @@
 ---
 titulo: Quiénes somos
 clave: nosotros
-descripcion: Asociación sin fines de lucro que impulsa la formación, la investigación y la práctica ética de las terapias cognitivas, conductuales y contextuales en Bolivia.
+descripcion: Asociación sin fines de lucro que impulsa la formación, la investigación y la práctica ética de las terapias cognitivas conductuales y contextuales en Bolivia.
 nosotros:
   presentacion:
-    - La Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales es una asociación civil sin fines de lucro, de ámbito nacional, con sede en Santa Cruz de la Sierra.
+    - La Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales es una asociación civil sin fines de lucro, de ámbito nacional, con sede en Santa Cruz de la Sierra.
     - "[PENDIENTE: 2–3 líneas más de presentación: desde cuándo existimos y a quiénes reunimos]"
-  objetivo: Promover el desarrollo, la difusión, la formación, la investigación y la aplicación ética y científicamente fundamentada de las terapias cognitivas, conductuales y contextuales, contribuyendo a la salud mental, el desarrollo científico y el bienestar de la población boliviana.
+  objetivo: Promover el desarrollo, la difusión, la formación, la investigación y la aplicación ética y científicamente fundamentada de las terapias cognitivas conductuales y contextuales, contribuyendo a la salud mental, el desarrollo científico y el bienestar de la población boliviana.
   lineas:
     - titulo: Formación
       icono: titulo
@@ -31,7 +31,7 @@ nosotros:
       texto: Desarrollamos acciones para prevenir la discriminación, el acoso y la violencia en nuestras actividades.
   congreso:
     antetitulo: Cada tres años, como mínimo
-    titulo: Congreso Boliviano de Terapias Cognitivas, Conductuales y Contextuales
+    titulo: Congreso Boliviano de Terapias Cognitivas Conductuales y Contextuales
   evidencia:
     titulo: La mejor evidencia, integrada con la persona
     texto: Promovemos las terapias sustentadas en la mejor evidencia científica disponible, integrando la investigación, la experiencia clínica, los principios éticos y las características, preferencias y valores de las personas que reciben atención en salud mental.

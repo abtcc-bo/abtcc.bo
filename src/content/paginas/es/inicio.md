@@ -1,11 +1,11 @@
 ---
 titulo: Inicio
 clave: inicio
-descripcion: Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales. Formación, investigación y práctica ética basadas en evidencia en Bolivia.
+descripcion: Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales. Formación, investigación y práctica ética basadas en evidencia en Bolivia.
 portada:
   antetitulo: Bolivia · Red latinoamericana ALAPCCO
   tituloPrevio: Asociación Boliviana de
-  titulo: Terapias Cognitivas, Conductuales y
+  titulo: Terapias Cognitivas Conductuales y
   tituloCursiva: Contextuales
   bajada: Impulsamos la formación, la investigación y la práctica ética de las terapias basadas en evidencia, al servicio de la salud mental en Bolivia.
   datos:
@@ -60,7 +60,7 @@ portada:
   quienes:
     antetitulo: Quiénes somos
     titulo: Ciencia, formación y ética al servicio de la salud mental
-    texto: La ABTCC es una asociación civil sin fines de lucro, de ámbito nacional, con sede en Santa Cruz de la Sierra. Reunimos a quienes desarrollan, enseñan, investigan y aplican las terapias cognitivas, conductuales y contextuales.
+    texto: La ABTCC es una asociación civil sin fines de lucro, de ámbito nacional, con sede en Santa Cruz de la Sierra. Reunimos a quienes desarrollan, enseñan, investigan y aplican las terapias cognitivas conductuales y contextuales.
     puntos:
       - titulo: Formación continua
         icono: titulo
@@ -80,7 +80,7 @@ portada:
   membresia:
     antetitulo: Membresía
     titulo: Forma parte de la comunidad ABTCC
-    texto: Reunimos a profesionales, estudiantes e instituciones que se dedican a la difusión, la formación, la investigación o la práctica de las terapias cognitivas, conductuales y contextuales en Bolivia.
+    texto: Reunimos a profesionales, estudiantes e instituciones que se dedican a la difusión, la formación, la investigación o la práctica de las terapias cognitivas conductuales y contextuales en Bolivia.
     beneficios:
       - Descuento mínimo del 10 % en los eventos auspiciados por la ABTCC
       - Acceso preferente a cursos, seminarios, talleres y eventos

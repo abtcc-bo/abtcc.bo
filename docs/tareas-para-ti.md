@@ -70,7 +70,7 @@ Se agregaron preguntas frecuentes, los "tres caminos" de la portada y el blog. L
 ### Para la comisión: inconsistencias que encontré en los documentos
 No afectan a la web, pero conviene corregirlas antes de aprobarlos:
 
-- [ ] **Nombre:** el estatuto dice "Terapias Cognitivas, Conductuales y Contextuales"; el logo dice "Cognitivo Conductuales y Contextuales".
+- [ ] **Nombre:** la web usa "Terapias Cognitivas Conductuales y Contextuales" (sin coma, como pediste). El borrador del estatuto lo escribe con coma ("Cognitivas, Conductuales") y el logo dice "Cognitivo Conductuales": conviene unificar los tres.
 - [ ] **Recargo por mora:** el estatuto (Art. 15) dice 2 % mensual; el reglamento (Art. 34) dice 0,5 % mensual "conforme al estatuto".
 - [ ] **Quiénes pagan cuota:** el estatuto (Art. 7) dice todos menos los honorarios (incluye fundadores); el reglamento (Art. 34) dice solo asociados y adherentes.
 - [ ] **Cargos:** el estatuto define Presidencia, Vicepresidencia, Secretaría General, Tesorería y dos Vocalías, y el reglamento prohíbe otros cargos. En la web el Dr. Rivera figura como "Coordinador". ¿Qué cargo ocupa cada integrante?

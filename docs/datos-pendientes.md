@@ -4,7 +4,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 
 ## Decisiones
 
-- [x] Nombre oficial (según el estatuto): Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales. **El logo dice "Cognitivo Conductuales y Contextuales": conviene actualizar el logo.**
+- [x] Nombre oficial: Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales, **sin coma** después de "Cognitivas" (confirmado el 09/11/2026; corregido en toda la web). **El logo dice "Cognitivo Conductuales y Contextuales" (Cognitivo, no Cognitivas): conviene revisarlo con el diseñador.**
 - [ ] Sigla oficial (¿ABTCC?)
 - [ ] Nombre del subdominio gratuito deseado (ej. `abtcc.<cuenta>.workers.dev`)
 - [x] Correo Gmail de la asociación: abtcc.bo@gmail.com

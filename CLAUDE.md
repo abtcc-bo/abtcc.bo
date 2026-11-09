@@ -1,6 +1,6 @@
 # ABTCC web — reglas del proyecto
 
-Sitio de la Asociación Boliviana de Terapias Cognitivas, Conductuales y Contextuales (nombre oficial pendiente de confirmar, ver `docs/datos-pendientes.md`).
+Sitio de la Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales (ABTCC). El nombre va **sin coma** después de "Cognitivas" (confirmado por el usuario el 09/11/2026), igual en "terapias cognitivas conductuales y contextuales" dentro de los textos.
 La arquitectura completa está en `docs/arquitectura.md`. Leerla antes de decisiones estructurales.
 
 ## Estado y forma de trabajo

@@ -94,6 +94,6 @@ preguntas:
     respuesta: Con el botón «Inscribirme», que lleva al formulario de inscripción. Si tienes dudas, escríbenos por WhatsApp.
 ---
 
-Cerramos el año aprendiendo juntos. Las **III Jornadas Navideñas ABTCC** reúnen a especialistas de Bolivia, México, Colombia y Alemania alrededor de un mismo tema: los aportes de las terapias cognitivas, conductuales y contextuales al bienestar emocional de infancias y adolescentes.
+Cerramos el año aprendiendo juntos. Las **III Jornadas Navideñas ABTCC** reúnen a especialistas de Bolivia, México, Colombia y Alemania alrededor de un mismo tema: los aportes de las terapias cognitivas conductuales y contextuales al bienestar emocional de infancias y adolescentes.
 
 El **viernes 4** abrimos con un taller pensado para quienes trabajan con adolescentes y jóvenes: una introducción a **DNA-V**. El **sábado 5** siguen ocho conferencias sobre regulación emocional, ACT, DBT-C, mindfulness, habilidades para adolescentes y bienestar psicológico, con propuestas prácticas para aplicar en la clínica y en la escuela.

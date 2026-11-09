@@ -1,7 +1,7 @@
 ---
 titulo: Formación y eventos
 clave: eventos
-descripcion: Congresos, jornadas, seminarios, talleres y cursos de terapias cognitivas, conductuales y contextuales en Bolivia, para profesionales y estudiantes.
+descripcion: Congresos, jornadas, seminarios, talleres y cursos de terapias cognitivas conductuales y contextuales en Bolivia, para profesionales y estudiantes.
 preguntas:
   - pregunta: ¿Cómo me inscribo en un evento?
     respuesta: Entra a la página del evento. Mientras la inscripción esté abierta, ahí encontrarás el botón para inscribirte y los costos de cada categoría.
