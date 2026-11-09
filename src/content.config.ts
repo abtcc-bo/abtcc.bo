@@ -111,6 +111,10 @@ const programa = z
 		z.object({
 			fecha: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Fecha del día: "2026-12-05".'),
 			titulo: z.string(),
+			/** Momento del día ("Noche", "Día completo"), una descripción corta y una nota ("Incluido en la inscripción"). */
+			momento: z.string().optional(),
+			descripcion: z.string().optional(),
+			nota: z.string().optional(),
 			actividades: z.array(
 				z.object({
 					inicio: z.string().regex(HORA, AVISO_HORA),
@@ -134,6 +138,17 @@ const eventosTextos = defineCollection({
 		/** Tema central o lema del evento (una frase). */
 		lema: z.string().optional(),
 		dirigido_a: z.string().optional(),
+		/** Página con programa: título de la presentación (con su parte en cursiva) y temas que se tratan. */
+		presentacion: z.object({ antetitulo: z.string(), titulo: z.string(), cursiva: z.string() }).optional(),
+		temas: z.array(z.string()).default([]),
+		/** Leyendas de las cifras: debajo de "2 días" y de "1 + 8". */
+		cifras: z.object({ dias: z.string(), actividades: z.string() }).optional(),
+		/** Título del bloque que presenta cada día ("Dos días, dos formatos"). */
+		titulo_formatos: z.string().optional(),
+		/** Qué incluye la inscripción: una frase y la lista que va en cada entrada. */
+		incluye: z.object({ texto: z.string(), lista: z.array(z.string()) }).optional(),
+		/** Título de la banda final (con su parte en cursiva). */
+		cierre: z.object({ titulo: z.string(), cursiva: z.string() }).optional(),
 		programa,
 		preguntas: z.array(pregunta).default([]),
 	}),
@@ -195,6 +210,32 @@ const personas = defineCollection({
 			/** Orden de aparición (menor primero). */
 			orden: z.number().default(100),
 			textos: z.object({ es: textoPersona, en: textoPersona.optional(), pt: textoPersona.optional() }),
+		}),
+});
+
+/**
+ * Páginas amigas y aliados: `src/content/aliados/nombre.yaml`, con su logo (o foto) en `aliados/logos/`.
+ * `tipo`: institucion (instituciones y proyectos) o profesional. `persona`: su ficha, si integra la comisión.
+ * Teléfonos tal como se escriben en Bolivia ("71402980", "3 3222080"); el enlace agrega el +591.
+ */
+const aliados = defineCollection({
+	loader: glob({ pattern: '*.yaml', base: './src/content/aliados', generateId: sinExtension }),
+	schema: ({ image }) =>
+		z.object({
+			nombre: z.string(),
+			tipo: z.enum(['institucion', 'profesional']),
+			imagen: image(),
+			/** true = la imagen es una foto (se recorta en círculo); si no, un logo que se muestra completo. */
+			imagen_es_foto: z.boolean().default(false),
+			descripcion: z.object({ es: z.string(), en: z.string().optional(), pt: z.string().optional() }),
+			ciudad: z.string().optional(),
+			direccion: z.string().optional(),
+			telefonos: z.array(z.string()).default([]),
+			enlaces: z
+				.object({ instagram: z.url().optional(), facebook: z.url().optional(), web: z.url().optional() })
+				.default({}),
+			persona: reference('personas').optional(),
+			orden: z.number().default(100),
 		}),
 });
 
@@ -278,4 +319,4 @@ const paginas = defineCollection({
 		}),
 });
 
-export const collections = { eventos, eventosTextos, blog, personas, paginas };
+export const collections = { eventos, eventosTextos, blog, personas, paginas, aliados };

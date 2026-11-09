@@ -16,6 +16,7 @@
 		"nosotros": "About us",
 		"comision": "Board",
 		"transparencia": "Bylaws and ethics",
+		"aliados": "Friends and partners",
 		"eventos": "Training and events",
 		"membresia": "Membership",
 		"blog": "Blog",
@@ -158,7 +159,27 @@
 		"costoHasta": "until {fecha}",
 		"costoDesde": "from {fecha}",
 		"reservaTitulo": "Save your spot",
-		"inscripcionesAbiertas": "Registration is open"
+		"inscripcionesAbiertas": "Registration is open",
+		"faltanInicio": "Time left to start",
+		"precioAnticipado": "Early-bird price",
+		"reservar": "Save my spot",
+		"agendaTitulo": "The schedule,",
+		"agendaCursiva": "hour by hour",
+		"ponentesTitulo": "Who",
+		"ponentesCursiva": "joins us",
+		"especialistasDe": "Specialists from {paises}.",
+		"ponentesDe": "Speakers from {paises}",
+		"verHorario": "See the full schedule",
+		"inversionTitulo": "Choose your",
+		"inversionCursiva": "ticket",
+		"dudas": "Questions",
+		"otraDuda": "Any other question? Write to us and we will answer.",
+		"escribirWhatsapp": "Write on WhatsApp",
+		"anadirCalendario": "Add to my calendar",
+		"appleOutlook": "Apple / Outlook (.ics)",
+		"conferenciaN": "Talk {n}",
+		"tuHora": "Your time:",
+		"entradaInternacional": "International"
 	},
 	"contacto": {
 		"correo": "Email",
@@ -231,7 +252,9 @@
 		"segundos": "sec",
 		"faltanMeses": "About {n} months to go",
 		"menosDeUnMes": "Less than a month to go",
-		"verEvento": "See the event"
+		"verEvento": "See the event",
+		"desde": "From",
+		"anticipado": "early-bird price"
 	},
 	"cabeceras": {
 		"nosotros": {
@@ -245,6 +268,10 @@
 		"transparencia": {
 			"antetitulo": "The association",
 			"entradilla": ""
+		},
+		"aliados": {
+			"antetitulo": "Collaboration network",
+			"entradilla": "Institutions, projects and professionals who share our commitment to evidence-based therapies."
 		},
 		"eventos": {
 			"antetitulo": "Academic agenda",
@@ -346,7 +373,6 @@
 		"verRequisitos": "See requirements and process",
 		"cuota": "Annual fee: the equivalent in bolivianos of {monto} {unidad}",
 		"exentos": "Honorary members exempt",
-		"logoAlapcco": "[ALAPCCO logo pending]",
 		"conceptos": "Concepts from behavioral science"
 	},
 	"preguntas": {
@@ -383,5 +409,19 @@
 		"mientras": "In the meantime, we invite you to explore our events and join the community.",
 		"verEventos": "See training and events",
 		"serMiembro": "I want to become a member"
+	},
+	"aliados": {
+		"antetitulo": "Friends",
+		"titulo": "ABTCC partners",
+		"texto": "Institutions, projects and professionals who share our commitment to evidence-based therapies.",
+		"verTodos": "Meet our partners",
+		"instituciones": "Institutions and projects",
+		"profesionales": "Professionals",
+		"telefono": "Phone",
+		"direccion": "Address",
+		"verFicha": "Member of the Board"
+	},
+	"anuncio": {
+		"abiertas": "Registration open"
 	}
 }

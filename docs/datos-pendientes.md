@@ -71,7 +71,8 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 
 ## Rediseño (portada y Quiénes somos)
 
-- [ ] Logo de ALAPCCO (para la sección "Red internacional" de la portada)
+- [x] Logo de ALAPCCO ✔ (tomado de alapcco.com, 09/11/2026)
+- [x] ALAPCCO = "Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales" ✔ (confirmado el 09/11/2026; corregido en la web)
 - [ ] Año de fundación de la ABTCC e hitos para la línea de tiempo de "Quiénes somos"
 - [ ] Revisar los textos nuevos de la portada (`src/content/paginas/es/inicio.md`), incluida la lista de conceptos de la cinta animada
 - [ ] Cuando haya envío de correos (boletín): volver a ofrecer en la web la suscripción a los eventos. El calendario (/eventos.ics) y la fuente RSS siguen funcionando, pero ya no se muestran enlaces
@@ -83,3 +84,11 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [ ] **Preguntas frecuentes de Membresía** (`src/content/paginas/es/membresia.md`): revisar las 6 respuestas (salen del estatuto y el reglamento)
 - [ ] **Preguntas frecuentes de Eventos** (`src/content/paginas/es/eventos.md`): condiciones para recibir certificado (p. ej. asistencia mínima) y si se comparten las grabaciones de los eventos en línea
 - [ ] **Blog:** primeros artículos reales. Al publicarlos se borran los dos de ejemplo (`src/content/blog/es/ejemplo-*.md`) y la persona de ejemplo (`ejemplo-presidencia.yaml`)
+
+## Páginas amigas y aliados (noviembre 2026)
+
+- [x] ALAPCCO, Kairos, Instituto Psitec, DBT hecha sencilla, Dr. Guillermo Rivera y Leo Eyzaguirre cargados con logos y redes ✔
+- [x] Psitec: Instituto de Psicología y Tecnología Conductual ✔
+- [ ] DBT hecha sencilla: confirmar la descripción (la escribí a partir del nombre)
+- [ ] Dr. Guillermo Rivera: ¿ciudad y teléfono o web de su consulta para mostrar?
+- [x] Permiso de cada aliado para aparecer con su logo y datos ✔ (confirmado el 09/11/2026)

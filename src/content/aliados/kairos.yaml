@@ -1,0 +1,11 @@
+nombre: Kairos
+tipo: institucion
+imagen: ./logos/kairos.webp
+descripcion:
+  es: Especialistas en Terapia Cognitiva Conductual (TCC), Terapia Racional Emotiva Conductual (TREC) y Terapia Dialéctica Conductual (DBT). Atención a niños, adolescentes, jóvenes y adultos.
+ciudad: Cochabamba
+telefonos: ["71402980", "72254247"]
+enlaces:
+  instagram: https://www.instagram.com/kairos.psicoterapia/
+  facebook: https://www.facebook.com/KAIROScbba
+orden: 1

@@ -1,0 +1,223 @@
+---
+// Páginas amigas y aliados (src/content/aliados/): instituciones y proyectos, y profesionales. Cada tarjeta lleva
+// logo o foto, descripción, ciudad, teléfonos, dirección y redes. Si es de la comisión, enlaza a su ficha.
+import { Image } from 'astro:assets';
+import Icono from '../components/Icono.astro';
+import { obtenerAliados, type Aliado } from '../lib/contenido';
+import { ruta, t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+}
+
+const { idioma } = Astro.props;
+const a = t(idioma).aliados;
+const aliados = await obtenerAliados();
+const grupos = [
+	{ id: 'instituciones', titulo: a.instituciones, lista: aliados.filter((x) => x.data.tipo === 'institucion') },
+	{ id: 'profesionales', titulo: a.profesionales, lista: aliados.filter((x) => x.data.tipo === 'profesional') },
+].filter((g) => g.lista.length > 0);
+
+/** Teléfono boliviano para enlazar: "3 3222080" → "tel:+59133222080". */
+const enlaceTelefono = (numero: string) => `tel:${numero.trim().startsWith('+') ? '' : '+591'}${numero.replace(/[^\d+]/g, '')}`;
+const redes = (aliado: Aliado) =>
+	(['instagram', 'facebook', 'web'] as const).flatMap((red) => {
+		const url = aliado.data.enlaces[red];
+		return url ? [{ red, url, nombre: red === 'web' ? 'Web' : red === 'instagram' ? 'Instagram' : 'Facebook' }] : [];
+	});
+---
+
+{
+	grupos.map((grupo, i) => (
+		<section class:list={['banda', { 'banda-clara': i % 2 === 1 }]} aria-labelledby={`titulo-${grupo.id}`}>
+			<h2 id={`titulo-${grupo.id}`}>{grupo.titulo}</h2>
+			<ul class="aliados">
+				{grupo.lista.map((aliado) => {
+					const { nombre, imagen, imagen_es_foto, descripcion, ciudad, direccion, telefonos, persona } = aliado.data;
+					const texto = descripcion[idioma] ?? descripcion.es;
+					return (
+						<li class="tarjeta" id={aliado.id}>
+							<div class:list={['imagen', { foto: imagen_es_foto }]}>
+								<Image src={imagen} alt={imagen_es_foto ? '' : nombre} widths={[200, 400]} sizes="9rem" />
+							</div>
+							<div class="cuerpo">
+								<h3>{nombre}</h3>
+								{ciudad && (
+									<p class="dato">
+										<Icono nombre="ubicacion" />
+										{ciudad}
+									</p>
+								)}
+								<p class="descripcion" lang={descripcion[idioma] ? undefined : 'es'}>
+									{texto}
+								</p>
+								{direccion && (
+									<p class="dato">
+										<span class="visualmente-oculto">{a.direccion}:</span>
+										<Icono nombre="globo" />
+										{direccion}
+									</p>
+								)}
+								{telefonos.length > 0 && (
+									<p class="dato">
+										<span class="visualmente-oculto">{a.telefono}:</span>
+										<Icono nombre="telefono" />
+										{telefonos.map((numero, j) => (
+											<>
+												{j > 0 && ' · '}
+												<a href={enlaceTelefono(numero)}>{numero}</a>
+											</>
+										))}
+									</p>
+								)}
+								<ul class="redes">
+									{redes(aliado).map((r) => (
+										<li>
+											<a href={r.url} rel="noopener" target="_blank">
+												<Icono nombre={r.red === 'web' ? 'globo' : r.red} />
+												{r.nombre}
+											</a>
+										</li>
+									))}
+								</ul>
+								{persona && (
+									<p class="ficha">
+										<a class="enlace-accion" href={`${ruta('comision', idioma)}#${persona.id}`}>
+											{a.verFicha} <span class="flecha" aria-hidden="true">→</span>
+										</a>
+									</p>
+								)}
+							</div>
+						</li>
+					);
+				})}
+			</ul>
+		</section>
+	))
+}
+
+<style>
+	h2 {
+		margin-top: 0;
+	}
+	.aliados {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(30rem, 100%), 1fr));
+		gap: 1.5rem;
+		margin: 2rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.aliados > li {
+		display: grid;
+		grid-template-columns: 9rem 1fr;
+		gap: 1.5rem;
+		align-items: start;
+		padding: 1.5rem;
+		border-start-start-radius: 2rem;
+		transition:
+			transform 0.3s,
+			box-shadow 0.3s,
+			border-color 0.3s;
+	}
+	.aliados > li:hover {
+		transform: translateY(-3px);
+		border-color: var(--color-acento);
+		box-shadow: var(--sombra);
+	}
+	/* Logos completos sobre blanco; las fotos, en círculo. */
+	.imagen {
+		display: grid;
+		place-items: center;
+		aspect-ratio: 1;
+		overflow: hidden;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		background: #fff;
+	}
+	.imagen img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+	.foto {
+		border-radius: 50%;
+		box-shadow:
+			0 0 0 3px var(--color-tarjeta),
+			0 0 0 4px var(--color-dorado-claro);
+	}
+	.foto img {
+		object-fit: cover;
+	}
+	h3 {
+		margin: 0 0 0.35rem;
+		font-size: 1.6rem;
+	}
+	.cuerpo p {
+		margin: 0;
+	}
+	.cuerpo .descripcion {
+		margin: 0.6rem 0 0.75rem;
+		color: var(--color-texto-suave);
+	}
+	.cuerpo .dato {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.3rem;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+	.dato :global(.icono) {
+		width: 1.1rem;
+		height: 1.1rem;
+	}
+	.redes {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: 1rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.redes a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		min-height: 40px;
+		padding-inline: 0.9rem;
+		border: 1px solid var(--color-division);
+		border-radius: 999px;
+		background: var(--color-tarjeta);
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		text-decoration: none;
+		transition:
+			background-color 0.2s,
+			border-color 0.2s;
+	}
+	.redes a:hover {
+		border-color: var(--color-acento);
+		background: var(--color-acento-suave);
+	}
+	.redes :global(.icono) {
+		width: 1.1rem;
+		height: 1.1rem;
+	}
+	.cuerpo .ficha {
+		margin-top: 1rem;
+	}
+
+	@media (max-width: 36rem) {
+		.aliados > li {
+			grid-template-columns: 1fr;
+		}
+		.imagen {
+			width: 7rem;
+		}
+	}
+</style>

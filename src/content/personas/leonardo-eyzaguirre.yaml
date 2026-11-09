@@ -1,6 +1,8 @@
 nombre: Leonardo Eyzaguirre
 titulo_profesional: MSc. · Psicólogo
 comision: true
+enlaces:
+  instagram: https://www.instagram.com/leo.eyzaguirre/
 orden: 4
 foto: ./fotos/leonardo-eyzaguirre.webp
 textos:

@@ -5,11 +5,13 @@ import type { CollectionEntry } from 'astro:content';
 import BandaEvento from '../components/BandaEvento.astro';
 import CarruselEventos from '../components/CarruselEventos.astro';
 import CintaConceptos from '../components/CintaConceptos.astro';
+import FranjaAliados from '../components/FranjaAliados.astro';
 import FranjaFotos from '../components/FranjaFotos.astro';
 import Icono from '../components/Icono.astro';
 import { Image } from 'astro:assets';
 import logoCompleto from '../assets/logo-completo.png';
 import logoSimbolo from '../assets/logo-simbolo.png';
+import logoAlapcco from '../content/aliados/logos/alapcco.webp';
 import RegistroAcumulativo from '../components/RegistroAcumulativo.astro';
 import TarjetaDestacada from '../components/TarjetaDestacada.astro';
 import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
@@ -30,10 +32,12 @@ const membresia = (await paginaDeSeccion('membresia', idioma))?.data.membresia;
 const eventos = await obtenerEventosPublicos(idioma);
 const proximos = eventos.filter((e) => !yaPaso(e)).slice(0, 6);
 const destacado = proximos.find((e) => e.datos.destacado);
+// Con un evento navideño destacado, la presentación va en crema para que resalte la tarjeta vino del evento.
+const clara = destacado?.datos.tema === 'navidad';
 const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 ---
 
-<section class:list={['portada banda banda-azul', { nieve: esNavidad() }]} aria-labelledby="titulo-portada">
+<section class:list={['portada banda', clara ? 'portada-clara' : 'banda-azul', { nieve: esNavidad() && !clara }]} aria-labelledby="titulo-portada">
 	<RegistroAcumulativo />
 	<div class="presentacion">
 		{p && <p class="antetitulo">{p.antetitulo}</p>}
@@ -72,7 +76,7 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 	</div>
 </section>
 
-{p && <CintaConceptos conceptos={p.conceptos} etiqueta={v.conceptos} />}
+{p && <CintaConceptos conceptos={p.conceptos} etiqueta={v.conceptos} oscura={clara} />}
 
 {destacado && destacado.texto.data.programa.length > 0 && <BandaEvento evento={destacado} idioma={idioma} />}
 
@@ -221,11 +225,15 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 				<div class="logo-caja tarjeta">
 					<Image src={logoSimbolo} alt={textos.sitio.sigla} widths={[200, 400]} sizes="10rem" />
 				</div>
-				<div class="logo-caja tarjeta pendiente">{v.logoAlapcco}</div>
+				<a class="logo-caja tarjeta" href="https://alapcco.com/" rel="noopener">
+					<Image src={logoAlapcco} alt="ALAPCCO" widths={[200, 400]} sizes="10rem" />
+				</a>
 			</div>
 		</section>
 	)
 }
+
+<FranjaAliados idioma={idioma} />
 
 <style>
 	/* ---------- Presentación ---------- */
@@ -246,6 +254,42 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		margin: 1.25rem 0 1.5rem;
 		font-size: clamp(2.8rem, 1.6rem + 4.4vw, 4.6rem);
 		line-height: 1.04;
+	}
+	/* Presentación clara (Navidad): textos oscuros, "Contextuales" en verde y puntos de colores. */
+	.portada-clara {
+		position: relative;
+	}
+	.portada-clara .previo {
+		font-style: normal;
+		color: var(--color-texto-suave);
+	}
+	.portada-clara .cursiva {
+		color: var(--color-acento);
+	}
+	.portada-clara .bajada {
+		color: var(--color-texto-suave);
+	}
+	.portada-clara .datos {
+		border-top-color: var(--color-division);
+		color: var(--color-texto-suave);
+	}
+	.portada-clara .datos li:nth-child(odd)::before {
+		background: var(--logo-rojo);
+	}
+	.portada-clara .datos li:nth-child(even)::before {
+		background: var(--logo-verde);
+	}
+	.portada-clara::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-image:
+			radial-gradient(circle at 20% 30%, rgb(214 168 60 / 0.6) 0 1.6px, transparent 2.2px),
+			radial-gradient(circle at 75% 65%, rgb(200 32 42 / 0.45) 0 1.4px, transparent 2px);
+		background-size:
+			260px 260px,
+			340px 340px;
 	}
 	.previo {
 		display: block;
@@ -545,16 +589,6 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 	.logo-caja img {
 		width: 9rem;
 		height: auto;
-	}
-	.pendiente {
-		border-style: dashed;
-		font-size: 0.75rem;
-		font-weight: 600;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		font-family: var(--fuente-interfaz);
-		text-align: center;
-		color: var(--color-texto-suave);
 	}
 
 	@media (max-width: 56rem) {

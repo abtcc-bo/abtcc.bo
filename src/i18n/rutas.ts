@@ -11,6 +11,7 @@ export const SECCIONES = {
 	nosotros: { es: 'nosotros', en: 'about', pt: 'sobre' },
 	comision: { es: 'nosotros/comision-directiva', en: 'about/board', pt: 'sobre/diretoria' },
 	transparencia: { es: 'nosotros/transparencia', en: 'about/transparency', pt: 'sobre/transparencia' },
+	aliados: { es: 'nosotros/aliados', en: 'about/partners', pt: 'sobre/parceiros' },
 	eventos: { es: 'eventos', en: 'events', pt: 'eventos' },
 	membresia: { es: 'membresia', en: 'membership', pt: 'filiacao' },
 	blog: { es: 'blog', en: 'blog', pt: 'blog' },
@@ -27,6 +28,7 @@ export type Seccion = keyof typeof SECCIONES;
 export const PADRES: Partial<Record<Seccion, Seccion>> = {
 	comision: 'nosotros',
 	transparencia: 'nosotros',
+	aliados: 'nosotros',
 };
 
 /** Subsecciones de una sección según PADRES (p. ej. nosotros → comisión, transparencia). Forman su submenú. */

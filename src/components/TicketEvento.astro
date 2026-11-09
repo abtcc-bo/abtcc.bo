@@ -1,0 +1,280 @@
+---
+// Tarjeta tipo entrada (con moño dorado) de la cabecera de un evento navideño: cuenta regresiva, días y horarios de
+// cada jornada, precio vigente destacado, los demás precios y el botón para reservar. Diseño "III Jornadas
+// Navideñas — rediseño".
+import { LOCALE_INTL, ZONA_HORARIA, formatearMes, t, type Idioma } from '../i18n';
+import { costoVigente, horasDelDia, isoBolivia, nombreDelDia, textoCosto } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+}
+
+const { evento, idioma } = Astro.props;
+const textos = t(idioma);
+const ev = textos.eventos;
+const d = textos.destacado;
+const { datos } = evento;
+const { programa } = evento.texto.data;
+
+const restanteMs = Math.max(0, datos.inicio.getTime() - Date.now());
+const DIA = 86_400_000;
+const partes = [
+	{ clave: 'dias', valor: Math.floor(restanteMs / DIA), nombre: d.dias },
+	{ clave: 'horas', valor: Math.floor((restanteMs % DIA) / 3_600_000), nombre: d.horas },
+	{ clave: 'minutos', valor: Math.floor((restanteMs % 3_600_000) / 60_000), nombre: d.minutos },
+	{ clave: 'segundos', valor: Math.floor((restanteMs % 60_000) / 1000), nombre: d.segundos },
+];
+// "4–5" y "diciembre de 2026".
+const dia = (fecha: Date) => new Intl.DateTimeFormat(LOCALE_INTL[idioma], { timeZone: ZONA_HORARIA, day: 'numeric' }).format(fecha);
+const dias = datos.fin && dia(datos.fin) !== dia(datos.inicio) ? `${dia(datos.inicio)}–${dia(datos.fin)}` : dia(datos.inicio);
+const mes = formatearMes(datos.fin ?? datos.inicio, idioma);
+// El precio vigente más bajo, destacado; los demás, en una línea debajo (se ocultan solos al vencer).
+const precios = datos.costos.filter((c) => costoVigente(c));
+const [principal, ...otros] = precios;
+---
+
+<div class="ticket">
+	<svg class="lazo" viewBox="0 0 120 56" aria-hidden="true" focusable="false">
+		<path d="M60 26C44 6 18 2 14 16s16 24 46 10z" />
+		<path d="M60 26C76 6 102 2 106 16s-16 24-46 10z" />
+		<path d="M56 28l-14 26 10-3 6 5 4-26z" />
+		<path d="M64 28l14 26-10-3-6 5-4-26z" />
+		<rect x="52" y="18" width="16" height="16" rx="5" />
+	</svg>
+	<p class="rotulo">{ev.faltanInicio}</p>
+	<div class="reloj" data-cuenta-regresiva data-inicio={datos.inicio.toISOString()}>
+		<ul role="timer" aria-live="off">
+			{
+				partes.map((p) => (
+					<li>
+						<span class="numero" data-parte={p.clave}>
+							{String(p.valor).padStart(2, '0')}
+						</span>
+						<span class="unidad">{p.nombre}</span>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+	<div class="corte" aria-hidden="true"></div>
+	<div class="cuando">
+		<p class="dias">{dias}</p>
+		<div>
+			<p class="mes">{mes}</p>
+			{
+				programa.map((jornada) => (
+					<p class="sesion">
+						{nombreDelDia(jornada, idioma, true)} {horasDelDia(jornada)} · {jornada.titulo}
+					</p>
+				))
+			}
+			<p class="hora-local" data-hora-local data-inicio={isoBolivia(datos.inicio)} hidden>
+				{ev.tuHora} <span data-valor></span>
+			</p>
+		</div>
+	</div>
+	{
+		principal && (
+			<p class="precio" data-hasta={principal.hasta?.toISOString()}>
+				<span>
+					{principal.hasta && <strong>{ev.precioAnticipado}</strong>}
+					{textoCosto(principal, idioma).leyenda}
+				</span>
+				<span class="monto">{textoCosto(principal, idioma).monto}</span>
+			</p>
+		)
+	}
+	{otros.length > 0 && <p class="otros">{otros.map((c) => `${textoCosto(c, idioma).leyenda} ${textoCosto(c, idioma).monto}`).join(' · ')}</p>}
+	{
+		datos.inscripcion && (
+			<a class="reservar" href={datos.inscripcion.url} rel="noopener">
+				{ev.reservar} <span class="flecha" aria-hidden="true">→</span>
+			</a>
+		)
+	}
+</div>
+
+<script>
+	// Cuenta regresiva en vivo hasta el inicio del evento.
+	for (const reloj of document.querySelectorAll<HTMLElement>('.ticket [data-cuenta-regresiva]')) {
+		const inicio = Date.parse(reloj.dataset.inicio!);
+		const campo = (clave: string) => reloj.querySelector<HTMLElement>(`[data-parte="${clave}"]`)!;
+		const actualizar = () => {
+			const ms = Math.max(0, inicio - Date.now());
+			const valores = {
+				dias: Math.floor(ms / 86_400_000),
+				horas: Math.floor((ms % 86_400_000) / 3_600_000),
+				minutos: Math.floor((ms % 3_600_000) / 60_000),
+				segundos: Math.floor((ms % 60_000) / 1000),
+			};
+			for (const [clave, valor] of Object.entries(valores)) campo(clave).textContent = String(valor).padStart(2, '0');
+			if (ms === 0) clearInterval(intervalo);
+		};
+		const intervalo = setInterval(actualizar, 1000);
+		actualizar();
+	}
+</script>
+
+<style>
+	.ticket {
+		position: relative;
+		padding: 2.25rem 1.5rem 1.5rem;
+		border-radius: 1rem;
+		border-top: 6px solid var(--color-dorado-claro);
+		background: #fffdf8;
+		box-shadow: 0 30px 60px rgb(40 0 10 / 0.35);
+		color: var(--color-texto);
+	}
+	.lazo {
+		position: absolute;
+		top: -1.9rem;
+		left: 50%;
+		width: 4.5rem;
+		translate: -50% 0;
+		fill: var(--color-dorado-claro);
+		filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.2));
+	}
+	p {
+		margin: 0;
+	}
+	.rotulo {
+		text-align: center;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--color-dorado);
+	}
+	.reloj ul {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.5rem;
+		margin: 0.75rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.reloj li {
+		display: grid;
+		justify-items: center;
+		padding: 0.5rem 0.25rem;
+		border-radius: 0.6rem;
+		background: #f3eee3;
+	}
+	.numero {
+		font-family: var(--fuente-titulos);
+		font-size: 1.9rem;
+		font-weight: 600;
+		line-height: 1.1;
+		color: #8a1a2c;
+		font-variant-numeric: tabular-nums;
+	}
+	.unidad {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.6875rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-texto-suave);
+	}
+	/* Línea punteada con dos muescas, como el corte de una entrada. */
+	.corte {
+		position: relative;
+		margin: 1.25rem -1.5rem;
+		border-top: 2px dashed #e2d7c3;
+	}
+	.corte::before,
+	.corte::after {
+		content: '';
+		position: absolute;
+		top: -0.65rem;
+		width: 1.2rem;
+		height: 1.2rem;
+		border-radius: 50%;
+		background: #6d1424;
+	}
+	.corte::before {
+		left: -0.6rem;
+	}
+	.corte::after {
+		right: -0.6rem;
+	}
+	.cuando {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+	.dias {
+		font-family: var(--fuente-titulos);
+		font-size: clamp(2.4rem, 1.8rem + 2vw, 3.2rem);
+		white-space: nowrap;
+		font-weight: 600;
+		line-height: 1;
+		color: #8a1a2c;
+	}
+	.mes {
+		font-family: var(--fuente-interfaz);
+		font-weight: 600;
+		color: var(--color-titulos);
+	}
+	.sesion,
+	.hora-local {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--color-texto-suave);
+	}
+	.precio {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-top: 1.25rem;
+		padding: 0.9rem 1rem;
+		border-radius: 0.6rem;
+		background: #e5f1e9;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--color-texto);
+	}
+	.precio strong {
+		display: block;
+		font-size: 0.75rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-acento);
+	}
+	.monto {
+		font-family: var(--fuente-titulos);
+		font-size: 1.9rem;
+		font-weight: 600;
+		white-space: nowrap;
+		color: var(--color-acento);
+	}
+	.otros {
+		margin-top: 0.6rem;
+		text-align: center;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--color-texto-suave);
+	}
+	.reservar {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		min-height: 48px;
+		margin-top: 1.25rem;
+		border-radius: 999px;
+		background: #8a1a2c;
+		font-family: var(--fuente-interfaz);
+		font-weight: 600;
+		color: #fff;
+		text-decoration: none;
+		transition: background-color 0.2s;
+	}
+	.reservar:hover {
+		background: #6d1424;
+		color: #fff;
+	}
+</style>

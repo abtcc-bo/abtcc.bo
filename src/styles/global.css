@@ -625,3 +625,8 @@ a:hover .flecha {
 			0 320px;
 	}
 }
+
+/* Cabecera de un evento navideño: espacio arriba para la guirnalda (Guirnalda.astro). */
+.cabecera-pagina.tema-navidad {
+	padding-top: clamp(7.5rem, 13vw, 9.5rem);
+}

@@ -7,12 +7,14 @@ interface Props {
 	conceptos: string[];
 	/** Nombre de la lista para lectores de pantalla. */
 	etiqueta: string;
+	/** Azul noche con puntos de colores y letra de interfaz (portada clara de Navidad); si no, verde. */
+	oscura?: boolean;
 }
 
-const { conceptos, etiqueta } = Astro.props;
+const { conceptos, etiqueta, oscura = false } = Astro.props;
 ---
 
-<div class="cinta-conceptos" role="region" aria-label={etiqueta}>
+<div class:list={['cinta-conceptos', { oscura }]} role="region" aria-label={etiqueta}>
 	<div class="pista">
 		<ul>
 			{conceptos.map((c) => <li>{c}</li>)}
@@ -63,6 +65,20 @@ const { conceptos, etiqueta } = Astro.props;
 		margin-inline: 1.75rem;
 		border-radius: 50%;
 		background: var(--color-dorado-claro);
+	}
+	.oscura {
+		background: var(--color-oscuro);
+	}
+	.oscura li {
+		font-family: var(--fuente-interfaz);
+		font-size: 1rem;
+		font-style: normal;
+	}
+	.oscura li:nth-child(3n + 1)::after {
+		background: var(--logo-verde);
+	}
+	.oscura li:nth-child(3n + 2)::after {
+		background: var(--logo-rojo);
 	}
 	@keyframes pasar {
 		to {

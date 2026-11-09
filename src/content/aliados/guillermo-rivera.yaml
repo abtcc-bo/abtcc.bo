@@ -1,0 +1,11 @@
+nombre: Dr. Guillermo Rivera
+tipo: profesional
+imagen: ./logos/guillermo-rivera.webp
+imagen_es_foto: true
+descripcion:
+  es: Médico psiquiatra y psicoterapeuta. Psiquiatría integral.
+enlaces:
+  instagram: https://www.instagram.com/guillermorivera_psiquiatra/
+  facebook: https://www.facebook.com/suertudisimo
+persona: guillermo-rivera
+orden: 1

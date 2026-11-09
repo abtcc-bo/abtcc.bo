@@ -1,11 +1,13 @@
 ---
-// Programa de un evento (campo `programa` del texto del evento): un bloque por día con sus actividades, horas de
-// Bolivia, ponentes y país. Las pausas (descanso, almuerzo) van en una línea discreta. Con `tema: navidad`, cada
-// actividad es una tarjeta con acento vino y el día lleva las tres esferas del logo.
+// Programa de un evento (campo `programa` del texto del evento), como línea de tiempo: cada día abre con una esfera
+// con su número; cada actividad tiene su hora a la izquierda, un punto de color sobre la línea y una tarjeta con el
+// tipo ("Conferencia 3"), el título, el retrato de quien expone y su país. Las pausas van en una línea discreta.
+// Diseño "III Jornadas Navideñas — rediseño".
 import BanderaPais from './BanderaPais.astro';
+import Icono from './Icono.astro';
 import RetratoPonente from './RetratoPonente.astro';
-import { formatearFecha, t, type Idioma } from '../i18n';
-import { fechaDelDia, type Actividad } from '../lib/eventos';
+import { LOCALE_INTL, ZONA_HORARIA, formato, t, type Idioma } from '../i18n';
+import { fechaDelDia, horasDelDia, nombreDelDia, type Actividad } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
 
 interface Props {
@@ -16,43 +18,66 @@ interface Props {
 const { evento, idioma } = Astro.props;
 const ev = t(idioma).eventos;
 const dias = evento.texto.data.programa;
-// "Viernes, 4 de diciembre" (con mayúscula inicial: en español el día viene en minúscula).
-const nombreDia = (fecha: string) => {
-	const texto = formatearFecha(fechaDelDia(fecha), idioma, { weekday: 'long', day: 'numeric', month: 'long' });
-	return texto.charAt(0).toUpperCase() + texto.slice(1);
-};
-const conPonente = (a: Actividad) => a.tipo !== 'pausa';
-const navidad = evento.datos.tema === 'navidad';
+const COLORES = ['rojo', 'amarillo', 'verde'] as const;
+const numeroDia = (fecha: string) => new Intl.DateTimeFormat(LOCALE_INTL[idioma], { timeZone: ZONA_HORARIA, day: 'numeric' }).format(fechaDelDia(fecha));
+
+// Numera las conferencias en orden ("Conferencia 1", "Conferencia 2"...) y reparte colores entre las actividades.
+let conferencia = 0;
+let color = 0;
+const filas = dias.map((dia) =>
+	dia.actividades.map((a: Actividad) => {
+		if (a.tipo === 'pausa') return { a, color: undefined, rotulo: undefined };
+		const rotulo = a.tipo === 'conferencia' ? formato(ev.conferenciaN, { n: ++conferencia }) : ev.tiposActividad[a.tipo];
+		return { a, color: COLORES[color++ % 3], rotulo };
+	}),
+);
 ---
 
-<section id="programa" class:list={['programa', { navidad }]} aria-labelledby="titulo-programa">
+<section id="programa" class="programa" aria-labelledby="titulo-programa">
 	<p class="antetitulo">{ev.programa}</p>
-	<h2 id="titulo-programa">{evento.texto.data.titulo}</h2>
-	<p class="nota">{ev.horasBolivia}</p>
+	<h2 id="titulo-programa">{ev.agendaTitulo} <em>{ev.agendaCursiva}</em></h2>
+	<p class="nota">
+		<Icono nombre="reloj" />
+		{ev.horasBolivia}
+	</p>
 
 	{
-		dias.map((dia) => (
+		dias.map((dia, i) => (
 			<div class="dia">
 				<h3>
-					<span class="nombre-dia">
-						{navidad && <span class="puntos-dia" aria-hidden="true" />}
-						{nombreDia(dia.fecha)}
+					<span class:list={['numero', i % 2 === 0 ? 'esfera-roja' : 'esfera-verde']} aria-hidden="true">
+						{numeroDia(dia.fecha)}
 					</span>
-					<span class="titulo-dia">{dia.titulo}</span>
+					<span>
+						{nombreDelDia(dia, idioma)}
+						<small>
+							{dia.titulo} · {horasDelDia(dia)}
+						</small>
+					</span>
 				</h3>
 				<ol>
-					{dia.actividades.map((a) =>
-						conPonente(a) ? (
-							<li class:list={['actividad', a.tipo]}>
+					{filas[i].map(({ a, color, rotulo }) =>
+						a.tipo === 'pausa' ? (
+							<li class="pausa">
 								<p class="hora">
-									<time>{a.inicio}</time>–<time>{a.fin}</time>
+									{a.inicio} – {a.fin}
 								</p>
-								<div class="detalle">
-									{a.tipo !== 'conferencia' && <p class="tipo">{ev.tiposActividad[a.tipo]}</p>}
+								<p class="texto-pausa">
+									<Icono nombre="cafe" />
+									{a.titulo ?? ev.tiposActividad.pausa}
+								</p>
+							</li>
+						) : (
+							<li class:list={['actividad', `punto-${color}`]}>
+								<p class="hora">
+									{a.inicio} – {a.fin}
+								</p>
+								<div class="tarjeta-actividad">
+									<p class:list={['rotulo', `rotulo-${color}`]}>{rotulo}</p>
 									{a.titulo && <p class="titulo">{a.titulo}</p>}
 									{a.ponente && (
 										<p class="ponente">
-											<RetratoPonente actividad={a} tamano="mediano" />
+											<RetratoPonente actividad={a} tamano="mediano" color={color} />
 											<span>
 												<strong>{a.ponente}</strong>
 												{a.pais && <BanderaPais codigo={a.pais} idioma={idioma} />}
@@ -60,13 +85,6 @@ const navidad = evento.datos.tema === 'navidad';
 										</p>
 									)}
 								</div>
-							</li>
-						) : (
-							<li class="pausa">
-								<p class="hora">
-									<time>{a.inicio}</time>–<time>{a.fin}</time>
-								</p>
-								<p>{a.titulo ?? ev.tiposActividad.pausa}</p>
 							</li>
 						),
 					)}
@@ -77,165 +95,222 @@ const navidad = evento.datos.tema === 'navidad';
 </section>
 
 <style>
-	.programa h2 {
-		margin-top: 0.75rem;
+	.programa {
+		max-width: 56rem;
+		margin-inline: auto;
+	}
+	h2 {
+		margin: 0.75rem 0 1rem;
+	}
+	h2 em {
+		color: #8a1a2c;
 	}
 	.nota {
-		margin: 0 0 2rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 0 0 2.5rem;
+		padding: 0.4rem 1rem;
+		border-radius: 999px;
+		background: #efe9dc;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
 		color: var(--color-texto-suave);
 	}
-	.dia + .dia {
-		margin-top: 2.5rem;
+	.nota :global(.icono) {
+		width: 1.1rem;
+		height: 1.1rem;
 	}
-	/* Encabezado del día: cinta de color con el nombre del día y el tipo de jornada. */
+	.dia + .dia {
+		margin-top: 3rem;
+	}
+	/* Encabezado del día: esfera con el número del día, nombre del día y horario. */
 	h3 {
 		display: flex;
-		flex-wrap: wrap;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 0.25rem 1rem;
-		margin: 0 0 0.75rem;
-		padding: 0.9rem 1.5rem;
-		border-radius: 999px;
-		background: var(--color-oscuro);
-		font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.75rem);
-		color: #fff;
+		align-items: center;
+		gap: 1rem;
+		margin: 0 0 1.5rem;
+		font-size: clamp(1.5rem, 1.25rem + 0.9vw, 1.9rem);
 	}
-	.titulo-dia {
+	h3 small {
+		display: block;
 		font-family: var(--fuente-interfaz);
-		font-size: 0.8125rem;
+		font-size: 0.875rem;
+		font-weight: 400;
+		color: var(--color-texto-suave);
+	}
+	.numero {
+		position: relative;
+		display: grid;
+		flex-shrink: 0;
+		place-items: center;
+		width: 3.25rem;
+		height: 3.25rem;
+		border-radius: 50%;
+		font-size: 1.5rem;
 		font-weight: 600;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		color: var(--color-dorado-claro);
+		color: #fff;
+		box-shadow: inset 0 -5px 10px rgb(0 0 0 / 0.2);
+	}
+	/* Tapa dorada de la esfera. */
+	.numero::before {
+		content: '';
+		position: absolute;
+		top: -0.35rem;
+		width: 0.8rem;
+		height: 0.45rem;
+		border-radius: 2px;
+		background: var(--color-dorado-claro);
+	}
+	.esfera-roja {
+		background: radial-gradient(circle at 35% 30%, #ff8a8a, #e3151b 50%, #8f0b10);
+	}
+	.esfera-verde {
+		background: radial-gradient(circle at 35% 30%, #7ad99a, #0c9439 50%, #04551c);
 	}
 	ol {
+		position: relative;
 		margin: 0;
 		padding: 0;
 		list-style: none;
 	}
+	/* La línea de tiempo pasa entre la hora y las tarjetas. */
+	ol::before {
+		content: '';
+		position: absolute;
+		top: 0.5rem;
+		bottom: 0.5rem;
+		left: 9.6rem;
+		width: 1px;
+		background: #ddd3c0;
+	}
 	li {
+		position: relative;
 		display: grid;
-		grid-template-columns: 9rem 1fr;
-		gap: 0.25rem 1.75rem;
-		padding: 1.4rem 1.5rem;
-		border-bottom: 1px solid var(--color-division);
+		grid-template-columns: 8.5rem 1fr;
+		gap: 2.5rem;
+		align-items: start;
+	}
+	li + li {
+		margin-top: 0.85rem;
 	}
 	li p {
 		margin: 0;
 	}
+	/* Punto de color sobre la línea. */
+	li::before {
+		content: '';
+		position: absolute;
+		top: 0.45rem;
+		left: calc(9.6rem - 0.4rem);
+		width: 0.8rem;
+		height: 0.8rem;
+		border-radius: 50%;
+		background: #d9cfba;
+	}
+	.punto-rojo::before {
+		background: #c8202a;
+	}
+	.punto-amarillo::before {
+		background: #e8b40c;
+	}
+	.punto-verde::before {
+		background: #0c9439;
+	}
 	.hora {
+		padding-top: 0.15rem;
 		font-family: var(--fuente-interfaz);
-		font-size: 1.05rem;
+		font-size: 0.9375rem;
 		font-weight: 600;
 		font-variant-numeric: tabular-nums;
-		color: var(--color-acento);
+		color: var(--color-titulos);
 	}
-	.tipo {
-		margin-bottom: 0.2rem;
+	.tarjeta-actividad {
+		padding: 1.15rem 1.4rem;
+		border: 1px solid #ece4d3;
+		border-radius: 0.85rem;
+		background: #fffdf8;
+		transition:
+			box-shadow 0.3s,
+			transform 0.3s;
+	}
+	.tarjeta-actividad:hover {
+		transform: translateY(-2px);
+		box-shadow: var(--sombra);
+	}
+	.rotulo {
 		font-family: var(--fuente-interfaz);
 		font-size: 0.75rem;
 		font-weight: 600;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--color-dorado);
+	}
+	.rotulo-rojo {
+		color: #b81d26;
+	}
+	.rotulo-amarillo {
+		color: #9a6b00;
+	}
+	.rotulo-verde {
+		color: #0b7a31;
 	}
 	.titulo {
+		margin-top: 0.3rem;
 		font-family: var(--fuente-titulos);
-		font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.65rem);
+		font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem);
 		line-height: 1.3;
 		color: var(--color-titulos);
 	}
 	.ponente {
 		display: flex;
 		align-items: center;
-		gap: 0.9rem;
+		gap: 0.85rem;
 		margin-top: 0.8rem;
-		font-size: 1.05rem;
 	}
 	.ponente > span {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 0.15rem 0.75rem;
+		display: grid;
+		gap: 0.1rem;
+	}
+	.ponente strong {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.9375rem;
+		font-weight: 600;
+		color: var(--color-titulos);
 	}
 	.ponente :global(.pais) {
 		font-family: var(--fuente-interfaz);
-		font-size: 0.875rem;
-		color: var(--color-texto-suave);
-	}
-	/* El taller destaca: fondo cálido y borde dorado. */
-	.taller {
-		border: 1px solid var(--color-dorado-claro);
-		border-radius: var(--radio);
-		background: #fbf3dc;
-	}
-	.bienvenida .titulo,
-	.cierre .titulo {
-		font-size: 1.25rem;
-	}
-	.pausa {
-		padding-block: 0.6rem;
-		background: rgb(255 255 255 / 0.4);
-		font-style: italic;
+		font-size: 0.8125rem;
 		color: var(--color-texto-suave);
 	}
 	.pausa .hora {
+		font-weight: 500;
 		color: var(--color-texto-suave);
-		font-style: normal;
+	}
+	.texto-pausa {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--fuente-titulos);
+		font-style: italic;
+		color: var(--color-texto-suave);
+	}
+	.texto-pausa :global(.icono) {
+		width: 1.1rem;
+		height: 1.1rem;
+		color: var(--color-dorado);
 	}
 
-	/* ---------- Navidad ---------- */
-	.navidad h3 {
-		background: linear-gradient(160deg, #8a1a2c, #561020);
-		box-shadow: 0 8px 20px rgb(86 16 32 / 0.25);
-	}
-	.puntos-dia {
-		display: inline-block;
-		width: 2.6rem;
-		height: 0.8rem;
-		margin-right: 0.6rem;
-		vertical-align: middle;
-		background:
-			radial-gradient(circle at 40% 35%, #ff8a8a 0 0.08rem, #e3151b 0.12rem 0.32rem, transparent 0.34rem) 0 50% / 0.87rem 0.8rem no-repeat,
-			radial-gradient(circle at 40% 35%, #fff2a8 0 0.08rem, #f6c400 0.12rem 0.32rem, transparent 0.34rem) 0.87rem 50% / 0.87rem 0.8rem no-repeat,
-			radial-gradient(circle at 40% 35%, #7ad99a 0 0.08rem, #0c9439 0.12rem 0.32rem, transparent 0.34rem) 1.74rem 50% / 0.87rem 0.8rem no-repeat;
-	}
-	.navidad li {
-		margin-top: 0.75rem;
-		border: 1px solid #ecd9b0;
-		border-left: 4px solid #8a1a2c;
-		border-radius: var(--radio);
-		background: #fffdf8;
-		box-shadow: 0 2px 10px rgb(86 16 32 / 0.06);
-	}
-	.navidad .hora {
-		color: #8a1a2c;
-	}
-	.navidad .taller {
-		border-color: var(--color-dorado-claro);
-		border-left-color: var(--color-dorado-claro);
-		background: linear-gradient(135deg, #fdf3d6, #fffaf0);
-	}
-	.navidad .pausa {
-		border-style: dashed;
-		border-left: 1px dashed #d9b98a;
-		background: transparent;
-		box-shadow: none;
-	}
-	.navidad .pausa > p:last-child::before {
-		content: '✦ ';
-		color: var(--color-dorado-claro);
-		font-style: normal;
-	}
-
-	@media (max-width: 36rem) {
+	@media (max-width: 40rem) {
+		ol::before {
+			left: 0.4rem;
+		}
 		li {
 			grid-template-columns: 1fr;
-			padding-inline: 0.75rem;
+			gap: 0.35rem;
+			padding-left: 1.75rem;
 		}
-		h3 {
-			border-radius: var(--radio);
+		li::before {
+			left: 0;
 		}
 	}
 </style>

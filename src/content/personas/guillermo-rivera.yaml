@@ -1,6 +1,8 @@
 nombre: Guillermo Rivera Arroyo
 titulo_profesional: Ph. D. · Médico psiquiatra
 comision: true
+enlaces:
+  instagram: https://www.instagram.com/guillermorivera_psiquiatra/
 orden: 1
 foto: ./fotos/guillermo-rivera.webp
 textos:

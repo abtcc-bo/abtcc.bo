@@ -89,7 +89,7 @@ portada:
   red:
     antetitulo: Red internacional
     titulo: Grupo de trabajo de ALAPCCO en Bolivia
-    texto: Formamos parte de la Asociación Latinoamericana de Psicoterapias Cognitivas y Conductuales, con la que organizamos el XI SIALAPCCO en Santa Cruz.
+    texto: Formamos parte de la Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales, con la que organizamos el XI SIALAPCCO en Santa Cruz.
 ---
 
 <!-- Los textos de la portada están arriba, en bloques (vista src/vistas/Inicio.astro). -->

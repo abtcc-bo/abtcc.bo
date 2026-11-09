@@ -16,6 +16,7 @@
 		"nosotros": "Quem somos",
 		"comision": "Diretoria",
 		"transparencia": "Estatuto e ética",
+		"aliados": "Páginas amigas e parceiros",
 		"eventos": "Formação e eventos",
 		"membresia": "Filiação",
 		"blog": "Blog",
@@ -158,7 +159,27 @@
 		"costoHasta": "até {fecha}",
 		"costoDesde": "a partir de {fecha}",
 		"reservaTitulo": "Garanta sua vaga",
-		"inscripcionesAbiertas": "As inscrições estão abertas"
+		"inscripcionesAbiertas": "As inscrições estão abertas",
+		"faltanInicio": "Faltam para o início",
+		"precioAnticipado": "Preço antecipado",
+		"reservar": "Garantir minha vaga",
+		"agendaTitulo": "A agenda,",
+		"agendaCursiva": "hora a hora",
+		"ponentesTitulo": "Quem",
+		"ponentesCursiva": "nos acompanha",
+		"especialistasDe": "Especialistas de {paises}.",
+		"ponentesDe": "Palestrantes de {paises}",
+		"verHorario": "Ver a programação completa",
+		"inversionTitulo": "Escolha sua",
+		"inversionCursiva": "inscrição",
+		"dudas": "Dúvidas",
+		"otraDuda": "Ficou com alguma dúvida? Escreva para nós e respondemos.",
+		"escribirWhatsapp": "Escrever pelo WhatsApp",
+		"anadirCalendario": "Adicionar ao meu calendário",
+		"appleOutlook": "Apple / Outlook (.ics)",
+		"conferenciaN": "Palestra {n}",
+		"tuHora": "No seu horário:",
+		"entradaInternacional": "Internacional"
 	},
 	"contacto": {
 		"correo": "E-mail",
@@ -231,7 +252,9 @@
 		"segundos": "seg",
 		"faltanMeses": "Faltam cerca de {n} meses",
 		"menosDeUnMes": "Falta menos de um mês",
-		"verEvento": "Ver o evento"
+		"verEvento": "Ver o evento",
+		"desde": "A partir de",
+		"anticipado": "com preço antecipado"
 	},
 	"cabeceras": {
 		"nosotros": {
@@ -245,6 +268,10 @@
 		"transparencia": {
 			"antetitulo": "A associação",
 			"entradilla": ""
+		},
+		"aliados": {
+			"antetitulo": "Rede de colaboração",
+			"entradilla": "Instituições, projetos e profissionais com quem compartilhamos o compromisso com as terapias baseadas em evidências."
 		},
 		"eventos": {
 			"antetitulo": "Agenda acadêmica",
@@ -346,7 +373,6 @@
 		"verRequisitos": "Ver requisitos e processo",
 		"cuota": "Anuidade: o equivalente em bolivianos a {monto} {unidad}",
 		"exentos": "Honorários isentos",
-		"logoAlapcco": "[Logo da ALAPCCO pendente]",
 		"conceptos": "Conceitos da ciência do comportamento"
 	},
 	"preguntas": {
@@ -383,5 +409,19 @@
 		"mientras": "Enquanto isso, convidamos você a conhecer nossos eventos e fazer parte da comunidade.",
 		"verEventos": "Ver formação e eventos",
 		"serMiembro": "Quero ser membro"
+	},
+	"aliados": {
+		"antetitulo": "Páginas amigas",
+		"titulo": "Parceiros da ABTCC",
+		"texto": "Instituições, projetos e profissionais com quem compartilhamos o compromisso com as terapias baseadas em evidências.",
+		"verTodos": "Conheça nossos parceiros",
+		"instituciones": "Instituições e projetos",
+		"profesionales": "Profissionais",
+		"telefono": "Telefone",
+		"direccion": "Endereço",
+		"verFicha": "Integra a Diretoria"
+	},
+	"anuncio": {
+		"abiertas": "Inscrições abertas"
 	}
 }

@@ -1,0 +1,10 @@
+# Logo tomado de su sitio oficial (alapcco.com).
+nombre: ALAPCCO
+tipo: institucion
+imagen: ./logos/alapcco.webp
+descripcion:
+  es: Federación que reúne a las asociaciones nacionales de psicoterapias cognitivas y conductuales de América Latina, para la divulgación, la formación y la investigación científica. La ABTCC es su grupo de trabajo en Bolivia.
+  pt: Federação que reúne as associações nacionais de psicoterapias cognitivas e comportamentais da América Latina, dedicada à divulgação, ao treinamento e à pesquisa científica. A ABTCC é seu grupo de trabalho na Bolívia.
+enlaces:
+  web: https://alapcco.com/
+orden: 0

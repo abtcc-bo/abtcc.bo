@@ -1,5 +1,5 @@
 // Cálculos sobre eventos que no dependen de la plantilla: horarios, inscripción, calendario y datos para Google.
-import { formatearFecha, formatearHora, formatearMes, formatearMoneda, formatearRangoFechas, formato, ruta, t, type Idioma } from '../i18n';
+import { LOCALE_INTL, formatearFecha, formatearHora, formatearMes, formatearMoneda, formatearRangoFechas, formato, nombrePais, ruta, t, type Idioma } from '../i18n';
 import type { Evento } from './contenido';
 
 /** Bolivia está en UTC−4 todo el año (sin horario de verano). */
@@ -255,4 +255,34 @@ export function textoCosto(costo: Costo, idioma: Idioma): { monto: string; leyen
 	const vigencia = costo.hasta ? formato(ev.costoHasta, { fecha: dia(costo.hasta) }) : costo.desde ? formato(ev.costoDesde, { fecha: dia(costo.desde) }) : '';
 	const leyenda = [costo.categoria !== 'general' || !vigencia ? ev.categorias[costo.categoria] : '', vigencia].filter(Boolean).join(' · ');
 	return { monto, leyenda: leyenda.charAt(0).toUpperCase() + leyenda.slice(1) };
+}
+
+// ---------- Página de evento con programa ----------
+
+export type DiaPrograma = Evento['texto']['data']['programa'][number];
+
+/** "Bolivia, México, Colombia y Alemania". */
+export function listaDePaises(codigos: string[], idioma: Idioma): string {
+	return new Intl.ListFormat(LOCALE_INTL[idioma], { style: 'long', type: 'conjunction' }).format(codigos.map((c) => nombrePais(c, idioma)));
+}
+
+/** Horario de un día del programa: de la primera actividad a la última ("09:00 – 17:20"). */
+export function horasDelDia(dia: DiaPrograma): string {
+	return `${dia.actividades[0].inicio} – ${dia.actividades[dia.actividades.length - 1].fin}`;
+}
+
+/** "Viernes 4 de diciembre" (corto: "Vie") con mayúscula inicial. */
+export function nombreDelDia(dia: DiaPrograma, idioma: Idioma, corto = false): string {
+	const opciones: Intl.DateTimeFormatOptions = corto ? { weekday: 'short' } : { weekday: 'long', day: 'numeric', month: 'long' };
+	const texto = formatearFecha(fechaDelDia(dia.fecha), idioma, opciones).replace(/[.,]/g, '');
+	return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
+/** Etiqueta de una entrada: "Precio anticipado" (con fecha límite), "Internacional" o, junto a una internacional, "Bolivia". */
+export function etiquetaCosto(costo: Costo, costos: Costo[], idioma: Idioma): string {
+	const ev = t(idioma).eventos;
+	if (costo.hasta) return ev.precioAnticipado;
+	if (costo.categoria === 'internacional') return ev.entradaInternacional;
+	if (costo.categoria === 'general' && costos.some((c) => c.categoria === 'internacional')) return nombrePais('bo', idioma);
+	return ev.categorias[costo.categoria];
 }

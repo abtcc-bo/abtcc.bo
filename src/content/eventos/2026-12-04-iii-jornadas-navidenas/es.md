@@ -3,9 +3,26 @@ titulo: III Jornadas Navideñas
 resumen: Dos días para cerrar el año aprendiendo, con especialistas de Bolivia, México, Colombia y Alemania. Un taller y ocho conferencias, 100 % en línea.
 lema: Aportes desde la TCC para el bienestar emocional de infancias y adolescentes
 dirigido_a: Profesionales y estudiantes de psicología y salud mental que trabajan con infancias, adolescentes y jóvenes.
+presentacion:
+  antetitulo: Sobre las jornadas
+  titulo: Cerramos el año
+  cursiva: aprendiendo juntos
+temas: [DNA-V, Regulación emocional, ACT, DBT-C, Mindfulness, Habilidades para adolescentes, Entrenamiento parental, Salud mental escolar]
+cifras:
+  dias: Viernes 4 por la noche y sábado 5 durante el día
+  actividades: Un taller y ocho conferencias, con pausas y almuerzo
+titulo_formatos: Dos días, dos formatos
+incluye:
+  texto: Una sola inscripción incluye el taller del viernes y las ocho conferencias del sábado.
+  lista: [Taller DNA-V del viernes 4, Ocho conferencias del sábado 5, 100 % en línea]
+cierre:
+  titulo: Cierra el año
+  cursiva: aprendiendo con nosotros
 programa:
   - fecha: "2026-12-04"
     titulo: Taller
+    momento: Noche
+    nota: Incluido en la inscripción
     actividades:
       - inicio: "18:30"
         fin: "20:30"
@@ -16,6 +33,8 @@ programa:
         persona: leonardo-eyzaguirre
   - fecha: "2026-12-05"
     titulo: Conferencias
+    momento: Día completo
+    descripcion: Ocho conferencias para aplicar en la clínica y en la escuela, con pausas y almuerzo.
     actividades:
       - inicio: "09:00"
         fin: "09:10"

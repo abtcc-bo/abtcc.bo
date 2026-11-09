@@ -2,11 +2,13 @@
 // Tarjeta del próximo evento destacado (`destacado: true`), con cuenta regresiva.
 //  - `vertical`: en la portada, junto al título. `horizontal`: en Formación y eventos.
 //  - Con fecha exacta: días, horas, minutos y segundos en vivo. Con `por_confirmar`: "Faltan unos N meses".
-//  - Con `tema: navidad`: barra color vino y, si no hay afiche, las esferas del logo colgadas como adornos.
+//  - Con `tema: navidad`: en la portada (vertical), toda la tarjeta en vino con guirnalda, precio anticipado y botón
+//    Inscribirme (diseño "III Jornadas Navideñas — rediseño"); en horizontal, barra vino y esferas colgadas.
 import { Image } from 'astro:assets';
 import AdornoNavidad from './AdornoNavidad.astro';
+import Guirnalda from './Guirnalda.astro';
 import { LOCALE_INTL, ZONA_HORARIA, formato, ruta, t, type Idioma } from '../i18n';
-import { fechaDelEvento } from '../lib/eventos';
+import { costoVigente, fechaDelEvento, inscripcionAbierta, textoCosto } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
 
 interface Props {
@@ -22,6 +24,14 @@ const ev = textos.eventos;
 const { datos } = evento;
 const { titulo, resumen } = evento.texto.data;
 const href = ruta('eventos', idioma, evento.slug);
+// Diseño navideño completo solo en la tarjeta de la portada.
+const vino = datos.tema === 'navidad' && forma === 'vertical';
+const palabras = titulo.trim().split(' ');
+const ultima = palabras.pop();
+// Precio más conveniente vigente con fecha límite: "Desde Bs 120 con precio anticipado hasta el 1 de diciembre".
+const anticipado = datos.costos.find((c) => c.hasta && costoVigente(c));
+const textoAnticipado = anticipado && textoCosto(anticipado, idioma);
+const abierta = inscripcionAbierta(evento) && datos.inscripcion;
 const mesAnio = new Intl.DateTimeFormat(LOCALE_INTL[idioma], { timeZone: ZONA_HORARIA, month: 'long', year: 'numeric' }).format(datos.inicio);
 
 const restanteMs = Math.max(0, datos.inicio.getTime() - Date.now());
@@ -35,7 +45,7 @@ const partes = [
 ];
 ---
 
-<article class:list={['destacada', forma, { navidad: datos.tema === 'navidad' }]} aria-labelledby={`destacado-${forma}`}>
+<article class:list={['destacada', forma, { navidad: datos.tema === 'navidad', vino }]} aria-labelledby={`destacado-${forma}`}>
 	{
 		forma === 'vertical' && (
 			<p class="barra">
@@ -50,10 +60,16 @@ const partes = [
 				<Image src={datos.imagen} alt="" widths={[320, 640]} sizes={forma === 'vertical' ? '20rem' : '(max-width: 48rem) 80vw, 24rem'} loading="eager" />
 			</div>
 		) : (
-			datos.tema === 'navidad' && (
-				<div class="visual adorno">
-					<AdornoNavidad />
+			vino ? (
+				<div class="visual guirnalda-tarjeta">
+					<Guirnalda />
 				</div>
+			) : (
+				datos.tema === 'navidad' && (
+					<div class="visual adorno">
+						<AdornoNavidad />
+					</div>
+				)
 			)
 		)
 	}
@@ -64,7 +80,13 @@ const partes = [
 			{forma === 'horizontal' && <span class="etiqueta etiqueta-dorada">{d.etiqueta}</span>}
 		</p>
 		<h2 id={`destacado-${forma}`}>
-			<a href={href}>{titulo}</a>
+			{vino ? (
+				<a href={href}>
+					{palabras.join(' ')} <span class="cursiva">{ultima}</span>
+				</a>
+			) : (
+				<a href={href}>{titulo}</a>
+			)}
 		</h2>
 		<p class="fecha">
 			{fechaDelEvento(evento, idioma)}
@@ -95,7 +117,21 @@ const partes = [
 			)
 		}
 
+		{
+			vino && textoAnticipado && (
+				<p class="desde">
+					{d.desde} <strong>{textoAnticipado.monto}</strong> {d.anticipado} {textoAnticipado.leyenda.charAt(0).toLowerCase() + textoAnticipado.leyenda.slice(1)}
+				</p>
+			)
+		}
 		<p class="acciones">
+			{
+				vino && abierta && (
+					<a class="boton boton-dorado" href={datos.inscripcion!.url} rel="noopener">
+						{textos.comun.inscribirme}
+					</a>
+				)
+			}
 			<a class:list={forma === 'horizontal' ? 'boton' : 'enlace-accion'} href={href}>
 				{d.verEvento} <span class="flecha" aria-hidden="true">→</span>
 			</a>
@@ -271,6 +307,84 @@ const partes = [
 	}
 	.adorno :global(.adorno-navidad) {
 		max-width: 11rem;
+	}
+
+	/* ---------- Portada en Navidad: tarjeta toda en vino ---------- */
+	.vino {
+		position: relative;
+		border: 0;
+		border-radius: 1.25rem;
+		background:
+			radial-gradient(ellipse at 80% 0%, rgb(235 186 60 / 0.15), transparent 50%),
+			linear-gradient(160deg, #8a1a2c, #561020);
+		color: #f6e3d6;
+	}
+	.vino .barra {
+		background: transparent;
+		border-bottom: 1px solid rgb(255 255 255 / 0.12);
+		color: var(--color-dorado-claro);
+	}
+	.vino .mes-anio {
+		color: #f6e3d6;
+	}
+	.guirnalda-tarjeta {
+		position: relative;
+		height: 6rem;
+		padding: 0;
+		background: transparent;
+	}
+	.guirnalda-tarjeta :global(.guirnalda) {
+		height: 6rem;
+	}
+	.vino .texto {
+		border-top: 0;
+		padding-top: 0.5rem;
+	}
+	.vino .etiqueta {
+		border-color: rgb(255 255 255 / 0.2);
+		background: rgb(255 255 255 / 0.1);
+		color: #fff;
+	}
+	.vino h2 a {
+		color: #fff;
+	}
+	.vino h2 .cursiva {
+		display: block;
+		color: var(--color-dorado-claro);
+	}
+	.vino .fecha {
+		color: #fff;
+	}
+	.vino .resumen {
+		color: #f1dcd2;
+	}
+	.vino .reloj li {
+		border-color: rgb(255 255 255 / 0.15);
+		background: rgb(255 255 255 / 0.08);
+	}
+	.vino .numero {
+		color: #fff;
+	}
+	.vino .unidad {
+		color: #e4c3b2;
+	}
+	.desde {
+		margin: 1rem 0 0;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: #f1dcd2;
+	}
+	.desde strong {
+		color: var(--color-dorado-claro);
+	}
+	.vino .acciones {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1.25rem;
+	}
+	.vino .enlace-accion {
+		color: #fff;
 	}
 
 	/* Forma horizontal: imagen a la izquierda y texto a la derecha. */

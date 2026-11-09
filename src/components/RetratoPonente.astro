@@ -1,6 +1,7 @@
 ---
 // Retrato redondo de quien expone: su foto si tiene ficha en src/content/personas/ (campo `persona` del programa);
-// si no, sus iniciales sobre un círculo de color.
+// si no, sus iniciales. Con `color` (rojo, amarillo, verde), las iniciales van sobre una esfera de ese color y la
+// foto lleva un aro de ese color, como los adornos del diseño navideño.
 import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import type { Actividad } from '../lib/eventos';
@@ -8,9 +9,10 @@ import type { Actividad } from '../lib/eventos';
 interface Props {
 	actividad: Actividad;
 	tamano?: 'chico' | 'mediano' | 'grande';
+	color?: 'rojo' | 'amarillo' | 'verde';
 }
 
-const { actividad, tamano = 'chico' } = Astro.props;
+const { actividad, tamano = 'chico', color } = Astro.props;
 const persona = actividad.persona ? await getEntry(actividad.persona) : undefined;
 const foto = persona?.data.foto;
 // Iniciales sin títulos académicos ("Dra.", "Mgtr.", "MSc."...): primeras letras de nombre y apellido.
@@ -23,9 +25,9 @@ const iniciales = [palabras[0], palabras.length > 2 ? palabras[palabras.length -
 
 {
 	foto ? (
-		<Image src={foto} alt="" width={tamano === 'chico' ? 96 : 192} height={tamano === 'chico' ? 96 : 192} class:list={['retrato', tamano]} />
+		<Image src={foto} alt="" width={tamano === 'chico' ? 96 : 192} height={tamano === 'chico' ? 96 : 192} class:list={['retrato', tamano, color && `aro-${color}`]} />
 	) : (
-		<span class:list={['retrato', 'iniciales', tamano]} aria-hidden="true">
+		<span class:list={['retrato', 'iniciales', tamano, color && `esfera-${color}`]} aria-hidden="true">
 			{iniciales}
 		</span>
 	)
@@ -65,5 +67,46 @@ const iniciales = [palabras[0], palabras.length > 2 ? palabras[palabras.length -
 	}
 	.grande.iniciales {
 		font-size: 1.9rem;
+	}
+	/* Esferas y aros de color (diseño navideño). */
+	.esfera-rojo,
+	.esfera-amarillo,
+	.esfera-verde {
+		font-family: var(--fuente-interfaz);
+		font-style: normal;
+		font-weight: 700;
+		box-shadow: inset 0 -4px 8px rgb(0 0 0 / 0.2);
+	}
+	.grande.esfera-rojo,
+	.grande.esfera-amarillo,
+	.grande.esfera-verde {
+		font-family: var(--fuente-titulos);
+		font-size: 2.2rem;
+		font-weight: 600;
+	}
+	.esfera-rojo {
+		background: radial-gradient(circle at 35% 30%, #ff8a8a, #e3151b 50%, #8f0b10);
+	}
+	.esfera-amarillo {
+		background: radial-gradient(circle at 35% 30%, #fff2a8, #f6c400 50%, #b88600);
+		color: #4a3500;
+	}
+	.esfera-verde {
+		background: radial-gradient(circle at 35% 30%, #7ad99a, #0c9439 50%, #04551c);
+	}
+	.aro-rojo {
+		box-shadow:
+			0 0 0 2px #fff,
+			0 0 0 4px #c8202a;
+	}
+	.aro-amarillo {
+		box-shadow:
+			0 0 0 2px #fff,
+			0 0 0 4px #e8b40c;
+	}
+	.aro-verde {
+		box-shadow:
+			0 0 0 2px #fff,
+			0 0 0 4px #0c9439;
 	}
 </style>

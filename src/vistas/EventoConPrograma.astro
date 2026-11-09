@@ -1,0 +1,993 @@
+---
+// Página de un evento con `programa` (diseño "III Jornadas Navideñas — rediseño"), debajo de su cabecera:
+// cifras (días, actividades, países, a quién se dirige), presentación con temas, un bloque por día ("Dos días, dos
+// formatos"), programa hora a hora, ponentes (como esferas colgadas), entradas con precios, preguntas frecuentes y
+// una banda final para inscribirse, añadir al calendario o compartir.
+import { render } from 'astro:content';
+import BanderaPais from '../components/BanderaPais.astro';
+import Guirnalda from '../components/Guirnalda.astro';
+import Icono from '../components/Icono.astro';
+import ProgramaEvento from '../components/ProgramaEvento.astro';
+import RetratoPonente from '../components/RetratoPonente.astro';
+import { ORGANIZACION } from '../datos/organizacion';
+import { formato, plural, t, type Idioma } from '../i18n';
+import {
+	contactoWhatsapp,
+	costoVigente,
+	enlaceGoogleCalendar,
+	etiquetaCosto,
+	fechaDelEvento,
+	horasDelDia,
+	inscripcionAbierta,
+	listaDePaises,
+	nombreDelDia,
+	resumenDelPrograma,
+	textoCosto,
+	type Actividad,
+	type DiaPrograma,
+} from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+}
+
+const { evento, idioma } = Astro.props;
+const textos = t(idioma);
+const ev = textos.eventos;
+const { datos } = evento;
+const { titulo, dirigido_a, presentacion, temas, cifras, titulo_formatos, incluye, cierre, preguntas, programa } = evento.texto.data;
+const { Content } = await render(evento.texto);
+const r = resumenDelPrograma(evento);
+const paises = listaDePaises(r.paises, idioma);
+const abierta = inscripcionAbierta(evento) && datos.inscripcion;
+const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.mensajeWhatsapp, { evento: titulo }));
+const sitio = Astro.site!;
+const urlPagina = new URL(Astro.url.pathname, sitio).href;
+const compartir = [
+	{ nombre: 'WhatsApp', url: `https://wa.me/?text=${encodeURIComponent(`${titulo} ${urlPagina}`)}` },
+	{ nombre: 'LinkedIn', url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(urlPagina)}` },
+	{ nombre: 'Facebook', url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlPagina)}` },
+];
+
+const COLORES = ['rojo', 'amarillo', 'verde'] as const;
+/** Quienes exponen (taller y conferencias) con el día en que lo hacen. */
+const ponentes = programa.flatMap((dia) =>
+	dia.actividades.filter((a) => (a.tipo === 'taller' || a.tipo === 'conferencia') && a.ponente).map((a) => ({ a, dia })),
+);
+const principales = (dia: DiaPrograma) => dia.actividades.filter((a: Actividad) => a.tipo === 'taller' || a.tipo === 'conferencia');
+/** Luna para las jornadas que empiezan desde las 18:00; sol para las de día. */
+const esNoche = (dia: DiaPrograma) => Number(dia.actividades[0].inicio.slice(0, 2)) >= 18;
+const precios = datos.costos.filter((c) => costoVigente(c));
+---
+
+<section class="banda cifras-evento" aria-label={ev.programa}>
+	<ul class="cifras">
+		<li>
+			<span class="icono-esfera esfera-roja"><Icono nombre="calendario" /></span>
+			<strong>{plural(ev.resumenPrograma.dias, r.dias, idioma)}</strong>
+			{cifras && <span>{cifras.dias}</span>}
+		</li>
+		<li>
+			<span class="icono-esfera esfera-amarilla"><Icono nombre="libro" /></span>
+			<strong>{r.talleres && r.conferencias ? `${r.talleres} + ${r.conferencias}` : plural(ev.resumenPrograma.conferencias, r.conferencias, idioma)}</strong>
+			{cifras && <span>{cifras.actividades}</span>}
+		</li>
+		<li>
+			<span class="icono-esfera esfera-verde"><Icono nombre="globo" /></span>
+			<strong>{plural(ev.resumenPrograma.paises, r.paises.length, idioma)}</strong>
+			<span class="banderas">
+				{r.paises.map((p) => <BanderaPais codigo={p} idioma={idioma} />)}
+			</span>
+		</li>
+		{
+			dirigido_a && (
+				<li class="dirigido">
+					<span class="icono-esfera"><Icono nombre="personas" /></span>
+					<span class="rotulo">{ev.dirigidoA}</span>
+					<span class="texto-dirigido">{dirigido_a}</span>
+				</li>
+			)
+		}
+	</ul>
+</section>
+
+<section class="banda sobre" aria-labelledby="titulo-sobre">
+	<div>
+		{presentacion && <p class="antetitulo">{presentacion.antetitulo}</p>}
+		<h2 id="titulo-sobre">
+			{presentacion ? presentacion.titulo : titulo}{" "}
+			{presentacion && <em>{presentacion.cursiva}</em>}
+		</h2>
+		<span class="puntos-logo" aria-hidden="true"></span>
+	</div>
+	<div class="texto-sobre">
+		<Content />
+		{
+			temas.length > 0 && (
+				<ul class="temas">
+					{temas.map((tema, i) => (
+						<li class={`tema-${COLORES[i % 3]}`}>{tema}</li>
+					))}
+				</ul>
+			)
+		}
+	</div>
+</section>
+
+{
+	titulo_formatos && (
+		<section class="banda formatos" aria-labelledby="titulo-formatos">
+			<h2 id="titulo-formatos">{titulo_formatos}</h2>
+			<ul>
+				{programa.map((dia, i) => {
+					const actividades = principales(dia);
+					const unica = actividades.length === 1 ? actividades[0] : undefined;
+					return (
+						<li class={i % 2 === 0 ? 'formato-noche' : 'formato-dia'}>
+							<span class="icono-formato" aria-hidden="true">
+								<Icono nombre={esNoche(dia) ? 'luna' : 'sol'} />
+							</span>
+							<p class="rotulo">
+								{nombreDelDia(dia, idioma)}
+								{dia.momento && <> · {dia.momento}</>}
+							</p>
+							<h3>{dia.titulo}</h3>
+							<p class="horas">
+								{horasDelDia(dia)} · {textos.hora.zonaBolivia.replace(/ \(.*\)$/, '')}
+							</p>
+							{unica ? (
+								<>
+									<p class="descripcion">{unica.titulo}</p>
+									{unica.ponente && (
+										<p class="ponente">
+											<RetratoPonente actividad={unica} tamano="mediano" color="amarillo" />
+											<span>
+												<strong>{unica.ponente}</strong>
+												{unica.pais && <BanderaPais codigo={unica.pais} idioma={idioma} />}
+											</span>
+										</p>
+									)}
+									{dia.nota && (
+										<p class="nota-dia">
+											<Icono nombre="check" />
+											{dia.nota}
+										</p>
+									)}
+								</>
+							) : (
+								<>
+									{dia.descripcion && <p class="descripcion">{dia.descripcion}</p>}
+									<p class="grupo" aria-hidden="true">
+										{actividades.map((a, j) => (
+											<RetratoPonente actividad={a} color={COLORES[j % 3]} />
+										))}
+									</p>
+									<p class="paises-dia">{formato(ev.ponentesDe, { paises: listaDePaises([...new Set(actividades.flatMap((a) => a.pais ?? []))], idioma) })}</p>
+									<a class="ver-horario" href="#programa">
+										{ev.verHorario} <span class="flecha" aria-hidden="true">→</span>
+									</a>
+								</>
+							)}
+						</li>
+					);
+				})}
+			</ul>
+		</section>
+	)
+}
+
+<div class="banda banda-clara">
+	<ProgramaEvento evento={evento} idioma={idioma} />
+</div>
+
+<section class="banda ponentes-evento" aria-labelledby="titulo-ponentes">
+	<p class="antetitulo">{ev.ponentes}</p>
+	<h2 id="titulo-ponentes">{ev.ponentesTitulo} <em>{ev.ponentesCursiva}</em></h2>
+	<p class="subtitulo">{formato(ev.especialistasDe, { paises })}</p>
+	<ul>
+		{
+			ponentes.map(({ a, dia }, i) => (
+				<li>
+					<span class="colgante" aria-hidden="true"></span>
+					<RetratoPonente actividad={a} tamano="grande" color={COLORES[i % 3]} />
+					<p class={`pildora pildora-${COLORES[i % 3]}`}>
+						{ev.tiposActividad[a.tipo]} · {nombreDelDia(dia, idioma).split(' ').slice(0, 2).join(' ')}
+					</p>
+					<p class="nombre">{a.ponente}</p>
+					{a.pais && <BanderaPais codigo={a.pais} idioma={idioma} />}
+					{a.titulo && <p class="tema-charla">{a.titulo}</p>}
+				</li>
+			))
+		}
+	</ul>
+</section>
+
+{
+	precios.length > 0 && (
+		<section class="banda banda-clara inversion" aria-labelledby="titulo-inversion">
+			<p class="antetitulo">{ev.costos}</p>
+			<h2 id="titulo-inversion">
+				{ev.inversionTitulo} <em>{ev.inversionCursiva}</em>
+			</h2>
+			{incluye && <p class="subtitulo">{incluye.texto}</p>}
+			<ul class="entradas">
+				{precios.map((c, i) => {
+					const { monto, leyenda } = textoCosto(c, idioma);
+					return (
+						<li class:list={{ destacada: i === 0 }} data-hasta={c.hasta?.toISOString()}>
+							<p class="etiqueta-entrada">{etiquetaCosto(c, datos.costos, idioma)}</p>
+							<p class="monto">{monto}</p>
+							<p class="leyenda">{leyenda}</p>
+							<span class="corte" aria-hidden="true"></span>
+							{incluye && (
+								<ul class="incluye">
+									{incluye.lista.map((item) => (
+										<li>
+											<Icono nombre="check" />
+											{item}
+										</li>
+									))}
+								</ul>
+							)}
+							{abierta && (
+								<a class="boton-entrada" href={datos.inscripcion!.url} rel="noopener">
+									{textos.comun.inscribirme} {i === 0 && <span class="flecha" aria-hidden="true">→</span>}
+								</a>
+							)}
+						</li>
+					);
+				})}
+			</ul>
+			<p class="nota-inversion">{ev.enlaceInscritos}</p>
+		</section>
+	)
+}
+
+{
+	preguntas.length > 0 && (
+		<section class="banda dudas" aria-labelledby="titulo-dudas">
+			<div>
+				<p class="antetitulo">{ev.dudas}</p>
+				<h2 id="titulo-dudas">{ev.preguntas}</h2>
+				<div class="contacto-dudas">
+					<p>{ev.otraDuda}</p>
+					{whatsapp && (
+						<a class="whatsapp" href={whatsapp.url} rel="noopener">
+							<Icono nombre="dialogo" />
+							WhatsApp {whatsapp.visible}
+						</a>
+					)}
+					{ORGANIZACION.correo && <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>}
+				</div>
+			</div>
+			<div class="lista-dudas">
+				{preguntas.map((p, i) => (
+					<details open={i === 0}>
+						<summary>
+							<span>{p.pregunta}</span>
+							<span class="signo" aria-hidden="true" />
+						</summary>
+						<p>{p.respuesta}</p>
+					</details>
+				))}
+			</div>
+		</section>
+	)
+}
+
+<section class="banda banda-azul tema-navidad final" aria-labelledby="titulo-final">
+	<Guirnalda />
+	<p class="antetitulo">
+		{fechaDelEvento(evento, idioma)}
+		{datos.modalidad && <> · {ev.modalidades[datos.modalidad]}</>}
+	</p>
+	<h2 id="titulo-final">
+		{cierre ? cierre.titulo : titulo}{" "}
+		{cierre && <em>{cierre.cursiva}</em>}
+	</h2>
+	<p class="acciones">
+		{
+			abierta && (
+				<a class="boton boton-dorado" href={datos.inscripcion!.url} rel="noopener">
+					{textos.comun.inscribirme} <span class="flecha" aria-hidden="true">→</span>
+				</a>
+			)
+		}
+		{
+			whatsapp && (
+				<a class="boton boton-contorno" href={whatsapp.url} rel="noopener">
+					<Icono nombre="dialogo" />
+					{ev.escribirWhatsapp}
+				</a>
+			)
+		}
+	</p>
+	<p class="enlaces-final">
+		<span class="rotulo-final">
+			<Icono nombre="calendario" />
+			{ev.anadirCalendario}
+		</span>
+		<a href={enlaceGoogleCalendar(evento, idioma, sitio)} rel="noopener">
+			{ev.googleCalendar}
+		</a>
+		<a href={`/${idioma}/calendario/${evento.slug}.ics`} download>
+			{ev.appleOutlook}
+		</a>
+	</p>
+	<p class="enlaces-final">
+		<span class="rotulo-final">
+			<Icono nombre="compartir" />
+			{ev.compartir}
+		</span>
+		{
+			compartir.map((red) => (
+				<a href={red.url} rel="noopener" target="_blank">
+					{red.nombre}
+				</a>
+			))
+		}
+	</p>
+</section>
+
+<style>
+	h2 {
+		margin: 0.75rem 0 0;
+		font-size: clamp(2.2rem, 1.6rem + 2.2vw, 3.2rem);
+	}
+	h2 em {
+		color: #8a1a2c;
+	}
+	.subtitulo {
+		margin: 0.75rem 0 0;
+		color: var(--color-texto-suave);
+	}
+	/* Esferas de color con un ícono blanco (cifras). */
+	.icono-esfera {
+		display: grid;
+		place-items: center;
+		width: 2.6rem;
+		height: 2.6rem;
+		border-radius: 50%;
+		background: rgb(255 255 255 / 0.12);
+		color: #fff;
+		box-shadow: inset 0 -4px 8px rgb(0 0 0 / 0.2);
+	}
+	.icono-esfera :global(.icono) {
+		width: 1.25rem;
+		height: 1.25rem;
+		color: inherit;
+	}
+	.esfera-roja {
+		background: radial-gradient(circle at 35% 30%, #ff8a8a, #e3151b 50%, #8f0b10);
+	}
+	.esfera-amarilla {
+		background: radial-gradient(circle at 35% 30%, #fff2a8, #f6c400 50%, #b88600);
+		color: #4a3500;
+	}
+	.esfera-verde {
+		background: radial-gradient(circle at 35% 30%, #7ad99a, #0c9439 50%, #04551c);
+	}
+
+	/* ---------- Cifras ---------- */
+	.cifras-evento {
+		padding-top: clamp(2.5rem, 5vw, 3.5rem);
+	}
+	.cifras {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+		gap: 1.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.cifras > li {
+		display: grid;
+		align-content: start;
+		gap: 0.5rem;
+		padding: 1.5rem;
+		border: 1px solid #ece4d3;
+		border-radius: 1rem;
+		background: #fffdf8;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+	.cifras strong {
+		margin-top: 0.5rem;
+		font-family: var(--fuente-titulos);
+		font-size: 2.1rem;
+		font-weight: 600;
+		line-height: 1.1;
+		color: var(--color-titulos);
+	}
+	.banderas {
+		display: grid;
+		grid-template-columns: repeat(2, max-content);
+		gap: 0.3rem 1rem;
+	}
+	.cifras > .dirigido {
+		background: var(--color-oscuro);
+		border-color: var(--color-oscuro);
+	}
+	.dirigido .rotulo {
+		margin-top: 0.75rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-dorado-claro);
+	}
+	.texto-dirigido {
+		font-family: var(--fuente-texto);
+		font-size: 1.05rem;
+		line-height: 1.5;
+		color: #fff;
+	}
+
+	/* ---------- Sobre las jornadas ---------- */
+	.sobre {
+		display: grid;
+		grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+		gap: 2rem 4rem;
+		align-items: start;
+	}
+	.sobre h2 em {
+		display: block;
+		color: var(--color-acento);
+	}
+	.sobre .puntos-logo {
+		margin: 1.25rem 0 0;
+	}
+	.texto-sobre {
+		font-size: 1.1rem;
+	}
+	.texto-sobre :global(p) {
+		margin: 0 0 1.1em;
+	}
+	.temas {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin: 1.5rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.temas li {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.4rem 0.95rem;
+		border: 1px solid #e5dccb;
+		border-radius: 999px;
+		background: #fffdf8;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+	}
+	.temas li::before {
+		content: '';
+		width: 0.5rem;
+		height: 0.5rem;
+		border-radius: 50%;
+	}
+	.tema-rojo::before {
+		background: #c8202a;
+	}
+	.tema-amarillo::before {
+		background: #e8b40c;
+	}
+	.tema-verde::before {
+		background: #0c9439;
+	}
+
+	/* ---------- Formatos (un bloque por día) ---------- */
+	.formatos h2 {
+		margin: 0 0 1.5rem;
+		font-size: clamp(1.8rem, 1.4rem + 1.4vw, 2.4rem);
+	}
+	.formatos > ul {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+		gap: 1.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.formatos > ul > li {
+		position: relative;
+		overflow: hidden;
+		padding: 1.75rem;
+		border-radius: 1rem;
+		color: #e9ecf2;
+	}
+	.formato-noche {
+		background:
+			radial-gradient(circle at 80% 20%, rgb(255 255 255 / 0.06), transparent 40%),
+			linear-gradient(160deg, #13304d, #0b1e33);
+	}
+	.formato-dia {
+		background: linear-gradient(160deg, #148a4a, #0b5c31);
+	}
+	.icono-formato {
+		position: absolute;
+		top: 1.25rem;
+		right: 1.5rem;
+		color: var(--color-dorado-claro);
+	}
+	.icono-formato :global(.icono) {
+		width: 3rem;
+		height: 3rem;
+		color: inherit;
+	}
+	.formato-noche .icono-formato :global(path) {
+		fill: currentColor;
+	}
+	.formatos p {
+		margin: 0;
+	}
+	.formatos .rotulo {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-dorado-claro);
+	}
+	.formatos h3 {
+		margin: 0.5rem 0 0.1rem;
+		font-size: 2.2rem;
+		color: #fff;
+	}
+	.horas {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: rgb(255 255 255 / 0.75);
+	}
+	.formatos .descripcion {
+		margin-top: 1rem;
+		font-size: 1.15rem;
+		line-height: 1.45;
+		color: #fff;
+	}
+	.formatos .ponente {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-top: 1.1rem;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+	}
+	.formatos .ponente > span {
+		display: grid;
+	}
+	.formatos .ponente strong {
+		color: #fff;
+	}
+	.formatos .nota-dia {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 1.25rem;
+		padding: 0.3rem 0.9rem;
+		border: 1px solid rgb(235 186 60 / 0.6);
+		border-radius: 999px;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--color-dorado-claro);
+	}
+	.nota-dia :global(.icono) {
+		width: 1rem;
+		height: 1rem;
+		color: inherit;
+	}
+	/* Retratos superpuestos de quienes exponen ese día. */
+	.formatos .grupo {
+		display: flex;
+		margin-top: 1.25rem;
+	}
+	.grupo :global(.retrato) {
+		margin-left: -0.45rem;
+		box-shadow: 0 0 0 2px #0f6b3a;
+	}
+	.grupo :global(.retrato:first-child) {
+		margin-left: 0;
+	}
+	.formatos .paises-dia {
+		margin-top: 0.75rem;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: rgb(255 255 255 / 0.85);
+	}
+	.ver-horario {
+		display: inline-flex;
+		gap: 0.4rem;
+		margin-top: 1rem;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: #fff;
+	}
+
+	/* ---------- Ponentes ---------- */
+	.ponentes-evento {
+		text-align: center;
+	}
+	.ponentes-evento .antetitulo {
+		justify-content: center;
+	}
+	.ponentes-evento h2 em {
+		color: var(--color-acento);
+	}
+	.ponentes-evento > ul {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr));
+		gap: 1.5rem;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.ponentes-evento > ul > li {
+		position: relative;
+		display: grid;
+		justify-items: center;
+		align-content: start;
+		gap: 0.4rem;
+		padding: 2.75rem 1.5rem 1.75rem;
+		border: 1px solid #ece4d3;
+		border-radius: 1rem;
+		background: #fffdf8;
+		box-shadow: 0 4px 16px rgb(60 40 10 / 0.05);
+	}
+	/* Hilo y tapa dorados: el retrato cuelga como una esfera. */
+	.colgante {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		width: 2px;
+		height: 1.6rem;
+		translate: -50% 0;
+		background: var(--color-dorado-claro);
+	}
+	.colgante::after {
+		content: '';
+		position: absolute;
+		bottom: -0.2rem;
+		left: 50%;
+		width: 0.9rem;
+		height: 0.55rem;
+		translate: -50% 0;
+		border-radius: 2px;
+		background: var(--color-dorado-claro);
+	}
+	.ponentes-evento :global(.retrato.grande) {
+		width: 6.25rem;
+		height: 6.25rem;
+	}
+	.pildora {
+		margin: 0.9rem 0 0.25rem;
+		padding: 0.2rem 0.75rem;
+		border-radius: 999px;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	.pildora-rojo {
+		background: #fbe3e3;
+		color: #b81d26;
+	}
+	.pildora-amarillo {
+		background: #fbf0cf;
+		color: #8a6000;
+	}
+	.pildora-verde {
+		background: #def2e5;
+		color: #0b7a31;
+	}
+	.nombre {
+		margin: 0;
+		font-family: var(--fuente-titulos);
+		font-size: 1.35rem;
+		font-weight: 600;
+		line-height: 1.25;
+		color: var(--color-titulos);
+	}
+	.ponentes-evento :global(.pais) {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--color-texto-suave);
+	}
+	.tema-charla {
+		margin: 0.6rem 0 0;
+		font-style: italic;
+		font-size: 0.975rem;
+		line-height: 1.5;
+		color: var(--color-texto-suave);
+	}
+
+	/* ---------- Entradas ---------- */
+	.inversion {
+		text-align: center;
+	}
+	.inversion .antetitulo {
+		justify-content: center;
+	}
+	.entradas {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+		gap: 1.25rem;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		text-align: left;
+	}
+	.entradas > li {
+		display: flex;
+		flex-direction: column;
+		padding: 1.5rem;
+		border: 1px solid #ece4d3;
+		border-radius: 1rem;
+		background: #fffdf8;
+	}
+	.entradas p {
+		margin: 0;
+	}
+	.etiqueta-entrada {
+		align-self: flex-start;
+		padding: 0.2rem 0.7rem;
+		border-radius: 999px;
+		background: #efe9dc;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.6875rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-titulos);
+	}
+	.entradas .monto {
+		margin-top: 0.75rem;
+		font-family: var(--fuente-titulos);
+		font-size: clamp(2.6rem, 2rem + 2vw, 3.4rem);
+		font-weight: 600;
+		line-height: 1;
+		color: var(--color-titulos);
+	}
+	.entradas .leyenda {
+		margin-top: 0.4rem;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+	.corte {
+		margin: 1.25rem -1.5rem;
+		border-top: 2px dashed #e2d7c3;
+	}
+	.incluye {
+		display: grid;
+		gap: 0.5rem;
+		margin: 0 0 1.5rem;
+		padding: 0;
+		list-style: none;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+	}
+	.incluye li {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.incluye :global(.icono) {
+		width: 1rem;
+		height: 1rem;
+		color: var(--color-acento);
+	}
+	.boton-entrada {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		min-height: 48px;
+		margin-top: auto;
+		border-radius: 999px;
+		background: #8a1a2c;
+		font-family: var(--fuente-interfaz);
+		font-weight: 600;
+		color: #fff;
+		text-decoration: none;
+	}
+	.boton-entrada:hover {
+		background: #6d1424;
+		color: #fff;
+	}
+	/* La entrada destacada (la más conveniente) va en vino con botón dorado. */
+	.entradas > .destacada {
+		border: 0;
+		background: linear-gradient(160deg, #8a1a2c, #561020);
+		box-shadow: 0 24px 48px rgb(86 16 32 / 0.3);
+		color: #fff;
+	}
+	.destacada .etiqueta-entrada {
+		background: var(--color-dorado-claro);
+		color: var(--color-oscuro);
+	}
+	.destacada .monto,
+	.destacada .leyenda,
+	.destacada .incluye {
+		color: #fff;
+	}
+	.destacada .incluye :global(.icono) {
+		color: var(--color-dorado-claro);
+	}
+	.destacada .corte {
+		border-color: rgb(255 255 255 / 0.3);
+	}
+	.destacada .boton-entrada {
+		background: var(--color-dorado-claro);
+		color: var(--color-oscuro);
+	}
+	.nota-inversion {
+		margin: 1.25rem 0 0;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--color-texto-suave);
+	}
+
+	/* ---------- Dudas ---------- */
+	.dudas {
+		display: grid;
+		grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+		gap: 2rem 4rem;
+		align-items: start;
+	}
+	.contacto-dudas {
+		display: grid;
+		gap: 0.6rem;
+		margin-top: 1.5rem;
+		padding: 1.5rem;
+		border-radius: 1rem;
+		background: var(--color-oscuro);
+		font-family: var(--fuente-interfaz);
+		font-size: 0.9375rem;
+		color: #e9ecf2;
+	}
+	.contacto-dudas p {
+		margin: 0;
+	}
+	.contacto-dudas a {
+		color: #fff;
+	}
+	.contacto-dudas .whatsapp {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-weight: 600;
+		color: var(--color-dorado-claro);
+		text-decoration: none;
+	}
+	.contacto-dudas :global(.icono) {
+		width: 1.1rem;
+		height: 1.1rem;
+		color: inherit;
+	}
+	.lista-dudas {
+		display: grid;
+		gap: 0.75rem;
+	}
+	.lista-dudas details {
+		border: 1px solid #ece4d3;
+		border-radius: 0.85rem;
+		background: #fffdf8;
+	}
+	.lista-dudas summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		min-height: 44px;
+		padding: 1.1rem 1.4rem;
+		cursor: pointer;
+		list-style: none;
+		font-family: var(--fuente-titulos);
+		font-size: 1.2rem;
+		font-weight: 600;
+		color: var(--color-titulos);
+	}
+	.lista-dudas summary::-webkit-details-marker {
+		display: none;
+	}
+	.lista-dudas details p {
+		margin: 0;
+		padding: 0 1.4rem 1.25rem;
+		color: var(--color-texto-suave);
+	}
+	.signo {
+		position: relative;
+		flex-shrink: 0;
+		width: 1rem;
+		height: 1rem;
+		transition: transform 0.3s;
+	}
+	.signo::before,
+	.signo::after {
+		content: '';
+		position: absolute;
+		inset: 50% auto auto 0;
+		width: 100%;
+		height: 2px;
+		translate: 0 -50%;
+		background: #8a1a2c;
+	}
+	.signo::after {
+		rotate: 90deg;
+	}
+	details[open] .signo {
+		transform: rotate(45deg);
+	}
+
+	/* ---------- Banda final ---------- */
+	.final {
+		margin-top: clamp(2rem, 5vw, 3rem);
+		padding-top: clamp(8rem, 13vw, 10rem);
+		text-align: center;
+		overflow: hidden;
+	}
+	.final > :not(:global(.guirnalda)) {
+		position: relative;
+		z-index: 1;
+	}
+	.final .antetitulo {
+		justify-content: center;
+	}
+	.final .antetitulo::before {
+		display: none;
+	}
+	.final h2 {
+		font-size: clamp(2.4rem, 1.6rem + 3vw, 3.75rem);
+	}
+	.final h2 em {
+		color: var(--color-dorado-claro);
+	}
+	.final .acciones {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+		margin: 2rem 0 1.75rem;
+	}
+	.final .boton-contorno :global(.icono) {
+		width: 1.1rem;
+		height: 1.1rem;
+		color: inherit;
+	}
+	.enlaces-final {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		gap: 0.4rem 1rem;
+		margin: 0.5rem 0 0;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+	}
+	.rotulo-final {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-weight: 600;
+		color: #fff;
+	}
+	.rotulo-final :global(.icono) {
+		width: 1.1rem;
+		height: 1.1rem;
+		color: var(--color-dorado-claro);
+	}
+
+	@media (max-width: 52rem) {
+		.sobre,
+		.dudas {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

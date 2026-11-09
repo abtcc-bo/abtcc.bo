@@ -1,9 +1,12 @@
 ---
 // Cabecera de la página de un evento (slot "cabecera" de Base.astro): tipo y modalidad, título, lema, fecha,
 // modalidad y zona horaria, y los botones para inscribirse, ver el programa o consultar por WhatsApp.
-// A la derecha, el afiche; sin afiche y con `tema: navidad`, las esferas del logo colgadas como adornos.
+// A la derecha, el afiche. Con `tema: navidad` (diseño "III Jornadas Navideñas — rediseño"): guirnalda arriba,
+// título en dos líneas con la última palabra en dorado y, en lugar del afiche, la entrada (TicketEvento).
 import { Image } from 'astro:assets';
 import AdornoNavidad from './AdornoNavidad.astro';
+import Guirnalda from './Guirnalda.astro';
+import TicketEvento from './TicketEvento.astro';
 import Icono from './Icono.astro';
 import { formato, t, type Idioma } from '../i18n';
 import { contactoWhatsapp, fechaDelEvento, inscripcionAbierta } from '../lib/eventos';
@@ -23,9 +26,12 @@ const palabras = titulo.trim().split(' ');
 const ultima = palabras.pop();
 const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.mensajeWhatsapp, { evento: titulo }));
 const lugar = datos.modalidad !== 'online' && datos.lugar ? ` · ${datos.lugar.ciudad}` : '';
+const navidad = datos.tema === 'navidad';
+const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 ---
 
-<div class:list={['cabecera-evento', { 'con-visual': datos.imagen || datos.tema }]}>
+{navidad && <Guirnalda />}
+<div class:list={['cabecera-evento', { 'con-visual': datos.imagen || datos.tema, navidad }]}>
 	<div class="texto">
 		<p class="antetitulo">
 			{ev.tipos[datos.tipo]}
@@ -87,7 +93,11 @@ const lugar = datos.modalidad !== 'online' && datos.lugar ? ` · ${datos.lugar.c
 		</p>
 	</div>
 	{
-		datos.imagen ? (
+		conTicket ? (
+			<div class="visual ticket-lugar">
+				<TicketEvento evento={evento} idioma={idioma} />
+			</div>
+		) : datos.imagen ? (
 			<div class="visual afiche">
 				<Image src={datos.imagen} alt={titulo} widths={[400, 800]} sizes="(max-width: 56rem) 80vw, 24rem" loading="eager" />
 			</div>
@@ -188,6 +198,33 @@ const lugar = datos.modalidad !== 'online' && datos.lugar ? ` · ${datos.lugar.c
 		border-radius: var(--radio);
 		box-shadow: var(--sombra-grande);
 		background: #fff;
+	}
+
+	/* ---------- Navidad ---------- */
+	.navidad .antetitulo::before {
+		content: '★';
+		width: auto;
+		height: auto;
+		background: none;
+		color: var(--color-dorado-claro);
+	}
+	.navidad h1 {
+		font-size: clamp(3rem, 1.8rem + 4.6vw, 5.25rem);
+		font-weight: 600;
+	}
+	.navidad h1 .cursiva {
+		display: block;
+		color: var(--color-dorado-claro);
+	}
+	.navidad .datos-evento li {
+		padding: 0.4rem 0.9rem;
+		border: 1px solid rgb(255 255 255 / 0.3);
+		border-radius: 999px;
+		background: rgb(255 255 255 / 0.06);
+	}
+	.ticket-lugar {
+		max-width: 24rem;
+		margin-top: 2rem;
 	}
 
 	@media (max-width: 56rem) {

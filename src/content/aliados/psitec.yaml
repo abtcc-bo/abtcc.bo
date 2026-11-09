@@ -1,0 +1,12 @@
+nombre: Instituto Psitec
+tipo: institucion
+imagen: ./logos/psitec.webp
+descripcion:
+  es: Instituto de Psicología y Tecnología Conductual.
+ciudad: Santa Cruz de la Sierra
+direccion: Calle Aruma 211, Condominio Torres Urbarí
+telefonos: ["3 3222080"]
+enlaces:
+  instagram: https://www.instagram.com/instituto.psitec/
+  facebook: https://www.facebook.com/Instituto.psitec
+orden: 2

@@ -1,10 +1,12 @@
 ---
-// Página completa de un evento (debajo de su cabecera, CabeceraEvento.astro): ficha, inscripción, descripción,
-// programa y ponentes (si tiene `programa`), galería, preguntas, calendario y compartir; al final, con inscripción
+// Página completa de un evento (debajo de su cabecera, CabeceraEvento.astro). Con `programa`, la arma
+// EventoConPrograma.astro; si no: ficha, inscripción, descripción,
+// galería, preguntas, calendario y compartir; al final, con inscripción
 // abierta, la banda "Reserva tu lugar". Con `tema: navidad`, todo el cuerpo lleva fondo navideño (.fondo-navidad).
 import { Image, getImage } from 'astro:assets';
 import { getEntries, render } from 'astro:content';
 import CierreEvento from '../components/CierreEvento.astro';
+import EventoConPrograma from './EventoConPrograma.astro';
 import GaleriaEvento from '../components/GaleriaEvento.astro';
 import JsonLd from '../components/JsonLd.astro';
 import PonentesEvento from '../components/PonentesEvento.astro';
@@ -44,6 +46,9 @@ const compartir = [
 ];
 ---
 
+{programa.length > 0 ? (
+<EventoConPrograma evento={evento} idioma={idioma} />
+) : (
 <div class:list={['cuerpo-evento', { 'banda fondo-navidad': navidad }]}>
 <article class="evento">
 	<dl class="ficha">
@@ -292,6 +297,7 @@ const compartir = [
 </article>
 {abierta && datos.inscripcion && <CierreEvento evento={evento} idioma={idioma} />}
 </div>
+)}
 
 {
 	// Sin fecha exacta no se declara el evento a Google (pide fecha y hora reales).

@@ -2,6 +2,7 @@
 // Cada vista recibe `idioma` y, si existe, la `pagina` de texto de esa sección.
 import type { Seccion } from '../i18n';
 import Inicio from './Inicio.astro';
+import Aliados from './Aliados.astro';
 import Blog from './Blog.astro';
 import Comision from './Comision.astro';
 import Contacto from './Contacto.astro';
@@ -10,6 +11,7 @@ import Socios from './Socios.astro';
 
 export const VISTAS: Partial<Record<Seccion, typeof Contacto>> = {
 	inicio: Inicio,
+	aliados: Aliados,
 	blog: Blog,
 	comision: Comision,
 	contacto: Contacto,

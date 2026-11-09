@@ -4,6 +4,7 @@ import SelectorIdioma from './SelectorIdioma.astro';
 import logo from '../assets/logo-simbolo.png';
 import { esNavidad } from '../datos/temporada';
 import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
+import { fechaDelEvento, inscripcionAbierta } from '../lib/eventos';
 import { MENU, hijasDe, ruta, t, type Alternos, type Idioma, type Seccion } from '../i18n';
 
 interface Props {
@@ -32,6 +33,8 @@ for (const seccion of MENU) {
 // Formación y eventos: los próximos (hasta 4) y el archivo de realizados.
 const eventos = await obtenerEventosPublicos(idioma);
 const proximos = eventos.filter((e) => !yaPaso(e)).slice(0, 4);
+// Barra de anuncio arriba de todo, solo en la portada: el evento destacado navideño con inscripción abierta.
+const anuncio = actual === ruta('inicio', idioma) ? proximos.find((e) => e.datos.destacado && e.datos.tema === 'navidad' && inscripcionAbierta(e)) : undefined;
 submenus.eventos = [
 	...proximos.map((e) => ({ nombre: e.texto.data.titulo, href: ruta('eventos', idioma, e.slug), fin: (e.datos.fin ?? e.datos.inicio).toISOString() })),
 	...(eventos.length > proximos.length ? [{ nombre: textos.eventos.realizados, href: `${ruta('eventos', idioma)}#titulo-realizados` }] : []),
@@ -43,6 +46,20 @@ if (paginaMembresia?.data.membresia) {
 }
 ---
 
+{
+	anuncio && (
+		<a class="barra-anuncio" href={ruta('eventos', idioma, anuncio.slug)}>
+			<span class="puntos-logo" aria-hidden="true" />
+			<span>
+				<strong>{anuncio.texto.data.titulo}</strong> · {fechaDelEvento(anuncio, idioma)}
+				{anuncio.datos.modalidad && <> · {textos.eventos.modalidades[anuncio.datos.modalidad]}</>}
+			</span>
+			<span class="abiertas">
+				{textos.anuncio.abiertas} <span class="flecha" aria-hidden="true">→</span>
+			</span>
+		</a>
+	)
+}
 <header class="encabezado">
 	<div class="contenedor fila">
 		<a class="logo" href={ruta('inicio', idioma)}>
@@ -168,6 +185,35 @@ if (paginaMembresia?.data.membresia) {
 </script>
 
 <style>
+	/* Barra de anuncio (Navidad), arriba del encabezado: vino, con las tres esferas y el enlace en dorado. */
+	.barra-anuncio {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 0.25rem 0.9rem;
+		padding: 0.55rem 1rem;
+		background: linear-gradient(90deg, #6d1424, #8a1a2c, #6d1424);
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+		text-align: center;
+		color: #f6e3d6;
+		text-decoration: none;
+	}
+	.barra-anuncio strong {
+		color: #fff;
+	}
+	.barra-anuncio .puntos-logo {
+		width: 2.4rem;
+		margin: 0;
+	}
+	.abiertas {
+		font-weight: 600;
+		color: var(--color-dorado-claro);
+	}
+	.barra-anuncio:hover .abiertas {
+		text-decoration: underline;
+	}
 	.encabezado {
 		position: sticky;
 		top: 0;

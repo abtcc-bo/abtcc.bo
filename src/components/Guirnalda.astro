@@ -1,0 +1,113 @@
+---
+// Guirnalda navideña de borde a borde: un cordón dorado con estrellas y esferas rojas, amarillas y verdes colgadas a
+// distintas alturas, que se balancean suave (quietas con "reducir movimiento"). Decorativa. Va arriba de una banda
+// (posición absoluta: la banda necesita `position: relative` y espacio arriba).
+interface Props {
+	class?: string;
+}
+
+const { class: clase } = Astro.props;
+const id = `guirnalda-${Math.random().toString(36).slice(2, 8)}`;
+const tonos = {
+	rojo: ['#ff8a8a', '#e3151b', '#8f0b10'],
+	amarillo: ['#fff2a8', '#f6c400', '#b88600'],
+	verde: ['#7ad99a', '#0c9439', '#04551c'],
+};
+// x, largo del hilo, radio y color de cada esfera (en un tramo de 1200 de ancho).
+const esferas = [
+	{ x: 60, largo: 34, r: 11, color: 'amarillo' },
+	{ x: 150, largo: 62, r: 20, color: 'verde' },
+	{ x: 265, largo: 40, r: 13, color: 'rojo' },
+	{ x: 345, largo: 70, r: 19, color: 'amarillo' },
+	{ x: 455, largo: 36, r: 12, color: 'verde' },
+	{ x: 545, largo: 60, r: 18, color: 'rojo' },
+	{ x: 640, largo: 34, r: 12, color: 'amarillo' },
+	{ x: 735, largo: 66, r: 19, color: 'verde' },
+	{ x: 850, largo: 38, r: 11, color: 'rojo' },
+	{ x: 935, largo: 58, r: 17, color: 'amarillo' },
+	{ x: 1045, largo: 40, r: 13, color: 'verde' },
+	{ x: 1140, largo: 64, r: 19, color: 'rojo' },
+];
+const estrellas = [110, 300, 500, 700, 900, 1095];
+// Cordón con caídas suaves entre los puntos de cuelgue.
+const cordon = 'M0 14 Q100 30 200 14 T400 14 T600 14 T800 14 T1000 14 T1200 14';
+const estrella = (x: number) => `M${x} 6l2.4 5 5.4.6-4 3.7 1.1 5.3L${x} 18l-4.9 2.6 1.1-5.3-4-3.7 5.4-.6z`;
+---
+
+<svg class:list={['guirnalda', clase]} viewBox="0 0 1200 120" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+	<defs>
+		{
+			Object.entries(tonos).map(([nombre, [claro, medio, oscuro]]) => (
+				<radialGradient id={`${id}-${nombre}`} cx="35%" cy="30%" r="75%">
+					<stop offset="0" stop-color={claro} />
+					<stop offset="0.5" stop-color={medio} />
+					<stop offset="1" stop-color={oscuro} />
+				</radialGradient>
+			))
+		}
+	</defs>
+	<path class="cordon" d={cordon}></path>
+	{estrellas.map((x) => <path class="estrella" d={estrella(x)}></path>)}
+	{
+		esferas.map((e, i) => (
+			<g class="esfera" data-i={i % 3}>
+				<line class="hilo" x1={e.x} y1="18" x2={e.x} y2={18 + e.largo}></line>
+				<rect class="tapa" x={e.x - e.r * 0.3} y={16 + e.largo} width={e.r * 0.6} height={e.r * 0.45} rx="1.5"></rect>
+				<circle cx={e.x} cy={18 + e.largo + e.r} r={e.r} fill={`url(#${id}-${e.color})`}></circle>
+				<ellipse class="brillo" cx={e.x - e.r * 0.35} cy={18 + e.largo + e.r * 0.6} rx={e.r * 0.28} ry={e.r * 0.18}></ellipse>
+			</g>
+		))
+	}
+</svg>
+
+<style>
+	.guirnalda {
+		position: absolute;
+		inset: 0 0 auto;
+		z-index: 1;
+		display: block;
+		width: 100%;
+		height: clamp(5rem, 10vw, 7.5rem);
+		pointer-events: none;
+	}
+	.cordon {
+		fill: none;
+		stroke: var(--color-dorado-claro);
+		stroke-width: 2;
+	}
+	.estrella {
+		fill: var(--color-dorado-claro);
+	}
+	.hilo {
+		stroke: var(--color-dorado-claro);
+		stroke-width: 1.2;
+	}
+	.tapa {
+		fill: var(--color-dorado-claro);
+	}
+	.brillo {
+		fill: rgb(255 255 255 / 0.6);
+	}
+	/* Balanceo suave desde el punto de cuelgue de cada esfera. */
+	.esfera {
+		transform-box: fill-box;
+		transform-origin: 50% 0;
+		animation: balanceo-guirnalda 4.4s ease-in-out infinite alternate;
+	}
+	.esfera[data-i='1'] {
+		animation-duration: 3.8s;
+		animation-delay: -1.2s;
+	}
+	.esfera[data-i='2'] {
+		animation-duration: 5s;
+		animation-delay: -2.4s;
+	}
+	@keyframes balanceo-guirnalda {
+		from {
+			transform: rotate(-3deg);
+		}
+		to {
+			transform: rotate(3deg);
+		}
+	}
+</style>

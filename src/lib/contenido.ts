@@ -136,3 +136,14 @@ export async function articulosRelacionados(articulo: Articulo, cantidad = 3): P
 		(a.data.categoria === articulo.data.categoria ? 1 : 0) + a.data.etiquetas.filter((e) => articulo.data.etiquetas.includes(e)).length;
 	return otros.sort((a, b) => parecido(b) - parecido(a)).slice(0, cantidad);
 }
+
+// ---------- Aliados ----------
+
+export type Aliado = CollectionEntry<'aliados'>;
+
+/** Páginas amigas y aliados: primero las instituciones y luego los profesionales, cada grupo en su orden. */
+export async function obtenerAliados(): Promise<Aliado[]> {
+	const aliados = await getCollection('aliados');
+	const grupo = (x: Aliado) => (x.data.tipo === 'institucion' ? 0 : 1);
+	return aliados.sort((a, b) => grupo(a) - grupo(b) || a.data.orden - b.data.orden || a.data.nombre.localeCompare(b.data.nombre));
+}

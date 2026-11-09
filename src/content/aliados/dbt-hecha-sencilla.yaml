@@ -1,0 +1,10 @@
+# [PENDIENTE: confirmar la descripción]
+nombre: DBT hecha sencilla
+tipo: institucion
+imagen: ./logos/dbt-hecha-sencilla.webp
+descripcion:
+  es: Divulgación sobre la Terapia Dialéctica Conductual (DBT), explicada de forma sencilla.
+enlaces:
+  instagram: https://www.instagram.com/dbt.hecha.sencilla/
+  facebook: https://www.facebook.com/DBT.hecha.sencilla
+orden: 3
