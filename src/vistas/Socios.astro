@@ -1,0 +1,66 @@
+---
+// Área de socios (fase 3, con inicio de sesión). Mientras tanto: aviso de que está en preparación e invitación a
+// los eventos y a la membresía. Queda fuera de Google (noindex y robots.txt).
+import Icono from '../components/Icono.astro';
+import { ruta, t, type Idioma } from '../i18n';
+
+interface Props {
+	idioma: Idioma;
+}
+
+const { idioma } = Astro.props;
+const s = t(idioma).socios;
+---
+
+<section class="banda aviso-socios">
+	<div class="tarjeta">
+		<Icono nombre="compromiso" circulo />
+		<p class="etiqueta etiqueta-dorada">{s.aviso}</p>
+		<h2>{s.titulo}</h2>
+		<p>{s.texto}</p>
+		<p class="mientras">{s.mientras}</p>
+		<p class="acciones">
+			<a class="boton" href={ruta('eventos', idioma)}>
+				{s.verEventos} <span class="flecha" aria-hidden="true">→</span>
+			</a>
+			<a class="boton boton-contorno" href={ruta('membresia', idioma)}>{s.serMiembro}</a>
+		</p>
+	</div>
+</section>
+
+<style>
+	.tarjeta {
+		display: grid;
+		justify-items: center;
+		max-width: 44rem;
+		margin: 0 auto;
+		padding: clamp(2rem, 6vw, 3.5rem);
+		border-start-start-radius: 2rem;
+		box-shadow: var(--sombra);
+		text-align: center;
+	}
+	.etiqueta {
+		margin: 1.25rem 0 0;
+	}
+	h2 {
+		margin: 0.75rem 0 1rem;
+	}
+	p {
+		margin: 0;
+		color: var(--color-texto-suave);
+	}
+	.mientras {
+		margin-top: 1rem;
+		font-family: var(--fuente-titulos);
+		font-size: 1.25rem;
+		font-style: italic;
+		color: var(--color-acento);
+	}
+	.acciones {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+		margin-top: 2rem;
+	}
+</style>

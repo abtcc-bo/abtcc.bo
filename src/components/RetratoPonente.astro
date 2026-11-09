@@ -7,7 +7,7 @@ import type { Actividad } from '../lib/eventos';
 
 interface Props {
 	actividad: Actividad;
-	tamano?: 'chico' | 'grande';
+	tamano?: 'chico' | 'mediano' | 'grande';
 }
 
 const { actividad, tamano = 'chico' } = Astro.props;
@@ -23,7 +23,7 @@ const iniciales = [palabras[0], palabras.length > 2 ? palabras[palabras.length -
 
 {
 	foto ? (
-		<Image src={foto} alt="" width={tamano === 'grande' ? 192 : 96} height={tamano === 'grande' ? 192 : 96} class:list={['retrato', tamano]} />
+		<Image src={foto} alt="" width={tamano === 'chico' ? 96 : 192} height={tamano === 'chico' ? 96 : 192} class:list={['retrato', tamano]} />
 	) : (
 		<span class:list={['retrato', 'iniciales', tamano]} aria-hidden="true">
 			{iniciales}
@@ -43,6 +43,10 @@ const iniciales = [palabras[0], palabras.length > 2 ? palabras[palabras.length -
 			0 0 0 2px var(--color-tarjeta),
 			0 0 0 3px var(--color-dorado-claro);
 	}
+	.mediano {
+		width: 3.5rem;
+		height: 3.5rem;
+	}
 	.grande {
 		width: 5.5rem;
 		height: 5.5rem;
@@ -55,6 +59,9 @@ const iniciales = [palabras[0], palabras.length > 2 ? palabras[palabras.length -
 		font-size: 1rem;
 		font-style: italic;
 		color: #fff;
+	}
+	.mediano.iniciales {
+		font-size: 1.2rem;
 	}
 	.grande.iniciales {
 		font-size: 1.9rem;

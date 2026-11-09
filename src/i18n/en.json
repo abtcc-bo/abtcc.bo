@@ -156,7 +156,9 @@
 		},
 		"mensajeWhatsapp": "Hello, I would like information about {evento}.",
 		"costoHasta": "until {fecha}",
-		"costoDesde": "from {fecha}"
+		"costoDesde": "from {fecha}",
+		"reservaTitulo": "Save your spot",
+		"inscripcionesAbiertas": "Registration is open"
 	},
 	"contacto": {
 		"correo": "Email",
@@ -266,7 +268,7 @@
 		},
 		"socios": {
 			"antetitulo": "Members area",
-			"entradilla": ""
+			"entradilla": "An exclusive space for ABTCC members."
 		},
 		"privacidad": {
 			"antetitulo": "Legal information",
@@ -330,7 +332,9 @@
 			"proceso": "The process",
 			"preguntas": "FAQ",
 			"solicitar": "Apply"
-		}
+		},
+		"avisoSolicitud": "Online form coming soon",
+		"verEventos": "Meanwhile, explore our events"
 	},
 	"inicio": {
 		"verEventos": "See training and events",
@@ -371,5 +375,13 @@
 			"formacion": "Training",
 			"institucional": "Institutional"
 		}
+	},
+	"socios": {
+		"aviso": "Coming soon",
+		"titulo": "We are preparing the members area",
+		"texto": "Very soon ABTCC members will be able to access their benefits, materials and association news here.",
+		"mientras": "In the meantime, we invite you to explore our events and join the community.",
+		"verEventos": "See training and events",
+		"serMiembro": "I want to become a member"
 	}
 }

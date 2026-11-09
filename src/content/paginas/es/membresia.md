@@ -55,7 +55,7 @@ membresia:
       texto: Por escrito, en un plazo de 25 días hábiles. Si no estás de acuerdo con la decisión, puedes pedir su revisión.
   solicitud:
     titulo: Solicita tu membresía
-    texto: "Por ahora, escríbenos indicando la categoría a la que postulas y adjuntando la documentación. [PENDIENTE: formulario institucional de solicitud]"
+    texto: Muy pronto podrás enviar tu solicitud con un formulario en línea. Mientras tanto, escríbenos indicando la categoría a la que postulas y adjuntando la documentación.
 preguntas:
   - pregunta: ¿Puedo ser miembro si todavía soy estudiante?
     respuesta: Sí, como Miembro Adherente, la categoría para personas en formación. Necesitas una constancia de estudiante de psicología o de un área afín. Cuando cumplas los requisitos, puedes pedir tu cambio a Miembro Asociado.

@@ -1,8 +1,10 @@
 ---
 // Página completa de un evento (debajo de su cabecera, CabeceraEvento.astro): ficha, inscripción, descripción,
-// programa y ponentes (si tiene `programa`), galería, preguntas, calendario y compartir.
+// programa y ponentes (si tiene `programa`), galería, preguntas, calendario y compartir; al final, con inscripción
+// abierta, la banda "Reserva tu lugar". Con `tema: navidad`, todo el cuerpo lleva fondo navideño (.fondo-navidad).
 import { Image, getImage } from 'astro:assets';
 import { getEntries, render } from 'astro:content';
+import CierreEvento from '../components/CierreEvento.astro';
 import GaleriaEvento from '../components/GaleriaEvento.astro';
 import JsonLd from '../components/JsonLd.astro';
 import PonentesEvento from '../components/PonentesEvento.astro';
@@ -27,6 +29,7 @@ const facilitadores = await getEntries(datos.facilitadores);
 const nombresPonentes = facilitadores.length ? facilitadores.map((p) => p.data.nombre) : ponentesDelPrograma(evento).map((a) => a.ponente!);
 const abierta = inscripcionAbierta(evento);
 const pasado = yaPaso(evento);
+const navidad = datos.tema === 'navidad';
 const sitio = Astro.site!;
 const urlPagina = new URL(Astro.url.pathname, sitio).href;
 const imagenRedes = datos.imagen ? new URL((await getImage({ src: datos.imagen, width: 1200 })).src, sitio).href : undefined;
@@ -41,6 +44,7 @@ const compartir = [
 ];
 ---
 
+<div class:list={['cuerpo-evento', { 'banda fondo-navidad': navidad }]}>
 <article class="evento">
 	<dl class="ficha">
 		<dt>{ev.fecha}</dt>
@@ -286,6 +290,8 @@ const compartir = [
 		</ul>
 	</section>
 </article>
+{abierta && datos.inscripcion && <CierreEvento evento={evento} idioma={idioma} />}
+</div>
 
 {
 	// Sin fecha exacta no se declara el evento a Google (pide fecha y hora reales).
@@ -313,8 +319,49 @@ const compartir = [
 
 <style>
 	.evento {
-		max-width: 50rem;
+		max-width: 56rem;
 		padding-top: clamp(2rem, 5vw, 3rem);
+	}
+	/* En computadora, todo un poco más grande para leer con comodidad. */
+	@media (min-width: 64rem) {
+		.evento {
+			font-size: 1.15rem;
+		}
+		.evento dt {
+			font-size: 0.875rem;
+		}
+	}
+	/* Navidad: el artículo va centrado sobre el fondo festivo, con la ficha en tarjeta de borde vino y dorado. */
+	.fondo-navidad {
+		padding-top: 0;
+	}
+	.fondo-navidad .evento {
+		margin-inline: auto;
+	}
+	.fondo-navidad .ficha {
+		border-color: #ecd9b0;
+		border-top-color: #8a1a2c;
+		background: #fffdf8;
+		box-shadow: var(--sombra);
+	}
+	.fondo-navidad .inscripcion {
+		background: transparent;
+	}
+	.fondo-navidad h2 {
+		color: #7a1526;
+	}
+	.fondo-navidad details {
+		margin-top: 0.6rem;
+		padding: 0.25rem 1.25rem;
+		border: 1px solid #ecd9b0;
+		border-radius: var(--radio);
+		background: #fffdf8;
+	}
+	.fondo-navidad .ponentes :global(li) {
+		padding: 1rem;
+		border: 1px solid #ecd9b0;
+		border-radius: var(--radio);
+		background: #fffdf8;
 	}
 	.evento > :global(.programa),
 	.ponentes {

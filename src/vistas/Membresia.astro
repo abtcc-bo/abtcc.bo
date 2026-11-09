@@ -6,7 +6,7 @@ import type { CollectionEntry } from 'astro:content';
 import Icono from '../components/Icono.astro';
 import PreguntasFrecuentes from '../components/PreguntasFrecuentes.astro';
 import { ORGANIZACION } from '../datos/organizacion';
-import { t, type Idioma } from '../i18n';
+import { ruta, t, type Idioma } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
@@ -110,15 +110,21 @@ const correo = ORGANIZACION.correo;
 
 <section id="solicitar" class="banda banda-azul banda-hoja solicitar" aria-labelledby="titulo-solicitar">
 	<span class="puntos-logo" aria-hidden="true"></span>
+	<span class="etiqueta etiqueta-dorada">{v.avisoSolicitud}</span>
 	<h2 id="titulo-solicitar">{m.solicitud.titulo}</h2>
 	<p>{m.solicitud.texto}</p>
-	{
-		correo && (
-			<a class="boton boton-dorado" href={`mailto:${correo}`}>
-				{v.escribir}: {correo}
-			</a>
-		)
-	}
+	<div class="acciones-solicitar">
+		{
+			correo && (
+				<a class="boton boton-dorado" href={`mailto:${correo}`}>
+					{v.escribir}: {correo}
+				</a>
+			)
+		}
+		<a class="boton boton-contorno" href={ruta('eventos', idioma)}>
+			{v.verEventos} <span class="flecha" aria-hidden="true">→</span>
+		</a>
+	</div>
 </section>
 
 <script>
@@ -333,8 +339,18 @@ const correo = ORGANIZACION.correo;
 	.solicitar {
 		text-align: center;
 	}
+	/* Aviso "Formulario en línea en preparación" sobre el título. */
+	.solicitar .etiqueta {
+		margin-top: 1rem;
+	}
 	.solicitar h2 {
 		margin: 1rem 0 0.75rem;
+	}
+	.acciones-solicitar {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
 	}
 	.solicitar p {
 		max-width: 36rem;

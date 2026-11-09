@@ -6,8 +6,9 @@ import AdornoNavidad from './AdornoNavidad.astro';
 import BanderaPais from './BanderaPais.astro';
 import Icono from './Icono.astro';
 import PonentesEvento from './PonentesEvento.astro';
+import PreciosEvento from './PreciosEvento.astro';
 import { formato, plural, ruta, t, type Idioma } from '../i18n';
-import { contactoWhatsapp, costoVigente, fechaDelEvento, inscripcionAbierta, resumenDelPrograma, textoCosto } from '../lib/eventos';
+import { contactoWhatsapp, fechaDelEvento, inscripcionAbierta, resumenDelPrograma } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
 
 interface Props {
@@ -30,8 +31,6 @@ const cifras = [
 ].filter(Boolean);
 const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.mensajeWhatsapp, { evento: titulo }));
 const navidad = datos.tema === 'navidad';
-// La portada se arma en cada visita: solo los precios vigentes (la preventa desaparece sola al vencer).
-const precios = datos.costos.filter((c) => costoVigente(c)).map((c) => textoCosto(c, idioma));
 ---
 
 <section class:list={['banda', 'banda-azul', 'banda-hoja', 'anuncio', { 'tema-navidad': navidad }]} aria-labelledby="titulo-anuncio">
@@ -58,18 +57,7 @@ const precios = datos.costos.filter((c) => costoVigente(c)).map((c) => textoCost
 				</p>
 			)
 		}
-		{
-			precios.length > 0 && (
-				<ul class="precios">
-					{precios.map((p) => (
-						<li>
-							<strong>{p.monto}</strong>
-							<span>{p.leyenda}</span>
-						</li>
-					))}
-				</ul>
-			)
-		}
+		<PreciosEvento evento={evento} idioma={idioma} />
 		<p class="acciones">
 			{
 				inscripcionAbierta(evento) && datos.inscripcion && (
@@ -168,40 +156,6 @@ const precios = datos.costos.filter((c) => costoVigente(c)).map((c) => textoCost
 	}
 	.paises > span:first-child {
 		color: var(--texto-banda-suave);
-	}
-	/* Precios como en el afiche: monto grande y su leyenda debajo, separados por líneas doradas. */
-	.precios {
-		display: flex;
-		flex-wrap: wrap;
-		margin: 1.75rem 0 0;
-		padding: 0.9rem 0;
-		border: 1px solid rgb(235 186 60 / 0.55);
-		border-radius: var(--radio);
-		background: rgb(255 255 255 / 0.06);
-		list-style: none;
-	}
-	.precios li {
-		display: grid;
-		flex: 1 1 8rem;
-		justify-items: center;
-		gap: 0.15rem;
-		padding: 0.25rem 1rem;
-		text-align: center;
-	}
-	.precios li + li {
-		border-left: 1px solid rgb(235 186 60 / 0.4);
-	}
-	.precios strong {
-		font-family: var(--fuente-titulos);
-		font-size: 1.9rem;
-		font-weight: 600;
-		line-height: 1.1;
-		color: #fff;
-	}
-	.precios span {
-		font-family: var(--fuente-interfaz);
-		font-size: 0.8125rem;
-		color: var(--texto-banda);
 	}
 	.acciones {
 		display: flex;

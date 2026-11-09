@@ -1,0 +1,125 @@
+---
+// Banda de cierre de la página de un evento con inscripción abierta: "Reserva tu lugar", precios, botón de
+// inscripción y WhatsApp. Con `tema: navidad`, en vino con nieve y las esferas del logo colgadas.
+import AdornoNavidad from './AdornoNavidad.astro';
+import Icono from './Icono.astro';
+import PreciosEvento from './PreciosEvento.astro';
+import { formato, t, type Idioma } from '../i18n';
+import { contactoWhatsapp, fechaDelEvento } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+}
+
+const { evento, idioma } = Astro.props;
+const textos = t(idioma);
+const ev = textos.eventos;
+const { datos } = evento;
+const { titulo } = evento.texto.data;
+const navidad = datos.tema === 'navidad';
+const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.mensajeWhatsapp, { evento: titulo }));
+---
+
+<section class:list={['banda', 'banda-azul', 'banda-hoja', 'reserva', { 'tema-navidad': navidad }]} aria-labelledby="titulo-cierre">
+	<div class="texto">
+		<p class="antetitulo">{ev.inscripcionesAbiertas}</p>
+		<h2 id="titulo-cierre">{ev.reservaTitulo}</h2>
+		<p class="evento-fecha">
+			{titulo} · {fechaDelEvento(evento, idioma)}
+			{datos.modalidad && <> · {ev.modalidades[datos.modalidad]}</>}
+		</p>
+		<PreciosEvento evento={evento} idioma={idioma} />
+		<p class="acciones">
+			{
+				datos.inscripcion && (
+					<a class="boton boton-dorado" href={datos.inscripcion.url} rel="noopener">
+						{textos.comun.inscribirme} <span class="flecha" aria-hidden="true">→</span>
+					</a>
+				)
+			}
+			{
+				whatsapp && (
+					<a class="whatsapp" href={whatsapp.url} rel="noopener">
+						<Icono nombre="dialogo" />
+						<span>
+							{ev.whatsapp} <strong>{whatsapp.visible}</strong>
+						</span>
+					</a>
+				)
+			}
+		</p>
+	</div>
+	{
+		navidad && (
+			<div class="visual">
+				<AdornoNavidad />
+			</div>
+		)
+	}
+</section>
+
+<style>
+	.reserva {
+		display: grid;
+		grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+		gap: 2rem 4rem;
+		align-items: center;
+		margin-top: clamp(3rem, 6vw, 5rem);
+		overflow: hidden;
+	}
+	.texto,
+	.visual {
+		position: relative;
+		z-index: 1;
+	}
+	h2 {
+		margin: 0.75rem 0 0.5rem;
+		font-size: clamp(2.4rem, 1.6rem + 3vw, 3.75rem);
+		line-height: 1.05;
+	}
+	.evento-fecha {
+		margin: 0;
+		font-family: var(--fuente-titulos);
+		font-size: clamp(1.2rem, 1rem + 0.8vw, 1.5rem);
+		font-style: italic;
+		color: var(--color-dorado-claro);
+	}
+	.acciones {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 1rem 1.5rem;
+		margin: 2rem 0 0;
+	}
+	.whatsapp {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.9375rem;
+		text-decoration: none;
+	}
+	.whatsapp :global(.icono) {
+		color: var(--color-dorado-claro);
+	}
+	.whatsapp:hover span {
+		text-decoration: underline;
+	}
+	.visual {
+		justify-self: center;
+		width: 100%;
+		max-width: 18rem;
+	}
+
+	@media (max-width: 52rem) {
+		.reserva {
+			grid-template-columns: 1fr;
+		}
+		.visual {
+			max-width: 12rem;
+			justify-self: start;
+		}
+	}
+</style>

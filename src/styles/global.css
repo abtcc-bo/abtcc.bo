@@ -574,3 +574,54 @@ a:hover .flecha {
 			0 240px;
 	}
 }
+
+/* Cuerpo de una página con tema navideño: crema cálido con luces suaves rojas y verdes, una guirnalda de esferas
+   arriba y copos dorados y rojos que caen despacio. El contenido va por encima de la decoración. */
+.fondo-navidad {
+	position: relative;
+	overflow: hidden;
+	background:
+		radial-gradient(ellipse at 0% 10%, rgb(138 26 44 / 0.08), transparent 45%),
+		radial-gradient(ellipse at 100% 60%, rgb(19 139 78 / 0.08), transparent 45%),
+		linear-gradient(#fbf3e6, #f7ecdc);
+}
+.fondo-navidad > * {
+	position: relative;
+	z-index: 1;
+}
+.fondo-navidad::before {
+	content: '';
+	position: absolute;
+	inset: 0 0 auto;
+	z-index: 1;
+	height: 1.6rem;
+	background:
+		radial-gradient(circle at 50% 40%, #e3151b 0 5px, transparent 5.5px) 0 0 / 72px 100% repeat-x,
+		radial-gradient(circle at 50% 70%, #f6c400 0 5px, transparent 5.5px) 24px 0 / 72px 100% repeat-x,
+		radial-gradient(circle at 50% 40%, #0c9439 0 5px, transparent 5.5px) 48px 0 / 72px 100% repeat-x,
+		linear-gradient(var(--color-dorado-claro), var(--color-dorado-claro)) 0 0.45rem / 100% 1px no-repeat;
+}
+.fondo-navidad::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	background-image:
+		radial-gradient(circle at 20% 30%, rgb(214 168 60 / 0.55) 0 1.5px, transparent 2.2px),
+		radial-gradient(circle at 70% 60%, rgb(138 26 44 / 0.35) 0 1.2px, transparent 1.8px),
+		radial-gradient(circle at 40% 80%, rgb(214 168 60 / 0.45) 0 2px, transparent 2.8px);
+	background-size:
+		180px 180px,
+		240px 240px,
+		320px 320px;
+	animation: nevar-claro 40s linear infinite;
+}
+@keyframes nevar-claro {
+	to {
+		background-position:
+			0 180px,
+			240px 480px,
+			0 320px;
+	}
+}

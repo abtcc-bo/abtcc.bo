@@ -6,6 +6,7 @@ import Blog from './Blog.astro';
 import Comision from './Comision.astro';
 import Contacto from './Contacto.astro';
 import Eventos from './Eventos.astro';
+import Socios from './Socios.astro';
 
 export const VISTAS: Partial<Record<Seccion, typeof Contacto>> = {
 	inicio: Inicio,
@@ -13,4 +14,5 @@ export const VISTAS: Partial<Record<Seccion, typeof Contacto>> = {
 	comision: Comision,
 	contacto: Contacto,
 	eventos: Eventos,
+	socios: Socios,
 };

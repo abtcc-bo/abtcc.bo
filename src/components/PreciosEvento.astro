@@ -1,0 +1,69 @@
+---
+// Precios vigentes de un evento, como en un afiche: monto grande y su leyenda debajo ("Hasta el 1 de diciembre",
+// "Tarifa internacional"), separados por líneas doradas. Para fondos oscuros (bandas de color).
+// En la portada (que se arma en cada visita) la preventa vencida ya no llega; en páginas armadas al publicar,
+// `data-hasta` permite ocultarla en el navegador.
+import { costoVigente, textoCosto } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+import type { Idioma } from '../i18n';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+}
+
+const { evento, idioma } = Astro.props;
+const precios = evento.datos.costos.filter((c) => costoVigente(c));
+---
+
+{
+	precios.length > 0 && (
+		<ul class="precios">
+			{precios.map((c) => {
+				const { monto, leyenda } = textoCosto(c, idioma);
+				return (
+					<li data-hasta={c.hasta?.toISOString()}>
+						<strong>{monto}</strong>
+						<span>{leyenda}</span>
+					</li>
+				);
+			})}
+		</ul>
+	)
+}
+
+<style>
+	.precios {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 1.75rem 0 0;
+		padding: 0.9rem 0;
+		border: 1px solid rgb(235 186 60 / 0.55);
+		border-radius: var(--radio);
+		background: rgb(255 255 255 / 0.06);
+		list-style: none;
+	}
+	li {
+		display: grid;
+		flex: 1 1 8rem;
+		justify-items: center;
+		gap: 0.15rem;
+		padding: 0.25rem 1rem;
+		text-align: center;
+	}
+	li + li {
+		border-left: 1px solid rgb(235 186 60 / 0.4);
+	}
+	strong {
+		font-family: var(--fuente-titulos);
+		font-size: 1.9rem;
+		font-weight: 600;
+		line-height: 1.1;
+		color: #fff;
+	}
+	span {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--texto-banda);
+	}
+</style>
