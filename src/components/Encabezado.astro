@@ -67,11 +67,11 @@ if (paginaMembresia?.data.membresia) {
 				<Image src={logo} alt={textos.sitio.sigla} height={52} densities={[1, 2]} loading="eager" />
 				{
 					navidad && (
-						<svg class="gorro" viewBox="0 0 64 52" aria-hidden="true" focusable="false">
-							<path class="gorro-rojo" d="M8 38C14 16 30 4 48 6c9 1 12 9 9 17-4-5-10-5-13 0-3 4-3 9-3 15z" />
-							<path class="gorro-sombra" d="M44 23c3-5 9-5 13 0-1 3-3 5-5 5-2-3-5-4-8-5z" />
-							<rect class="gorro-piel" x="3" y="34" width="44" height="13" rx="6.5" />
-							<circle class="gorro-piel" cx="56" cy="26" r="6.5" />
+						<svg class="gorro" viewBox="0 0 64 46" aria-hidden="true" focusable="false">
+							<path class="gorro-rojo" d="M8 35C10 16 24 3 40 5c10 1 17 8 16 18-5-6-11-5-13 0-2 4-1 8-1 12z" />
+							<path class="gorro-sombra" d="M43 23c2-5 8-6 13 0-1 3-3 5-6 5-2-3-4-4-7-5z" />
+							<path class="gorro-borde" d="M7 37Q25 29 43 37" />
+							<circle class="gorro-piel" cx="56" cy="25" r="6" />
 						</svg>
 					)
 				}
@@ -249,18 +249,28 @@ if (paginaMembresia?.data.membresia) {
 		height: 3.1rem;
 		width: auto;
 	}
-	/* Gorrito de Navidad sobre la esfera roja del logo (src/datos/temporada.ts decide cuándo se muestra). */
+	/* Gorrito de Navidad sobre la esfera verde del logo (src/datos/temporada.ts decide cuándo se muestra).
+	   Sobre la roja no se distinguía: rojo sobre rojo. Va puesto como sombrero: el borde blanco abraza la parte
+	   de arriba de la esfera. El 80.4% es el centro de la esfera verde dentro del logo; el borde blanco está
+	   centrado en el 39% del ancho del dibujo y por eso se resta 0.39 × ancho. */
 	.marca {
 		position: relative;
 		display: block;
 	}
 	.gorro {
 		position: absolute;
-		left: -0.3rem;
-		top: -0.5rem;
-		width: 1.65rem;
-		transform: rotate(-16deg);
+		left: calc(80.4% - 0.7rem);
+		top: -0.62rem;
+		width: 1.8rem;
+		transform: rotate(-7deg);
+		transform-origin: 39% 78%;
 		pointer-events: none;
+	}
+	.gorro-borde {
+		fill: none;
+		stroke: #fdfdfd;
+		stroke-width: 10;
+		stroke-linecap: round;
 	}
 	.gorro-rojo {
 		fill: #d62828;
