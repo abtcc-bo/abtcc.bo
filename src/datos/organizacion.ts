@@ -22,7 +22,10 @@ export const ORGANIZACION: {
 	correo: 'abtcc.bo@gmail.com',
 	sede: 'Santa Cruz de la Sierra',
 	pais: 'Bolivia',
-	redes: [], // [PENDIENTE: redes sociales] p. ej. { nombre: 'Instagram', url: 'https://instagram.com/...' }
+	redes: [
+		{ nombre: 'Instagram', url: 'https://www.instagram.com/asocboltcc/' },
+		{ nombre: 'Facebook', url: 'https://www.facebook.com/abtcc.bolivia' },
+	],
 	logo: '/logo.png', // [PENDIENTE: reemplazar por el archivo original del diseñador (SVG) cuando llegue]
 	imagenRedes: '/imagen-redes.png',
 	verificacion: { google: 'V9OL9wlucNdBPWscqwSMv0mwMaWHn3NrqgMFUkCtdkE', bing: null },

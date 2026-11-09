@@ -56,7 +56,6 @@ portada:
           - texto: Cómo trabajan estas terapias
             seccion: nosotros
             ancla: evidencia
-    aviso: "Si tú o alguien cercano está en peligro inmediato, llama a [PENDIENTE: número de emergencias y línea de crisis en Bolivia]."
   quienes:
     antetitulo: Quiénes somos
     titulo: Ciencia, formación y ética al servicio de la salud mental

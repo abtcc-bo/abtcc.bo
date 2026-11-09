@@ -39,7 +39,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 ## Contacto
 
 - [x] Correo de contacto público: abtcc.bo@gmail.com
-- [ ] Redes sociales (enlaces)
+- [x] Redes sociales ✔ (09/11/2026): Instagram (instagram.com/asocboltcc) y Facebook (facebook.com/abtcc.bolivia)
 - [x] Ciudades: Santa Cruz (principal), Cochabamba, La Paz
 
 ## Eventos
@@ -53,7 +53,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
   - [ ] Confirmar el **enlace de inscripción** (el QR del segundo afiche lleva al mismo): lo saqué del QR del afiche (https://forms.gle/JNJT2veLtfBcMcFV8). El QR pasa por qrfy.io; en la web va directo al formulario
   - [ ] Confirmar el país de Laura Inés Rivera Betancourt y de Daniel Enríquez Cruz (el afiche muestra Bolivia)
   - [ ] Opcional: foto y una línea de presentación de los ponentes invitados (hoy salen con sus iniciales)
-- [ ] XI SIALAPCCO Bolivia (marzo 2027, Santa Cruz): ya publicado como anuncio con afiche. Faltan fechas exactas, horario, sede, costos, enlace de inscripción, programa, horas y aval, y qué significa la sigla SIALAPCCO
+- [ ] XI SIALAPCCO Bolivia (marzo 2027, Santa Cruz): ya publicado como anuncio con afiche. El mes está confirmado y el evento sigue en preparación (09/11/2026): la página lo dice así, sin [PENDIENTE]. Faltan fechas exactas, horario, sede, costos, enlace de inscripción, programa, horas y aval, y qué significa la sigla SIALAPCCO
 - [x] Eventos realizados con galería ✔: II Encuentro Internacional (Cochabamba, 4–5 sep. 2026) y Primer Congreso Nacional (Santa Cruz, 2023)
 - [ ] Primer Congreso Nacional: confirmar fechas (puse 28 y 29 de abril de 2023, según la hoja de vida de Alix), sede y nombre exacto
 - [ ] II Encuentro Internacional: confirmar sede (las fotos muestran Unifranz) y nombres de los ponentes que no identifiqué (ponencias sobre el ecosistema de la salud mental, ACT-RFT y metáforas, terapia de pareja, inteligencia artificial)
@@ -80,7 +80,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 ## Mejoras de diseño (noviembre 2026)
 
 - [ ] **Portada, "¿Por dónde empiezo?":** ¿la ABTCC orienta o deriva a profesionales a quien busca atención psicológica? (tarjeta "Busco atención psicológica", en `src/content/paginas/es/inicio.md`)
-- [ ] **Portada, aviso de emergencia:** número de emergencias y línea de crisis o de salud mental en Bolivia (que alguien lo confirme; no lo inventamos)
+- [ ] **Portada, aviso de emergencia:** quitado de la web el 09/11/2026 a pedido del usuario, porque faltaba el dato. Para volver a ponerlo: número de emergencias y línea de crisis o de salud mental en Bolivia (que alguien lo confirme; no lo inventamos) y agregar el campo `aviso` en `portada.caminos` de `src/content/paginas/es/inicio.md`
 - [ ] **Preguntas frecuentes de Membresía** (`src/content/paginas/es/membresia.md`): revisar las 6 respuestas (salen del estatuto y el reglamento)
 - [ ] **Preguntas frecuentes de Eventos** (`src/content/paginas/es/eventos.md`): condiciones para recibir certificado (p. ej. asistencia mínima) y si se comparten las grabaciones de los eventos en línea
 - [ ] **Blog:** primeros artículos reales. Al publicarlos se borran los dos de ejemplo (`src/content/blog/es/ejemplo-*.md`) y la persona de ejemplo (`ejemplo-presidencia.yaml`)
