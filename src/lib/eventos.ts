@@ -1,5 +1,5 @@
 // Cálculos sobre eventos que no dependen de la plantilla: horarios, inscripción, calendario y datos para Google.
-import { formatearHora, formatearMes, formatearRangoFechas, formato, ruta, t, type Idioma } from '../i18n';
+import { formatearFecha, formatearHora, formatearMes, formatearMoneda, formatearRangoFechas, formato, ruta, t, type Idioma } from '../i18n';
 import type { Evento } from './contenido';
 
 /** Bolivia está en UTC−4 todo el año (sin horario de verano). */
@@ -169,16 +169,20 @@ export function datosEstructurados(
 	const disponibilidad = datos.estado === 'agotado' ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock';
 	const ofertas = datos.gratuito
 		? [{ '@type': 'Offer', price: 0, priceCurrency: 'BOB', availability: disponibilidad, url }]
-		: datos.costos
-				.filter((c) => c.bob !== undefined)
-				.map((c) => ({
-					'@type': 'Offer',
-					name: t(idioma).eventos.categorias[c.categoria],
-					price: c.bob,
-					priceCurrency: 'BOB',
-					availability: disponibilidad,
-					url: datos.inscripcion?.url ?? url,
-				}));
+		: datos.costos.flatMap((c) =>
+				(['BOB', 'USD'] as const)
+					.filter((moneda) => (moneda === 'BOB' ? c.bob : c.usd) !== undefined)
+					.map((moneda) => ({
+						'@type': 'Offer',
+						name: textoCosto(c, idioma).leyenda,
+						price: moneda === 'BOB' ? c.bob : c.usd,
+						priceCurrency: moneda,
+						availability: disponibilidad,
+						url: datos.inscripcion?.url ?? url,
+						...(c.desde && { validFrom: isoBolivia(c.desde) }),
+						...(c.hasta && { validThrough: isoBolivia(c.hasta) }),
+					})),
+			);
 
 	return {
 		'@type': 'Event',
@@ -196,4 +200,59 @@ export function datosEstructurados(
 		...(extra.facilitadores.length && { performer: extra.facilitadores.map((name) => ({ '@type': 'Person', name })) }),
 		organizer: { '@id': new URL('/#organizacion', sitio).href },
 	};
+}
+
+// ---------- Programa ----------
+
+export type Actividad = Evento['texto']['data']['programa'][number]['actividades'][number];
+
+/** Quienes exponen (taller y conferencias), sin repetir, en el orden del programa. */
+export function ponentesDelPrograma(evento: Evento): Actividad[] {
+	const vistos = new Set<string>();
+	return evento.texto.data.programa
+		.flatMap((dia) => dia.actividades)
+		.filter((a) => (a.tipo === 'taller' || a.tipo === 'conferencia') && a.ponente && !vistos.has(a.ponente) && vistos.add(a.ponente));
+}
+
+/** Cifras del programa para anunciarlo: días, talleres, conferencias y países de quienes exponen. */
+export function resumenDelPrograma(evento: Evento) {
+	const actividades = evento.texto.data.programa.flatMap((dia) => dia.actividades);
+	return {
+		dias: evento.texto.data.programa.length,
+		talleres: actividades.filter((a) => a.tipo === 'taller').length,
+		conferencias: actividades.filter((a) => a.tipo === 'conferencia').length,
+		paises: [...new Set(ponentesDelPrograma(evento).flatMap((a) => a.pais ?? []))],
+	};
+}
+
+/** Día del programa ("2026-12-05") como fecha a mediodía en Bolivia, para mostrarlo con `formatearFecha`. */
+export function fechaDelDia(dia: string): Date {
+	return new Date(`${dia}T12:00:00-04:00`);
+}
+
+/** Enlace de WhatsApp para consultas y su número para mostrar: "+591 70623387". */
+export function contactoWhatsapp(numero: string, mensaje: string) {
+	const visible = numero.startsWith('591') ? `+591 ${numero.slice(3)}` : `+${numero}`;
+	return { url: `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`, visible };
+}
+
+// ---------- Precios ----------
+
+export type Costo = Evento['datos']['costos'][number];
+
+/** Un precio se muestra mientras no venció su `hasta` (los que aún no empiezan también, como en un afiche). */
+export function costoVigente(costo: Costo, ahora = new Date()): boolean {
+	return !costo.hasta || costo.hasta >= ahora;
+}
+
+/** Precio ("Bs 120" o "Bs 140 / USD 20") y su leyenda ("Hasta el 1 de diciembre", "Estudiantes", "Tarifa internacional"). */
+export function textoCosto(costo: Costo, idioma: Idioma): { monto: string; leyenda: string } {
+	const ev = t(idioma).eventos;
+	const monto = [costo.bob !== undefined && formatearMoneda(costo.bob, 'BOB', idioma), costo.usd !== undefined && formatearMoneda(costo.usd, 'USD', idioma)]
+		.filter(Boolean)
+		.join(' / ');
+	const dia = (fecha: Date) => formatearFecha(fecha, idioma, { day: 'numeric', month: 'long' });
+	const vigencia = costo.hasta ? formato(ev.costoHasta, { fecha: dia(costo.hasta) }) : costo.desde ? formato(ev.costoDesde, { fecha: dia(costo.desde) }) : '';
+	const leyenda = [costo.categoria !== 'general' || !vigencia ? ev.categorias[costo.categoria] : '', vigencia].filter(Boolean).join(' · ');
+	return { monto, leyenda: leyenda.charAt(0).toUpperCase() + leyenda.slice(1) };
 }

@@ -1,0 +1,85 @@
+---
+// Quienes exponen en un evento (taller y conferencias del programa): retrato, nombre, país y tema.
+// `compacto`: versión corta para el anuncio de la portada (sin el tema de cada charla).
+import BanderaPais from './BanderaPais.astro';
+import RetratoPonente from './RetratoPonente.astro';
+import { ponentesDelPrograma } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+import type { Idioma } from '../i18n';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+	compacto?: boolean;
+}
+
+const { evento, idioma, compacto = false } = Astro.props;
+const ponentes = ponentesDelPrograma(evento);
+---
+
+<ul class:list={['ponentes', { compacto }]}>
+	{
+		ponentes.map((a) => (
+			<li>
+				<RetratoPonente actividad={a} tamano={compacto ? 'chico' : 'grande'} />
+				<div>
+					<p class="nombre">{a.ponente}</p>
+					{a.pais && (
+						<p class="pais-ponente">
+							<BanderaPais codigo={a.pais} idioma={idioma} />
+						</p>
+					)}
+					{!compacto && a.titulo && <p class="tema">{a.titulo}</p>}
+				</div>
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	.ponentes {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+		gap: 1.75rem 2rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	li {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+	}
+	p {
+		margin: 0;
+	}
+	.nombre {
+		font-family: var(--fuente-titulos);
+		font-size: 1.2rem;
+		line-height: 1.25;
+		color: var(--color-titulos);
+	}
+	.pais-ponente {
+		margin-top: 0.2rem;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--color-texto-suave);
+	}
+	.tema {
+		margin-top: 0.5rem;
+		font-size: 0.9375rem;
+		line-height: 1.5;
+		color: var(--color-texto-suave);
+	}
+	.compacto {
+		grid-template-columns: repeat(auto-fill, minmax(min(13rem, 100%), 1fr));
+		gap: 1rem 1.25rem;
+	}
+	.compacto li {
+		align-items: center;
+		gap: 0.75rem;
+	}
+	.compacto .nombre {
+		font-size: 1.05rem;
+	}
+</style>

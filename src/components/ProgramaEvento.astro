@@ -1,0 +1,190 @@
+---
+// Programa de un evento (campo `programa` del texto del evento): un bloque por día con sus actividades, horas de
+// Bolivia, ponentes y país. Las pausas (descanso, almuerzo) van en una línea discreta.
+import BanderaPais from './BanderaPais.astro';
+import RetratoPonente from './RetratoPonente.astro';
+import { formatearFecha, t, type Idioma } from '../i18n';
+import { fechaDelDia, type Actividad } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+}
+
+const { evento, idioma } = Astro.props;
+const ev = t(idioma).eventos;
+const dias = evento.texto.data.programa;
+const nombreDia = (fecha: string) => formatearFecha(fechaDelDia(fecha), idioma, { weekday: 'long', day: 'numeric', month: 'long' });
+const conPonente = (a: Actividad) => a.tipo !== 'pausa';
+---
+
+<section id="programa" class="programa" aria-labelledby="titulo-programa">
+	<p class="antetitulo">{ev.programa}</p>
+	<h2 id="titulo-programa">{evento.texto.data.titulo}</h2>
+	<p class="nota">{ev.horasBolivia}</p>
+
+	{
+		dias.map((dia) => (
+			<div class="dia">
+				<h3>
+					<span class="nombre-dia">{nombreDia(dia.fecha)}</span>
+					<span class="titulo-dia">{dia.titulo}</span>
+				</h3>
+				<ol>
+					{dia.actividades.map((a) =>
+						conPonente(a) ? (
+							<li class:list={['actividad', a.tipo]}>
+								<p class="hora">
+									<time>{a.inicio}</time>–<time>{a.fin}</time>
+								</p>
+								<div class="detalle">
+									{a.tipo !== 'conferencia' && <p class="tipo">{ev.tiposActividad[a.tipo]}</p>}
+									{a.titulo && <p class="titulo">{a.titulo}</p>}
+									{a.ponente && (
+										<p class="ponente">
+											<RetratoPonente actividad={a} />
+											<span>
+												<strong>{a.ponente}</strong>
+												{a.pais && <BanderaPais codigo={a.pais} idioma={idioma} />}
+											</span>
+										</p>
+									)}
+								</div>
+							</li>
+						) : (
+							<li class="pausa">
+								<p class="hora">
+									<time>{a.inicio}</time>–<time>{a.fin}</time>
+								</p>
+								<p>{a.titulo ?? ev.tiposActividad.pausa}</p>
+							</li>
+						),
+					)}
+				</ol>
+			</div>
+		))
+	}
+</section>
+
+<style>
+	.programa h2 {
+		margin-top: 0.75rem;
+	}
+	.nota {
+		margin: 0 0 2rem;
+		color: var(--color-texto-suave);
+	}
+	.dia + .dia {
+		margin-top: 2.5rem;
+	}
+	/* Encabezado del día: cinta de color con el nombre del día y el tipo de jornada. */
+	h3 {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.25rem 1rem;
+		margin: 0 0 0.5rem;
+		padding: 0.7rem 1.25rem;
+		border-radius: 999px;
+		background: var(--color-oscuro);
+		font-size: 1.35rem;
+		color: #fff;
+	}
+	.nombre-dia::first-letter {
+		text-transform: uppercase;
+	}
+	.titulo-dia {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-dorado-claro);
+	}
+	ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	li {
+		display: grid;
+		grid-template-columns: 7.5rem 1fr;
+		gap: 0.25rem 1.5rem;
+		padding: 1.1rem 1.25rem;
+		border-bottom: 1px solid var(--color-division);
+	}
+	li p {
+		margin: 0;
+	}
+	.hora {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.9375rem;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		color: var(--color-acento);
+	}
+	.tipo {
+		margin-bottom: 0.2rem;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-dorado);
+	}
+	.titulo {
+		font-family: var(--fuente-titulos);
+		font-size: 1.3rem;
+		line-height: 1.3;
+		color: var(--color-titulos);
+	}
+	.ponente {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-top: 0.6rem;
+	}
+	.ponente > span {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.15rem 0.75rem;
+	}
+	.ponente :global(.pais) {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--color-texto-suave);
+	}
+	/* El taller destaca: fondo cálido y borde dorado. */
+	.taller {
+		border: 1px solid var(--color-dorado-claro);
+		border-radius: var(--radio);
+		background: #fbf3dc;
+	}
+	.bienvenida .titulo,
+	.cierre .titulo {
+		font-size: 1.1rem;
+	}
+	.pausa {
+		padding-block: 0.6rem;
+		background: rgb(255 255 255 / 0.4);
+		font-style: italic;
+		color: var(--color-texto-suave);
+	}
+	.pausa .hora {
+		color: var(--color-texto-suave);
+		font-style: normal;
+	}
+
+	@media (max-width: 36rem) {
+		li {
+			grid-template-columns: 1fr;
+			padding-inline: 0.75rem;
+		}
+		h3 {
+			border-radius: var(--radio);
+		}
+	}
+</style>

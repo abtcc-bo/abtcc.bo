@@ -1,11 +1,14 @@
 ---
-// Página completa de un evento.
+// Página completa de un evento (debajo de su cabecera, CabeceraEvento.astro): ficha, inscripción, descripción,
+// programa y ponentes (si tiene `programa`), galería, preguntas, calendario y compartir.
 import { Image, getImage } from 'astro:assets';
 import { getEntries, render } from 'astro:content';
 import GaleriaEvento from '../components/GaleriaEvento.astro';
 import JsonLd from '../components/JsonLd.astro';
-import { formatearFecha, formatearMoneda, formato, t, type Idioma } from '../i18n';
-import { datosEstructurados, enlaceGoogleCalendar, fechaDelEvento, horario, inscripcionAbierta, isoBolivia } from '../lib/eventos';
+import PonentesEvento from '../components/PonentesEvento.astro';
+import ProgramaEvento from '../components/ProgramaEvento.astro';
+import { formatearFecha, formato, t, type Idioma } from '../i18n';
+import { costoVigente, datosEstructurados, enlaceGoogleCalendar, fechaDelEvento, horario, inscripcionAbierta, isoBolivia, ponentesDelPrograma, textoCosto } from '../lib/eventos';
 import { yaPaso, type Evento } from '../lib/contenido';
 
 interface Props {
@@ -17,14 +20,19 @@ const { evento, idioma } = Astro.props;
 const textos = t(idioma);
 const ev = textos.eventos;
 const { datos } = evento;
-const { titulo, dirigido_a, preguntas } = evento.texto.data;
+const { titulo, dirigido_a, preguntas, programa } = evento.texto.data;
 const { Content } = await render(evento.texto);
 const facilitadores = await getEntries(datos.facilitadores);
+// Para Google: quienes exponen, de la lista de facilitadores o del programa.
+const nombresPonentes = facilitadores.length ? facilitadores.map((p) => p.data.nombre) : ponentesDelPrograma(evento).map((a) => a.ponente!);
 const abierta = inscripcionAbierta(evento);
 const pasado = yaPaso(evento);
 const sitio = Astro.site!;
 const urlPagina = new URL(Astro.url.pathname, sitio).href;
 const imagenRedes = datos.imagen ? new URL((await getImage({ src: datos.imagen, width: 1200 })).src, sitio).href : undefined;
+// Para eventos en línea: la hora de inicio en la zona del visitante (la completa el script de abajo), debajo del
+// horario o de las sesiones.
+const conHoraLocal = !datos.por_confirmar && datos.modalidad !== 'presencial';
 
 const compartir = [
 	{ nombre: 'WhatsApp', url: `https://wa.me/?text=${encodeURIComponent(`${titulo} ${urlPagina}`)}` },
@@ -34,33 +42,28 @@ const compartir = [
 ---
 
 <article class="evento">
-	{datos.imagen && <Image src={datos.imagen} alt={titulo} widths={[480, 960, 1400]} sizes="(max-width: 52rem) 100vw, 50rem" class="afiche" loading="eager" />}
-	<p class="etiquetas">
-		<span>{ev.tipos[datos.tipo]}</span>
-		{datos.modalidad && (
-			<>
-				· <span>{ev.modalidades[datos.modalidad]}</span>
-			</>
-		)}
-	</p>
-	<h1>{titulo}</h1>
-	{datos.estado !== 'programado' && <p class={`aviso-estado estado-${datos.estado}`} role="status">{ev.estados[datos.estado]}</p>}
-
 	<dl class="ficha">
 		<dt>{ev.fecha}</dt>
 		<dd>{fechaDelEvento(evento, idioma)}</dd>
 
-		<dt>{ev.horario}</dt>
-		<dd>
-			{datos.por_confirmar ? ev.porConfirmar : horario(datos.inicio, datos.fin, idioma)}
-			{
-				!datos.por_confirmar && datos.modalidad !== 'presencial' && (
-					<span class="hora-local" data-hora-local data-inicio={isoBolivia(datos.inicio)} hidden>
-						{ev.tuHoraLocal} <span data-valor />
-					</span>
-				)
-			}
-		</dd>
+		{
+			// Con sesiones, el horario de cada día va en "Sesiones" y esta fila se omite.
+			datos.sesiones.length === 0 && (
+				<>
+					<dt>{ev.horario}</dt>
+					<dd>
+						{datos.por_confirmar ? ev.porConfirmar : horario(datos.inicio, datos.fin, idioma)}
+						{
+							conHoraLocal && (
+								<span class="hora-local" data-hora-local data-inicio={isoBolivia(datos.inicio)} hidden>
+									{ev.tuHoraLocal} <span data-valor />
+								</span>
+							)
+						}
+					</dd>
+				</>
+			)
+		}
 
 		{
 			datos.sesiones.length > 0 && (
@@ -74,6 +77,13 @@ const compartir = [
 								</li>
 							))}
 						</ol>
+						{
+							conHoraLocal && (
+								<span class="hora-local" data-hora-local data-inicio={isoBolivia(datos.inicio)} hidden>
+									{ev.tuHoraLocal} <span data-valor />
+								</span>
+							)
+						}
 					</dd>
 				</>
 			)
@@ -121,14 +131,14 @@ const compartir = [
 					ev.porConfirmar
 				) : (
 					<ul class="costos">
-						{datos.costos.map((c) => (
-							<li>
-								{ev.categorias[c.categoria]}:{' '}
-								{[c.bob !== undefined && formatearMoneda(c.bob, 'BOB', idioma), c.usd !== undefined && formatearMoneda(c.usd, 'USD', idioma)]
-									.filter(Boolean)
-									.join(' / ')}
-							</li>
-						))}
+						{datos.costos.filter((c) => pasado || costoVigente(c)).map((c) => {
+							const { monto, leyenda } = textoCosto(c, idioma);
+							return (
+								<li data-hasta={c.hasta?.toISOString()}>
+									<strong>{monto}</strong> · {leyenda}
+								</li>
+							);
+						})}
 					</ul>
 				)
 			}
@@ -187,10 +197,21 @@ const compartir = [
 		<Content />
 	</div>
 
+	{programa.length > 0 && <ProgramaEvento evento={evento} idioma={idioma} />}
+
+	{
+		programa.length > 0 && (
+			<section class="ponentes" aria-labelledby="titulo-ponentes">
+				<h2 id="titulo-ponentes">{ev.ponentes}</h2>
+				<PonentesEvento evento={evento} idioma={idioma} />
+			</section>
+		)
+	}
+
 	{datos.galeria.length > 0 && <GaleriaEvento fotos={datos.galeria} idioma={idioma} />}
 
 	{
-		facilitadores.length > 0 && (
+		facilitadores.length > 0 && programa.length === 0 && (
 			<section aria-labelledby="titulo-facilitadores">
 				<h2 id="titulo-facilitadores">{ev.facilitadores}</h2>
 				<ul class="facilitadores">
@@ -269,7 +290,7 @@ const compartir = [
 {
 	// Sin fecha exacta no se declara el evento a Google (pide fecha y hora reales).
 	!datos.por_confirmar && (
-		<JsonLd datos={datosEstructurados(evento, idioma, sitio, { facilitadores: facilitadores.map((p) => p.data.nombre), imagen: imagenRedes })} />
+		<JsonLd datos={datosEstructurados(evento, idioma, sitio, { facilitadores: nombresPonentes, imagen: imagenRedes })} />
 	)
 }
 
@@ -284,39 +305,20 @@ const compartir = [
 			elemento.hidden = false;
 		}
 	}
+	// La página se arma al publicar: un precio de preventa que ya venció se oculta en el navegador.
+	for (const precio of document.querySelectorAll<HTMLElement>('[data-hasta]')) {
+		if (Date.parse(precio.dataset.hasta!) < Date.now()) precio.hidden = true;
+	}
 </script>
 
 <style>
 	.evento {
 		max-width: 50rem;
+		padding-top: clamp(2rem, 5vw, 3rem);
 	}
-	.etiquetas {
-		margin: var(--espacio) 0 0;
-		color: var(--color-texto-suave);
-	}
-	h1 {
-		margin-top: 0.25rem;
-	}
-	.aviso-estado {
-		padding: 0.75rem var(--espacio);
-		border: 2px solid currentColor;
-		font-weight: 700;
-	}
-	.estado-cancelado,
-	.estado-pospuesto {
-		color: #a40000;
-	}
-	/* Imagen de portada del evento, antes del título. */
-	.afiche {
-		display: block;
-		width: auto;
-		max-width: 100%;
-		max-height: 32rem;
-		height: auto;
-		margin-top: 2rem;
-		border-radius: var(--radio);
-		box-shadow: var(--sombra);
-		background: #fff;
+	.evento > :global(.programa),
+	.ponentes {
+		margin-top: 3.5rem;
 	}
 	.ficha {
 		display: grid;

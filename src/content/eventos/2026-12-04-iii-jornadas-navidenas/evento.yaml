@@ -1,0 +1,28 @@
+# III Jornadas Navideñas ABTCC: taller el viernes 4 y conferencias el sábado 5 de diciembre de 2026, en línea.
+# El programa (horarios y ponentes) está en es.md.
+# [PENDIENTE: plataforma (Zoom, Meet...), certificado (horas y aval) y fecha límite de inscripción]
+tipo: jornada
+inicio: "2026-12-04T18:30-04:00"
+fin: "2026-12-05T17:20-04:00"
+sesiones:
+  - inicio: "2026-12-04T18:30-04:00"
+    fin: "2026-12-04T20:30-04:00"
+  - inicio: "2026-12-05T09:00-04:00"
+    fin: "2026-12-05T17:20-04:00"
+modalidad: online
+destacado: true
+tema: navidad
+inscripcion:
+  # Enlace del código QR del afiche (formulario de Google).
+  url: https://forms.gle/JNJT2veLtfBcMcFV8
+whatsapp: "59170623387"
+# Preventa hasta el 1 de diciembre; desde el 2, precio normal. El precio vencido deja de mostrarse solo.
+costos:
+  - categoria: general
+    bob: 120
+    hasta: "2026-12-01T23:59-04:00"
+  - categoria: general
+    bob: 150
+    desde: "2026-12-02T00:00-04:00"
+  - categoria: internacional
+    usd: 20

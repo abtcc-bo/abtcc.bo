@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import SelectorIdioma from './SelectorIdioma.astro';
 import logo from '../assets/logo-simbolo.png';
+import { esNavidad } from '../datos/temporada';
 import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
 import { MENU, hijasDe, ruta, t, type Alternos, type Idioma, type Seccion } from '../i18n';
 
@@ -13,6 +14,7 @@ interface Props {
 const { idioma, alternos } = Astro.props;
 const textos = t(idioma);
 const actual = Astro.url.pathname;
+const navidad = esNavidad();
 
 /** Opción de un submenú. `fin`: el navegador la oculta cuando el evento ya pasó (páginas generadas antes). */
 interface Opcion {
@@ -44,7 +46,19 @@ if (paginaMembresia?.data.membresia) {
 <header class="encabezado">
 	<div class="contenedor fila">
 		<a class="logo" href={ruta('inicio', idioma)}>
-			<Image src={logo} alt={textos.sitio.sigla} height={52} densities={[1, 2]} loading="eager" />
+			<span class="marca">
+				<Image src={logo} alt={textos.sitio.sigla} height={52} densities={[1, 2]} loading="eager" />
+				{
+					navidad && (
+						<svg class="gorro" viewBox="0 0 64 52" aria-hidden="true" focusable="false">
+							<path class="gorro-rojo" d="M8 38C14 16 30 4 48 6c9 1 12 9 9 17-4-5-10-5-13 0-3 4-3 9-3 15z" />
+							<path class="gorro-sombra" d="M44 23c3-5 9-5 13 0-1 3-3 5-5 5-2-3-5-4-8-5z" />
+							<rect class="gorro-piel" x="3" y="34" width="44" height="13" rx="6.5" />
+							<circle class="gorro-piel" cx="56" cy="26" r="6.5" />
+						</svg>
+					)
+				}
+			</span>
 			<span class="afiliacion" aria-hidden="true">{textos.sitio.afiliacion}</span>
 		</a>
 		<button class="boton-menu" type="button" aria-expanded="false" aria-controls="panel-menu">{textos.nav.menu}</button>
@@ -185,8 +199,33 @@ if (paginaMembresia?.data.membresia) {
 		text-decoration: none;
 	}
 	.logo img {
+		display: block;
 		height: 3.1rem;
 		width: auto;
+	}
+	/* Gorrito de Navidad sobre la esfera roja del logo (src/datos/temporada.ts decide cuándo se muestra). */
+	.marca {
+		position: relative;
+		display: block;
+	}
+	.gorro {
+		position: absolute;
+		left: -0.3rem;
+		top: -0.5rem;
+		width: 1.65rem;
+		transform: rotate(-16deg);
+		pointer-events: none;
+	}
+	.gorro-rojo {
+		fill: #d62828;
+	}
+	.gorro-sombra {
+		fill: #a51b1b;
+	}
+	.gorro-piel {
+		fill: #fdfdfd;
+		stroke: #d9d4cc;
+		stroke-width: 1;
 	}
 	/* "Grupo de trabajo ALAPCCO" junto al logo, separado por una línea fina. */
 	.afiliacion {

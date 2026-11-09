@@ -15,6 +15,8 @@ export const ICONOS = {
 	maletin: 'M3 8h18v11H3z M9 8V5h6v3 M3 13h18',
 	reloj: 'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18z M12 7v5l3 2',
 	calendario: 'M4 6h16v14H4z M4 10h16 M8 3v5 M16 3v5',
+	pantalla: 'M4 5h16v11H4z M2 19h20',
+	globo: 'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18z M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18',
 } as const;
 
 export type NombreIcono = keyof typeof ICONOS;

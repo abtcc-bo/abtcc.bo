@@ -1,0 +1,62 @@
+---
+// Retrato redondo de quien expone: su foto si tiene ficha en src/content/personas/ (campo `persona` del programa);
+// si no, sus iniciales sobre un círculo de color.
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import type { Actividad } from '../lib/eventos';
+
+interface Props {
+	actividad: Actividad;
+	tamano?: 'chico' | 'grande';
+}
+
+const { actividad, tamano = 'chico' } = Astro.props;
+const persona = actividad.persona ? await getEntry(actividad.persona) : undefined;
+const foto = persona?.data.foto;
+// Iniciales sin títulos académicos ("Dra.", "Mgtr.", "MSc."...): primeras letras de nombre y apellido.
+const palabras = (actividad.ponente ?? '').split(' ').filter((p) => !p.endsWith('.'));
+const iniciales = [palabras[0], palabras.length > 2 ? palabras[palabras.length - 2] : palabras[1]]
+	.filter(Boolean)
+	.map((p) => p![0])
+	.join('');
+---
+
+{
+	foto ? (
+		<Image src={foto} alt="" width={tamano === 'grande' ? 192 : 96} height={tamano === 'grande' ? 192 : 96} class:list={['retrato', tamano]} />
+	) : (
+		<span class:list={['retrato', 'iniciales', tamano]} aria-hidden="true">
+			{iniciales}
+		</span>
+	)
+}
+
+<style>
+	.retrato {
+		display: block;
+		flex-shrink: 0;
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: 50%;
+		object-fit: cover;
+		box-shadow:
+			0 0 0 2px var(--color-tarjeta),
+			0 0 0 3px var(--color-dorado-claro);
+	}
+	.grande {
+		width: 5.5rem;
+		height: 5.5rem;
+	}
+	.iniciales {
+		display: grid;
+		place-items: center;
+		background: radial-gradient(circle at 32% 28%, #3a6d8f, var(--color-oscuro) 70%);
+		font-family: var(--fuente-titulos);
+		font-size: 1rem;
+		font-style: italic;
+		color: #fff;
+	}
+	.grande.iniciales {
+		font-size: 1.9rem;
+	}
+</style>

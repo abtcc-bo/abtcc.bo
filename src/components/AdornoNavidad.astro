@@ -1,0 +1,100 @@
+---
+// Las tres esferas del logo colgadas como adornos de Navidad, con un balanceo suave (quieto con "reducir movimiento").
+// Decorativo: no se anuncia a lectores de pantalla.
+interface Props {
+	class?: string;
+}
+
+const { class: clase } = Astro.props;
+// Identificador propio para los degradados: puede haber más de un adorno en la misma página.
+const id = `adorno-${Math.random().toString(36).slice(2, 8)}`;
+const esferas = [
+	{ x: 42, largo: 64, color: 'rojo' },
+	{ x: 100, largo: 30, color: 'amarillo' },
+	{ x: 158, largo: 88, color: 'verde' },
+];
+const tonos = {
+	rojo: ['#ff7a7a', '#e3151b', '#93090d'],
+	amarillo: ['#fff0a0', '#f6c400', '#b88600'],
+	verde: ['#62d184', '#0c9439', '#04551c'],
+};
+---
+
+<svg class:list={['adorno-navidad', clase]} viewBox="0 0 200 190" aria-hidden="true" focusable="false">
+	<defs>
+		{
+			Object.entries(tonos).map(([nombre, [claro, medio, oscuro]]) => (
+				<radialGradient id={`${id}-${nombre}`} cx="35%" cy="30%" r="75%">
+					<stop offset="0" stop-color={claro} />
+					<stop offset="0.5" stop-color={medio} />
+					<stop offset="1" stop-color={oscuro} />
+				</radialGradient>
+			))
+		}
+	</defs>
+	<line class="cordon" x1="0" y1="1" x2="200" y2="1"></line>
+	{
+		esferas.map((e) => (
+			<g class:list={['esfera', e.color]}>
+				<line class="hilo" x1={e.x} y1="0" x2={e.x} y2={e.largo}></line>
+				<rect class="tapa" x={e.x - 6} y={e.largo - 2} width="12" height="9" rx="2"></rect>
+				<circle cx={e.x} cy={e.largo + 30} r="26" fill={`url(#${id}-${e.color})`}></circle>
+				<ellipse class="brillo" cx={e.x - 9} cy={e.largo + 19} rx="7" ry="4.5"></ellipse>
+			</g>
+		))
+	}
+</svg>
+
+<style>
+	.adorno-navidad {
+		display: block;
+		width: 100%;
+		height: auto;
+		overflow: visible;
+	}
+	.cordon {
+		stroke: var(--color-dorado-claro);
+		stroke-width: 2;
+		stroke-dasharray: 2 5;
+		stroke-linecap: round;
+	}
+	.hilo {
+		stroke: var(--color-dorado-claro);
+		stroke-width: 1.5;
+	}
+	.tapa {
+		fill: var(--color-dorado-claro);
+	}
+	.brillo {
+		fill: rgb(255 255 255 / 0.55);
+		transform: rotate(-30deg);
+		transform-box: fill-box;
+		transform-origin: center;
+	}
+	/* Cada esfera se balancea desde su punto de cuelgue, a su propio ritmo. */
+	.esfera {
+		transform-box: view-box;
+		animation: balanceo 4.2s ease-in-out infinite alternate;
+	}
+	.rojo {
+		transform-origin: 42px 0;
+	}
+	.amarillo {
+		transform-origin: 100px 0;
+		animation-duration: 3.6s;
+		animation-delay: -1s;
+	}
+	.verde {
+		transform-origin: 158px 0;
+		animation-duration: 4.8s;
+		animation-delay: -2s;
+	}
+	@keyframes balanceo {
+		from {
+			transform: rotate(-4deg);
+		}
+		to {
+			transform: rotate(4deg);
+		}
+	}
+</style>

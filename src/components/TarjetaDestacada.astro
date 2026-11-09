@@ -2,7 +2,9 @@
 // Tarjeta del próximo evento destacado (`destacado: true`), con cuenta regresiva.
 //  - `vertical`: en la portada, junto al título. `horizontal`: en Formación y eventos.
 //  - Con fecha exacta: días, horas, minutos y segundos en vivo. Con `por_confirmar`: "Faltan unos N meses".
+//  - Con `tema: navidad`: barra color vino y, si no hay afiche, las esferas del logo colgadas como adornos.
 import { Image } from 'astro:assets';
+import AdornoNavidad from './AdornoNavidad.astro';
 import { LOCALE_INTL, ZONA_HORARIA, formato, ruta, t, type Idioma } from '../i18n';
 import { fechaDelEvento } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
@@ -33,7 +35,7 @@ const partes = [
 ];
 ---
 
-<article class:list={['destacada', forma]} aria-labelledby={`destacado-${forma}`}>
+<article class:list={['destacada', forma, { navidad: datos.tema === 'navidad' }]} aria-labelledby={`destacado-${forma}`}>
 	{
 		forma === 'vertical' && (
 			<p class="barra">
@@ -43,10 +45,16 @@ const partes = [
 		)
 	}
 	{
-		datos.imagen && (
+		datos.imagen ? (
 			<div class="visual">
 				<Image src={datos.imagen} alt="" widths={[320, 640]} sizes={forma === 'vertical' ? '20rem' : '(max-width: 48rem) 80vw, 24rem'} loading="eager" />
 			</div>
+		) : (
+			datos.tema === 'navidad' && (
+				<div class="visual adorno">
+					<AdornoNavidad />
+				</div>
+			)
 		)
 	}
 	<div class="texto">
@@ -248,6 +256,21 @@ const partes = [
 	}
 	.acciones {
 		margin: 1.25rem 0 0;
+	}
+
+	/* Navidad: barra y números color vino; las esferas colgadas en lugar del afiche. */
+	.navidad .barra {
+		background: linear-gradient(160deg, #8a1a2c, #561020);
+	}
+	.navidad .numero {
+		color: #8a1a2c;
+	}
+	.adorno {
+		padding: 0 1.25rem 0.5rem;
+		background: linear-gradient(#fbf1e2, #fff);
+	}
+	.adorno :global(.adorno-navidad) {
+		max-width: 11rem;
 	}
 
 	/* Forma horizontal: imagen a la izquierda y texto a la derecha. */

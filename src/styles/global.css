@@ -533,3 +533,44 @@ a:hover .flecha {
 		transition: none;
 	}
 }
+
+/* ---------- Navidad (decoración de temporada) ---------- */
+
+/* Banda de un evento con `tema: navidad`: vino profundo con brillo dorado y textos color crema. */
+.tema-navidad {
+	--texto-banda: #f6e3d6;
+	--texto-banda-suave: #e4c3b2;
+	background:
+		radial-gradient(ellipse at 85% 0%, rgb(235 186 60 / 0.18), transparent 55%),
+		linear-gradient(160deg, #8a1a2c, #561020);
+}
+/* Nieve que cae despacio detrás del contenido (portada y bandas navideñas). Quieta con "reducir movimiento". */
+.nieve::after,
+.tema-navidad::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	background-image:
+		radial-gradient(circle at 20% 30%, rgb(255 255 255 / 0.9) 0 1.5px, transparent 2.2px),
+		radial-gradient(circle at 70% 60%, rgb(255 255 255 / 0.8) 0 1px, transparent 1.6px),
+		radial-gradient(circle at 40% 80%, rgb(255 255 255 / 0.7) 0 2px, transparent 2.8px),
+		radial-gradient(circle at 85% 15%, rgb(255 255 255 / 0.6) 0 1.2px, transparent 1.8px);
+	background-size:
+		160px 160px,
+		220px 220px,
+		300px 300px,
+		120px 120px;
+	opacity: 0.45;
+	animation: nevar 30s linear infinite;
+}
+@keyframes nevar {
+	to {
+		background-position:
+			0 160px,
+			220px 440px,
+			-300px 300px,
+			0 240px;
+	}
+}

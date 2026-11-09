@@ -49,12 +49,18 @@ const eventos = defineCollection({
 				estado: z.enum(['programado', 'agotado', 'pospuesto', 'cancelado']).default('programado'),
 				facilitadores: z.array(reference('personas')).default([]),
 				gratuito: z.boolean().default(false),
+				/**
+				 * Precios. `desde` / `hasta`: vigencia de un precio (preventa); el vencido deja de mostrarse solo.
+				 * `internacional`: tarifa para quienes pagan desde fuera de Bolivia (normalmente en `usd`).
+				 */
 				costos: z
 					.array(
 						z.object({
-							categoria: z.enum(['general', 'socio', 'no_socio', 'estudiante']),
+							categoria: z.enum(['general', 'socio', 'no_socio', 'estudiante', 'internacional']),
 							bob: z.number().nonnegative().optional(),
 							usd: z.number().nonnegative().optional(),
+							desde: fechaHora.optional(),
+							hasta: fechaHora.optional(),
 						}),
 					)
 					.default([]),
@@ -71,6 +77,12 @@ const eventos = defineCollection({
 				por_confirmar: z.boolean().default(false),
 				/** Evento principal del año: aparece en la portada con cuenta regresiva. */
 				destacado: z.boolean().default(false),
+				/** Decoración de temporada para la página del evento y su anuncio en la portada. */
+				tema: z.enum(['navidad']).optional(),
+				/** WhatsApp para consultas, con código de país y sin espacios ni "+": "59170623387". */
+				whatsapp: z.string().regex(/^\d{8,15}$/, 'WhatsApp con código de país, solo números: "59170623387".').optional(),
+				/** true mientras la inscripción está abierta pero aún no se publican los costos (se muestra "Por confirmar"). */
+				costos_por_confirmar: z.boolean().default(false),
 				/**
 				 * Fotos del evento, en la subcarpeta `galeria/` (WebP de hasta 1600 px). `descripcion` describe la foto para
 				 * quien no la ve (lectores de pantalla y Google). Solo personas que aceptaron aparecer; nunca terceros reconocibles.
@@ -80,18 +92,49 @@ const eventos = defineCollection({
 			.refine((e) => e.modalidad || e.por_confirmar, { error: 'Indica la "modalidad" (presencial, online o hibrido).', path: ['modalidad'] })
 			.refine((e) => !e.modalidad || e.modalidad === 'online' || e.lugar, { error: 'Un evento presencial o híbrido necesita "lugar".', path: ['lugar'] })
 			.refine((e) => !e.fin || e.fin > e.inicio, { error: '"fin" debe ser posterior a "inicio".', path: ['fin'] })
-			.refine((e) => e.gratuito || e.costos.length > 0 || e.solo_socios || e.por_confirmar || (e.fin ?? e.inicio) < new Date(), {
+			.refine((e) => e.gratuito || e.costos.length > 0 || e.costos_por_confirmar || e.solo_socios || e.por_confirmar || (e.fin ?? e.inicio) < new Date(), {
 				error: 'Indica los "costos" o marca "gratuito: true" (no hace falta en eventos ya realizados).',
 				path: ['costos'],
 			}),
 });
+
+const HORA = /^\d{2}:\d{2}$/;
+const AVISO_HORA = 'Hora de Bolivia en formato 24 h, entre comillas: "18:30".';
+
+/**
+ * Programa de un evento, por día. Las horas son de Bolivia. `tipo`: taller, conferencia, bienvenida, cierre o pausa
+ * (descanso, almuerzo). `pais`: código de dos letras (bo, mx, co, de...). `persona`: archivo de src/content/personas/
+ * si quien expone tiene ficha (se muestra su foto).
+ */
+const programa = z
+	.array(
+		z.object({
+			fecha: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Fecha del día: "2026-12-05".'),
+			titulo: z.string(),
+			actividades: z.array(
+				z.object({
+					inicio: z.string().regex(HORA, AVISO_HORA),
+					fin: z.string().regex(HORA, AVISO_HORA),
+					tipo: z.enum(['taller', 'conferencia', 'bienvenida', 'cierre', 'pausa']).default('conferencia'),
+					titulo: z.string().optional(),
+					ponente: z.string().optional(),
+					pais: z.string().regex(/^[a-z]{2}$/, 'País con su código de dos letras en minúsculas: "bo".').optional(),
+					persona: reference('personas').optional(),
+				}),
+			),
+		}),
+	)
+	.default([]);
 
 const eventosTextos = defineCollection({
 	loader: glob({ pattern: '*/{es,en,pt}.md', base: './src/content/eventos', generateId: sinExtension }),
 	schema: z.object({
 		titulo: z.string().max(100),
 		resumen: z.string().max(200, 'El resumen debe tener como máximo 200 caracteres.'),
+		/** Tema central o lema del evento (una frase). */
+		lema: z.string().optional(),
 		dirigido_a: z.string().optional(),
+		programa,
 		preguntas: z.array(pregunta).default([]),
 	}),
 });

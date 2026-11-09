@@ -45,7 +45,14 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 ## Eventos
 
 - [ ] Próximos eventos (datos + afiche)
-- [ ] III Jornadas Navideñas (diciembre 2026): ya publicado como anuncio. Faltan fechas exactas, horario, modalidad (presencial / en línea), ciudad y sede, costos, inscripción, afiche, tema y ponentes
+- [x] III Jornadas Navideñas (4 y 5 de diciembre de 2026): programa completo, ponentes, modalidad en línea, inscripción y WhatsApp cargados ✔ (09/11/2026). Faltan:
+  - [x] **Costos** ✔ Bs 120 hasta el 1 de diciembre, Bs 150 desde el 2, USD 20 tarifa internacional
+  - [ ] **Plataforma** (Zoom, Meet...)
+  - [ ] **Certificado:** si se entrega, horas y aval
+  - [ ] **Fecha límite de inscripción** (si la hay; si no, la inscripción se cierra sola al empezar el evento)
+  - [ ] Confirmar el **enlace de inscripción** (el QR del segundo afiche lleva al mismo): lo saqué del QR del afiche (https://forms.gle/JNJT2veLtfBcMcFV8). El QR pasa por qrfy.io; en la web va directo al formulario
+  - [ ] Confirmar el país de Laura Inés Rivera Betancourt y de Daniel Enríquez Cruz (el afiche muestra Bolivia)
+  - [ ] Opcional: foto y una línea de presentación de los ponentes invitados (hoy salen con sus iniciales)
 - [ ] XI SIALAPCCO Bolivia (marzo 2027, Santa Cruz): ya publicado como anuncio con afiche. Faltan fechas exactas, horario, sede, costos, enlace de inscripción, programa, horas y aval, y qué significa la sigla SIALAPCCO
 - [x] Eventos realizados con galería ✔: II Encuentro Internacional (Cochabamba, 4–5 sep. 2026) y Primer Congreso Nacional (Santa Cruz, 2023)
 - [ ] Primer Congreso Nacional: confirmar fechas (puse 28 y 29 de abril de 2023, según la hoja de vida de Alix), sede y nombre exacto

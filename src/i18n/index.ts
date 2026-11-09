@@ -73,3 +73,14 @@ export function formatearMoneda(monto: number, moneda: 'BOB' | 'USD', idioma: Id
 		maximumFractionDigits: decimales,
 	}).format(monto);
 }
+
+/** Texto en singular o plural según `n`: plural({ one: '{n} día', other: '{n} días' }, 2, 'es') → "2 días". */
+export function plural(textos: { one: string; other: string }, n: number, idioma: Idioma): string {
+	const forma = new Intl.PluralRules(LOCALE_INTL[idioma]).select(n) === 'one' ? 'one' : 'other';
+	return formato(textos[forma], { n });
+}
+
+/** Nombre de un país por su código de dos letras: nombrePais('mx', 'es') → "México". */
+export function nombrePais(codigo: string, idioma: Idioma): string {
+	return new Intl.DisplayNames([LOCALE_INTL[idioma]], { type: 'region' }).of(codigo.toUpperCase()) ?? codigo.toUpperCase();
+}

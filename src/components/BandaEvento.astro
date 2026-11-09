@@ -1,0 +1,247 @@
+---
+// Anuncio grande del evento destacado en la portada (solo si tiene `programa`): fecha y modalidad, título, lema,
+// cifras del programa (días, talleres, conferencias, países), botones y la lista de ponentes.
+// Con `tema: navidad`, en vino con nieve y las esferas del logo colgadas como adornos.
+import AdornoNavidad from './AdornoNavidad.astro';
+import BanderaPais from './BanderaPais.astro';
+import Icono from './Icono.astro';
+import PonentesEvento from './PonentesEvento.astro';
+import { formato, plural, ruta, t, type Idioma } from '../i18n';
+import { contactoWhatsapp, costoVigente, fechaDelEvento, inscripcionAbierta, resumenDelPrograma, textoCosto } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+}
+
+const { evento, idioma } = Astro.props;
+const textos = t(idioma);
+const ev = textos.eventos;
+const { datos } = evento;
+const { titulo, lema, resumen } = evento.texto.data;
+const href = ruta('eventos', idioma, evento.slug);
+const r = resumenDelPrograma(evento);
+const cifras = [
+	r.dias && plural(ev.resumenPrograma.dias, r.dias, idioma),
+	r.talleres && plural(ev.resumenPrograma.talleres, r.talleres, idioma),
+	r.conferencias && plural(ev.resumenPrograma.conferencias, r.conferencias, idioma),
+	r.paises.length && plural(ev.resumenPrograma.paises, r.paises.length, idioma),
+].filter(Boolean);
+const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.mensajeWhatsapp, { evento: titulo }));
+const navidad = datos.tema === 'navidad';
+// La portada se arma en cada visita: solo los precios vigentes (la preventa desaparece sola al vencer).
+const precios = datos.costos.filter((c) => costoVigente(c)).map((c) => textoCosto(c, idioma));
+---
+
+<section class:list={['banda', 'banda-azul', 'banda-hoja', 'anuncio', { 'tema-navidad': navidad }]} aria-labelledby="titulo-anuncio">
+	<div class="texto">
+		<p class="antetitulo">
+			{fechaDelEvento(evento, idioma)}
+			{datos.modalidad && <> · {ev.modalidades[datos.modalidad]}</>}
+		</p>
+		<h2 id="titulo-anuncio">
+			<a href={href}>{titulo}</a>
+		</h2>
+		{lema && <p class="lema">{lema}</p>}
+		<p class="resumen">{resumen}</p>
+		<ul class="cifras">
+			{cifras.map((c) => <li>{c}</li>)}
+		</ul>
+		{
+			r.paises.length > 0 && (
+				<p class="paises">
+					<span>{ev.especialistas}</span>
+					{r.paises.map((p) => (
+						<BanderaPais codigo={p} idioma={idioma} />
+					))}
+				</p>
+			)
+		}
+		{
+			precios.length > 0 && (
+				<ul class="precios">
+					{precios.map((p) => (
+						<li>
+							<strong>{p.monto}</strong>
+							<span>{p.leyenda}</span>
+						</li>
+					))}
+				</ul>
+			)
+		}
+		<p class="acciones">
+			{
+				inscripcionAbierta(evento) && datos.inscripcion && (
+					<a class="boton boton-dorado" href={datos.inscripcion.url} rel="noopener">
+						{textos.comun.inscribirme} <span class="flecha" aria-hidden="true">→</span>
+					</a>
+				)
+			}
+			<a class="boton boton-contorno" href={`${href}#programa`}>{ev.verPrograma}</a>
+		</p>
+		{
+			whatsapp && (
+				<p class="whatsapp">
+					<Icono nombre="dialogo" />
+					<a href={whatsapp.url} rel="noopener">
+						{ev.whatsapp} <strong>{whatsapp.visible}</strong>
+					</a>
+				</p>
+			)
+		}
+	</div>
+	<div class="lateral">
+		{navidad && <AdornoNavidad class="adorno" />}
+		<div class="tarjeta ponentes">
+			<h3>{ev.ponentes}</h3>
+			<PonentesEvento evento={evento} idioma={idioma} compacto />
+		</div>
+	</div>
+</section>
+
+<style>
+	.anuncio {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		gap: 3rem 4rem;
+		align-items: start;
+		overflow: hidden;
+	}
+	.texto,
+	.lateral {
+		position: relative;
+		z-index: 1;
+	}
+	h2 {
+		margin: 1rem 0 0.5rem;
+		font-size: clamp(2.4rem, 1.6rem + 3vw, 3.75rem);
+		line-height: 1.05;
+	}
+	h2 a {
+		text-decoration: none;
+	}
+	h2 a:hover {
+		text-decoration: underline;
+		text-decoration-thickness: 2px;
+	}
+	.lema {
+		margin: 0 0 1.25rem;
+		font-family: var(--fuente-titulos);
+		font-size: clamp(1.2rem, 1rem + 0.8vw, 1.5rem);
+		font-style: italic;
+		line-height: 1.35;
+		color: var(--color-dorado-claro);
+	}
+	.resumen {
+		max-width: 34rem;
+		margin: 0;
+		color: var(--texto-banda);
+	}
+	.cifras {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: 1.5rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.cifras li {
+		padding: 0.35rem 0.9rem;
+		border: 1px solid rgb(255 255 255 / 0.3);
+		border-radius: 999px;
+		background: rgb(255 255 255 / 0.08);
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: #fff;
+	}
+	.paises {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem 1rem;
+		margin: 1.25rem 0 0;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.875rem;
+		color: var(--texto-banda);
+	}
+	.paises > span:first-child {
+		color: var(--texto-banda-suave);
+	}
+	/* Precios como en el afiche: monto grande y su leyenda debajo, separados por líneas doradas. */
+	.precios {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 1.75rem 0 0;
+		padding: 0.9rem 0;
+		border: 1px solid rgb(235 186 60 / 0.55);
+		border-radius: var(--radio);
+		background: rgb(255 255 255 / 0.06);
+		list-style: none;
+	}
+	.precios li {
+		display: grid;
+		flex: 1 1 8rem;
+		justify-items: center;
+		gap: 0.15rem;
+		padding: 0.25rem 1rem;
+		text-align: center;
+	}
+	.precios li + li {
+		border-left: 1px solid rgb(235 186 60 / 0.4);
+	}
+	.precios strong {
+		font-family: var(--fuente-titulos);
+		font-size: 1.9rem;
+		font-weight: 600;
+		line-height: 1.1;
+		color: #fff;
+	}
+	.precios span {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--texto-banda);
+	}
+	.acciones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin: 2rem 0 0;
+	}
+	.whatsapp {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 1.25rem 0 0;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.9375rem;
+	}
+	.whatsapp :global(.icono) {
+		color: var(--color-dorado-claro);
+	}
+	.lateral :global(.adorno) {
+		width: 11rem;
+		margin: -1rem auto -0.5rem;
+	}
+	.ponentes {
+		padding: 1.5rem;
+		box-shadow: var(--sombra-grande);
+		color: var(--color-texto);
+	}
+	.ponentes h3 {
+		margin: 0 0 1.25rem;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--color-dorado);
+	}
+
+	@media (max-width: 56rem) {
+		.anuncio {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

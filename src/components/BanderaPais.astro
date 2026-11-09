@@ -1,0 +1,74 @@
+---
+// País de quien expone: banderita redonda (como una esfera de árbol) y su nombre. La bandera es decorativa: el nombre
+// del país siempre se lee (o queda para lectores de pantalla con `soloBandera`).
+import { nombrePais, type Idioma } from '../i18n';
+
+interface Props {
+	codigo: string;
+	idioma: Idioma;
+	soloBandera?: boolean;
+}
+
+const { codigo, idioma, soloBandera = false } = Astro.props;
+const nombre = nombrePais(codigo, idioma);
+---
+
+<span class="pais" title={soloBandera ? nombre : undefined}>
+	<span class:list={['bandera', `bandera-${codigo}`]} aria-hidden="true"></span>
+	<span class:list={{ 'visualmente-oculto': soloBandera }}>{nombre}</span>
+</span>
+
+<style>
+	.pais {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		white-space: nowrap;
+	}
+	/* Círculo con los colores de la bandera y un brillo, como una esfera de Navidad. Sin bandera: dorado. */
+	.bandera {
+		position: relative;
+		flex-shrink: 0;
+		width: 1em;
+		height: 1em;
+		overflow: hidden;
+		border-radius: 50%;
+		background: var(--color-dorado-claro);
+		box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12);
+	}
+	.bandera::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(circle at 32% 28%, rgb(255 255 255 / 0.7), transparent 38%);
+	}
+	.bandera-bo {
+		background: linear-gradient(#d52b1e 0 33.3%, #f9e300 33.3% 66.6%, #007934 66.6%);
+	}
+	.bandera-mx {
+		background: linear-gradient(90deg, #006847 0 33.3%, #fff 33.3% 66.6%, #ce1126 66.6%);
+	}
+	.bandera-co {
+		background: linear-gradient(#fcd116 0 50%, #003893 50% 75%, #ce1126 75%);
+	}
+	.bandera-de {
+		background: linear-gradient(#000 0 33.3%, #dd0000 33.3% 66.6%, #ffce00 66.6%);
+	}
+	.bandera-ar {
+		background: linear-gradient(#74acdf 0 33.3%, #fff 33.3% 66.6%, #74acdf 66.6%);
+	}
+	.bandera-pe {
+		background: linear-gradient(90deg, #d91023 0 33.3%, #fff 33.3% 66.6%, #d91023 66.6%);
+	}
+	.bandera-es {
+		background: linear-gradient(#aa151b 0 25%, #f1bf00 25% 75%, #aa151b 75%);
+	}
+	.bandera-cl {
+		background:
+			linear-gradient(#0039a6, #0039a6) 0 0 / 45% 50% no-repeat,
+			linear-gradient(#fff 0 50%, #d52b1e 50%);
+	}
+	.bandera-br {
+		background: radial-gradient(circle, #002776 0 22%, #ffdf00 23% 45%, #009c3b 46%);
+	}
+</style>

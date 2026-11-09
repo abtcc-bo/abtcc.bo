@@ -117,11 +117,46 @@
 			"general": "General",
 			"socio": "Socios",
 			"no_socio": "No socios",
-			"estudiante": "Estudiantes"
+			"estudiante": "Estudiantes",
+			"internacional": "Tarifa internacional"
 		},
 		"miembrosAntetitulo": "Para miembros",
 		"miembrosTitulo": "Al menos un 10 % de descuento y acceso preferente a toda la agenda",
-		"miembrosBoton": "Conocer la membresía"
+		"miembrosBoton": "Conocer la membresía",
+		"programa": "Programa",
+		"ponentes": "Ponentes",
+		"verPrograma": "Ver el programa",
+		"whatsapp": "Información por WhatsApp",
+		"especialistas": "Especialistas de",
+		"horasBolivia": "Todos los horarios en hora de Bolivia (UTC−4).",
+		"resumenPrograma": {
+			"dias": {
+				"one": "{n} día",
+				"other": "{n} días"
+			},
+			"talleres": {
+				"one": "{n} taller",
+				"other": "{n} talleres"
+			},
+			"conferencias": {
+				"one": "{n} conferencia",
+				"other": "{n} conferencias"
+			},
+			"paises": {
+				"one": "{n} país",
+				"other": "{n} países"
+			}
+		},
+		"tiposActividad": {
+			"taller": "Taller",
+			"conferencia": "Conferencia",
+			"bienvenida": "Bienvenida",
+			"cierre": "Cierre",
+			"pausa": "Pausa"
+		},
+		"mensajeWhatsapp": "Hola, quiero información sobre {evento}.",
+		"costoHasta": "hasta el {fecha}",
+		"costoDesde": "desde el {fecha}"
 	},
 	"contacto": {
 		"correo": "Correo electrónico",

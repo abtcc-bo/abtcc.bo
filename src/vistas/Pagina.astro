@@ -3,6 +3,7 @@
 // src/lib/paginas.ts. La usan [...ruta].astro (páginas estáticas) y las páginas dinámicas de src/pages/{es,en,pt}/.
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import CabeceraEvento from '../components/CabeceraEvento.astro';
 import CabeceraPagina from '../components/CabeceraPagina.astro';
 import { VISTAS } from './index';
 import Articulo from './Articulo.astro';
@@ -125,7 +126,10 @@ const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${texto
 			migas={migasHasta('eventos')}
 			nombreEnMigas={nombre}
 			imagen={imagenRedes}
+			conCabecera
+			temaCabecera={props.evento.datos.tema}
 		>
+			<CabeceraEvento slot="cabecera" evento={props.evento} idioma={idioma} />
 			<DetalleEvento evento={props.evento} idioma={idioma} />
 		</Base>
 	)

@@ -117,11 +117,46 @@
 			"general": "General",
 			"socio": "Members",
 			"no_socio": "Non-members",
-			"estudiante": "Students"
+			"estudiante": "Students",
+			"internacional": "International rate"
 		},
 		"miembrosAntetitulo": "For members",
 		"miembrosTitulo": "At least 10% off and priority access to the whole agenda",
-		"miembrosBoton": "About membership"
+		"miembrosBoton": "About membership",
+		"programa": "Program",
+		"ponentes": "Speakers",
+		"verPrograma": "See the program",
+		"whatsapp": "Questions on WhatsApp",
+		"especialistas": "Specialists from",
+		"horasBolivia": "All times in Bolivia time (UTC−4).",
+		"resumenPrograma": {
+			"dias": {
+				"one": "{n} day",
+				"other": "{n} days"
+			},
+			"talleres": {
+				"one": "{n} workshop",
+				"other": "{n} workshops"
+			},
+			"conferencias": {
+				"one": "{n} talk",
+				"other": "{n} talks"
+			},
+			"paises": {
+				"one": "{n} country",
+				"other": "{n} countries"
+			}
+		},
+		"tiposActividad": {
+			"taller": "Workshop",
+			"conferencia": "Talk",
+			"bienvenida": "Welcome",
+			"cierre": "Closing",
+			"pausa": "Break"
+		},
+		"mensajeWhatsapp": "Hello, I would like information about {evento}.",
+		"costoHasta": "until {fecha}",
+		"costoDesde": "from {fecha}"
 	},
 	"contacto": {
 		"correo": "Email",

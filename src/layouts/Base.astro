@@ -25,8 +25,10 @@ interface Props {
 	alternos: Alternos;
 	/** Migas de pan sin incluir la página actual al final; se omiten en la portada. */
 	migas?: Miga[];
-	/** true = la página trae cabecera verde (slot "cabecera"); las migas van dentro de ella. */
+	/** true = la página trae cabecera azul (slot "cabecera"); las migas van dentro de ella. */
 	conCabecera?: boolean;
+	/** Decoración de temporada de la cabecera (p. ej. "navidad" → clase `tema-navidad`, en global.css). */
+	temaCabecera?: string;
 	/** Nombre de la página actual en las migas. */
 	nombreEnMigas?: string;
 	/** Imagen para redes (1200×630). Ruta en /public o URL. */
@@ -43,6 +45,7 @@ const {
 	alternos,
 	migas = [],
 	conCabecera = false,
+	temaCabecera,
 	nombreEnMigas,
 	imagen = ORGANIZACION.imagenRedes,
 	tipo = 'website',
@@ -130,7 +133,7 @@ const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href:
 		<main id="contenido" class="contenedor">
 			{
 				conCabecera ? (
-					<section class="cabecera-pagina banda banda-azul">
+					<section class:list={['cabecera-pagina banda banda-azul', temaCabecera && `tema-${temaCabecera}`]}>
 						{migasCompletas.length > 1 && <Migas idioma={idioma} migas={migasCompletas} />}
 						<slot name="cabecera" />
 					</section>

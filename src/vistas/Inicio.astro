@@ -2,6 +2,7 @@
 // Portada. Textos en src/content/paginas/{idioma}/inicio.md (campo `portada`); sin ese archivo se muestran solo
 // el título, la agenda y las fotos. Se mantienen el carrusel de próximos eventos, la franja de fotos y las animaciones.
 import type { CollectionEntry } from 'astro:content';
+import BandaEvento from '../components/BandaEvento.astro';
 import CarruselEventos from '../components/CarruselEventos.astro';
 import CintaConceptos from '../components/CintaConceptos.astro';
 import FranjaFotos from '../components/FranjaFotos.astro';
@@ -12,6 +13,7 @@ import logoSimbolo from '../assets/logo-simbolo.png';
 import RegistroAcumulativo from '../components/RegistroAcumulativo.astro';
 import TarjetaDestacada from '../components/TarjetaDestacada.astro';
 import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
+import { esNavidad } from '../datos/temporada';
 import { formato, ruta, t, type Idioma } from '../i18n';
 
 interface Props {
@@ -31,7 +33,7 @@ const destacado = proximos.find((e) => e.datos.destacado);
 const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 ---
 
-<section class="portada banda banda-azul" aria-labelledby="titulo-portada">
+<section class:list={['portada banda banda-azul', { nieve: esNavidad() }]} aria-labelledby="titulo-portada">
 	<RegistroAcumulativo />
 	<div class="presentacion">
 		{p && <p class="antetitulo">{p.antetitulo}</p>}
@@ -71,6 +73,8 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 </section>
 
 {p && <CintaConceptos conceptos={p.conceptos} etiqueta={v.conceptos} />}
+
+{destacado && destacado.texto.data.programa.length > 0 && <BandaEvento evento={destacado} idioma={idioma} />}
 
 {
 	p?.caminos && (

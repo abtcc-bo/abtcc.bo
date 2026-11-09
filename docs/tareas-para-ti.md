@@ -46,7 +46,17 @@ Las páginas ya están armadas con los títulos de cada parte; solo falta el tex
 - [ ] **Aviso legal:** confirmar el domicilio (Calle 2, N° 1, barrio Las Palmas), nombre del representante legal (según el estatuto, quien ejerza la Presidencia) y número de personería jurídica (cuando salga).
 - [ ] **Revisión legal:** te dejé un **borrador** de Política de privacidad y de Aviso legal. Conviene que lo lea alguien con formación legal antes de publicar.
 
-### 5. Revisar las novedades de diseño (noviembre 2026)
+### 5. III Jornadas Navideñas (4 y 5 de diciembre)
+Ya están en la web con su programa, ponentes, inscripción y WhatsApp, y la portada tiene decoración navideña. Falta (detalle en `docs/datos-pendientes.md`):
+
+- [x] **Costos** de inscripción ✔
+- [ ] **Plataforma** (Zoom, Meet...) y si hay **certificado** (horas y aval).
+- [ ] Confirmar que el **formulario de inscripción** es el correcto: https://forms.gle/JNJT2veLtfBcMcFV8
+- [ ] Opcional: **fotos** de los ponentes invitados (cuadradas) para reemplazar sus iniciales.
+
+La decoración navideña (gorrito del logo y nieve) se apaga sola después del 6 de enero en la portada; en las demás páginas, con la primera publicación posterior a esa fecha.
+
+### 6. Revisar las novedades de diseño (noviembre 2026)
 Se agregaron preguntas frecuentes, los "tres caminos" de la portada y el blog. Lo que falta está anotado en `docs/datos-pendientes.md` → "Mejoras de diseño". Lo más importante:
 
 - [ ] **Número de emergencias y línea de crisis en Bolivia** para el aviso de la portada (tarjeta "Busco atención psicológica"). Que lo confirme alguien de la comisión.
