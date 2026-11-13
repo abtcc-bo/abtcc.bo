@@ -423,5 +423,44 @@
 	},
 	"anuncio": {
 		"abiertas": "Inscrições abertas"
+	},
+	"preinscripcion": {
+		"antetitulo": "Reserve a data",
+		"titulo": "Faça sua pré-inscrição",
+		"texto": "Deixe seus dados e avisaremos assim que as inscrições forem abertas e os valores publicados. Não tem custo nem gera compromisso.",
+		"nombre": "Nome",
+		"apellido": "Sobrenome",
+		"correo": "E-mail",
+		"pais": "País",
+		"whatsapp": "WhatsApp com código do país (opcional)",
+		"categoria": "Participo como",
+		"categorias": {
+			"profesional": "Profissional",
+			"estudiante": "Estudante",
+			"miembro_alapcco": "Membro da ALAPCCO"
+		},
+		"consentimiento": "Aceito que a ABTCC use estes dados apenas para me avisar sobre este evento, conforme a sua",
+		"politica": "Política de privacidade",
+		"enviar": "Fazer pré-inscrição",
+		"enviando": "Enviando…",
+		"exitoTitulo": "Pronto! Você já está na lista.",
+		"exito": "Escreveremos para o e-mail informado assim que as inscrições forem abertas.",
+		"avisarWhatsapp": "Avisar também pelo WhatsApp",
+		"mensajeWhatsapp": "Olá, sou {nombre}. Fiz a pré-inscrição no {evento} como {categoria}.",
+		"porWhatsapp": "Prefere fazer pelo WhatsApp? Escreva para nós e anotamos você.",
+		"escribirWhatsapp": "Escrever pelo WhatsApp",
+		"mensajeAnotarme": "Olá, quero fazer a pré-inscrição no {evento}.",
+		"errores": {
+			"general": "Não foi possível registrar sua pré-inscrição. Tente novamente em alguns minutos ou escreva diretamente para",
+			"revisa": "Revise os campos marcados.",
+			"nombre": "Escreva seu nome (entre 2 e 100 caracteres).",
+			"apellido": "Escreva seu sobrenome (entre 2 e 100 caracteres).",
+			"correo": "Escreva um e-mail válido.",
+			"pais": "Escreva o país onde você mora.",
+			"whatsapp": "Escreva o número com o código do país, por exemplo +591 70000000, ou deixe o campo vazio.",
+			"consentimiento": "Precisamos do seu consentimento para poder avisar você.",
+			"demasiados": "Recebemos vários envios da sua conexão. Aguarde alguns minutos antes de tentar novamente.",
+			"verificacion": "Não foi possível verificar que você não é um robô. Recarregue a página e tente novamente."
+		}
 	}
 }

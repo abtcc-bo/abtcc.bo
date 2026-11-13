@@ -56,6 +56,36 @@ Ya están en la web con su programa, ponentes, inscripción y WhatsApp, y la por
 
 La decoración navideña (gorrito del logo y nieve) se apaga sola después del 6 de enero en la portada; en las demás páginas, con la primera publicación posterior a esa fecha.
 
+### 5 bis. XI SIALAPCCO Bolivia: preinscripción (12 y 13 de marzo de 2027)
+La página del evento ya muestra el Save the Date y un formulario de preinscripción. Cada preinscripción **llega al correo abtcc.bo@gmail.com** con todos los datos (esto funciona apenas se publique, sin que hagas nada). Para que además quede guardada en un **registro seguro** (una tabla que solo ustedes ven), falta crear ese registro. Son unos 15 minutos, una sola vez:
+
+**A. Crear la cuenta y el proyecto en Supabase**
+- [ ] Entra a https://supabase.com → **Start your project** → regístrate con el Gmail de la asociación (**abtcc.bo@gmail.com**), no con tu cuenta personal.
+- [ ] **New project**. Nombre: `abtcc`. Región: **South America (São Paulo)**. Te pide una "Database password": genera una, guárdala donde guardan las demás contraseñas de la asociación (no me la pases; la web no la usa).
+- [ ] En tu cuenta (arriba a la derecha → **Account preferences → Security**), activa la **verificación en dos pasos**.
+
+**B. Crear la tabla**
+- [ ] En el proyecto, menú izquierdo → **SQL Editor** → **New query**.
+- [ ] Abre el archivo `supabase/preinscripciones.sql` de la carpeta del proyecto, copia **todo** su contenido, pégalo y presiona **Run**. Debe decir "Success".
+- [ ] Menú izquierdo → **Table Editor**: debe aparecer la tabla `preinscripciones`, vacía.
+
+**C. Conectar la web con el registro**
+- [ ] En Supabase: **Project Settings → API Keys** (y **Data API** para la dirección). Necesitas dos datos: la **Project URL** (algo como `https://xxxx.supabase.co`) y la clave **Publishable** (empieza con `sb_publishable_`). **No uses la "Secret"**: esa nunca sale de Supabase.
+- [ ] En Cloudflare: **Workers & Pages → abtcc → Settings → Variables and Secrets → Add**. Agrega dos, ambas de tipo **Secret** (las de tipo Texto se borran al publicar):
+  - `SUPABASE_URL` = la Project URL
+  - `SUPABASE_KEY` = la clave Publishable
+- [ ] Avísame: hago una preinscripción de prueba y revisamos juntos que aparezca en la tabla.
+
+**D. Datos que necesito de ti**
+- [ ] **WhatsApp del evento** (con código de país). Con él aparecen el botón "Avisar también por WhatsApp" (el mensaje sale con el nombre completo de la persona) y la opción de preinscribirse por WhatsApp.
+- [ ] Cuando existan: tarifas, **imagen del QR** de pago para Bolivia y **enlace de pago** internacional. Con eso armo la etapa 2 (pago y comprobante).
+
+**Cómo trabaja la persona encargada**
+- Recibe un correo por cada preinscripción, con nombre completo, correo, país, WhatsApp (con enlace para escribirle) y categoría.
+- La lista completa está en Supabase → **Table Editor → preinscripciones**; se puede descargar como hoja de cálculo (**Export → CSV**).
+- Si alguien se anota por WhatsApp, lo carga ella misma en el formulario de la web, o directo en la tabla con **Insert row** poniendo `origen` = `whatsapp`.
+- La columna `notas` es libre, para lo que necesite anotar.
+
 ### 6. Revisar las novedades de diseño (noviembre 2026)
 Se agregaron preguntas frecuentes, los "tres caminos" de la portada y el blog. Lo que falta está anotado en `docs/datos-pendientes.md` → "Mejoras de diseño". Lo más importante:
 
@@ -130,7 +160,7 @@ Primer lugar nadie lo garantiza, pero **buscando "ABTCC" o el nombre completo** 
 
 ## 🔁 Para que nada se desactive en los meses sin actividad
 
-La web se mantiene sola: la portada y los eventos se actualizan solos en cada visita, y cada medianoche (hora de Bolivia) Cloudflare ejecuta una tarea automática que, cuando exista el área de socios, mantendrá activo Supabase. No hace falta entrar a la web. Lo que sí depende de personas, una vez al año (por ejemplo, en enero, al iniciar la gestión):
+La web se mantiene sola: la portada y los eventos se actualizan solos en cada visita, y cada medianoche (hora de Bolivia) Cloudflare ejecuta una tarea automática que consulta Supabase (el registro de preinscripciones) para que su plan gratuito no lo pause por falta de uso. Si alguna vez apareciera pausado, se reactiva con un clic en su panel ("Restore project") y los datos no se pierden. No hace falta entrar a la web. Lo que sí depende de personas, una vez al año (por ejemplo, en enero, al iniciar la gestión):
 
 - [ ] **Iniciar sesión en abtcc.bo@gmail.com** y revisar que la verificación en dos pasos siga activa. Google borra las cuentas que pasan 2 años sin uso, y con ella se perderían Cloudflare y Resend.
 - [ ] **Entrar una vez a Cloudflare y Resend** con ese Gmail, para confirmar que todo sigue en orden.

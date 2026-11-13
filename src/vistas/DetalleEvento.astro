@@ -7,6 +7,7 @@ import { Image, getImage } from 'astro:assets';
 import { getEntries, render } from 'astro:content';
 import CierreEvento from '../components/CierreEvento.astro';
 import EventoConPrograma from './EventoConPrograma.astro';
+import FormularioPreinscripcion from '../components/FormularioPreinscripcion.astro';
 import GaleriaEvento from '../components/GaleriaEvento.astro';
 import JsonLd from '../components/JsonLd.astro';
 import PonentesEvento from '../components/PonentesEvento.astro';
@@ -32,6 +33,7 @@ const nombresPonentes = facilitadores.length ? facilitadores.map((p) => p.data.n
 const abierta = inscripcionAbierta(evento);
 const pasado = yaPaso(evento);
 const navidad = datos.tema === 'navidad';
+const conPreinscripcion = datos.preinscripcion && datos.estado === 'programado' && !pasado;
 const sitio = Astro.site!;
 const urlPagina = new URL(Astro.url.pathname, sitio).href;
 const imagenRedes = datos.imagen ? new URL((await getImage({ src: datos.imagen, width: 1200 })).src, sitio).href : undefined;
@@ -61,7 +63,7 @@ const compartir = [
 				<>
 					<dt>{ev.horario}</dt>
 					<dd>
-						{datos.por_confirmar ? ev.porConfirmar : horario(datos.inicio, datos.fin, idioma)}
+						{datos.por_confirmar || datos.horario_por_confirmar ? ev.porConfirmar : horario(datos.inicio, datos.fin, idioma)}
 						{
 							conHoraLocal && (
 								<span class="hora-local" data-hora-local data-inicio={isoBolivia(datos.inicio)} hidden>
@@ -205,6 +207,8 @@ const compartir = [
 	<div class="descripcion">
 		<Content />
 	</div>
+
+	{conPreinscripcion && <FormularioPreinscripcion evento={evento} idioma={idioma} />}
 
 	{programa.length > 0 && <ProgramaEvento evento={evento} idioma={idioma} />}
 

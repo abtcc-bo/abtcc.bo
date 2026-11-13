@@ -19,6 +19,7 @@ Solo pedimos los datos que necesitamos para cada fin:
 | Cuándo | Qué datos | Para qué |
 | --- | --- | --- |
 | Nos escribes por correo o por el formulario de contacto | Nombre, correo y tu mensaje | Responderte |
+| Te preinscribes a un evento | Nombres, apellidos, correo, país, WhatsApp (si lo das) y si participas como profesional, estudiante o miembro de ALAPCCO | Avisarte cuando se abran las inscripciones de ese evento |
 | Te inscribes a un evento | Los datos que pida el formulario de inscripción de ese evento | Gestionar tu participación y emitir tu certificado |
 | Solicitas ser miembro | Nombre, documento de identidad, datos de contacto, título, hoja de vida y documentos de respaldo | Evaluar tu solicitud y, si se aprueba, gestionar tu membresía |
 
@@ -33,6 +34,7 @@ Tratamos tus datos porque tú nos los das con ese fin y das tu consentimiento al
 - El sitio web está alojado en Cloudflare.
 - Los correos que nos envías se reciben en una cuenta de Google (Gmail) de la asociación.
 - Los mensajes del formulario de contacto se reenvían a ese correo mediante Resend, un servicio de envío de correos.
+- Las preinscripciones a eventos se guardan en una base de datos de Supabase a la que solo accede la comisión de la asociación, y se avisan a ese mismo correo mediante Resend.
 - Para filtrar mensajes automáticos (spam) usamos Cloudflare Turnstile, que verifica que quien escribe es una persona sin usar cookies de seguimiento.
 - [PENDIENTE: servicios que se agreguen más adelante: boletín, área de socios]
 

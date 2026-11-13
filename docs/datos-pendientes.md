@@ -53,7 +53,13 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
   - [ ] Confirmar el **enlace de inscripción** (el QR del segundo afiche lleva al mismo): lo saqué del QR del afiche (https://forms.gle/JNJT2veLtfBcMcFV8). El QR pasa por qrfy.io; en la web va directo al formulario
   - [ ] Confirmar el país de Laura Inés Rivera Betancourt y de Daniel Enríquez Cruz (el afiche muestra Bolivia)
   - [ ] Opcional: foto y una línea de presentación de los ponentes invitados (hoy salen con sus iniciales)
-- [ ] XI SIALAPCCO Bolivia (marzo 2027, Santa Cruz): ya publicado como anuncio con afiche. El mes está confirmado y el evento sigue en preparación (09/11/2026): la página lo dice así, sin [PENDIENTE]. Faltan fechas exactas, horario, sede, costos, enlace de inscripción, programa, horas y aval, y qué significa la sigla SIALAPCCO
+- [ ] XI SIALAPCCO Bolivia (12 y 13 de marzo de 2027, Santa Cruz de la Sierra; fechas de la minuta del 30/10/2026): publicado como Save the Date con afiche y formulario de preinscripción (13/11/2026). Faltan:
+  - [ ] WhatsApp del evento (para el botón "Avisar por WhatsApp" y la preinscripción por WhatsApp)
+  - [ ] Horario y sede (se evalúa un hotel; no publicar hasta que se confirme)
+  - [ ] Tarifas por categoría (estudiante, miembro de ALAPCCO, profesional) y precio de inscripción anticipada con su fecha límite
+  - [ ] Medios de pago: imagen del QR para Bolivia y enlace de pago internacional (etapa 2 de la inscripción)
+  - [ ] Si habrá modalidad virtual (hoy figura como presencial)
+  - [ ] Programa, ponentes, horas y aval del certificado, y qué significa la sigla SIALAPCCO
 - [x] Eventos realizados con galería ✔: II Encuentro Internacional (Cochabamba, 4–5 sep. 2026) y Primer Congreso Nacional (Santa Cruz, 2023)
 - [ ] Primer Congreso Nacional: confirmar fechas (puse 28 y 29 de abril de 2023, según la hoja de vida de Alix), sede y nombre exacto
 - [ ] II Encuentro Internacional: confirmar sede (las fotos muestran Unifranz) y nombres de los ponentes que no identifiqué (ponencias sobre el ecosistema de la salud mental, ACT-RFT y metáforas, terapia de pareja, inteligencia artificial)

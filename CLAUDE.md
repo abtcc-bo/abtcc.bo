@@ -81,6 +81,15 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 - Si Turnstile rechaza, la respuesta JSON trae `detalle` con el código de Cloudflare (`invalid-input-secret` = clave secreta mal cargada).
 - Sin dominio propio, Resend solo envía desde `onboarding@resend.dev` al correo dueño de la cuenta: no hay respuesta automática a quien escribe hasta tener dominio.
 
+## Preinscripción a eventos (etapa 1 de la inscripción del XI SIALAPCCO)
+
+- `preinscripcion: true` en `evento.yaml` → la página del evento (sin programa) muestra `FormularioPreinscripcion.astro` y un botón en la cabecera. Envía a `/api/preinscripcion/` (`prerender = false`); lógica en `src/lib/preinscripcion.ts`, mismo antispam que contacto.
+- Cada preinscripción se guarda en Supabase (tabla `preinscripciones`, definida en `supabase/preinscripciones.sql`) y se avisa por correo a la asociación. Vale con que quede en uno de los dos lados; un correo repetido para el mismo evento responde "listo" sin duplicar.
+- Seguridad: la web usa la clave **pública** de Supabase (`SUPABASE_KEY`, con `SUPABASE_URL`, secretos del Worker), que por RLS solo puede insertar; nunca usar la clave secreta/service role en la web. Los datos se ven solo en el panel de Supabase (cuenta abtcc.bo@gmail.com). `src/lib/supabase.ts` usa `fetch`, sin bibliotecas.
+- WhatsApp: la web no puede enviar mensajes sola. Con `whatsapp` en el evento, al terminar se ofrece un enlace con el mensaje escrito (nombre completo y categoría) y la opción de anotarse por WhatsApp (la encargada lo carga con `origen = whatsapp`).
+- `horario_por_confirmar: true`: se conocen los días pero no las horas (la página muestra "Por confirmar").
+- Etapa 2 (pendiente de QR, enlace de pago y tarifas): pago, subida de comprobante a un bucket privado, estados `pendiente_pago` → `comprobante_recibido` → `confirmado`, y correo a la encargada con botones "Confirmar pago" y "Avisar por WhatsApp".
+
 ## SEO técnico y seguridad
 
 - La lista de páginas del sitio sale de `src/lib/paginas.ts` (`paginasDelSitio`); la usan `[...ruta].astro` y `/sitemap.xml`. Solo las páginas `indexable` entran al sitemap.
@@ -92,7 +101,7 @@ Los esquemas en `src/content.config.ts` son la fuente de verdad de los campos. L
 ## Tarea diaria de mantenimiento
 
 - `scheduled` en `src/worker.ts`, programado en `wrangler.jsonc` → `triggers.crons` a las 04:00 UTC (medianoche en Bolivia). Corre aunque nadie entre a la web.
-- Hoy solo deja un registro (los eventos pasados ya no requieren reconstruir: la portada y el listado son dinámicos). Fase 3: agregar ahí la consulta a Supabase para que el plan gratuito no se pause.
+- Deja un registro y, si están `SUPABASE_URL` y `SUPABASE_KEY`, llama a la función `latido` de Supabase para que el plan gratuito no pause el proyecto (se pausa tras 7 días sin actividad).
 - No usar tareas programadas de GitHub Actions para esto: se desactivan tras 60 días sin cambios en el repositorio.
 
 ## Prohibiciones

@@ -115,9 +115,17 @@ function armarCorreo(m: Mensaje) {
  * y al correo con el que se creó la cuenta.
  */
 export async function enviar(m: Mensaje, opciones: { claveResend?: string; destino: string }): Promise<boolean> {
-	const { subject, text } = armarCorreo(m);
+	return enviarCorreo({ ...armarCorreo(m), replyTo: m.correo }, opciones);
+}
+
+/** Envía un correo a la asociación (lo usan el formulario de contacto y la preinscripción a eventos). */
+export async function enviarCorreo(
+	correo: { subject: string; text: string; replyTo: string },
+	opciones: { claveResend?: string; destino: string },
+): Promise<boolean> {
+	const { subject, text } = correo;
 	if (!opciones.claveResend) {
-		console.info(`[contacto · modo prueba] Para: ${opciones.destino}\n${subject}\n${text}`);
+		console.info(`[correo · modo prueba] Para: ${opciones.destino}\n${subject}\n${text}`);
 		return true;
 	}
 	try {
@@ -127,7 +135,7 @@ export async function enviar(m: Mensaje, opciones: { claveResend?: string; desti
 			body: JSON.stringify({
 				from: 'Web ABTCC <onboarding@resend.dev>',
 				to: [opciones.destino],
-				reply_to: m.correo,
+				reply_to: correo.replyTo,
 				subject,
 				text,
 			}),

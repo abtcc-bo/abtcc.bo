@@ -83,6 +83,13 @@ const eventos = defineCollection({
 				whatsapp: z.string().regex(/^\d{8,15}$/, 'WhatsApp con código de país, solo números: "59170623387".').optional(),
 				/** true mientras la inscripción está abierta pero aún no se publican los costos (se muestra "Por confirmar"). */
 				costos_por_confirmar: z.boolean().default(false),
+				/** true mientras se conocen los días pero no las horas: la página muestra "Por confirmar" en el horario. */
+				horario_por_confirmar: z.boolean().default(false),
+				/**
+				 * Preinscripción (lista de interesados) antes de abrir la inscripción con pago: la página del evento muestra
+				 * un formulario (FormularioPreinscripcion.astro) que guarda los datos y avisa por correo a la asociación.
+				 */
+				preinscripcion: z.boolean().default(false),
 				/**
 				 * Fotos del evento, en la subcarpeta `galeria/` (WebP de hasta 1600 px). `descripcion` describe la foto para
 				 * quien no la ve (lectores de pantalla y Google). Solo personas que aceptaron aparecer; nunca terceros reconocibles.

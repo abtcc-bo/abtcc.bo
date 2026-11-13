@@ -423,5 +423,44 @@
 	},
 	"anuncio": {
 		"abiertas": "Registration open"
+	},
+	"preinscripcion": {
+		"antetitulo": "Save the date",
+		"titulo": "Pre-register",
+		"texto": "Leave us your details and we will let you know as soon as registration opens and fees are published. It is free and does not commit you to anything.",
+		"nombre": "First name(s)",
+		"apellido": "Last name(s)",
+		"correo": "Email",
+		"pais": "Country",
+		"whatsapp": "WhatsApp with country code (optional)",
+		"categoria": "I am attending as",
+		"categorias": {
+			"profesional": "Professional",
+			"estudiante": "Student",
+			"miembro_alapcco": "ALAPCCO member"
+		},
+		"consentimiento": "I agree that ABTCC may use this information only to contact me about this event, according to its",
+		"politica": "Privacy policy",
+		"enviar": "Pre-register",
+		"enviando": "Sending…",
+		"exitoTitulo": "Done! You are on the list.",
+		"exito": "We will write to the email you gave us as soon as registration opens.",
+		"avisarWhatsapp": "Also let us know on WhatsApp",
+		"mensajeWhatsapp": "Hello, I am {nombre}. I pre-registered for {evento} as {categoria}.",
+		"porWhatsapp": "Would you rather do it on WhatsApp? Write to us and we will add you.",
+		"escribirWhatsapp": "Write on WhatsApp",
+		"mensajeAnotarme": "Hello, I would like to pre-register for {evento}.",
+		"errores": {
+			"general": "We could not record your pre-registration. Please try again in a few minutes or write to us directly at",
+			"revisa": "Please check the highlighted fields.",
+			"nombre": "Enter your first name (2 to 100 characters).",
+			"apellido": "Enter your last name (2 to 100 characters).",
+			"correo": "Enter a valid email address.",
+			"pais": "Enter the country where you live.",
+			"whatsapp": "Enter the number with its country code, for example +591 70000000, or leave the field empty.",
+			"consentimiento": "We need your consent to be able to contact you.",
+			"demasiados": "We received several submissions from your connection. Please wait a few minutes before trying again.",
+			"verificacion": "We could not verify that you are not a robot. Reload the page and try again."
+		}
 	}
 }

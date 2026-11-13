@@ -10,7 +10,7 @@ import TicketEvento from './TicketEvento.astro';
 import Icono from './Icono.astro';
 import { formato, t, type Idioma } from '../i18n';
 import { contactoWhatsapp, fechaDelEvento, inscripcionAbierta } from '../lib/eventos';
-import type { Evento } from '../lib/contenido';
+import { yaPaso, type Evento } from '../lib/contenido';
 
 interface Props {
 	evento: Evento;
@@ -27,7 +27,9 @@ const ultima = palabras.pop();
 const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.mensajeWhatsapp, { evento: titulo }));
 const lugar = datos.modalidad !== 'online' && datos.lugar ? ` · ${datos.lugar.ciudad}` : '';
 const navidad = datos.tema === 'navidad';
-const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
+// El formulario de preinscripción está en DetalleEvento.astro (eventos sin programa).
+const conPreinscripcion = datos.preinscripcion && datos.estado === 'programado' && programa.length === 0 && !yaPaso(evento);
+const conTicket =navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 ---
 
 {navidad && <Guirnalda />}
@@ -57,7 +59,7 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 				)
 			}
 			{
-				!datos.por_confirmar && (
+				!datos.por_confirmar && !datos.horario_por_confirmar && (
 					<li>
 						<Icono nombre="reloj" />
 						{textos.hora.zonaBolivia}
@@ -70,6 +72,13 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 				inscripcionAbierta(evento) && datos.inscripcion && (
 					<a class="boton boton-dorado" href={datos.inscripcion.url} rel="noopener">
 						{textos.comun.inscribirme} <span class="flecha" aria-hidden="true">→</span>
+					</a>
+				)
+			}
+			{
+				conPreinscripcion && (
+					<a class="boton boton-dorado" href="#preinscripcion">
+						{textos.preinscripcion.enviar} <span class="flecha" aria-hidden="true">→</span>
 					</a>
 				)
 			}

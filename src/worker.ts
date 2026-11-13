@@ -3,6 +3,7 @@
 //  - scheduled: tarea diaria (cron en wrangler.jsonc, medianoche de Bolivia). Corre aunque nadie entre a la web.
 import { handle } from '@astrojs/cloudflare/handler';
 import { ENCABEZADOS_SEGURIDAD } from './lib/seguridad';
+import { latido } from './lib/supabase';
 
 type Parametros = Parameters<typeof handle>;
 
@@ -16,8 +17,12 @@ export default {
 		return respuesta;
 	},
 
-	async scheduled(evento: { scheduledTime: number }) {
+	async scheduled(evento: { scheduledTime: number }, env: { SUPABASE_URL?: string; SUPABASE_KEY?: string }) {
 		console.info('[mantenimiento] tarea diaria', new Date(evento.scheduledTime).toISOString());
-		// [PENDIENTE fase 3] Consultar Supabase para que el plan gratuito no pause el proyecto por inactividad.
+		// Consulta diaria a Supabase: el plan gratuito pausa los proyectos que pasan 7 días sin actividad.
+		if (env.SUPABASE_URL && env.SUPABASE_KEY) {
+			const activo = await latido({ url: env.SUPABASE_URL, clave: env.SUPABASE_KEY });
+			console.info('[mantenimiento] Supabase', activo ? 'respondió: sigue activo' : 'NO respondió: revisar el proyecto');
+		}
 	},
 };

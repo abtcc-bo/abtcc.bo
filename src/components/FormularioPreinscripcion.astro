@@ -1,0 +1,358 @@
+---
+// Preinscripción a un evento (`preinscripcion: true` en su evento.yaml). Envía a /api/preinscripcion/
+// (src/pages/api/preinscripcion.ts): se guarda en el registro y se avisa por correo a la asociación.
+// Al terminar, si el evento tiene `whatsapp`, ofrece avisar por WhatsApp con el nombre completo ya escrito.
+// Mismo antispam que el formulario de contacto: campo trampa, tiempo mínimo y Turnstile si hay clave.
+import { TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { ORGANIZACION } from '../datos/organizacion';
+import { CATEGORIAS } from '../lib/preinscripcion';
+import { contactoWhatsapp } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+import { formato, ruta, t, type Idioma } from '../i18n';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+}
+
+const { evento, idioma } = Astro.props;
+const textos = t(idioma).preinscripcion;
+const { titulo } = evento.texto.data;
+const numero = evento.datos.whatsapp;
+const porWhatsapp = numero && contactoWhatsapp(numero, formato(textos.mensajeAnotarme, { evento: titulo }));
+---
+
+<section class="preinscripcion" id="preinscripcion" aria-labelledby="titulo-preinscripcion">
+	<p class="antetitulo">{textos.antetitulo}</p>
+	<h2 id="titulo-preinscripcion">{textos.titulo}</h2>
+	<p class="entrada">{textos.texto}</p>
+
+	<form
+		class="formulario"
+		method="post"
+		action="/api/preinscripcion/"
+		novalidate
+		data-formulario-preinscripcion
+		data-texto-enviando={textos.enviando}
+		data-texto-enviar={textos.enviar}
+	>
+		<input type="hidden" name="idioma" value={idioma} />
+		<input type="hidden" name="evento" value={evento.slug} />
+		<input type="hidden" name="cargado" value="" />
+
+		<p class="aviso" role="alert" data-aviso hidden></p>
+
+		<div class="campo campo-mitad">
+			<label for="pre-nombre">{textos.nombre}</label>
+			<input id="pre-nombre" name="nombre" type="text" autocomplete="given-name" required minlength="2" maxlength="100" aria-describedby="pre-error-nombre" />
+			<p class="error" id="pre-error-nombre" data-error="nombre" hidden>{textos.errores.nombre}</p>
+		</div>
+
+		<div class="campo campo-mitad">
+			<label for="pre-apellido">{textos.apellido}</label>
+			<input id="pre-apellido" name="apellido" type="text" autocomplete="family-name" required minlength="2" maxlength="100" aria-describedby="pre-error-apellido" />
+			<p class="error" id="pre-error-apellido" data-error="apellido" hidden>{textos.errores.apellido}</p>
+		</div>
+
+		<div class="campo campo-mitad">
+			<label for="pre-correo">{textos.correo}</label>
+			<input id="pre-correo" name="correo" type="email" autocomplete="email" required maxlength="200" aria-describedby="pre-error-correo" />
+			<p class="error" id="pre-error-correo" data-error="correo" hidden>{textos.errores.correo}</p>
+		</div>
+
+		<div class="campo campo-mitad">
+			<label for="pre-pais">{textos.pais}</label>
+			<input id="pre-pais" name="pais" type="text" autocomplete="country-name" required minlength="2" maxlength="60" aria-describedby="pre-error-pais" />
+			<p class="error" id="pre-error-pais" data-error="pais" hidden>{textos.errores.pais}</p>
+		</div>
+
+		<div class="campo campo-mitad">
+			<label for="pre-whatsapp">{textos.whatsapp}</label>
+			<input id="pre-whatsapp" name="whatsapp" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" pattern="[\d\s+\-]{8,20}" placeholder="+591 70000000" aria-describedby="pre-error-whatsapp" />
+			<p class="error" id="pre-error-whatsapp" data-error="whatsapp" hidden>{textos.errores.whatsapp}</p>
+		</div>
+
+		<div class="campo campo-mitad">
+			<label for="pre-categoria">{textos.categoria}</label>
+			<select id="pre-categoria" name="categoria">
+				{CATEGORIAS.map((categoria) => <option value={categoria}>{textos.categorias[categoria]}</option>)}
+			</select>
+		</div>
+
+		<!-- Campo trampa: invisible para las personas; si un bot lo llena, el envío se descarta. -->
+		<div class="visualmente-oculto" aria-hidden="true">
+			<label for="pre-sitio-web">Sitio web</label>
+			<input id="pre-sitio-web" name="sitio_web" type="text" tabindex="-1" autocomplete="off" />
+		</div>
+
+		<div class="campo campo-casilla">
+			<input id="pre-consentimiento" name="consentimiento" type="checkbox" value="si" required aria-describedby="pre-error-consentimiento" />
+			<label for="pre-consentimiento">
+				{textos.consentimiento} <a href={ruta('privacidad', idioma)}>{textos.politica}</a>.
+			</label>
+			<p class="error" id="pre-error-consentimiento" data-error="consentimiento" hidden>{textos.errores.consentimiento}</p>
+		</div>
+
+		{TURNSTILE_SITE_KEY && <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-language={idioma}></div>}
+
+		<button class="boton" type="submit">{textos.enviar} <span class="flecha" aria-hidden="true">→</span></button>
+	</form>
+
+	<div class="exito" role="status" data-exito hidden>
+		<p class="exito-titulo">{textos.exitoTitulo}</p>
+		<p>{textos.exito}</p>
+		{
+			numero && (
+				<p>
+					<a
+						class="boton"
+						rel="noopener"
+						href={`https://wa.me/${numero}`}
+						data-enlace-whatsapp
+						data-numero={numero}
+						data-mensaje={formato(textos.mensajeWhatsapp, { evento: titulo })}
+					>
+						{textos.avisarWhatsapp}
+					</a>
+				</p>
+			)
+		}
+	</div>
+
+	{
+		porWhatsapp && (
+			<p class="alternativa" data-alternativa>
+				{textos.porWhatsapp}{' '}
+				<a href={porWhatsapp.url} rel="noopener">
+					{textos.escribirWhatsapp} ({porWhatsapp.visible})
+				</a>
+			</p>
+		)
+	}
+
+	<template data-pre-texto-error-general>{textos.errores.general} <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>.</template>
+	<template data-pre-texto-revisa>{textos.errores.revisa}</template>
+	<template data-pre-texto-demasiados>{textos.errores.demasiados}</template>
+	<template data-pre-texto-verificacion>{textos.errores.verificacion}</template>
+</section>
+
+{TURNSTILE_SITE_KEY && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+<script>
+	type Campo = 'nombre' | 'apellido' | 'correo' | 'pais' | 'whatsapp' | 'consentimiento';
+	const CAMPOS: Campo[] = ['nombre', 'apellido', 'correo', 'pais', 'whatsapp', 'consentimiento'];
+
+	const formulario = document.querySelector<HTMLFormElement>('[data-formulario-preinscripcion]');
+	if (formulario) {
+		const seccion = formulario.closest('section')!;
+		// Marca de tiempo para el control de "llenado demasiado rápido".
+		formulario.querySelector<HTMLInputElement>('[name=cargado]')!.value = String(Date.now());
+
+		const aviso = formulario.querySelector<HTMLElement>('[data-aviso]')!;
+		const boton = formulario.querySelector<HTMLButtonElement>('button[type=submit]')!;
+		const campo = (nombre: string) => formulario.querySelector<HTMLInputElement>(`[name=${nombre}]`)!;
+		const plantilla = (nombre: string) => seccion.querySelector<HTMLTemplateElement>(`[data-pre-texto-${nombre}]`)!.innerHTML;
+
+		const mostrarErrores = (campos: Campo[]) => {
+			for (const error of formulario.querySelectorAll<HTMLElement>('[data-error]')) {
+				const nombre = error.dataset.error as Campo;
+				const conError = campos.includes(nombre);
+				error.hidden = !conError;
+				campo(nombre).setAttribute('aria-invalid', String(conError));
+			}
+			if (campos.length) campo(campos[0]).focus();
+		};
+
+		const mostrarAviso = (html: string | null) => {
+			aviso.hidden = !html;
+			aviso.innerHTML = html ?? '';
+		};
+
+		const validarEnNavegador = (): Campo[] =>
+			CAMPOS.filter((nombre) => {
+				const elemento = campo(nombre);
+				if (elemento.type !== 'checkbox') elemento.value = elemento.value.trim();
+				return !elemento.checkValidity();
+			});
+
+		/** Muestra el "listo" y deja el mensaje de WhatsApp escrito con el nombre completo y la categoría. */
+		const mostrarExito = () => {
+			const enlace = seccion.querySelector<HTMLAnchorElement>('[data-enlace-whatsapp]');
+			if (enlace) {
+				const categoria = formulario.querySelector<HTMLSelectElement>('[name=categoria]')!;
+				const mensaje = enlace.dataset
+					.mensaje!.replace('{nombre}', `${campo('nombre').value} ${campo('apellido').value}`)
+					.replace('{categoria}', categoria.selectedOptions[0].textContent!.toLowerCase());
+				enlace.href = `https://wa.me/${enlace.dataset.numero}?text=${encodeURIComponent(mensaje)}`;
+			}
+			formulario.hidden = true;
+			const alternativa = seccion.querySelector<HTMLElement>('[data-alternativa]');
+			if (alternativa) alternativa.hidden = true;
+			const exito = seccion.querySelector<HTMLElement>('[data-exito]')!;
+			exito.hidden = false;
+			exito.setAttribute('tabindex', '-1');
+			exito.focus();
+		};
+
+		formulario.addEventListener('submit', async (evento) => {
+			evento.preventDefault();
+			const conError = validarEnNavegador();
+			mostrarErrores(conError);
+			if (conError.length) {
+				mostrarAviso(plantilla('revisa'));
+				return;
+			}
+			mostrarAviso(null);
+			boton.disabled = true;
+			boton.textContent = formulario.dataset.textoEnviando!;
+			try {
+				const respuesta = await fetch(formulario.action, {
+					method: 'POST',
+					body: new FormData(formulario),
+					headers: { Accept: 'application/json' },
+				});
+				const resultado = (await respuesta.json()) as { ok: boolean; error?: string; campos?: Campo[] };
+				if (resultado.ok) {
+					mostrarExito();
+					return;
+				}
+				if (resultado.error === 'campos') {
+					mostrarErrores(resultado.campos ?? []);
+					mostrarAviso(plantilla('revisa'));
+				} else if (resultado.error === 'demasiados' || resultado.error === 'verificacion') {
+					mostrarAviso(plantilla(resultado.error));
+				} else {
+					mostrarAviso(plantilla('error-general'));
+				}
+			} catch {
+				mostrarAviso(plantilla('error-general'));
+			} finally {
+				boton.disabled = false;
+				boton.textContent = formulario.dataset.textoEnviar!;
+				// Turnstile exige un token nuevo por envío.
+				(window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
+			}
+		});
+	}
+</script>
+
+<style>
+	.preinscripcion {
+		margin-block: 2.5rem;
+		padding: clamp(1.25rem, 4vw, 2.25rem);
+		border: 1px solid var(--color-borde);
+		border-top: 4px solid var(--color-acento);
+		border-radius: var(--radio);
+		background: var(--color-superficie);
+		/* Al llegar desde el botón de la cabecera, que no quede pegado arriba. */
+		scroll-margin-top: 6rem;
+	}
+	h2 {
+		margin: 0.5rem 0 0.75rem;
+	}
+	.entrada {
+		max-width: 40rem;
+		margin: 0 0 1.5rem;
+	}
+	/* Dos columnas en pantallas anchas; casilla, verificación y botón ocupan todo el ancho. */
+	.formulario {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1.1rem 1rem;
+	}
+	.formulario > :not(.campo-mitad) {
+		grid-column: 1 / -1;
+	}
+	@media (max-width: 36rem) {
+		.formulario {
+			grid-template-columns: 1fr;
+		}
+	}
+	.campo {
+		display: grid;
+		align-content: start;
+		gap: 0.25rem;
+	}
+	label {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		font-weight: 600;
+	}
+	input,
+	select {
+		font: inherit;
+		min-height: 44px;
+		padding: 0.6rem 0.75rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		background: #fff;
+		transition:
+			border-color 0.2s,
+			box-shadow 0.2s;
+	}
+	input:focus,
+	select:focus {
+		border-color: var(--color-acento);
+		box-shadow: 0 0 0 3px var(--color-acento-suave);
+		outline: none;
+	}
+	button {
+		justify-self: start;
+	}
+	[aria-invalid='true'] {
+		border: 2px solid #a40000;
+	}
+	.campo-casilla {
+		grid-template-columns: auto 1fr;
+		align-items: start;
+		column-gap: 0.75rem;
+	}
+	.campo-casilla input {
+		min-height: auto;
+		width: 1.25rem;
+		height: 1.25rem;
+		margin-top: 0.3rem;
+	}
+	.campo-casilla label {
+		font-family: inherit;
+		font-size: inherit;
+		font-weight: 400;
+	}
+	.campo-casilla .error {
+		grid-column: 1 / -1;
+	}
+	.error,
+	.aviso {
+		margin: 0;
+		color: #a40000;
+		font-weight: 700;
+	}
+	.aviso {
+		padding: 0.75rem var(--espacio);
+		border: 2px solid currentColor;
+	}
+	.exito {
+		padding: var(--espacio);
+		border: 2px solid var(--color-acento);
+		border-radius: var(--radio);
+		background: #fff;
+	}
+	.exito p {
+		margin: 0 0 0.75rem;
+	}
+	.exito p:last-child {
+		margin-bottom: 0;
+	}
+	.exito-titulo {
+		font-family: var(--fuente-titulos);
+		font-size: 1.4rem;
+		color: var(--color-titulos);
+	}
+	.alternativa {
+		margin: 1.5rem 0 0;
+		color: var(--color-texto-suave);
+	}
+	button[disabled] {
+		opacity: 0.7;
+	}
+</style>

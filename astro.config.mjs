@@ -60,6 +60,10 @@ export default defineConfig({
 			// Clave del sitio de Turnstile: es pública (aparece en el HTML de la página), por eso puede ir aquí.
 			TURNSTILE_SITE_KEY: envField.string({ context: 'client', access: 'public', default: '0x4AAAAAAFvKbPiV2OAM-Zmp' }),
 			CONTACTO_DESTINO: envField.string({ context: 'server', access: 'secret', optional: true }),
+			// Supabase (registro de preinscripciones): dirección del proyecto y su clave pública ("publishable").
+			// Sin ellas, la preinscripción solo avisa por correo y no se guarda en el registro.
+			SUPABASE_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
+			SUPABASE_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
 		},
 	},
 });

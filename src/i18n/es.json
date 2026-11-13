@@ -423,5 +423,44 @@
 	},
 	"anuncio": {
 		"abiertas": "Inscripciones abiertas"
+	},
+	"preinscripcion": {
+		"antetitulo": "Reserva la fecha",
+		"titulo": "Preinscríbete",
+		"texto": "Déjanos tus datos y te avisaremos apenas se abran las inscripciones y se publiquen las tarifas. No tiene costo ni te compromete a nada.",
+		"nombre": "Nombres",
+		"apellido": "Apellidos",
+		"correo": "Correo electrónico",
+		"pais": "País",
+		"whatsapp": "WhatsApp con código de país (opcional)",
+		"categoria": "Participo como",
+		"categorias": {
+			"profesional": "Profesional",
+			"estudiante": "Estudiante",
+			"miembro_alapcco": "Miembro de ALAPCCO"
+		},
+		"consentimiento": "Acepto que la ABTCC use estos datos solo para avisarme sobre este evento, según su",
+		"politica": "Política de privacidad",
+		"enviar": "Preinscribirme",
+		"enviando": "Enviando…",
+		"exitoTitulo": "¡Listo! Ya estás en la lista.",
+		"exito": "Te escribiremos al correo que nos dejaste apenas se abran las inscripciones.",
+		"avisarWhatsapp": "Avisar también por WhatsApp",
+		"mensajeWhatsapp": "Hola, soy {nombre}. Me preinscribí al {evento} como {categoria}.",
+		"porWhatsapp": "¿Prefieres hacerlo por WhatsApp? Escríbenos y te anotamos.",
+		"escribirWhatsapp": "Escribir por WhatsApp",
+		"mensajeAnotarme": "Hola, quiero preinscribirme al {evento}.",
+		"errores": {
+			"general": "No pudimos registrar tu preinscripción. Inténtalo de nuevo en unos minutos o escríbenos directamente a",
+			"revisa": "Revisa los campos marcados.",
+			"nombre": "Escribe tus nombres (entre 2 y 100 caracteres).",
+			"apellido": "Escribe tus apellidos (entre 2 y 100 caracteres).",
+			"correo": "Escribe un correo electrónico válido.",
+			"pais": "Escribe el país donde vives.",
+			"whatsapp": "Escribe el número con código de país, por ejemplo +591 70000000, o deja el campo vacío.",
+			"consentimiento": "Necesitamos tu consentimiento para poder avisarte.",
+			"demasiados": "Recibimos varios envíos desde tu conexión. Espera unos minutos antes de volver a intentarlo.",
+			"verificacion": "No pudimos verificar que no eres un robot. Recarga la página e inténtalo de nuevo."
+		}
 	}
 }

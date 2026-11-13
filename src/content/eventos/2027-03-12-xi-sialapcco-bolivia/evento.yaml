@@ -1,0 +1,16 @@
+# XI SIALAPCCO en Bolivia, junto con ALAPCCO. Save the Date: 12 y 13 de marzo de 2027, Santa Cruz de la Sierra.
+# [PENDIENTE: horario, sede, costos, programa, horas y aval, WhatsApp del evento, y si habrá modalidad virtual]
+# Las horas de inicio y fin son provisionales: mientras esté `horario_por_confirmar`, la página no las muestra.
+tipo: congreso
+inicio: "2027-03-12T09:00-04:00"
+fin: "2027-03-13T18:00-04:00"
+horario_por_confirmar: true
+modalidad: presencial
+lugar:
+  ciudad: Santa Cruz de la Sierra
+imagen: ./afiche.webp
+# Aún no hay tarifas ni pagos: la página muestra un formulario de preinscripción (lista de interesados).
+costos_por_confirmar: true
+preinscripcion: true
+# Cuando haya un número para consultas e inscripciones por WhatsApp (con código de país, solo números):
+# whatsapp: "591XXXXXXXX"
