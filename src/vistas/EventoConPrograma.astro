@@ -60,6 +60,7 @@ const principales = (dia: DiaPrograma) => dia.actividades.filter((a: Actividad) 
 /** Luna para las jornadas que empiezan desde las 18:00; sol para las de día. */
 const esNoche = (dia: DiaPrograma) => Number(dia.actividades[0].inicio.slice(0, 2)) >= 18;
 const precios = datos.costos.filter((c) => costoVigente(c));
+const navidad = datos.tema === 'navidad';
 ---
 
 <section class="banda cifras-evento" aria-label={ev.programa}>
@@ -178,11 +179,12 @@ const precios = datos.costos.filter((c) => costoVigente(c));
 	)
 }
 
-<div class="banda banda-clara">
+<div class:list={navidad ? 'banda banda-verde banda-pino nieve' : 'banda banda-clara'}>
 	<ProgramaEvento evento={evento} idioma={idioma} />
 </div>
 
-<section class="banda ponentes-evento" aria-labelledby="titulo-ponentes">
+<section class:list={['banda ponentes-evento', { 'banda-azul tema-navidad con-guirnalda': navidad }]} aria-labelledby="titulo-ponentes">
+	{navidad && <Guirnalda />}
 	<p class="antetitulo">{ev.ponentes}</p>
 	<h2 id="titulo-ponentes">{ev.ponentesTitulo} <em>{ev.ponentesCursiva}</em></h2>
 	<p class="subtitulo">{formato(ev.especialistasDe, { paises })}</p>
@@ -612,6 +614,52 @@ const precios = datos.costos.filter((c) => costoVigente(c));
 	/* ---------- Ponentes ---------- */
 	.ponentes-evento {
 		text-align: center;
+	}
+	/* Navidad: banda vino con guirnalda arriba; cada ponente cuelga de su hilo dorado y se mece. */
+	.ponentes-evento.con-guirnalda {
+		position: relative;
+		overflow: hidden;
+		padding-top: clamp(7rem, 12vw, 9rem);
+	}
+	.ponentes-evento.con-guirnalda > :not(.guirnalda) {
+		position: relative;
+		z-index: 1;
+	}
+	.con-guirnalda .subtitulo {
+		color: var(--texto-banda);
+	}
+	.ponentes-evento.con-guirnalda h2 em {
+		color: var(--color-dorado-claro);
+	}
+	.con-guirnalda > ul > li {
+		border: 0;
+		border-radius: 1.75rem 0.75rem 0.75rem 0.75rem;
+		box-shadow: 0 18px 40px rgb(0 0 0 / 0.25);
+		transform-origin: 50% 0;
+		animation: mecer-ponente 5s ease-in-out infinite alternate;
+	}
+	.con-guirnalda > ul > li:nth-child(2n) {
+		animation-delay: -1.6s;
+	}
+	.con-guirnalda > ul > li:nth-child(3n) {
+		animation-delay: -3.1s;
+	}
+	.con-guirnalda .colgante {
+		top: -1.4rem;
+		height: 3rem;
+	}
+	@keyframes mecer-ponente {
+		from {
+			rotate: -1.2deg;
+		}
+		to {
+			rotate: 1.2deg;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.con-guirnalda > ul > li {
+			animation: none;
+		}
 	}
 	.ponentes-evento .antetitulo {
 		justify-content: center;

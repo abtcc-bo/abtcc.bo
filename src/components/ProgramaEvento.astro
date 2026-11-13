@@ -33,7 +33,7 @@ const filas = dias.map((dia) =>
 );
 ---
 
-<section id="programa" class="programa" aria-labelledby="titulo-programa">
+<section id="programa" class:list={['programa', { navidad: evento.datos.tema === 'navidad' }]} aria-labelledby="titulo-programa">
 	<p class="antetitulo">{ev.programa}</p>
 	<h2 id="titulo-programa">{ev.agendaTitulo} <em>{ev.agendaCursiva}</em></h2>
 	<p class="nota">
@@ -72,12 +72,14 @@ const filas = dias.map((dia) =>
 								<p class="hora">
 									{a.inicio} – {a.fin}
 								</p>
-								<div class="tarjeta-actividad">
+								<div class:list={['tarjeta-actividad', `cinta-${color}`]}>
 									<p class:list={['rotulo', `rotulo-${color}`]}>{rotulo}</p>
 									{a.titulo && <p class="titulo">{a.titulo}</p>}
 									{a.ponente && (
 										<p class="ponente">
-											<RetratoPonente actividad={a} tamano="mediano" color={color} />
+											<span class="cuelga">
+												<RetratoPonente actividad={a} tamano="mediano" color={color} />
+											</span>
 											<span>
 												<strong>{a.ponente}</strong>
 												{a.pais && <BanderaPais codigo={a.pais} idioma={idioma} />}
@@ -298,6 +300,128 @@ const filas = dias.map((dia) =>
 		width: 1.1rem;
 		height: 1.1rem;
 		color: var(--color-dorado);
+	}
+
+	/* ---------- Navidad: sobre la banda verde pino, con más color ---------- */
+	.navidad {
+		position: relative;
+		z-index: 1;
+	}
+	.navidad h2 em {
+		color: var(--color-dorado-claro);
+	}
+	.navidad .nota {
+		background: rgb(255 255 255 / 0.1);
+		color: var(--texto-banda);
+	}
+	.navidad h3 small,
+	.navidad .pausa .hora {
+		color: var(--texto-banda-suave);
+	}
+	.navidad ol::before {
+		width: 0;
+		border-left: 2px dashed rgb(235 186 60 / 0.5);
+		background: none;
+	}
+	.navidad li::before {
+		box-shadow: 0 0 0 3px #0d3b27, 0 0 10px rgb(255 255 255 / 0.35);
+	}
+	.navidad .hora {
+		color: var(--color-dorado-claro);
+		font-weight: 700;
+	}
+	.navidad .tarjeta-actividad {
+		border: 0;
+		border-top: 6px solid var(--color-dorado-claro);
+		border-radius: 1.5rem 0.75rem 0.75rem 0.75rem;
+		box-shadow: 0 14px 30px rgb(0 0 0 / 0.25);
+	}
+	.navidad .tarjeta-actividad:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 20px 40px rgb(0 0 0 / 0.3);
+	}
+	.navidad .cinta-rojo {
+		border-top-color: #c8202a;
+	}
+	.navidad .cinta-amarillo {
+		border-top-color: #e8b40c;
+	}
+	.navidad .cinta-verde {
+		border-top-color: #0c9439;
+	}
+	/* Rótulo como píldora de color. */
+	.navidad .rotulo {
+		display: inline-block;
+		padding: 0.2rem 0.75rem;
+		border-radius: 999px;
+		color: #fff;
+	}
+	.navidad .rotulo-rojo {
+		background: #b81d26;
+	}
+	.navidad .rotulo-amarillo {
+		background: var(--color-dorado-claro);
+		color: #3a2600;
+	}
+	.navidad .rotulo-verde {
+		background: #0b7a31;
+	}
+	/* Foto más grande, colgada como esfera: hilo y tapa dorados encima. */
+	.navidad .cuelga {
+		position: relative;
+		display: block;
+		margin-top: 0.9rem;
+	}
+	.navidad .cuelga::before {
+		content: '';
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		width: 0.9rem;
+		height: 0.5rem;
+		translate: -50% 0;
+		border-radius: 3px 3px 1px 1px;
+		background: linear-gradient(90deg, #a87f17, #f3d27a, #a87f17);
+	}
+	.navidad .cuelga::after {
+		content: '';
+		position: absolute;
+		bottom: calc(100% + 0.5rem);
+		left: 50%;
+		width: 2px;
+		height: 0.6rem;
+		translate: -50% 0;
+		background: var(--color-dorado-claro);
+	}
+	.navidad .cuelga :global(.retrato.mediano) {
+		width: 4.75rem;
+		height: 4.75rem;
+		transition: rotate 0.4s;
+		transform-origin: 50% -0.8rem;
+	}
+	.navidad .tarjeta-actividad:hover .cuelga :global(.retrato) {
+		rotate: -6deg;
+	}
+	.navidad .ponente strong {
+		font-size: 1rem;
+	}
+	/* Pausas: píldora punteada dorada. */
+	.navidad .texto-pausa {
+		justify-self: start;
+		padding: 0.4rem 1.1rem;
+		border: 2px dashed rgb(235 186 60 / 0.55);
+		border-radius: 999px;
+		font-style: normal;
+		font-weight: 500;
+		color: #f6e3b0;
+	}
+	.navidad .texto-pausa :global(.icono) {
+		color: var(--color-dorado-claro);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.navidad .cuelga :global(.retrato.mediano) {
+			transition: none;
+		}
 	}
 
 	@media (max-width: 40rem) {

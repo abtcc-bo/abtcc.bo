@@ -67,7 +67,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [ ] Logo: archivo original del diseñador (SVG o PNG con fondo transparente, y una versión blanca para fondos oscuros). El que está en la web se recortó de una imagen con fondo blanco
 - [x] Imagen para compartir en redes: generada con el logo nuevo ✔ (se puede reemplazar por una diseñada)
 - [x] Colores ✔ (del logo: azul noche, verde y amarillo; 01/11/2026)
-- [x] Fuentes ✔ (Fraunces en títulos, Source Serif 4 en textos, Poppins —la letra del logo— en menú y botones; elegidas el 01/11/2026)
+- [x] Fuentes ✔ (Fredoka en títulos y Nunito en textos, menú y botones; elegidas el 13/11/2026)
 
 ## Rediseño (portada y Quiénes somos)
 

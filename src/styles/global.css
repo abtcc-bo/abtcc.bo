@@ -1,7 +1,6 @@
 /* Diseño "Rediseño ABTCC" con los colores del logo oficial: azul noche (portada y cabeceras), verde y amarillo del
-   logo, sobre fondo crema. Tres letras: Fraunces en títulos (versión de puntas suaves, con cursivas), Source Serif 4
-   en los textos de lectura y Poppins, la letra del logo, en la interfaz (menú, botones, formularios y rótulos en
-   mayúsculas). Los tres colores del logo como firma: franja y barras tricolor, y las tres esferas. Todo se ajusta desde estas
+   logo, sobre fondo crema. Dos letras (noviembre 2026): Fredoka en títulos (redonda, sin cursiva: lo destacado va en
+   color) y Nunito en textos e interfaz (menú, botones, formularios y rótulos en mayúsculas). Los tres colores del logo como firma: franja y barras tricolor, y las tres esferas. Todo se ajusta desde estas
    variables. Hay movimiento suave (fondo, aparición al bajar, figuras científicas) que se detiene con "reducir movimiento". */
 :root {
 	--color-fondo: #f5f2ea;
@@ -27,9 +26,9 @@
 	--logo-amarillo: #ebba3c;
 	--logo-verde: #138b4e;
 	--franja-tricolor: linear-gradient(90deg, var(--logo-rojo) 0 33.33%, var(--logo-amarillo) 33.33% 66.66%, var(--logo-verde) 66.66%);
-	--fuente-titulos: 'Fraunces Variable', Georgia, serif;
-	--fuente-texto: 'Source Serif 4 Variable', Georgia, serif;
-	--fuente-interfaz: 'Poppins', system-ui, sans-serif;
+	--fuente-titulos: 'Fredoka Variable', 'Nunito Variable', system-ui, sans-serif;
+	--fuente-texto: 'Nunito Variable', system-ui, sans-serif;
+	--fuente-interfaz: 'Nunito Variable', system-ui, sans-serif;
 	--ancho-maximo: 72rem;
 	--ancho-lectura: 46rem;
 	--espacio: 1rem;
@@ -72,8 +71,9 @@ body {
 	background: var(--color-fondo);
 	overflow-x: clip;
 	-webkit-font-smoothing: antialiased;
-	/* Fraunces con las puntas redondeadas al máximo: más amable. Las otras letras ignoran este ajuste. */
-	font-variation-settings: 'SOFT' 100;
+	/* Fredoka no tiene cursiva: sin esto el navegador la inclina a la fuerza y se ve torcida. Las palabras
+	   destacadas de los títulos (.cursiva) resaltan solo con color. */
+	font-synthesis-style: none;
 }
 
 /* Fondo vivo y sutil: cuadrícula de puntos (papel científico) y luces muy suaves que se desplazan lentamente. */
@@ -183,8 +183,8 @@ h1,
 h2,
 h3 {
 	font-family: var(--fuente-titulos);
-	font-weight: 400;
-	line-height: 1.15;
+	font-weight: 500;
+	line-height: 1.12;
 	color: var(--color-titulos);
 	text-wrap: balance;
 }
@@ -543,6 +543,27 @@ a:hover .flecha {
 	background:
 		radial-gradient(ellipse at 85% 0%, rgb(235 186 60 / 0.18), transparent 55%),
 		linear-gradient(160deg, #8a1a2c, #561020);
+}
+/* Banda verde pino (programa de un evento navideño): se usa junto con .banda-verde y .nieve; estrellitas doradas
+   fijas además de la nieve. */
+.banda-pino {
+	--texto-banda: #d6eadc;
+	--texto-banda-suave: #b5d3bf;
+	overflow: hidden;
+	background:
+		radial-gradient(circle at 12% 18%, rgb(235 186 60 / 0.7) 0 1.6px, transparent 2.4px),
+		radial-gradient(circle at 78% 42%, rgb(235 186 60 / 0.55) 0 1.4px, transparent 2.2px),
+		radial-gradient(circle at 45% 88%, rgb(235 186 60 / 0.6) 0 1.8px, transparent 2.6px),
+		radial-gradient(ellipse at 50% 0%, rgb(19 139 78 / 0.35), transparent 60%),
+		#0d3b27;
+	background-size:
+		340px 340px,
+		420px 420px,
+		380px 380px,
+		auto,
+		auto;
+	border-start-start-radius: var(--radio-hoja);
+	border-start-end-radius: var(--radio-hoja);
 }
 /* Nieve que cae despacio detrás del contenido (portada y bandas navideñas). Quieta con "reducir movimiento". */
 .nieve::after,

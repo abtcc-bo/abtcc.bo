@@ -1,0 +1,229 @@
+---
+// Álbum de la portada: una foto en forma de arco que pasa sola por las fotos de los eventos realizados, con el
+// nombre del evento y la descripción de cada foto debajo. Toma fotos de todos los eventos por turnos (una de cada
+// uno) para que no salgan todas del mismo. Cambia cada 6 s; se detiene al pasar el mouse, con el teclado, con el
+// botón de pausa y queda quieta con "reducir movimiento". Sin JavaScript se ve solo la primera foto.
+import { Image } from 'astro:assets';
+import { ZONA_HORARIA, formato, ruta, t, type Idioma } from '../i18n';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	/** Eventos realizados, del más reciente al más antiguo. */
+	eventos: Evento[];
+	idioma: Idioma;
+	maximo?: number;
+}
+
+const { eventos, idioma, maximo = 8 } = Astro.props;
+const g = t(idioma).galeria;
+const anio = (e: Evento) => new Intl.DateTimeFormat('es', { timeZone: ZONA_HORARIA, year: 'numeric' }).format(e.datos.inicio);
+
+// Una foto de cada evento por turnos.
+const conFotos = eventos.filter((e) => e.datos.galeria.length > 0);
+const fotos: { imagen: ImageMetadata; descripcion: string; evento: string; href: string }[] = [];
+for (let vuelta = 0; fotos.length < maximo && conFotos.some((e) => e.datos.galeria.length > vuelta); vuelta++) {
+	for (const e of conFotos) {
+		const foto = e.datos.galeria[vuelta];
+		if (foto && fotos.length < maximo) {
+			const lugar = e.datos.lugar?.ciudad;
+			fotos.push({
+				imagen: foto.imagen,
+				descripcion: foto.descripcion,
+				evento: [e.texto.data.titulo, lugar, anio(e)].filter(Boolean).join(' · '),
+				href: ruta('eventos', idioma, e.slug),
+			});
+		}
+	}
+}
+---
+
+{
+	fotos.length > 0 && (
+		<figure class="album" aria-roledescription="carrusel" aria-label={g.portada} data-album>
+			<div class="marco">
+				{fotos.map((f, i) => (
+					<a class:list={['foto', { activa: i === 0 }]} href={f.href} data-foto tabindex={i === 0 ? undefined : -1} aria-hidden={i === 0 ? undefined : 'true'}>
+						<Image src={f.imagen} alt={f.descripcion} widths={[420, 840]} sizes="(max-width: 56rem) 90vw, 26rem" loading={i === 0 ? 'eager' : 'lazy'} />
+					</a>
+				))}
+			</div>
+			<figcaption>
+				{fotos.map((f, i) => (
+					<span class:list={['leyenda', { activa: i === 0 }]} data-leyenda hidden={i !== 0}>
+						<span class="evento">{f.evento}</span>
+						<span class="descripcion">{f.descripcion}</span>
+					</span>
+				))}
+				{
+					fotos.length > 1 && (
+						<span class="controles">
+							{fotos.map((_, i) => (
+								<button type="button" class="punto" data-ir={i} aria-label={formato(g.contador, { n: i + 1, total: fotos.length })} aria-current={i === 0 ? 'true' : undefined} />
+							))}
+							<button type="button" class="pausa" data-pausa aria-pressed="false" hidden>
+								<span data-texto-pausar>{g.pausar}</span>
+								<span data-texto-reanudar hidden>{g.reanudar}</span>
+							</button>
+						</span>
+					)
+				}
+			</figcaption>
+		</figure>
+	)
+}
+
+<script>
+	for (const album of document.querySelectorAll<HTMLElement>('[data-album]')) {
+		const fotos = [...album.querySelectorAll<HTMLElement>('[data-foto]')];
+		const leyendas = [...album.querySelectorAll<HTMLElement>('[data-leyenda]')];
+		const puntos = [...album.querySelectorAll<HTMLButtonElement>('[data-ir]')];
+		const pausa = album.querySelector<HTMLButtonElement>('[data-pausa]');
+		if (fotos.length < 2) continue;
+		let actual = 0;
+		let pausado = false;
+		let encima = false;
+		const mostrar = (n: number) => {
+			actual = (n + fotos.length) % fotos.length;
+			fotos.forEach((f, i) => {
+				const si = i === actual;
+				f.classList.toggle('activa', si);
+				if (si) {
+					f.removeAttribute('aria-hidden');
+					f.removeAttribute('tabindex');
+				} else {
+					f.setAttribute('aria-hidden', 'true');
+					f.tabIndex = -1;
+				}
+			});
+			leyendas.forEach((l, i) => (l.hidden = i !== actual));
+			puntos.forEach((p, i) => (i === actual ? p.setAttribute('aria-current', 'true') : p.removeAttribute('aria-current')));
+		};
+		puntos.forEach((p) => p.addEventListener('click', () => mostrar(Number(p.dataset.ir))));
+		if (matchMedia('(prefers-reduced-motion: reduce)').matches || !pausa) continue;
+		pausa.hidden = false;
+		pausa.addEventListener('click', () => {
+			pausado = !pausado;
+			pausa.setAttribute('aria-pressed', String(pausado));
+			pausa.querySelector<HTMLElement>('[data-texto-pausar]')!.hidden = pausado;
+			pausa.querySelector<HTMLElement>('[data-texto-reanudar]')!.hidden = !pausado;
+		});
+		album.addEventListener('pointerenter', () => (encima = true));
+		album.addEventListener('pointerleave', () => (encima = false));
+		album.addEventListener('focusin', () => (encima = true));
+		album.addEventListener('focusout', () => (encima = false));
+		setInterval(() => {
+			if (!pausado && !encima && !document.hidden) mostrar(actual + 1);
+		}, 6000);
+	}
+</script>
+
+<style>
+	.album {
+		display: grid;
+		gap: 1.25rem;
+		width: 100%;
+		max-width: 26rem;
+		margin: 0;
+	}
+	.marco {
+		position: relative;
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+		border-radius: var(--radio-arco);
+		border: 1px solid rgb(255 255 255 / 0.15);
+		background: var(--color-oscuro-profundo);
+		box-shadow: var(--sombra-grande);
+	}
+	.foto {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		transition: opacity 1.2s ease;
+	}
+	.foto.activa {
+		opacity: 1;
+		z-index: 1;
+	}
+	.foto img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transform: scale(1.04);
+		transition: transform 7s ease-out;
+	}
+	.foto.activa img {
+		transform: scale(1);
+	}
+	figcaption {
+		display: grid;
+		gap: 0.5rem;
+		min-height: 7.5rem;
+	}
+	.leyenda {
+		display: grid;
+		gap: 0.3rem;
+	}
+	.evento {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-dorado-claro);
+	}
+	.descripcion {
+		font-family: var(--fuente-titulos);
+		font-size: 1.1rem;
+		line-height: 1.35;
+		color: var(--texto-banda, #fff);
+	}
+	.controles {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.1rem;
+		margin-top: 0.25rem;
+	}
+	.punto {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+	.punto::before {
+		content: '';
+		width: 8px;
+		height: 8px;
+		border-radius: 999px;
+		background: rgb(233 236 242 / 0.4);
+		transition: width 0.3s, background-color 0.3s;
+	}
+	.punto[aria-current='true']::before {
+		width: 28px;
+		background: var(--color-dorado-claro);
+	}
+	.pausa {
+		margin-left: 0.5rem;
+		min-height: 44px;
+		padding: 0 0.9rem;
+		border: 1px solid rgb(255 255 255 / 0.3);
+		border-radius: 999px;
+		background: transparent;
+		color: var(--texto-banda, #fff);
+		font: inherit;
+		font-size: 0.8125rem;
+		cursor: pointer;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.foto,
+		.foto img,
+		.punto::before {
+			transition: none;
+		}
+	}
+</style>

@@ -4,6 +4,8 @@
 // Con `tema: navidad`, en vino con nieve y las esferas del logo colgadas como adornos.
 import AdornoNavidad from './AdornoNavidad.astro';
 import BanderaPais from './BanderaPais.astro';
+import CuentaRegresiva from './CuentaRegresiva.astro';
+import Guirnalda from './Guirnalda.astro';
 import Icono from './Icono.astro';
 import PonentesEvento from './PonentesEvento.astro';
 import PreciosEvento from './PreciosEvento.astro';
@@ -33,7 +35,8 @@ const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.m
 const navidad = datos.tema === 'navidad';
 ---
 
-<section class:list={['banda', 'banda-azul', 'banda-hoja', 'anuncio', { 'tema-navidad': navidad }]} aria-labelledby="titulo-anuncio">
+<section class:list={['banda', 'banda-azul', 'banda-hoja', 'anuncio', { 'tema-navidad': navidad, 'con-guirnalda': navidad }]} aria-labelledby="titulo-anuncio">
+	{navidad && <Guirnalda />}
 	<div class="texto">
 		<p class="antetitulo">
 			{fechaDelEvento(evento, idioma)}
@@ -44,6 +47,13 @@ const navidad = datos.tema === 'navidad';
 		</h2>
 		{lema && <p class="lema">{lema}</p>}
 		<p class="resumen">{resumen}</p>
+		{
+			!datos.por_confirmar && datos.inicio.getTime() > Date.now() && (
+				<div class="cuenta-anuncio">
+					<CuentaRegresiva inicio={datos.inicio} idioma={idioma} regalos={navidad} />
+				</div>
+			)
+		}
 		<ul class="cifras">
 			{cifras.map((c) => <li>{c}</li>)}
 		</ul>
@@ -100,6 +110,14 @@ const navidad = datos.tema === 'navidad';
 	.lateral {
 		position: relative;
 		z-index: 1;
+	}
+	/* Espacio arriba para la guirnalda navideña. */
+	.con-guirnalda {
+		position: relative;
+		padding-top: clamp(6.5rem, 12vw, 9rem);
+	}
+	.cuenta-anuncio {
+		margin: 1.5rem 0 0;
 	}
 	h2 {
 		margin: 1rem 0 0.5rem;

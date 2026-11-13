@@ -52,7 +52,7 @@ Ya están en la web con su programa, ponentes, inscripción y WhatsApp, y la por
 - [x] **Costos** de inscripción ✔
 - [ ] **Plataforma** (Zoom, Meet...) y si hay **certificado** (horas y aval).
 - [ ] Confirmar que el **formulario de inscripción** es el correcto: https://forms.gle/JNJT2veLtfBcMcFV8
-- [ ] Opcional: **fotos** de los ponentes invitados (cuadradas) para reemplazar sus iniciales.
+- [ ] **Fotos** (cuadradas) de los 6 ponentes que hoy salen con iniciales en el programa: Andrómeda Valencia, Fabiola Chamas, Daniel Enríquez, Laura Rivera, Peter Hoegen y Fredy Romero. Con el nuevo diseño cada ponente cuelga como una esfera con su foto, así que se nota mucho cuando falta.
 
 La decoración navideña (gorrito del logo y nieve) se apaga sola después del 6 de enero en la portada; en las demás páginas, con la primera publicación posterior a esa fecha.
 

@@ -1,0 +1,138 @@
+---
+// Cuenta regresiva hasta el inicio de un evento (días, horas, min, seg) que se actualiza en vivo.
+// `regalos`: cada número es un regalito crema con cinta y moño dorados (anuncio navideño de la portada).
+import { t, type Idioma } from '../i18n';
+
+interface Props {
+	inicio: Date;
+	idioma: Idioma;
+	regalos?: boolean;
+}
+
+const { inicio, idioma, regalos = false } = Astro.props;
+const d = t(idioma).destacado;
+const ms = Math.max(0, inicio.getTime() - Date.now());
+const partes = [
+	{ clave: 'dias', valor: Math.floor(ms / 86_400_000), nombre: d.dias },
+	{ clave: 'horas', valor: Math.floor((ms % 86_400_000) / 3_600_000), nombre: d.horas },
+	{ clave: 'minutos', valor: Math.floor((ms % 3_600_000) / 60_000), nombre: d.minutos },
+	{ clave: 'segundos', valor: Math.floor((ms % 60_000) / 1000), nombre: d.segundos },
+];
+---
+
+<div class:list={['cuenta', { regalos }]} data-cuenta data-inicio={inicio.toISOString()}>
+	<p class="visualmente-oculto">{d.faltan}</p>
+	<ul role="timer" aria-live="off">
+		{
+			partes.map((p) => (
+				<li>
+					{regalos && (
+						<svg class="mono" viewBox="0 0 40 18" aria-hidden="true" focusable="false">
+							<path d="M20 14C14 2 4 2 6 10s10 4 14 4zM20 14c6-12 16-12 14-4s-10 4-14 4z" />
+							<circle cx="20" cy="13" r="3" />
+						</svg>
+					)}
+					<span class="numero" data-parte={p.clave}>
+						{String(p.valor).padStart(2, '0')}
+					</span>
+					<span class="unidad">{p.nombre}</span>
+				</li>
+			))
+		}
+	</ul>
+</div>
+
+<script>
+	for (const cuenta of document.querySelectorAll<HTMLElement>('[data-cuenta]')) {
+		const inicio = Date.parse(cuenta.dataset.inicio!);
+		const campo = (clave: string) => cuenta.querySelector<HTMLElement>(`[data-parte="${clave}"]`)!;
+		const actualizar = () => {
+			const ms = Math.max(0, inicio - Date.now());
+			const valores = {
+				dias: Math.floor(ms / 86_400_000),
+				horas: Math.floor((ms % 86_400_000) / 3_600_000),
+				minutos: Math.floor((ms % 3_600_000) / 60_000),
+				segundos: Math.floor((ms % 60_000) / 1000),
+			};
+			for (const [clave, valor] of Object.entries(valores)) campo(clave).textContent = String(valor).padStart(2, '0');
+			if (ms === 0) clearInterval(intervalo);
+		};
+		const intervalo = setInterval(actualizar, 1000);
+		actualizar();
+	}
+</script>
+
+<style>
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	li {
+		position: relative;
+		display: grid;
+		justify-items: center;
+		min-width: 4.4rem;
+		padding: 0.6rem 0.5rem 0.45rem;
+		border-radius: 0.75rem;
+		background: rgb(255 255 255 / 0.1);
+		border: 1px solid rgb(255 255 255 / 0.18);
+	}
+	.numero {
+		position: relative;
+		font-family: var(--fuente-titulos);
+		font-size: 2rem;
+		font-weight: 600;
+		line-height: 1;
+		color: #fff;
+		font-variant-numeric: tabular-nums;
+	}
+	.unidad {
+		position: relative;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.6875rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--texto-banda-suave, #e4c3b2);
+	}
+	/* Regalitos: caja crema con una cinta dorada vertical y un moño arriba. */
+	.regalos ul {
+		gap: 0.9rem;
+		padding-top: 0.75rem;
+	}
+	.regalos li {
+		border: 0;
+		background: var(--color-tarjeta);
+	}
+	.regalos li::before {
+		content: '';
+		position: absolute;
+		inset: 0 auto 0 50%;
+		width: 8px;
+		margin-left: -4px;
+		background: rgb(235 186 60 / 0.35);
+	}
+	.regalos .numero {
+		color: #6e1a24;
+	}
+	.regalos .unidad {
+		color: var(--color-texto-suave);
+	}
+	.mono {
+		position: absolute;
+		top: -0.75rem;
+		left: 50%;
+		width: 2.1rem;
+		margin-left: -1.05rem;
+		fill: var(--color-dorado-claro);
+		stroke: #b8891c;
+		stroke-width: 1.2;
+	}
+	.mono circle {
+		fill: #b8891c;
+	}
+</style>

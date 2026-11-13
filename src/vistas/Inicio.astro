@@ -2,6 +2,7 @@
 // Portada. Textos en src/content/paginas/{idioma}/inicio.md (campo `portada`); sin ese archivo se muestran solo
 // el título, la agenda y las fotos. Se mantienen el carrusel de próximos eventos, la franja de fotos y las animaciones.
 import type { CollectionEntry } from 'astro:content';
+import AlbumPortada from '../components/AlbumPortada.astro';
 import BandaEvento from '../components/BandaEvento.astro';
 import CarruselEventos from '../components/CarruselEventos.astro';
 import CintaConceptos from '../components/CintaConceptos.astro';
@@ -32,9 +33,13 @@ const membresia = (await paginaDeSeccion('membresia', idioma))?.data.membresia;
 const eventos = await obtenerEventosPublicos(idioma);
 const proximos = eventos.filter((e) => !yaPaso(e)).slice(0, 6);
 const destacado = proximos.find((e) => e.datos.destacado);
-// Con un evento navideño destacado, la presentación va en crema para que resalte la tarjeta vino del evento.
-const clara = destacado?.datos.tema === 'navidad';
 const realizados = eventos.filter((e) => yaPaso(e)).reverse();
+// Al lado del título va el álbum de fotos de los eventos realizados. Sin fotos, la tarjeta del evento destacado
+// (en crema si es navideño, para que resalte la tarjeta vino) o el logo.
+const conAlbum = realizados.some((e) => e.datos.galeria.length > 0);
+const clara = !conAlbum && destacado?.datos.tema === 'navidad';
+// El evento destacado va debajo del título: con programa, el anuncio grande; sin programa, la tarjeta ancha.
+const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 ---
 
 <section class:list={['portada banda', clara ? 'portada-clara' : 'banda-azul', { nieve: esNavidad() && !clara }]} aria-labelledby="titulo-portada">
@@ -70,15 +75,30 @@ const realizados = eventos.filter((e) => yaPaso(e)).reverse();
 		}
 	</div>
 	<div class="lateral">
-		{destacado ? <TarjetaDestacada evento={destacado} idioma={idioma} /> : <div class="logo-portada">
-				<Image src={logoCompleto} alt={textos.sitio.nombre} widths={[400, 800]} sizes="24rem" />
-			</div>}
+		{
+			conAlbum ? (
+				<AlbumPortada eventos={realizados} idioma={idioma} />
+			) : destacado ? (
+				<TarjetaDestacada evento={destacado} idioma={idioma} />
+			) : (
+				<div class="logo-portada">
+					<Image src={logoCompleto} alt={textos.sitio.nombre} widths={[400, 800]} sizes="24rem" />
+				</div>
+			)
+		}
 	</div>
 </section>
 
 {p && <CintaConceptos conceptos={p.conceptos} etiqueta={v.conceptos} oscura={clara} />}
 
-{destacado && destacado.texto.data.programa.length > 0 && <BandaEvento evento={destacado} idioma={idioma} />}
+{destacado && conPrograma && <BandaEvento evento={destacado} idioma={idioma} />}
+{
+	destacado && !conPrograma && conAlbum && (
+		<section class="banda destacado-ancho">
+			<TarjetaDestacada evento={destacado} idioma={idioma} forma="horizontal" />
+		</section>
+	)
+}
 
 {
 	p?.caminos && (
