@@ -28,7 +28,7 @@ const eventos = defineCollection({
 	schema: ({ image }) =>
 		z
 			.object({
-				tipo: z.enum(['taller', 'curso', 'diplomado', 'jornada', 'congreso', 'webinar', 'supervision', 'asamblea']),
+				tipo: z.enum(['taller', 'curso', 'diplomado', 'jornada', 'congreso', 'seminario', 'webinar', 'supervision', 'asamblea']),
 				inicio: fechaHora,
 				fin: fechaHora.optional(),
 				/** Para cursos en varias sesiones. */
@@ -78,7 +78,12 @@ const eventos = defineCollection({
 				/** Evento principal del año: aparece en la portada con cuenta regresiva. */
 				destacado: z.boolean().default(false),
 				/** Decoración de temporada para la página del evento y su anuncio en la portada. */
-				tema: z.enum(['navidad']).optional(),
+				tema: z.enum(['navidad', 'tajibo']).optional(),
+				/**
+				 * true = evento en preparación: no se publica (ni su página, ni en listas, calendario o Google). Solo se ve
+				 * al trabajar en la web (`npm run dev`). Para publicarlo, quitar esta línea.
+				 */
+				borrador: z.boolean().default(false),
 				/** WhatsApp para consultas, con código de país y sin espacios ni "+": "59170623387". */
 				whatsapp: z.string().regex(/^\d{8,15}$/, 'WhatsApp con código de país, solo números: "59170623387".').optional(),
 				/** true mientras la inscripción está abierta pero aún no se publican los costos (se muestra "Por confirmar"). */
@@ -149,6 +154,48 @@ const eventosTextos = defineCollection({
 		incluye: z.object({ texto: z.string(), lista: z.array(z.string()) }).optional(),
 		/** Título de la banda final (con su parte en cursiva). */
 		cierre: z.object({ titulo: z.string(), cursiva: z.string() }).optional(),
+		/**
+		 * Página de un seminario o congreso que todavía no tiene programa hora a hora (XI SIALAPCCO): qué es y sus
+		 * formatos, historia de las ediciones, sede y viaje, tarifas y banda final. La dibuja EventoSeminario.astro.
+		 */
+		seminario: z
+			.object({
+				presentacion: z.object({ antetitulo: z.string(), titulo: z.string() }),
+				formatos: z.object({
+					nota: z.string().optional(),
+					lista: z.array(z.object({ cifra: z.string().optional(), titulo: z.string(), texto: z.string() })),
+				}),
+				historia: z
+					.object({
+						antetitulo: z.string(),
+						titulo: z.string(),
+						texto: z.string(),
+						ediciones: z.array(z.object({ edicion: z.string(), anio: z.number(), lugar: z.string() })),
+					})
+					.optional(),
+				viaje: z
+					.object({
+						antetitulo: z.string(),
+						titulo: z.string(),
+						texto: z.string(),
+						puntos: z.array(z.object({ titulo: z.string(), texto: z.string() })),
+					})
+					.optional(),
+				inscripcion: z
+					.object({
+						antetitulo: z.string(),
+						titulo: z.string(),
+						texto: z.string(),
+						tarifas: z.array(z.object({ nombre: z.string(), monto: z.string(), nota: z.string().optional(), destacada: z.boolean().default(false) })),
+						incluye_titulo: z.string(),
+						incluye: z.array(z.string()),
+						aviso: z.object({ titulo: z.string(), texto: z.string(), boton: z.string() }),
+					})
+					.optional(),
+				organizan: z.object({ antetitulo: z.string(), texto: z.string() }).optional(),
+				final: z.object({ titulo: z.string(), texto: z.string(), boton: z.string() }).optional(),
+			})
+			.optional(),
 		programa,
 		preguntas: z.array(pregunta).default([]),
 	}),
@@ -288,7 +335,9 @@ const portada = z.object({
 	titulo: z.string(),
 	tituloCursiva: z.string(),
 	bajada: z.string(),
-	datos: z.array(z.string()),
+	datos: z.array(z.string()).default([]),
+	/** Franja de datos debajo de la presentación: un título corto y una línea que lo explica. */
+	hechos: z.array(z.object({ titulo: z.string(), texto: z.string() })).default([]),
 	/** Conceptos de la ciencia del comportamiento que pasan en la cinta animada. */
 	conceptos: z.array(z.string()),
 	/** `aviso`: nota destacada debajo de las tarjetas (p. ej. qué hacer en una emergencia). */
@@ -296,6 +345,14 @@ const portada = z.object({
 	quienes: z.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string(), puntos: z.array(textoConIcono) }),
 	cita: z.object({ texto: z.string(), fuente: z.string() }),
 	membresia: z.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string(), beneficios: z.array(z.string()) }),
+	/** Comisión directiva en la portada (las personas salen de src/content/personas/). */
+	comision: z.object({ antetitulo: z.string(), titulo: z.string() }).optional(),
+	/** Cómo se organiza la asociación: sus órganos, según el estatuto. */
+	organizacion: z
+		.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string().optional(), organos: z.array(z.object({ nombre: z.string(), texto: z.string() })) })
+		.optional(),
+	/** Banda final de la portada, con el enlace al formulario de contacto. */
+	contacto: z.object({ titulo: z.string(), texto: z.string() }).optional(),
 	red: z.object({ antetitulo: z.string(), titulo: z.string(), texto: z.string() }),
 });
 

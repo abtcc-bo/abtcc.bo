@@ -100,12 +100,12 @@ const modalidades = [...new Set(proximos.flatMap((e) => e.datos.modalidad ?? [])
 
 {pagina && <PreguntasFrecuentes idioma={idioma} preguntas={pagina.data.preguntas} />}
 
-<section class="banda banda-verde banda-hoja miembros" aria-labelledby="titulo-miembros">
+<section class="banda banda-color banda-hoja miembros" aria-labelledby="titulo-miembros">
 	<div>
 		<p class="antetitulo">{ev.miembrosAntetitulo}</p>
 		<h2 id="titulo-miembros">{ev.miembrosTitulo}</h2>
 	</div>
-	<a class="boton boton-dorado" href={ruta('membresia', idioma)}>
+	<a class="boton boton-realce" href={ruta('membresia', idioma)}>
 		{ev.miembrosBoton} <span class="flecha" aria-hidden="true">→</span>
 	</a>
 </section>

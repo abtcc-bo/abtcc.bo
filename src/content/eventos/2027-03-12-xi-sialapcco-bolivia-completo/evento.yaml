@@ -1,0 +1,21 @@
+# XI SIALAPCCO Bolivia: PÁGINA COMPLETA, EN PREPARACIÓN (no se publica mientras diga `borrador: true`).
+# Lo que hoy ve el público es el anuncio corto de la carpeta 2027-03-01-xi-sialapcco-bolivia ("marzo de 2027").
+#
+# Para publicarla (cuando ALAPCCO y la ABTCC anuncien las fechas):
+#   1. Borrar la carpeta 2027-03-01-xi-sialapcco-bolivia.
+#   2. Cambiar el nombre de esta carpeta a 2027-03-12-xi-sialapcco-bolivia (así conserva la misma dirección).
+#   3. Quitar la línea `borrador: true`.
+#
+# Fechas acordadas con ALAPCCO (reunión del 30/10/2026): 12 y 13 de marzo de 2027, en Santa Cruz de la Sierra.
+# [PENDIENTE: horario de cada día (las horas de abajo son provisionales), sede, costos, enlace de inscripción,
+#  WhatsApp de consultas, y si habrá modalidad virtual]
+borrador: true
+tipo: seminario
+inicio: "2027-03-12T09:00-04:00"
+fin: "2027-03-13T18:00-04:00"
+modalidad: presencial
+lugar:
+  ciudad: Santa Cruz de la Sierra
+tema: tajibo
+costos_por_confirmar: true
+imagen: ./afiche.webp

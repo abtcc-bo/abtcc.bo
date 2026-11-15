@@ -56,6 +56,26 @@ Ya están en la web con su programa, ponentes, inscripción y WhatsApp, y la por
 
 La decoración navideña (gorrito del logo y nieve) se apaga sola después del 6 de enero en la portada; en las demás páginas, con la primera publicación posterior a esa fecha.
 
+### 5 bis. XI SIALAPCCO Bolivia (12 y 13 de marzo de 2027)
+
+La página completa del evento ya está hecha, pero **oculta**: el público sigue viendo solo el anuncio corto ("marzo de 2027"). Cuando quieras publicarla, avísame y la hago visible. Para completarla necesito:
+
+- [ ] Sede confirmada (nombre, dirección) y horario de cada día.
+- [ ] Lema del evento.
+- [ ] Programa y ponentes (foto, país y tema de cada uno).
+- [ ] Tarifas, fecha límite de la inscripción anticipada y forma de pago (también desde el exterior).
+- [ ] Enlace del formulario de inscripción y WhatsApp de consultas.
+- [ ] Horas y aval del certificado.
+- [ ] Hoteles recomendados y cómo llegar desde el aeropuerto.
+- [ ] Logos de los auspiciantes.
+- [ ] Preguntar a ALAPCCO qué significa exactamente la sigla y confirmar la lista de ediciones anteriores.
+
+### 5 ter. Para la sección "La institución"
+
+- [ ] Estatuto y reglamento aprobados y firmados, en PDF.
+- [ ] Nombres de los socios fundadores.
+- [ ] Enlaces de interés que quieran recomendar.
+
 ### 6. Revisar las novedades de diseño (noviembre 2026)
 Se agregaron preguntas frecuentes, los "tres caminos" de la portada y el blog. Lo que falta está anotado en `docs/datos-pendientes.md` → "Mejoras de diseño". Lo más importante:
 

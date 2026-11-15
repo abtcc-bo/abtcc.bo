@@ -66,8 +66,35 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [x] Logo nuevo (tres esferas) ✔ en la web desde el 01/11/2026: encabezado, portada, ícono de pestaña, datos para Google e imagen para redes
 - [ ] Logo: archivo original del diseñador (SVG o PNG con fondo transparente, y una versión blanca para fondos oscuros). El que está en la web se recortó de una imagen con fondo blanco
 - [x] Imagen para compartir en redes: generada con el logo nuevo ✔ (se puede reemplazar por una diseñada)
-- [x] Colores ✔ (del logo: azul noche, verde y amarillo; 01/11/2026)
-- [x] Fuentes ✔ (Fredoka en títulos y Nunito en textos, menú y botones; elegidas el 13/11/2026)
+- [x] Colores ✔ (paleta "azul institucional", elegida el 15/11/2026: fondo blanco, azul noche del logo, azul acero y celeste; el rojo, amarillo y verde solo en el logo y la franja tricolor. Cada evento conserva sus propios colores)
+- [x] Fuentes ✔ (Source Serif 4 en títulos, por el tono sobrio y académico pedido el 15/11/2026, y Nunito en textos, menú y botones)
+- [ ] Nombre: la web usa "Terapias Cognitivas Conductuales y Contextuales" (sin coma, confirmado otra vez el 15/11/2026). El estatuto lo escribe con coma y el logo dice "Cognitivo Conductuales": falta unificar los tres
+
+## XI SIALAPCCO Bolivia (página completa, oculta)
+
+La página completa está hecha pero no se publica (`borrador: true` en `src/content/eventos/2027-03-12-xi-sialapcco-bolivia-completo/`). Lo público sigue siendo el anuncio corto ("marzo de 2027"). Datos tomados de la minuta de la reunión con ALAPCCO del 30/10/2026.
+
+- [x] Fechas: 12 y 13 de marzo de 2027, Santa Cruz de la Sierra ✔ (acordadas; falta el anuncio oficial con ALAPCCO)
+- [ ] Horario de cada día (las horas del archivo son provisionales)
+- [ ] Sede (se evaluaba un hotel; sin confirmar), dirección y mapa
+- [ ] Lema o tema central
+- [ ] Programa científico (lo arma ALAPCCO): 4 conferencias, 2 talleres, conversatorios y comunicaciones orales; ponentes con foto, país y tema
+- [ ] Comunicaciones orales: criterios, fechas y forma de envío
+- [ ] Tarifas (profesionales, miembros de ALAPCCO, estudiantes) e inscripción anticipada con su fecha límite; ¿los miembros de la ABTCC pagan la tarifa de ALAPCCO?
+- [ ] Medio de pago nacional e internacional y enlace del formulario de inscripción
+- [ ] ¿Habrá modalidad virtual?
+- [ ] Certificado: aval y horas
+- [ ] Para quien viene del exterior: traslado desde el aeropuerto, hoteles recomendados, idiomas de las sesiones
+- [ ] WhatsApp de consultas del evento
+- [ ] Auspiciantes (logos)
+- [ ] Que ALAPCCO confirme la lista de ediciones anteriores y el significado de la sigla (su web no lo explica)
+
+## Institución (portada)
+
+- [x] "Cómo se organiza la ABTCC" (Asamblea General, Comisión Directiva, Consejo Consultivo y Fiscal, Asamblea de Socios Fundadores) ✔ tomado del estatuto recibido el 15/11/2026
+- [ ] Estatuto y reglamento **aprobados y firmados** en PDF, para publicarlos (los recibidos tienen las firmas en blanco)
+- [ ] Nombres de los socios fundadores (el estatuto no los lista)
+- [ ] Enlaces de interés que la asociación quiera recomendar
 
 ## Rediseño (portada y Quiénes somos)
 

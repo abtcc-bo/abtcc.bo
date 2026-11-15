@@ -16,7 +16,7 @@
 		"nosotros": "Quiénes somos",
 		"comision": "Comisión directiva",
 		"transparencia": "Estatuto y ética",
-		"aliados": "Páginas amigas y aliados",
+		"aliados": "Red de terapeutas",
 		"eventos": "Formación y eventos",
 		"membresia": "Membresía",
 		"blog": "Blog",
@@ -99,6 +99,7 @@
 			"diplomado": "Diplomado",
 			"jornada": "Jornada",
 			"congreso": "Congreso",
+			"seminario": "Seminario",
 			"webinar": "Webinar",
 			"supervision": "Supervisión",
 			"asamblea": "Asamblea"
@@ -373,7 +374,9 @@
 		"verRequisitos": "Ver requisitos y proceso",
 		"cuota": "Cuota anual: el equivalente en bolivianos a {monto} {unidad}",
 		"exentos": "Honorarios exentos",
-		"conceptos": "Conceptos de la ciencia del comportamiento"
+		"conceptos": "Conceptos de la ciencia del comportamiento",
+		"comoAfiliarse": "¿Cómo afiliarse?",
+		"escribenos": "Escribir a la ABTCC"
 	},
 	"preguntas": {
 		"antetitulo": "Preguntas frecuentes",
@@ -411,10 +414,10 @@
 		"serMiembro": "Quiero ser miembro"
 	},
 	"aliados": {
-		"antetitulo": "Páginas amigas",
-		"titulo": "Aliados de la ABTCC",
-		"texto": "Instituciones, proyectos y profesionales con quienes compartimos el compromiso con las terapias basadas en evidencia.",
-		"verTodos": "Conoce a nuestros aliados",
+		"antetitulo": "Red de terapeutas",
+		"titulo": "Centros, equipos y aliados de la ABTCC",
+		"texto": "Espacios de atención, formación y divulgación de miembros de la asociación, y las instituciones con las que trabajamos.",
+		"verTodos": "Ver la red completa",
 		"instituciones": "Instituciones y proyectos",
 		"profesionales": "Profesionales",
 		"telefono": "Teléfono",

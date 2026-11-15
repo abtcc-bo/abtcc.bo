@@ -68,7 +68,7 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		<p class="acciones">
 			{
 				inscripcionAbierta(evento) && datos.inscripcion && (
-					<a class="boton boton-dorado" href={datos.inscripcion.url} rel="noopener">
+					<a class="boton boton-realce" href={datos.inscripcion.url} rel="noopener">
 						{textos.comun.inscribirme} <span class="flecha" aria-hidden="true">→</span>
 					</a>
 				)
@@ -135,7 +135,7 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.6rem);
 		font-style: italic;
 		line-height: 1.35;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.aviso-estado {
 		display: inline-block;
@@ -163,7 +163,7 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		gap: 0.5rem;
 	}
 	.datos-evento :global(.icono) {
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.acciones {
 		display: flex;
@@ -181,7 +181,7 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		text-decoration: none;
 	}
 	.whatsapp :global(.icono) {
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.whatsapp:hover span {
 		text-decoration: underline;
@@ -206,7 +206,7 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		width: auto;
 		height: auto;
 		background: none;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.navidad h1 {
 		font-size: clamp(3rem, 1.8rem + 4.6vw, 5.25rem);
@@ -214,7 +214,7 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 	}
 	.navidad h1 .cursiva {
 		display: block;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.navidad .datos-evento li {
 		padding: 0.4rem 0.9rem;
