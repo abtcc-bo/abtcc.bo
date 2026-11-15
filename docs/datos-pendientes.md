@@ -70,6 +70,25 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [x] Fuentes ✔ (Source Serif 4 en títulos, por el tono sobrio y académico pedido el 15/11/2026, y Nunito en textos, menú y botones)
 - [ ] Nombre: la web usa "Terapias Cognitivas Conductuales y Contextuales" (sin coma, confirmado otra vez el 15/11/2026). El estatuto lo escribe con coma y el logo dice "Cognitivo Conductuales": falta unificar los tres
 
+## XI SIALAPCCO Bolivia (página completa, oculta)
+
+La página completa está hecha pero no se publica (`borrador: true` en `src/content/eventos/2027-03-12-xi-sialapcco-bolivia-completo/`). Lo público sigue siendo el anuncio corto ("marzo de 2027"). Datos tomados de la minuta de la reunión con ALAPCCO del 30/10/2026.
+
+- [x] Fechas: 12 y 13 de marzo de 2027, Santa Cruz de la Sierra ✔ (acordadas; falta el anuncio oficial con ALAPCCO)
+- [ ] Horario de cada día (las horas del archivo son provisionales)
+- [ ] Sede (se evaluaba un hotel; sin confirmar), dirección y mapa
+- [ ] Lema o tema central
+- [ ] Programa científico (lo arma ALAPCCO): 4 conferencias, 2 talleres, conversatorios y comunicaciones orales; ponentes con foto, país y tema
+- [ ] Comunicaciones orales: criterios, fechas y forma de envío
+- [ ] Tarifas (profesionales, miembros de ALAPCCO, estudiantes) e inscripción anticipada con su fecha límite; ¿los miembros de la ABTCC pagan la tarifa de ALAPCCO?
+- [ ] Medio de pago nacional e internacional y enlace del formulario de inscripción
+- [ ] ¿Habrá modalidad virtual?
+- [ ] Certificado: aval y horas
+- [ ] Para quien viene del exterior: traslado desde el aeropuerto, hoteles recomendados, idiomas de las sesiones
+- [ ] WhatsApp de consultas del evento
+- [ ] Auspiciantes (logos)
+- [ ] Que ALAPCCO confirme la lista de ediciones anteriores y el significado de la sigla (su web no lo explica)
+
 ## Institución (portada)
 
 - [x] "Cómo se organiza la ABTCC" (Asamblea General, Comisión Directiva, Consejo Consultivo y Fiscal, Asamblea de Socios Fundadores) ✔ tomado del estatuto recibido el 15/11/2026
