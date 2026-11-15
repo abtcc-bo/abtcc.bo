@@ -40,10 +40,14 @@ function eventosCombinados() {
 	// En desarrollo no se guarda en caché, para ver al instante los cambios en los archivos.
 	if (cacheEventos && !import.meta.env.DEV) return cacheEventos;
 	cacheEventos = (async () => {
-		const [datos, textos] = await Promise.all([getCollection('eventos'), getCollection('eventosTextos')]);
+		const [todos, textos] = await Promise.all([getCollection('eventos'), getCollection('eventosTextos')]);
+		// Los eventos en preparación (`borrador: true`) no se publican: solo existen al trabajar en la web.
+		const borradores = new Set(todos.filter((d) => d.data.borrador && !import.meta.env.DEV).map((d) => d.id));
+		const datos = todos.filter((d) => !borradores.has(d.id));
 		const mapa = new Map(datos.map((d) => [d.id, { datos: d, textos: {} as Partial<Record<Idioma, CollectionEntry<'eventosTextos'>>> }]));
 		for (const texto of textos) {
 			const [carpeta, idioma] = texto.id.split('/');
+			if (borradores.has(carpeta)) continue;
 			const evento = mapa.get(carpeta);
 			if (!evento) throw new Error(`La carpeta de evento "${carpeta}" tiene ${idioma}.md pero le falta evento.yaml.`);
 			evento.textos[idioma as Idioma] = texto;

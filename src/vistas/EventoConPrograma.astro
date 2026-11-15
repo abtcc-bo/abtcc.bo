@@ -179,7 +179,7 @@ const navidad = datos.tema === 'navidad';
 	)
 }
 
-<div class:list={navidad ? 'banda banda-verde banda-pino nieve' : 'banda banda-clara'}>
+<div class:list={navidad ? 'banda banda-color banda-pino nieve' : 'banda banda-clara'}>
 	<ProgramaEvento evento={evento} idioma={idioma} />
 </div>
 
@@ -292,7 +292,7 @@ const navidad = datos.tema === 'navidad';
 	<p class="acciones">
 		{
 			abierta && (
-				<a class="boton boton-dorado" href={datos.inscripcion!.url} rel="noopener">
+				<a class="boton boton-realce" href={datos.inscripcion!.url} rel="noopener">
 					{textos.comun.inscribirme} <span class="flecha" aria-hidden="true">→</span>
 				</a>
 			)
@@ -419,7 +419,7 @@ const navidad = datos.tema === 'navidad';
 		font-weight: 600;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.texto-dirigido {
 		font-family: var(--fuente-texto);
@@ -515,7 +515,7 @@ const navidad = datos.tema === 'navidad';
 		position: absolute;
 		top: 1.25rem;
 		right: 1.5rem;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.icono-formato :global(.icono) {
 		width: 3rem;
@@ -534,7 +534,7 @@ const navidad = datos.tema === 'navidad';
 		font-weight: 600;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.formatos h3 {
 		margin: 0.5rem 0 0.1rem;
@@ -576,7 +576,7 @@ const navidad = datos.tema === 'navidad';
 		border-radius: 999px;
 		font-family: var(--fuente-interfaz);
 		font-size: 0.8125rem;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.nota-dia :global(.icono) {
 		width: 1rem;
@@ -629,7 +629,7 @@ const navidad = datos.tema === 'navidad';
 		color: var(--texto-banda);
 	}
 	.ponentes-evento.con-guirnalda h2 em {
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.con-guirnalda > ul > li {
 		border: 0;
@@ -695,7 +695,7 @@ const navidad = datos.tema === 'navidad';
 		width: 2px;
 		height: 1.6rem;
 		translate: -50% 0;
-		background: var(--color-dorado-claro);
+		background: var(--color-realce);
 	}
 	.colgante::after {
 		content: '';
@@ -706,7 +706,7 @@ const navidad = datos.tema === 'navidad';
 		height: 0.55rem;
 		translate: -50% 0;
 		border-radius: 2px;
-		background: var(--color-dorado-claro);
+		background: var(--color-realce);
 	}
 	.ponentes-evento :global(.retrato.grande) {
 		width: 6.25rem;
@@ -857,7 +857,7 @@ const navidad = datos.tema === 'navidad';
 		color: #fff;
 	}
 	.destacada .etiqueta-entrada {
-		background: var(--color-dorado-claro);
+		background: var(--color-realce);
 		color: var(--color-oscuro);
 	}
 	.destacada .monto,
@@ -866,13 +866,13 @@ const navidad = datos.tema === 'navidad';
 		color: #fff;
 	}
 	.destacada .incluye :global(.icono) {
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.destacada .corte {
 		border-color: rgb(255 255 255 / 0.3);
 	}
 	.destacada .boton-entrada {
-		background: var(--color-dorado-claro);
+		background: var(--color-realce);
 		color: var(--color-oscuro);
 	}
 	.nota-inversion {
@@ -911,7 +911,7 @@ const navidad = datos.tema === 'navidad';
 		align-items: center;
 		gap: 0.4rem;
 		font-weight: 600;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 		text-decoration: none;
 	}
 	.contacto-dudas :global(.icono) {
@@ -995,7 +995,7 @@ const navidad = datos.tema === 'navidad';
 		font-size: clamp(2.4rem, 1.6rem + 3vw, 3.75rem);
 	}
 	.final h2 em {
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.final .acciones {
 		display: flex;
@@ -1029,7 +1029,7 @@ const navidad = datos.tema === 'navidad';
 	.rotulo-final :global(.icono) {
 		width: 1.1rem;
 		height: 1.1rem;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 
 	@media (max-width: 52rem) {

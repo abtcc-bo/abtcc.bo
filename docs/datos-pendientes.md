@@ -66,8 +66,16 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [x] Logo nuevo (tres esferas) ✔ en la web desde el 01/11/2026: encabezado, portada, ícono de pestaña, datos para Google e imagen para redes
 - [ ] Logo: archivo original del diseñador (SVG o PNG con fondo transparente, y una versión blanca para fondos oscuros). El que está en la web se recortó de una imagen con fondo blanco
 - [x] Imagen para compartir en redes: generada con el logo nuevo ✔ (se puede reemplazar por una diseñada)
-- [x] Colores ✔ (del logo: azul noche, verde y amarillo; 01/11/2026)
-- [x] Fuentes ✔ (Fredoka en títulos y Nunito en textos, menú y botones; elegidas el 13/11/2026)
+- [x] Colores ✔ (paleta "azul institucional", elegida el 15/11/2026: fondo blanco, azul noche del logo, azul acero y celeste; el rojo, amarillo y verde solo en el logo y la franja tricolor. Cada evento conserva sus propios colores)
+- [x] Fuentes ✔ (Source Serif 4 en títulos, por el tono sobrio y académico pedido el 15/11/2026, y Nunito en textos, menú y botones)
+- [ ] Nombre: la web usa "Terapias Cognitivas Conductuales y Contextuales" (sin coma, confirmado otra vez el 15/11/2026). El estatuto lo escribe con coma y el logo dice "Cognitivo Conductuales": falta unificar los tres
+
+## Institución (portada)
+
+- [x] "Cómo se organiza la ABTCC" (Asamblea General, Comisión Directiva, Consejo Consultivo y Fiscal, Asamblea de Socios Fundadores) ✔ tomado del estatuto recibido el 15/11/2026
+- [ ] Estatuto y reglamento **aprobados y firmados** en PDF, para publicarlos (los recibidos tienen las firmas en blanco)
+- [ ] Nombres de los socios fundadores (el estatuto no los lista)
+- [ ] Enlaces de interés que la asociación quiera recomendar
 
 ## Rediseño (portada y Quiénes somos)
 

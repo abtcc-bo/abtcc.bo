@@ -1,22 +1,26 @@
-/* Diseño "Rediseño ABTCC" con los colores del logo oficial: azul noche (portada y cabeceras), verde y amarillo del
-   logo, sobre fondo crema. Dos letras (noviembre 2026): Fredoka en títulos (redonda, sin cursiva: lo destacado va en
-   color) y Nunito en textos e interfaz (menú, botones, formularios y rótulos en mayúsculas). Los tres colores del logo como firma: franja y barras tricolor, y las tres esferas. Todo se ajusta desde estas
-   variables. Hay movimiento suave (fondo, aparición al bajar, figuras científicas) que se detiene con "reducir movimiento". */
+/* Diseño "azul institucional" (noviembre 2026), cercano al de las asociaciones de la red ALAPCCO: fondo blanco y azules
+   fríos. Azul noche del logo (portada, cabeceras, pie y títulos), azul acero (botones, enlaces y la banda de color) y
+   celeste (realces sobre azul). El rojo, el amarillo y el verde del logo quedan solo en el logo y en la firma tricolor
+   (franja, barra de los rótulos y las tres esferas). Dos letras: Source Serif 4 en títulos (con cursiva propia para las
+   palabras destacadas) y Nunito en textos e interfaz. Cada evento puede traer su propia paleta (ver "Temas de evento",
+   al final). Todo se ajusta desde estas variables. El movimiento se detiene con "reducir movimiento". */
 :root {
-	--color-fondo: #f5f2ea;
-	--color-superficie: #fdfcf7;
-	--color-tarjeta: #fffdf8;
-	--color-texto: #1c2940;
-	--color-texto-suave: #4a5263; /* contraste 7:1 sobre crema: cómodo para leer párrafos largos */
+	--color-fondo: #ffffff;
+	--color-superficie: #f6f9fc;
+	--color-tarjeta: #ffffff;
+	--color-texto: #14263b;
+	--color-texto-suave: #46566a; /* contraste 7:1 sobre blanco: cómodo para leer párrafos largos */
 	--color-titulos: #0b233b;
-	--color-acento: #0e6a3d; /* verde del logo, oscurecido para leerse sobre crema */
-	--color-acento-hover: #0a5230;
-	--color-acento-suave: #e3efe7;
-	--color-dorado: #85620f; /* amarillo del logo oscurecido: contraste accesible sobre crema en texto pequeño */
-	--color-dorado-claro: #ebba3c; /* amarillo del logo */
-	--color-borde: #e5e0d3;
-	--color-division: #ddd6c6;
-	--color-verde: #0e5233;
+	--color-acento: #245f8c; /* azul acero: botones y enlaces */
+	--color-acento-hover: #17486e;
+	--color-acento-suave: #e1ecf5;
+	--color-rotulo: #245f8c; /* rótulos y números de orden sobre fondo claro */
+	--color-realce: #a9d0ee; /* celeste: palabras y detalles destacados sobre azul */
+	--color-boton-realce: #ffffff; /* botón principal sobre azul */
+	--color-borde: #d5e0ea;
+	--color-division: #c9d6e2;
+	--color-banda: #245f8c; /* banda de color en medio de una página (.banda-color) */
+	--color-banda-clara: #e9f0f6; /* fondo alterno de sección (.banda-clara) */
 	--color-oscuro: #0b233b; /* azul del logo */
 	--color-oscuro-profundo: #071a2d;
 	--color-oscuro-texto: #e9ecf2;
@@ -26,7 +30,7 @@
 	--logo-amarillo: #ebba3c;
 	--logo-verde: #138b4e;
 	--franja-tricolor: linear-gradient(90deg, var(--logo-rojo) 0 33.33%, var(--logo-amarillo) 33.33% 66.66%, var(--logo-verde) 66.66%);
-	--fuente-titulos: 'Fredoka Variable', 'Nunito Variable', system-ui, sans-serif;
+	--fuente-titulos: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
 	--fuente-texto: 'Nunito Variable', system-ui, sans-serif;
 	--fuente-interfaz: 'Nunito Variable', system-ui, sans-serif;
 	--ancho-maximo: 72rem;
@@ -71,8 +75,7 @@ body {
 	background: var(--color-fondo);
 	overflow-x: clip;
 	-webkit-font-smoothing: antialiased;
-	/* Fredoka no tiene cursiva: sin esto el navegador la inclina a la fuerza y se ve torcida. Las palabras
-	   destacadas de los títulos (.cursiva) resaltan solo con color. */
+	/* Nunca inclinar una letra a la fuerza: las cursivas son siempre las propias de cada letra. */
 	font-synthesis-style: none;
 }
 
@@ -86,15 +89,15 @@ body::after {
 }
 body::before {
 	inset: 0;
-	background-image: radial-gradient(rgb(20 33 61 / 0.07) 1px, transparent 1.2px);
+	background-image: radial-gradient(rgb(20 33 61 / 0.05) 1px, transparent 1.2px);
 	background-size: 24px 24px;
 }
 body::after {
 	inset: -25%;
 	background:
-		radial-gradient(closest-side, rgb(19 78 54 / 0.12), transparent) 15% 20% / 45% 45% no-repeat,
-		radial-gradient(closest-side, rgb(214 180 95 / 0.18), transparent) 85% 35% / 40% 40% no-repeat,
-		radial-gradient(closest-side, rgb(20 33 61 / 0.07), transparent) 40% 80% / 50% 50% no-repeat;
+		radial-gradient(closest-side, rgb(36 95 140 / 0.09), transparent) 15% 20% / 45% 45% no-repeat,
+		radial-gradient(closest-side, rgb(169 208 238 / 0.22), transparent) 85% 35% / 40% 40% no-repeat,
+		radial-gradient(closest-side, rgb(20 33 61 / 0.05), transparent) 40% 80% / 50% 50% no-repeat;
 	animation: deriva 30s ease-in-out infinite alternate;
 	will-change: transform;
 }
@@ -119,32 +122,34 @@ body::after {
 	padding-block: clamp(3rem, 7vw, 5.5rem);
 }
 .banda-clara {
-	background: rgb(253 252 247 / 0.85);
+	background: var(--color-banda-clara);
 }
-.banda-verde,
+.banda-color,
 .banda-azul {
 	position: relative;
 	color: var(--color-oscuro-texto);
 }
 /* Texto secundario sobre cada color de banda (bajadas, migas, descripciones). */
-.banda-verde {
-	--texto-banda: #d5e5db;
-	--texto-banda-suave: #b4cdbf;
-	background: var(--color-verde);
+.banda-color {
+	--texto-banda: #e3eef7;
+	--texto-banda-suave: #c5dbec;
+	/* Sobre el azul acero el celeste se aclara para que los textos pequeños se lean bien. */
+	--color-realce: #d6e8f6;
+	background: var(--color-banda);
 }
 .banda-azul {
 	--texto-banda: #d3dbe8;
 	--texto-banda-suave: #aebbd0;
 	background: var(--color-oscuro);
 }
-:is(.banda-verde, .banda-azul) :is(h1, h2, h3) {
+:is(.banda-color, .banda-azul) :is(h1, h2, h3) {
 	color: #fff;
 }
-:is(.banda-verde, .banda-azul) a:not(.boton) {
+:is(.banda-color, .banda-azul) a:not(.boton) {
 	color: #fff;
 }
-:is(.banda-verde, .banda-azul) :focus-visible {
-	outline-color: var(--color-dorado-claro);
+:is(.banda-color, .banda-azul) :focus-visible {
+	outline-color: var(--color-realce);
 }
 /* Forma de hoja: esquinas opuestas redondeadas, para las bandas de color en medio de una página. */
 .banda-hoja {
@@ -183,8 +188,9 @@ h1,
 h2,
 h3 {
 	font-family: var(--fuente-titulos);
-	font-weight: 500;
-	line-height: 1.12;
+	font-weight: 600;
+	line-height: 1.14;
+	letter-spacing: -0.01em;
 	color: var(--color-titulos);
 	text-wrap: balance;
 }
@@ -249,7 +255,7 @@ a:hover {
 	letter-spacing: 0.16em;
 	text-transform: uppercase;
 	font-family: var(--fuente-interfaz);
-	color: var(--color-dorado);
+	color: var(--color-rotulo);
 }
 /* La línea es la barra tricolor del logo, con puntas redondeadas. */
 .antetitulo::before {
@@ -275,8 +281,8 @@ a:hover {
 		radial-gradient(circle, var(--logo-amarillo) 0.3rem, transparent 0.32rem) 1rem 50% / 1rem 0.8rem no-repeat,
 		radial-gradient(circle, var(--logo-verde) 0.3rem, transparent 0.32rem) 2rem 50% / 1rem 0.8rem no-repeat;
 }
-:is(.banda-verde, .banda-azul) .antetitulo {
-	color: var(--color-dorado-claro);
+:is(.banda-color, .banda-azul) .antetitulo {
+	color: var(--color-realce);
 }
 
 /* Número de orden en cursiva dorada (01, 02, I, II...). */
@@ -284,10 +290,10 @@ a:hover {
 	font-family: var(--fuente-titulos);
 	font-size: 1.35rem;
 	font-style: italic;
-	color: var(--color-dorado);
+	color: var(--color-rotulo);
 }
-:is(.banda-verde, .banda-azul) .numeral {
-	color: var(--color-dorado-claro);
+:is(.banda-color, .banda-azul) .numeral {
+	color: var(--color-realce);
 }
 /* Ícono en círculo y número de orden, en una misma línea, sobre el título de cada punto de una lista. */
 .marca {
@@ -317,13 +323,13 @@ li:hover > .marca .circulo {
 	color: var(--color-acento);
 }
 .etiqueta-dorada {
-	background: #f3e7c4;
-	border-color: #f3e7c4;
-	color: #6b5216;
+	background: var(--color-acento-suave);
+	border-color: var(--color-acento-suave);
+	color: var(--color-acento-hover);
 }
 
 :focus-visible {
-	outline: 3px solid var(--color-dorado);
+	outline: 3px solid var(--color-rotulo);
 	outline-offset: 2px;
 }
 
@@ -403,13 +409,15 @@ li:hover > .marca .circulo {
 	color: #fff;
 	transform: translateY(-1px);
 }
-.boton-dorado {
-	background: var(--color-dorado-claro);
-	border-color: var(--color-dorado-claro);
+/* Botón principal sobre una banda oscura: blanco en el sitio; cada tema de evento pone su color. */
+.boton-realce {
+	background: var(--color-boton-realce);
+	border-color: var(--color-boton-realce);
 	color: var(--color-oscuro);
 }
-.boton-dorado:hover {
-	background: #f2c95b;
+.boton-realce:hover {
+	background: color-mix(in srgb, var(--color-boton-realce), var(--color-oscuro) 10%);
+	border-color: transparent;
 	color: var(--color-oscuro);
 }
 .boton-secundario,
@@ -422,11 +430,11 @@ li:hover > .marca .circulo {
 	background: var(--color-acento-suave);
 	color: var(--color-acento-hover);
 }
-:is(.banda-verde, .banda-azul) .boton-contorno {
+:is(.banda-color, .banda-azul) .boton-contorno {
 	border-color: rgb(255 255 255 / 0.4);
 	color: #fff;
 }
-:is(.banda-verde, .banda-azul) .boton-contorno:hover {
+:is(.banda-color, .banda-azul) .boton-contorno:hover {
 	background: rgb(255 255 255 / 0.1);
 	color: #fff;
 }
@@ -534,6 +542,90 @@ a:hover .flecha {
 	}
 }
 
+/* ---------- Temas de evento ---------- */
+
+/* Cada evento puede tener su propia personalidad (`tema` en evento.yaml). Lo que cambia es el color; el logo, las
+   letras y el orden de la página son siempre los del sitio. Las variables se redefinen en la cabecera, el cuerpo y
+   las tarjetas del evento, y todo lo que hay dentro las hereda. */
+
+/* Navidad: vino, verde pino y oro sobre crema cálido. */
+.tema-navidad,
+.fondo-navidad,
+.papel-navidad,
+.banda-pino,
+.navidad {
+	--color-superficie: #fdfcf7;
+	--color-tarjeta: #fffdf8;
+	--color-acento: #0e6a3d;
+	--color-acento-hover: #0a5230;
+	--color-acento-suave: #e3efe7;
+	--color-rotulo: #85620f;
+	--color-realce: #ebba3c;
+	--color-boton-realce: #ebba3c;
+	--color-borde: #e5e0d3;
+	--color-division: #ddd6c6;
+	--color-banda: #0e5233;
+	--color-banda-clara: rgb(253 252 247 / 0.85);
+}
+
+/* Tajibo (XI SIALAPCCO Bolivia): verde selva, rosa tajibo y sol sobre crema, como el emblema del evento. */
+.tema-tajibo,
+.papel-tajibo,
+.tajibo {
+	--color-superficie: #fffaf3;
+	--color-tarjeta: #ffffff;
+	--color-titulos: #0e4d2e;
+	--color-texto: #23302a;
+	--color-texto-suave: #4d5a52;
+	--color-acento: #0e4d2e;
+	--color-acento-hover: #9c1c4f;
+	--color-acento-suave: #fbe0ea;
+	--color-rotulo: #9c1c4f;
+	--color-realce: #f6c445;
+	--color-boton-realce: #ffffff;
+	--color-borde: #f0d9c4;
+	--color-division: #e2cdb8;
+	--color-banda: #0e4d2e;
+	--color-banda-clara: #ffffff;
+	--color-oscuro: #0e4d2e;
+	--color-oscuro-profundo: #0a3a22;
+}
+.tema-tajibo {
+	--texto-banda: #e3f0e6;
+	--texto-banda-suave: #c4dccb;
+	background: var(--color-oscuro);
+}
+/* Cuerpo de la página de un evento con tema: el papel del tema de borde a borde y hasta el pie; cada sección es
+   una banda dentro de él. */
+.cuerpo-tema {
+	padding-block: 0;
+	margin-bottom: calc(var(--espacio) * -3);
+	color: var(--color-texto);
+}
+.papel-navidad {
+	background: linear-gradient(#fbf3e6, #f7ecdc);
+}
+.papel-tajibo {
+	background: #fff7ec;
+}
+/* La banda de color de un evento con tema conserva el realce del tema (el sitio lo aclara sobre el azul acero). */
+:is(.tema-tajibo, .papel-tajibo, .tajibo) .banda-color {
+	--texto-banda: #e3f0e6;
+	--texto-banda-suave: #c4dccb;
+	--color-realce: #f6c445;
+}
+/* Cabecera del tajibo: en pantallas anchas, el sol del emblema detrás del afiche y pétalos rosados sueltos. */
+@media (min-width: 56rem) {
+	.cabecera-pagina.tema-tajibo {
+		background:
+			radial-gradient(circle at 96% 16%, #ff8fb5 0 1.1rem, transparent 1.15rem),
+			radial-gradient(circle at 61% 84%, #e64980 0 0.7rem, transparent 0.75rem),
+			radial-gradient(circle at 58% 20%, #ffb3cd 0 0.9rem, transparent 0.95rem),
+			radial-gradient(circle at 80% 52%, #f6c445 0 15rem, transparent 15.05rem),
+			var(--color-oscuro);
+	}
+}
+
 /* ---------- Navidad (decoración de temporada) ---------- */
 
 /* Banda de un evento con `tema: navidad`: vino profundo con brillo dorado y textos color crema. */
@@ -544,7 +636,7 @@ a:hover .flecha {
 		radial-gradient(ellipse at 85% 0%, rgb(235 186 60 / 0.18), transparent 55%),
 		linear-gradient(160deg, #8a1a2c, #561020);
 }
-/* Banda verde pino (programa de un evento navideño): se usa junto con .banda-verde y .nieve; estrellitas doradas
+/* Banda verde pino (programa de un evento navideño): se usa junto con .banda-color y .nieve; estrellitas doradas
    fijas además de la nieve. */
 .banda-pino {
 	--texto-banda: #d6eadc;
@@ -620,7 +712,7 @@ a:hover .flecha {
 		radial-gradient(circle at 50% 40%, #e3151b 0 5px, transparent 5.5px) 0 0 / 72px 100% repeat-x,
 		radial-gradient(circle at 50% 70%, #f6c400 0 5px, transparent 5.5px) 24px 0 / 72px 100% repeat-x,
 		radial-gradient(circle at 50% 40%, #0c9439 0 5px, transparent 5.5px) 48px 0 / 72px 100% repeat-x,
-		linear-gradient(var(--color-dorado-claro), var(--color-dorado-claro)) 0 0.45rem / 100% 1px no-repeat;
+		linear-gradient(var(--color-realce), var(--color-realce)) 0 0.45rem / 100% 1px no-repeat;
 }
 .fondo-navidad::after {
 	content: '';

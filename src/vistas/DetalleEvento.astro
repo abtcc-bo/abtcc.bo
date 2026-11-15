@@ -1,12 +1,14 @@
 ---
-// Página completa de un evento (debajo de su cabecera, CabeceraEvento.astro). Con `programa`, la arma
-// EventoConPrograma.astro; si no: ficha, inscripción, descripción,
+// Página completa de un evento (debajo de su cabecera, CabeceraEvento.astro). Con `seminario`, la arma
+// EventoSeminario.astro; con `programa`, EventoConPrograma.astro; si no: ficha, inscripción, descripción,
 // galería, preguntas, calendario y compartir; al final, con inscripción
 // abierta, la banda "Reserva tu lugar". Con `tema: navidad`, todo el cuerpo lleva fondo navideño (.fondo-navidad).
+// Las páginas con programa o seminario llevan el papel y los colores de su tema (.cuerpo-tema .papel-…, global.css).
 import { Image, getImage } from 'astro:assets';
 import { getEntries, render } from 'astro:content';
 import CierreEvento from '../components/CierreEvento.astro';
 import EventoConPrograma from './EventoConPrograma.astro';
+import EventoSeminario from './EventoSeminario.astro';
 import GaleriaEvento from '../components/GaleriaEvento.astro';
 import JsonLd from '../components/JsonLd.astro';
 import PonentesEvento from '../components/PonentesEvento.astro';
@@ -24,7 +26,7 @@ const { evento, idioma } = Astro.props;
 const textos = t(idioma);
 const ev = textos.eventos;
 const { datos } = evento;
-const { titulo, dirigido_a, preguntas, programa } = evento.texto.data;
+const { titulo, dirigido_a, preguntas, programa, seminario } = evento.texto.data;
 const { Content } = await render(evento.texto);
 const facilitadores = await getEntries(datos.facilitadores);
 // Para Google: quienes exponen, de la lista de facilitadores o del programa.
@@ -46,8 +48,12 @@ const compartir = [
 ];
 ---
 
-{programa.length > 0 ? (
+{seminario ? (
+<EventoSeminario evento={evento} idioma={idioma} />
+) : programa.length > 0 ? (
+<div class:list={datos.tema && ['banda cuerpo-tema', `papel-${datos.tema}`]}>
 <EventoConPrograma evento={evento} idioma={idioma} />
+</div>
 ) : (
 <div class:list={['cuerpo-evento', { 'banda fondo-navidad': navidad }]}>
 <article class="evento">
@@ -312,7 +318,15 @@ const compartir = [
 	if (elemento) {
 		const inicio = new Date(elemento.dataset.inicio!);
 		if (inicio.getTimezoneOffset() !== 240) {
-			const formato = new Intl.DateTimeFormat(document.documentElement.lang, { dateStyle: 'long', timeStyle: 'short', timeZoneName: 'short' });
+			// (No se pueden combinar dateStyle/timeStyle con timeZoneName: el navegador lo rechaza.)
+			const formato = new Intl.DateTimeFormat(document.documentElement.lang, {
+				day: 'numeric',
+				month: 'long',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				timeZoneName: 'short',
+			});
 			elemento.querySelector('[data-valor]')!.textContent = formato.format(inicio);
 			elemento.hidden = false;
 		}
@@ -441,7 +455,7 @@ const compartir = [
 	.sin-foto {
 		display: grid;
 		place-items: center;
-		background: var(--color-verde);
+		background: var(--color-banda);
 		font-family: var(--fuente-titulos);
 		font-size: 1.75rem;
 		font-style: italic;

@@ -1,0 +1,461 @@
+---
+// Página de un seminario o congreso que todavía no tiene programa hora a hora (bloque `seminario` de su es.md),
+// debajo de su cabecera: qué es y sus formatos, historia de las ediciones, sede y viaje, tarifas con lo que incluye
+// la inscripción, quiénes organizan y una banda final. Los colores salen del `tema` del evento (p. ej. "tajibo",
+// en global.css); sin tema, usa los del sitio. Todos los textos vienen del contenido.
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import logoCompleto from '../assets/logo-completo.png';
+import logoAlapcco from '../content/aliados/logos/alapcco.webp';
+import Icono from '../components/Icono.astro';
+import { ORGANIZACION } from '../datos/organizacion';
+import { formato, ruta, t, type Idioma } from '../i18n';
+import { contactoWhatsapp, inscripcionAbierta } from '../lib/eventos';
+import type { Evento } from '../lib/contenido';
+
+interface Props {
+	evento: Evento;
+	idioma: Idioma;
+}
+
+const { evento, idioma } = Astro.props;
+const textos = t(idioma);
+const { datos } = evento;
+const { titulo } = evento.texto.data;
+const s = evento.texto.data.seminario!;
+const { Content } = await render(evento.texto);
+const abierta = inscripcionAbierta(evento) && datos.inscripcion;
+const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(textos.eventos.mensajeWhatsapp, { evento: titulo }));
+// Para avisar o consultar: la inscripción si ya abrió; si no, el WhatsApp del evento o la página de contacto.
+const enlaceAviso = abierta ? datos.inscripcion!.url : whatsapp ? whatsapp.url : ruta('contacto', idioma);
+const ultima = s.historia?.ediciones.at(-1);
+---
+
+<div class:list={datos.tema && ['banda cuerpo-tema', `papel-${datos.tema}`]}>
+	<section class="banda sobre" aria-labelledby="titulo-sobre">
+		<div>
+			<p class="antetitulo">{s.presentacion.antetitulo}</p>
+			<h2 id="titulo-sobre">{s.presentacion.titulo}</h2>
+			<div class="texto"><Content /></div>
+		</div>
+		<div>
+			{s.formatos.nota && <p class="etiqueta nota-formatos">{s.formatos.nota}</p>}
+			<ul class="formatos">
+				{s.formatos.lista.map((f) => (
+					<li class="tarjeta">
+						{f.cifra && <span class="cifra">{f.cifra}</span>}
+						<h3>{f.titulo}</h3>
+						<p>{f.texto}</p>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	{
+		s.historia && (
+			<section class="banda historia" aria-labelledby="titulo-historia">
+				<p class="antetitulo">{s.historia.antetitulo}</p>
+				<h2 id="titulo-historia">{s.historia.titulo}</h2>
+				<p class="texto">{s.historia.texto}</p>
+				<ol>
+					{s.historia.ediciones.map((e) => (
+						<li class:list={['tarjeta', { actual: e === ultima }]}>
+							<strong>
+								{e.edicion} · {e.anio}
+							</strong>
+							<span>{e.lugar}</span>
+						</li>
+					))}
+				</ol>
+			</section>
+		)
+	}
+
+	{
+		s.viaje && (
+			<section class="banda banda-color banda-hoja viaje" aria-labelledby="titulo-viaje">
+				<div class="cabecera-seccion">
+					<div>
+						<p class="antetitulo">{s.viaje.antetitulo}</p>
+						<h2 id="titulo-viaje">{s.viaje.titulo}</h2>
+					</div>
+					<p class="entrada">{s.viaje.texto}</p>
+				</div>
+				<ul>
+					{s.viaje.puntos.map((punto) => (
+						<li>
+							<h3>{punto.titulo}</h3>
+							<p>{punto.texto}</p>
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	{
+		s.inscripcion && (
+			<section id="inscripcion" class="banda inscripcion" aria-labelledby="titulo-inscripcion">
+				<p class="antetitulo">{s.inscripcion.antetitulo}</p>
+				<h2 id="titulo-inscripcion">{s.inscripcion.titulo}</h2>
+				<p class="texto">{s.inscripcion.texto}</p>
+				<ul class="tarifas">
+					{s.inscripcion.tarifas.map((tarifa) => (
+						<li class:list={['tarjeta', { destacada: tarifa.destacada }]}>
+							<span class="nombre-tarifa">{tarifa.nombre}</span>
+							<span class="monto">{tarifa.monto}</span>
+							{tarifa.nota && <span class="nota-tarifa">{tarifa.nota}</span>}
+						</li>
+					))}
+				</ul>
+				<div class="detalle">
+					<div class="tarjeta incluye">
+						<h3>{s.inscripcion.incluye_titulo}</h3>
+						<ul>
+							{s.inscripcion.incluye.map((item) => (
+								<li>
+									<Icono nombre="check" />
+									{item}
+								</li>
+							))}
+						</ul>
+					</div>
+					<div class="aviso">
+						<h3>{s.inscripcion.aviso.titulo}</h3>
+						<p>{s.inscripcion.aviso.texto}</p>
+						<p class="acciones">
+							<a class="boton" href={enlaceAviso} rel="noopener">
+								{abierta ? textos.comun.inscribirme : s.inscripcion.aviso.boton} <span class="flecha" aria-hidden="true">→</span>
+							</a>
+							{ORGANIZACION.correo && <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>}
+						</p>
+					</div>
+				</div>
+			</section>
+		)
+	}
+
+	{
+		s.organizan && (
+			<section class="banda banda-clara organizan" aria-label={s.organizan.antetitulo}>
+				<div>
+					<p class="antetitulo">{s.organizan.antetitulo}</p>
+					<p class="texto">{s.organizan.texto}</p>
+				</div>
+				<div class="logos">
+					<a href="https://alapcco.com/" rel="noopener">
+						<Image src={logoAlapcco} alt="ALAPCCO" widths={[200, 400]} sizes="11rem" />
+					</a>
+					<a href={ruta('inicio', idioma)}>
+						<Image src={logoCompleto} alt={textos.sitio.sigla} widths={[200, 400]} sizes="9rem" />
+					</a>
+				</div>
+			</section>
+		)
+	}
+
+	{
+		s.final && (
+			<section class="banda final" aria-labelledby="titulo-final">
+				<div>
+					<h2 id="titulo-final">{s.final.titulo}</h2>
+					<p>{s.final.texto}</p>
+				</div>
+				<p class="acciones">
+					<a class="boton boton-realce" href={enlaceAviso} rel="noopener">
+						{abierta ? textos.comun.inscribirme : s.final.boton} <span class="flecha" aria-hidden="true">→</span>
+					</a>
+					<a class="boton boton-contorno" href={ruta('nosotros', idioma)}>
+						{textos.nav.nosotros}
+					</a>
+				</p>
+			</section>
+		)
+	}
+</div>
+
+<style>
+	h2 {
+		margin-top: 0.75rem;
+	}
+	.texto {
+		max-width: 38rem;
+		color: var(--color-texto-suave);
+	}
+
+	/* ---------- Qué es y formatos ---------- */
+	.sobre {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: 2.5rem 4rem;
+		align-items: center;
+	}
+	.nota-formatos {
+		margin: 0 0 1rem;
+		background: var(--color-acento-suave);
+		border-color: var(--color-acento-suave);
+		color: var(--color-rotulo);
+	}
+	.formatos {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.formatos li {
+		padding: 1.5rem;
+		border-start-start-radius: 1.75rem;
+	}
+	.cifra {
+		display: block;
+		font-family: var(--fuente-titulos);
+		font-size: 2.6rem;
+		font-weight: 700;
+		line-height: 1;
+		color: var(--color-rotulo);
+	}
+	.formatos h3 {
+		margin: 0.35rem 0 0.25rem;
+		font-size: 1.35rem;
+	}
+	.formatos p {
+		margin: 0;
+		font-size: 1rem;
+		color: var(--color-texto-suave);
+	}
+
+	/* ---------- Historia ---------- */
+	.historia {
+		padding-top: 0;
+	}
+	.historia ol {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr));
+		gap: 0.75rem;
+		margin: 2rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.historia li {
+		display: grid;
+		gap: 0.1rem;
+		padding: 1rem 1.15rem;
+	}
+	.historia strong {
+		font-family: var(--fuente-titulos);
+		font-size: 1.2rem;
+		color: var(--color-titulos);
+	}
+	.historia span {
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+	/* La edición de este evento va en el color de sus rótulos (en el tajibo, rosa). */
+	.historia .actual {
+		border-color: var(--color-rotulo);
+		border-start-start-radius: 1.75rem;
+		background: var(--color-rotulo);
+	}
+	.historia .actual strong,
+	.historia .actual span {
+		color: #fff;
+	}
+
+	/* ---------- Sede y viaje ---------- */
+	.viaje .cabecera-seccion {
+		align-items: end;
+	}
+	.viaje .entrada {
+		max-width: 26rem;
+		margin: 0;
+		color: var(--texto-banda);
+	}
+	.viaje ul {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+		gap: 1rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.viaje li {
+		padding: 1.5rem;
+		border-radius: var(--radio);
+		border-start-start-radius: 1.75rem;
+		background: rgb(0 0 0 / 0.18);
+	}
+	.viaje h3 {
+		margin: 0 0 0.4rem;
+		font-size: 1.3rem;
+	}
+	.viaje li p {
+		margin: 0;
+		font-size: 1rem;
+		color: var(--texto-banda);
+	}
+
+	/* ---------- Inscripción ---------- */
+	.tarifas {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+		gap: 1rem;
+		margin: 2rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.tarifas li {
+		display: grid;
+		gap: 0.25rem;
+		align-content: start;
+		padding: 1.5rem;
+		border-start-start-radius: 1.75rem;
+	}
+	.nombre-tarifa {
+		font-weight: 700;
+		color: var(--color-acento);
+	}
+	.monto {
+		font-family: var(--fuente-titulos);
+		font-size: 2rem;
+		font-weight: 600;
+		line-height: 1.15;
+		color: var(--color-texto);
+	}
+	.nota-tarifa {
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+	.tarifas .destacada {
+		border-color: var(--color-rotulo);
+		background: var(--color-rotulo);
+	}
+	.tarifas .destacada span {
+		color: #fff;
+	}
+	.detalle {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+		gap: 1.5rem;
+		margin-top: 1.5rem;
+	}
+	.incluye,
+	.aviso {
+		padding: 2rem;
+		border-radius: var(--radio);
+		border-start-start-radius: 2.25rem;
+	}
+	.detalle h3 {
+		margin: 0 0 0.75rem;
+	}
+	.incluye ul {
+		display: grid;
+		gap: 0.6rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.incluye li {
+		display: flex;
+		align-items: baseline;
+		gap: 0.6rem;
+	}
+	.incluye li :global(svg) {
+		flex-shrink: 0;
+		width: 1rem;
+		height: 1rem;
+		color: var(--color-rotulo);
+		transform: translateY(0.15rem);
+	}
+	.aviso {
+		background: var(--color-acento-suave);
+	}
+	.aviso h3 {
+		color: var(--color-rotulo);
+	}
+	.aviso p {
+		margin: 0;
+	}
+	.aviso .acciones {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1.5rem;
+		margin-top: 1.25rem;
+	}
+
+	/* ---------- Organizan ---------- */
+	.organizan {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem 4rem;
+		padding-block: clamp(2.5rem, 5vw, 3.5rem);
+	}
+	.organizan .texto {
+		margin: 0.75rem 0 0;
+	}
+	.organizan .logos {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 2rem 3rem;
+	}
+	.organizan img {
+		display: block;
+		width: auto;
+		height: 5.5rem;
+	}
+
+	/* ---------- Banda final ---------- */
+	.final {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem 3rem;
+		background: var(--color-rotulo);
+		color: #fff;
+	}
+	.final h2 {
+		margin: 0;
+		font-size: clamp(2.2rem, 1.4rem + 3vw, 3.6rem);
+		color: #fff;
+	}
+	.final p {
+		margin: 0.4rem 0 0;
+		font-family: var(--fuente-titulos);
+		font-size: 1.3rem;
+	}
+	.final .acciones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin: 0;
+		font-family: var(--fuente-interfaz);
+		font-size: 1rem;
+	}
+	.final .boton-contorno {
+		border-color: rgb(255 255 255 / 0.6);
+		color: #fff;
+	}
+	.final .boton-contorno:hover {
+		background: rgb(255 255 255 / 0.12);
+		color: #fff;
+	}
+
+	@media (max-width: 56rem) {
+		.sobre,
+		.detalle {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (max-width: 30rem) {
+		.formatos {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

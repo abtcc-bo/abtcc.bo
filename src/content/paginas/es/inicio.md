@@ -8,9 +8,15 @@ portada:
   titulo: Terapias Cognitivas Conductuales y
   tituloCursiva: Contextuales
   bajada: Impulsamos la formación, la investigación y la práctica ética de las terapias basadas en evidencia, al servicio de la salud mental en Bolivia.
-  datos:
-    - Sede en Santa Cruz de la Sierra
-    - Ámbito nacional e internacional
+  hechos:
+    - titulo: Asociación civil
+      texto: Científica y profesional, sin fines de lucro
+    - titulo: Ámbito nacional
+      texto: Miembros y actividades en todo el país
+    - titulo: Red ALAPCCO
+      texto: Grupo de trabajo en Bolivia de la federación latinoamericana
+    - titulo: Sede del XI SIALAPCCO
+      texto: Santa Cruz de la Sierra, marzo de 2027
   conceptos:
     - Análisis funcional
     - Reforzamiento
@@ -85,6 +91,25 @@ portada:
       - Acceso preferente a cursos, seminarios, talleres y eventos
       - Publicaciones, convocatorias y proyectos de investigación
       - Participación en la Asamblea General según la categoría
+  comision:
+    antetitulo: Quiénes la dirigen
+    titulo: Comisión directiva
+  organizacion:
+    antetitulo: La institución
+    titulo: Cómo se organiza la ABTCC
+    texto: El estatuto orgánico y el reglamento interno fijan los fines, los órganos y las normas de la asociación.
+    organos:
+      - nombre: Asamblea General
+        texto: Es la máxima autoridad de la asociación. Se reúne al menos una vez al año.
+      - nombre: Comisión Directiva
+        texto: La elige la Asamblea General por voto directo y secreto, con un mandato de tres años.
+      - nombre: Consejo Consultivo y Fiscal
+        texto: Asesora a la asociación y revisa sus cuentas.
+      - nombre: Asamblea de Socios Fundadores
+        texto: Cuida la identidad científica e institucional de la ABTCC.
+  contacto:
+    titulo: ¿Tienes una consulta?
+    texto: Escríbenos sobre membresía, eventos, convenios o prensa.
   red:
     antetitulo: Red internacional
     titulo: Grupo de trabajo de ALAPCCO en Bolivia

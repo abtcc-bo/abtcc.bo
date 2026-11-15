@@ -71,7 +71,7 @@ const navidad = datos.tema === 'navidad';
 		<p class="acciones">
 			{
 				inscripcionAbierta(evento) && datos.inscripcion && (
-					<a class="boton boton-dorado" href={datos.inscripcion.url} rel="noopener">
+					<a class="boton boton-realce" href={datos.inscripcion.url} rel="noopener">
 						{textos.comun.inscribirme} <span class="flecha" aria-hidden="true">→</span>
 					</a>
 				)
@@ -137,7 +137,7 @@ const navidad = datos.tema === 'navidad';
 		font-size: clamp(1.2rem, 1rem + 0.8vw, 1.5rem);
 		font-style: italic;
 		line-height: 1.35;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.resumen {
 		max-width: 34rem;
@@ -190,7 +190,7 @@ const navidad = datos.tema === 'navidad';
 		font-size: 0.9375rem;
 	}
 	.whatsapp :global(.icono) {
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.lateral :global(.adorno) {
 		width: 11rem;
@@ -208,7 +208,7 @@ const navidad = datos.tema === 'navidad';
 		font-weight: 600;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
-		color: var(--color-dorado);
+		color: var(--color-rotulo);
 	}
 
 	@media (max-width: 56rem) {

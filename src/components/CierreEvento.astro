@@ -34,7 +34,7 @@ const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.m
 		<p class="acciones">
 			{
 				datos.inscripcion && (
-					<a class="boton boton-dorado" href={datos.inscripcion.url} rel="noopener">
+					<a class="boton boton-realce" href={datos.inscripcion.url} rel="noopener">
 						{textos.comun.inscribirme} <span class="flecha" aria-hidden="true">→</span>
 					</a>
 				)
@@ -84,7 +84,7 @@ const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.m
 		font-family: var(--fuente-titulos);
 		font-size: clamp(1.2rem, 1rem + 0.8vw, 1.5rem);
 		font-style: italic;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.acciones {
 		display: flex;
@@ -102,7 +102,7 @@ const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.m
 		text-decoration: none;
 	}
 	.whatsapp :global(.icono) {
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.whatsapp:hover span {
 		text-decoration: underline;

@@ -56,6 +56,12 @@ Ya están en la web con su programa, ponentes, inscripción y WhatsApp, y la por
 
 La decoración navideña (gorrito del logo y nieve) se apaga sola después del 6 de enero en la portada; en las demás páginas, con la primera publicación posterior a esa fecha.
 
+### 5 ter. Para la sección "La institución"
+
+- [ ] Estatuto y reglamento aprobados y firmados, en PDF.
+- [ ] Nombres de los socios fundadores.
+- [ ] Enlaces de interés que quieran recomendar.
+
 ### 6. Revisar las novedades de diseño (noviembre 2026)
 Se agregaron preguntas frecuentes, los "tres caminos" de la portada y el blog. Lo que falta está anotado en `docs/datos-pendientes.md` → "Mejoras de diseño". Lo más importante:
 

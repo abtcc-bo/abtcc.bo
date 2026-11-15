@@ -1,6 +1,8 @@
 ---
 // Portada. Textos en src/content/paginas/{idioma}/inicio.md (campo `portada`); sin ese archivo se muestran solo
-// el título, la agenda y las fotos. Se mantienen el carrusel de próximos eventos, la franja de fotos y las animaciones.
+// el título, la agenda y las fotos. Orden (parecido al de las asociaciones de la red ALAPCCO): presentación, datos,
+// evento destacado, quiénes somos, membresía, agenda, "¿por dónde empiezo?", fotos, comisión directiva, cómo se
+// organiza la asociación, red de terapeutas y contacto.
 import type { CollectionEntry } from 'astro:content';
 import AlbumPortada from '../components/AlbumPortada.astro';
 import BandaEvento from '../components/BandaEvento.astro';
@@ -15,7 +17,8 @@ import logoSimbolo from '../assets/logo-simbolo.png';
 import logoAlapcco from '../content/aliados/logos/alapcco.webp';
 import RegistroAcumulativo from '../components/RegistroAcumulativo.astro';
 import TarjetaDestacada from '../components/TarjetaDestacada.astro';
-import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
+import { ORGANIZACION } from '../datos/organizacion';
+import { obtenerComision, obtenerEventosPublicos, paginaDeSeccion, textosDePersona, yaPaso } from '../lib/contenido';
 import { esNavidad } from '../datos/temporada';
 import { formato, ruta, t, type Idioma } from '../i18n';
 
@@ -29,6 +32,7 @@ const textos = t(idioma);
 const v = textos.inicio;
 const p = pagina?.data.portada;
 const membresia = (await paginaDeSeccion('membresia', idioma))?.data.membresia;
+const comision = p?.comision ? await obtenerComision() : [];
 
 const eventos = await obtenerEventosPublicos(idioma);
 const proximos = eventos.filter((e) => !yaPaso(e)).slice(0, 6);
@@ -59,13 +63,13 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 		</h1>
 		<p class="bajada">{p?.bajada ?? textos.sitio.descripcion}</p>
 		<p class="acciones">
-			<a class="boton boton-dorado" href={ruta('eventos', idioma)}>
+			<a class="boton boton-realce" href={ruta('eventos', idioma)}>
 				{v.verEventos} <span class="flecha" aria-hidden="true">→</span>
 			</a>
 			<a class="boton boton-contorno" href={ruta('membresia', idioma)}>{v.hazteMiembro}</a>
 		</p>
 		{
-			p && (
+			p && p.datos.length > 0 && (
 				<ul class="datos">
 					{p.datos.map((dato) => (
 						<li>{dato}</li>
@@ -91,39 +95,26 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 
 {p && <CintaConceptos conceptos={p.conceptos} etiqueta={v.conceptos} oscura={clara} />}
 
+{
+	p && p.hechos.length > 0 && (
+		<section class="banda banda-clara hechos" aria-label={textos.sitio.sigla}>
+			<ul>
+				{p.hechos.map((hecho) => (
+					<li>
+						<strong>{hecho.titulo}</strong>
+						<span>{hecho.texto}</span>
+					</li>
+				))}
+			</ul>
+		</section>
+	)
+}
+
 {destacado && conPrograma && <BandaEvento evento={destacado} idioma={idioma} />}
 {
 	destacado && !conPrograma && conAlbum && (
 		<section class="banda destacado-ancho">
 			<TarjetaDestacada evento={destacado} idioma={idioma} forma="horizontal" />
-		</section>
-	)
-}
-
-{
-	p?.caminos && (
-		<section class="banda caminos" aria-labelledby="titulo-caminos">
-			<p class="antetitulo">{p.caminos.antetitulo}</p>
-			<h2 id="titulo-caminos">{p.caminos.titulo}</h2>
-			<ul class="opciones">
-				{p.caminos.opciones.map((c) => (
-					<li class="tarjeta">
-						<Icono nombre={c.icono} circulo />
-						<h3>{c.titulo}</h3>
-						<p>{c.texto}</p>
-						<ul class="enlaces-camino">
-							{c.enlaces.map((e) => (
-								<li>
-									<a class="enlace-accion" href={`${ruta(e.seccion, idioma)}${e.ancla ? `#${e.ancla}` : ''}`}>
-										{e.texto} <span class="flecha" aria-hidden="true">→</span>
-									</a>
-								</li>
-							))}
-						</ul>
-					</li>
-				))}
-			</ul>
-			{p.caminos.aviso && <p class="aviso">{p.caminos.aviso}</p>}
 		</section>
 	)
 }
@@ -160,6 +151,63 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 	)
 }
 
+{
+	p && (
+		<section class="banda banda-color banda-hoja membresia" aria-labelledby="titulo-membresia">
+			<div>
+				<p class="antetitulo">{p.membresia.antetitulo}</p>
+				<h2 id="titulo-membresia">{p.membresia.titulo}</h2>
+				<p class="texto-claro">{p.membresia.texto}</p>
+				<ul class="beneficios">
+					{p.membresia.beneficios.map((b) => (
+						<li>{b}</li>
+					))}
+				</ul>
+				<p class="acciones">
+					<a class="boton boton-realce" href={`${ruta('membresia', idioma)}#solicitar`}>
+						{textos.membresia.solicitar} <span class="flecha" aria-hidden="true">→</span>
+					</a>
+					<a class="enlace-accion" href={`${ruta('membresia', idioma)}#requisitos`}>
+						{v.verRequisitos}
+					</a>
+				</p>
+			</div>
+			{membresia && (
+				<div>
+					<ul class="categorias">
+						{membresia.categorias.map((c) => (
+							<li>
+								<p class="categoria">
+									<span class="nombre">{c.nombre}</span>
+									<span class="participacion">{c.participacion}</span>
+								</p>
+								<p>{c.texto}</p>
+							</li>
+						))}
+					</ul>
+					<p class="cuota">
+						<span>{formato(v.cuota, { monto: membresia.cuota.monto, unidad: membresia.cuota.unidad })}</span>
+						<span>{v.exentos}</span>
+					</p>
+				</div>
+			)}
+			{membresia && membresia.pasos.length > 0 && (
+				<div class="afiliarse">
+					<h3>{v.comoAfiliarse}</h3>
+					<ol>
+						{membresia.pasos.map((paso) => (
+							<li>
+								<strong>{paso.titulo}</strong>
+								<span>{paso.texto}</span>
+							</li>
+						))}
+					</ol>
+				</div>
+			)}
+		</section>
+	)
+}
+
 <section class="proximos banda banda-clara" aria-labelledby="titulo-proximos">
 	<div class="cabecera-seccion">
 		<div>
@@ -176,6 +224,36 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 </section>
 
 {
+	p?.caminos && (
+		<section class="banda caminos" aria-labelledby="titulo-caminos">
+			<p class="antetitulo">{p.caminos.antetitulo}</p>
+			<h2 id="titulo-caminos">{p.caminos.titulo}</h2>
+			<ul class="opciones">
+				{p.caminos.opciones.map((c) => (
+					<li class="tarjeta">
+						<Icono nombre={c.icono} circulo />
+						<h3>{c.titulo}</h3>
+						<p>{c.texto}</p>
+						<ul class="enlaces-camino">
+							{c.enlaces.map((e) => (
+								<li>
+									<a class="enlace-accion" href={`${ruta(e.seccion, idioma)}${e.ancla ? `#${e.ancla}` : ''}`}>
+										{e.texto} <span class="flecha" aria-hidden="true">→</span>
+									</a>
+								</li>
+							))}
+						</ul>
+					</li>
+				))}
+			</ul>
+			{p.caminos.aviso && <p class="aviso">{p.caminos.aviso}</p>}
+		</section>
+	)
+}
+
+<FranjaFotos eventos={realizados} idioma={idioma} />
+
+{
 	p && (
 		<section class="banda cita" aria-label={p.cita.fuente}>
 			<span class="puntos-logo" aria-hidden="true" />
@@ -188,50 +266,66 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 }
 
 {
-	p && (
-		<section class="banda banda-verde banda-hoja membresia" aria-labelledby="titulo-membresia">
-			<div>
-				<p class="antetitulo">{p.membresia.antetitulo}</p>
-				<h2 id="titulo-membresia">{p.membresia.titulo}</h2>
-				<p class="texto-claro">{p.membresia.texto}</p>
-				<ul class="beneficios">
-					{p.membresia.beneficios.map((b) => (
-						<li>{b}</li>
-					))}
-				</ul>
-				<p class="acciones">
-					<a class="boton boton-dorado" href={`${ruta('membresia', idioma)}#solicitar`}>
-						{textos.membresia.solicitar} <span class="flecha" aria-hidden="true">→</span>
-					</a>
-					<a class="enlace-accion" href={`${ruta('membresia', idioma)}#requisitos`}>
-						{v.verRequisitos}
+	p?.comision && comision.length > 0 && (
+		<section class="banda banda-clara directiva" aria-labelledby="titulo-directiva">
+			<div class="cabecera-seccion">
+				<div>
+					<p class="antetitulo">{p.comision.antetitulo}</p>
+					<h2 id="titulo-directiva">{p.comision.titulo}</h2>
+				</div>
+				<p class="enlaces">
+					<a class="enlace-accion" href={ruta('comision', idioma)}>
+						{v.verComision} <span class="flecha" aria-hidden="true">→</span>
 					</a>
 				</p>
 			</div>
-			{membresia && (
-				<div>
-					<ul class="categorias">
-						{membresia.categorias.slice(0, 3).map((c) => (
-							<li>
-								<p class="categoria">
-									<span class="nombre">{c.nombre}</span>
-									<span class="participacion">{c.participacion}</span>
-								</p>
-								<p>{c.texto}</p>
-							</li>
-						))}
-					</ul>
-					<p class="cuota">
-						<span>{formato(v.cuota, { monto: membresia.cuota.monto, unidad: membresia.cuota.unidad })}</span>
-						<span>{v.exentos}</span>
-					</p>
-				</div>
-			)}
+			<ul class="integrantes">
+				{comision.map((persona) => {
+					const propios = textosDePersona(persona, idioma);
+					return (
+						<li>
+							{persona.data.foto ? (
+								<Image class="retrato" src={persona.data.foto} alt="" widths={[240, 480]} sizes="(min-width: 56rem) 13rem, 45vw" />
+							) : (
+								<span class="retrato" aria-hidden="true" />
+							)}
+							<p class="persona">{persona.data.nombre}</p>
+							<p class="cargo" lang={propios.idioma === idioma ? undefined : propios.idioma}>
+								{propios.cargo}
+							</p>
+							{persona.data.titulo_profesional && <p class="profesion">{persona.data.titulo_profesional}</p>}
+						</li>
+					);
+				})}
+			</ul>
 		</section>
 	)
 }
 
-<FranjaFotos eventos={realizados} idioma={idioma} />
+{
+	p?.organizacion && (
+		<section class="banda organizacion" aria-labelledby="titulo-organizacion">
+			<div>
+				<p class="antetitulo">{p.organizacion.antetitulo}</p>
+				<h2 id="titulo-organizacion">{p.organizacion.titulo}</h2>
+				{p.organizacion.texto && <p class="texto">{p.organizacion.texto}</p>}
+				<p class="enlaces">
+					<a class="enlace-accion" href={ruta('transparencia', idioma)}>
+						{v.estatuto} <span class="flecha" aria-hidden="true">→</span>
+					</a>
+				</p>
+			</div>
+			<dl class="organos">
+				{p.organizacion.organos.map((organo) => (
+					<div>
+						<dt>{organo.nombre}</dt>
+						<dd>{organo.texto}</dd>
+					</div>
+				))}
+			</dl>
+		</section>
+	)
+}
 
 {
 	p && (
@@ -254,6 +348,29 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 }
 
 <FranjaAliados idioma={idioma} />
+
+{
+	p?.contacto && (
+		<section class="banda cierre-contacto" aria-labelledby="titulo-contacto">
+			<div class="banda-azul banda-hoja caja-contacto">
+				<div>
+					<h2 id="titulo-contacto">{p.contacto.titulo}</h2>
+					<p>{p.contacto.texto}</p>
+				</div>
+				<p class="acciones">
+					<a class="boton boton-realce" href={ruta('contacto', idioma)}>
+						{v.escribenos} <span class="flecha" aria-hidden="true">→</span>
+					</a>
+					{ORGANIZACION.correo && (
+						<a class="boton boton-contorno" href={`mailto:${ORGANIZACION.correo}`}>
+							{ORGANIZACION.correo}
+						</a>
+					)}
+				</p>
+			</div>
+		</section>
+	)
+}
 
 <style>
 	/* ---------- Presentación ---------- */
@@ -316,7 +433,7 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 		margin-bottom: 0.35rem;
 		font-size: 0.5em;
 		font-style: italic;
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.bajada {
 		max-width: 34rem;
@@ -348,7 +465,7 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 		height: 6px;
 		margin-right: 0.5rem;
 		border-radius: 50%;
-		background: var(--color-dorado-claro);
+		background: var(--color-realce);
 		vertical-align: middle;
 	}
 	.lateral {
@@ -412,9 +529,9 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 	.aviso {
 		margin: 1.25rem 0 0;
 		padding: 0.9rem 1.25rem;
-		border-left: 3px solid var(--color-dorado-claro);
+		border-left: 3px solid var(--color-realce);
 		border-radius: 0 var(--radio) var(--radio) 0;
-		background: #f7efd9;
+		background: var(--color-acento-suave);
 		font-size: 0.9375rem;
 		color: var(--color-texto);
 	}
@@ -494,7 +611,7 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
 		font-family: var(--fuente-interfaz);
-		color: var(--color-dorado);
+		color: var(--color-rotulo);
 	}
 
 	/* ---------- Membresía ---------- */
@@ -522,8 +639,8 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 		top: 0.3rem;
 		width: 0.45rem;
 		height: 0.8rem;
-		border-right: 2px solid var(--color-dorado-claro);
-		border-bottom: 2px solid var(--color-dorado-claro);
+		border-right: 2px solid var(--color-realce);
+		border-bottom: 2px solid var(--color-realce);
 		transform: rotate(45deg);
 	}
 	.membresia .acciones {
@@ -572,7 +689,7 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 		font-family: var(--fuente-interfaz);
-		color: var(--color-dorado-claro);
+		color: var(--color-realce);
 	}
 	.categorias li > p:last-child {
 		margin: 0;
@@ -611,10 +728,187 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 		height: auto;
 	}
 
+	/* ---------- Datos bajo la presentación ---------- */
+	.hechos {
+		padding-block: 1.75rem;
+	}
+	.hechos ul {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+		gap: 1.25rem 2rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.hechos li {
+		display: grid;
+		gap: 0.1rem;
+	}
+	.hechos strong {
+		font-family: var(--fuente-titulos);
+		font-size: 1.2rem;
+		font-weight: 600;
+		color: var(--color-titulos);
+	}
+	.hechos span {
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+
+	/* ---------- Cómo afiliarse (dentro de la banda de membresía) ---------- */
+	.afiliarse {
+		grid-column: 1 / -1;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+		gap: 1.5rem 3rem;
+		align-items: start;
+		padding-top: 2rem;
+		border-top: 1px solid rgb(255 255 255 / 0.2);
+	}
+	.afiliarse h3 {
+		margin: 0;
+		font-size: 1.6rem;
+	}
+	.afiliarse ol {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+		gap: 1.25rem 1.75rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		counter-reset: paso;
+	}
+	.afiliarse li {
+		display: grid;
+		gap: 0.2rem;
+		align-content: start;
+		counter-increment: paso;
+		font-size: 0.9375rem;
+		color: var(--texto-banda);
+	}
+	.afiliarse li::before {
+		content: counter(paso);
+		font-family: var(--fuente-titulos);
+		font-size: 1.5rem;
+		font-weight: 600;
+		line-height: 1.2;
+		color: var(--color-realce);
+	}
+	.afiliarse strong {
+		color: #fff;
+	}
+
+	/* ---------- Comisión directiva ---------- */
+	.directiva .enlaces {
+		margin: 0;
+	}
+	.integrantes {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(10.5rem, 100%), 1fr));
+		gap: 2rem 1.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.integrantes li {
+		display: grid;
+		gap: 0.15rem;
+		align-content: start;
+	}
+	.retrato {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 5;
+		margin-bottom: 0.75rem;
+		border-radius: var(--radio-arco);
+		background: var(--color-acento-suave);
+		object-fit: cover;
+	}
+	.integrantes p {
+		margin: 0;
+	}
+	.persona {
+		font-family: var(--fuente-titulos);
+		font-size: 1.2rem;
+		font-weight: 600;
+		line-height: 1.2;
+		color: var(--color-titulos);
+	}
+	.cargo {
+		font-size: 0.9375rem;
+		font-weight: 700;
+		color: var(--color-acento);
+	}
+	.profesion {
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+
+	/* ---------- Cómo se organiza ---------- */
+	.organizacion {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: 2.5rem 4rem;
+		align-items: start;
+	}
+	.organizacion h2 {
+		margin-top: 0.75rem;
+	}
+	.organos {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 2rem;
+		margin: 0;
+	}
+	.organos div {
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--color-division);
+	}
+	.organos dt {
+		font-weight: 700;
+		color: var(--color-titulos);
+	}
+	.organos dd {
+		margin: 0.3rem 0 0;
+		font-size: 1rem;
+		color: var(--color-texto-suave);
+	}
+
+	/* ---------- Contacto ---------- */
+	.cierre-contacto {
+		padding-block: clamp(2.5rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
+	}
+	.caja-contacto {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem 3rem;
+		padding: clamp(2rem, 5vw, 3.5rem);
+		border-radius: var(--radio);
+		border-start-start-radius: var(--radio-hoja);
+		border-end-end-radius: var(--radio-hoja);
+	}
+	.caja-contacto h2 {
+		margin: 0 0 0.5rem;
+	}
+	.caja-contacto p {
+		margin: 0;
+		color: var(--texto-banda);
+	}
+	.caja-contacto .acciones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
 	@media (max-width: 56rem) {
 		.portada,
 		.quienes,
 		.membresia,
+		.organizacion,
+		.afiliarse,
 		.red {
 			grid-template-columns: 1fr;
 		}
@@ -623,6 +917,7 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 		}
 	}
 	@media (max-width: 36rem) {
+		.organos,
 		.puntos {
 			grid-template-columns: 1fr;
 		}
