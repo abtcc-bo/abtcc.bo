@@ -157,6 +157,10 @@
 			"pausa": "Break"
 		},
 		"mensajeWhatsapp": "Hello, I would like information about {evento}.",
+		"inscribirmeWhatsapp": "Register via WhatsApp",
+		"comoPagar": "How to pay",
+		"mensajeInscripcion": "Hello, I would like to register for {evento}.\nFull name: \nCountry: \nRate: \nHere is my payment receipt.",
+		"foto": "Photo",
 		"costoHasta": "until {fecha}",
 		"costoDesde": "from {fecha}",
 		"reservaTitulo": "Save your spot",

@@ -10,7 +10,7 @@ import logoAlapcco from '../content/aliados/logos/alapcco.webp';
 import Icono from '../components/Icono.astro';
 import { ORGANIZACION } from '../datos/organizacion';
 import { formato, ruta, t, type Idioma } from '../i18n';
-import { contactoWhatsapp, inscripcionAbierta } from '../lib/eventos';
+import { contactoWhatsapp, inscripcionAbierta, inscripcionPorWhatsapp } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
 
 interface Props {
@@ -26,8 +26,12 @@ const s = evento.texto.data.seminario!;
 const { Content } = await render(evento.texto);
 const abierta = inscripcionAbierta(evento) && datos.inscripcion;
 const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(textos.eventos.mensajeWhatsapp, { evento: titulo }));
-// Para avisar o consultar: la inscripción si ya abrió; si no, el WhatsApp del evento o la página de contacto.
-const enlaceAviso = abierta ? datos.inscripcion!.url : whatsapp ? whatsapp.url : ruta('contacto', idioma);
+// Pago directo (QR / PayPal): la inscripción se cierra por WhatsApp, con el mensaje de inscripción ya escrito.
+const porWhatsapp = inscripcionPorWhatsapp(evento, formato(textos.eventos.mensajeInscripcion, { evento: titulo }));
+const pasos = porWhatsapp && s.inscripcion?.pasos;
+// Botón principal: la inscripción si ya abrió (en otra página o por WhatsApp); si no, el WhatsApp del evento o Contacto.
+const enlaceAviso = abierta ? datos.inscripcion!.url : porWhatsapp ? porWhatsapp.url : whatsapp ? whatsapp.url : ruta('contacto', idioma);
+const textoBoton = (otro: string) => (abierta ? textos.comun.inscribirme : porWhatsapp ? textos.eventos.inscribirmeWhatsapp : otro);
 const ultima = s.historia?.ediciones.at(-1);
 ---
 
@@ -100,38 +104,116 @@ const ultima = s.historia?.ediciones.at(-1);
 				<p class="antetitulo">{s.inscripcion.antetitulo}</p>
 				<h2 id="titulo-inscripcion">{s.inscripcion.titulo}</h2>
 				<p class="texto">{s.inscripcion.texto}</p>
-				<ul class="tarifas">
-					{s.inscripcion.tarifas.map((tarifa) => (
-						<li class:list={['tarjeta', { destacada: tarifa.destacada }]}>
-							<span class="nombre-tarifa">{tarifa.nombre}</span>
-							<span class="monto">{tarifa.monto}</span>
-							{tarifa.nota && <span class="nota-tarifa">{tarifa.nota}</span>}
-						</li>
-					))}
-				</ul>
-				<div class="detalle">
-					<div class="tarjeta incluye">
-						<h3>{s.inscripcion.incluye_titulo}</h3>
-						<ul>
-							{s.inscripcion.incluye.map((item) => (
-								<li>
-									<Icono nombre="check" />
-									{item}
+				{pasos && porWhatsapp ? (
+					<>
+						<ol class="pasos">
+							<li>
+								<span class="numero" aria-hidden="true">1</span>
+								<h3>{pasos.tarifa.titulo}</h3>
+								<p class="texto-paso">{pasos.tarifa.texto}</p>
+								<ul class="tarifas">
+									{s.inscripcion.tarifas.map((tarifa) => (
+										<li class:list={['tarjeta', { destacada: tarifa.destacada }]}>
+											<span class="nombre-tarifa">{tarifa.nombre}</span>
+											<span class="monto">{tarifa.monto}</span>
+											{tarifa.nota && <span class="nota-tarifa">{tarifa.nota}</span>}
+										</li>
+									))}
+								</ul>
+							</li>
+							<li>
+								<span class="numero" aria-hidden="true">2</span>
+								<h3>{pasos.pago.titulo}</h3>
+								<p class="texto-paso">{pasos.pago.texto}</p>
+								<div class="medios">
+									{datos.pago?.qr && (
+										<div class="tarjeta medio medio-qr">
+											<div>
+												<h4>{pasos.qr.titulo}</h4>
+												<p>{pasos.qr.texto}</p>
+												<a class="boton boton-contorno" href={datos.pago.qr.src} download="qr-pago-xi-sialapcco.png">
+													<Icono nombre="descarga" />
+													{pasos.qr.descargar}
+												</a>
+											</div>
+											<Image class="qr" src={datos.pago.qr} alt={pasos.qr.alt} widths={[360, 720]} sizes="15rem" quality={95} />
+										</div>
+									)}
+									{datos.pago?.paypal && (
+										<div class="tarjeta medio medio-paypal">
+											<h4>{pasos.paypal.titulo}</h4>
+											<p>{pasos.paypal.texto}</p>
+											<a class="boton" href={datos.pago.paypal} rel="noopener">
+												{pasos.paypal.boton} <span class="flecha" aria-hidden="true">→</span>
+											</a>
+										</div>
+									)}
+								</div>
+							</li>
+							<li>
+								<span class="numero" aria-hidden="true">3</span>
+								<h3>{pasos.comprobante.titulo}</h3>
+								<p class="texto-paso">{pasos.comprobante.texto}</p>
+								<p class="acciones-whatsapp">
+									<a class="boton boton-whatsapp" href={porWhatsapp.url} rel="noopener">
+										<Icono nombre="dialogo" />
+										{textos.eventos.inscribirmeWhatsapp}
+									</a>
+									<span class="numero-visible">{porWhatsapp.visible}</span>
+								</p>
+							</li>
+						</ol>
+						{pasos.nota && <p class="nota-pago">{pasos.nota}</p>}
+						<div class="tarjeta incluye incluye-ancho">
+							<h3>{s.inscripcion.incluye_titulo}</h3>
+							<ul>
+								{s.inscripcion.incluye.map((item) => (
+									<li>
+										<Icono nombre="check" />
+										{item}
+									</li>
+								))}
+							</ul>
+						</div>
+					</>
+				) : (
+					<>
+						<ul class="tarifas">
+							{s.inscripcion.tarifas.map((tarifa) => (
+								<li class:list={['tarjeta', { destacada: tarifa.destacada }]}>
+									<span class="nombre-tarifa">{tarifa.nombre}</span>
+									<span class="monto">{tarifa.monto}</span>
+									{tarifa.nota && <span class="nota-tarifa">{tarifa.nota}</span>}
 								</li>
 							))}
 						</ul>
-					</div>
-					<div class="aviso">
-						<h3>{s.inscripcion.aviso.titulo}</h3>
-						<p>{s.inscripcion.aviso.texto}</p>
-						<p class="acciones">
-							<a class="boton" href={enlaceAviso} rel="noopener">
-								{abierta ? textos.comun.inscribirme : s.inscripcion.aviso.boton} <span class="flecha" aria-hidden="true">→</span>
-							</a>
-							{ORGANIZACION.correo && <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>}
-						</p>
-					</div>
-				</div>
+						<div class="detalle">
+							<div class="tarjeta incluye">
+								<h3>{s.inscripcion.incluye_titulo}</h3>
+								<ul>
+									{s.inscripcion.incluye.map((item) => (
+										<li>
+											<Icono nombre="check" />
+											{item}
+										</li>
+									))}
+								</ul>
+							</div>
+							{s.inscripcion.aviso && (
+								<div class="aviso">
+									<h3>{s.inscripcion.aviso.titulo}</h3>
+									<p>{s.inscripcion.aviso.texto}</p>
+									<p class="acciones">
+										<a class="boton" href={enlaceAviso} rel="noopener">
+											{textoBoton(s.inscripcion.aviso.boton)} <span class="flecha" aria-hidden="true">→</span>
+										</a>
+										{ORGANIZACION.correo && <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>}
+									</p>
+								</div>
+							)}
+						</div>
+					</>
+				)}
 			</section>
 		)
 	}
@@ -164,7 +246,7 @@ const ultima = s.historia?.ediciones.at(-1);
 				</div>
 				<p class="acciones">
 					<a class="boton boton-realce" href={enlaceAviso} rel="noopener">
-						{abierta ? textos.comun.inscribirme : s.final.boton} <span class="flecha" aria-hidden="true">→</span>
+						{textoBoton(s.final.boton)} <span class="flecha" aria-hidden="true">→</span>
 					</a>
 					<a class="boton boton-contorno" href={ruta('nosotros', idioma)}>
 						{textos.nav.nosotros}
@@ -386,6 +468,137 @@ const ultima = s.historia?.ediciones.at(-1);
 		margin-top: 1.25rem;
 	}
 
+	/* ---------- Cómo inscribirte (pago directo): tres pasos en línea vertical ---------- */
+	.pasos {
+		display: grid;
+		gap: 2.5rem;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		counter-reset: none;
+	}
+	.pasos > li {
+		position: relative;
+		padding-left: 4.25rem;
+	}
+	/* Línea que une los números de los pasos. */
+	.pasos > li:not(:last-child)::before {
+		content: '';
+		position: absolute;
+		top: 3.25rem;
+		bottom: -2rem;
+		left: 1.4rem;
+		border-left: 2px dashed color-mix(in srgb, var(--color-rotulo), transparent 55%);
+	}
+	.numero {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: grid;
+		place-items: center;
+		width: 2.9rem;
+		height: 2.9rem;
+		border-radius: 50%;
+		background: var(--color-rotulo);
+		color: #fff;
+		font-family: var(--fuente-titulos);
+		font-size: 1.4rem;
+		font-weight: 700;
+	}
+	.pasos h3 {
+		margin: 0.35rem 0 0.35rem;
+		font-size: clamp(1.4rem, 1.2rem + 0.6vw, 1.75rem);
+	}
+	.texto-paso {
+		max-width: 40rem;
+		margin: 0;
+		color: var(--color-texto-suave);
+	}
+	.pasos .tarifas {
+		margin-top: 1.25rem;
+	}
+	.medios {
+		display: grid;
+		grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+		gap: 1rem;
+		margin-top: 1.25rem;
+	}
+	.medio {
+		display: grid;
+		align-content: start;
+		gap: 0.75rem;
+		padding: 1.75rem;
+		border-start-start-radius: 2.25rem;
+	}
+	.medio h4 {
+		margin: 0;
+		font-family: var(--fuente-titulos);
+		font-size: 1.35rem;
+		color: var(--color-titulos);
+	}
+	.medio p {
+		margin: 0;
+		font-size: 1rem;
+		color: var(--color-texto-suave);
+	}
+	.medio .boton {
+		justify-self: start;
+		margin-top: 0.5rem;
+	}
+	.medio-qr {
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 1.5rem;
+		align-items: center;
+	}
+	.medio-qr > div {
+		display: grid;
+		gap: 0.75rem;
+	}
+	.qr {
+		display: block;
+		width: 15rem;
+		height: auto;
+		border-radius: 1rem;
+		box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.12);
+	}
+	.medio-paypal {
+		background: var(--color-acento-suave);
+		border-color: var(--color-acento-suave);
+	}
+	.acciones-whatsapp {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1.25rem;
+		margin: 1.25rem 0 0;
+	}
+	.boton-whatsapp {
+		min-height: 3.25rem;
+		padding-inline: 1.75rem;
+		font-size: 1.05rem;
+	}
+	.boton-whatsapp :global(.icono) {
+		width: 1.25rem;
+		height: 1.25rem;
+		color: inherit;
+	}
+	.numero-visible {
+		font-weight: 700;
+		color: var(--color-texto-suave);
+	}
+	.nota-pago {
+		max-width: 46rem;
+		margin: 2rem 0 0 4.25rem;
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+	.incluye-ancho {
+		margin-top: 2.5rem;
+	}
+	.incluye-ancho ul {
+		grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+	}
+
 	/* ---------- Organizan ---------- */
 	.organizan {
 		display: flex;
@@ -408,6 +621,10 @@ const ultima = s.historia?.ediciones.at(-1);
 		display: block;
 		width: auto;
 		height: 5.5rem;
+		/* En el celular el logo ancho de ALAPCCO no cabe: se achica sin deformarse. */
+		max-width: 100%;
+		object-fit: contain;
+		object-position: left center;
 	}
 
 	/* ---------- Banda final ---------- */
@@ -453,9 +670,35 @@ const ultima = s.historia?.ediciones.at(-1);
 			grid-template-columns: 1fr;
 		}
 	}
+	@media (max-width: 75rem) {
+		.medios {
+			grid-template-columns: 1fr;
+		}
+	}
 	@media (max-width: 30rem) {
 		.formatos {
 			grid-template-columns: 1fr;
+		}
+		/* En el celular, los pasos usan todo el ancho: el número va arriba del título. */
+		.pasos > li {
+			padding-left: 0;
+		}
+		.pasos > li:not(:last-child)::before {
+			display: none;
+		}
+		.numero {
+			position: static;
+			margin-bottom: 0.5rem;
+		}
+		.nota-pago {
+			margin-left: 0;
+		}
+		.medio-qr {
+			grid-template-columns: 1fr;
+		}
+		.qr {
+			width: min(100%, 16rem);
+			justify-self: center;
 		}
 	}
 </style>

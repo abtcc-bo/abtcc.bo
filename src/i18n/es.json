@@ -157,6 +157,10 @@
 			"pausa": "Pausa"
 		},
 		"mensajeWhatsapp": "Hola, quiero información sobre {evento}.",
+		"inscribirmeWhatsapp": "Inscribirme por WhatsApp",
+		"comoPagar": "Cómo pagar",
+		"mensajeInscripcion": "Hola, quiero inscribirme al evento {evento}.\nNombre completo: \nPaís: \nTarifa: \nTe envío mi comprobante de pago.",
+		"foto": "Foto",
 		"costoHasta": "hasta el {fecha}",
 		"costoDesde": "desde el {fecha}",
 		"reservaTitulo": "Reserva tu lugar",

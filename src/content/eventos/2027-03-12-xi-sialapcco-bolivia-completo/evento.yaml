@@ -7,8 +7,11 @@
 #   3. Quitar la línea `borrador: true`.
 #
 # Fechas acordadas con ALAPCCO (reunión del 30/10/2026): 12 y 13 de marzo de 2027, en Santa Cruz de la Sierra.
-# [PENDIENTE: horario de cada día (las horas de abajo son provisionales), sede, costos, enlace de inscripción,
-#  WhatsApp de consultas, y si habrá modalidad virtual]
+# [PENDIENTE: horario de cada día (las horas de abajo son provisionales), sede, costos y si habrá modalidad virtual]
+#
+# Inscripción SIN plataforma (decidido el 20/11/2026): la persona paga con el QR (desde Bolivia) o por PayPal
+# (desde otros países) y manda su comprobante al WhatsApp. El botón "Inscribirme por WhatsApp" sale solo
+# porque están `pago` y `whatsapp`. Para cambiar el QR: reemplazar qr-pago.png por el nuevo (vence el 18/11/2027).
 borrador: true
 tipo: seminario
 inicio: "2027-03-12T09:00-04:00"
@@ -19,3 +22,14 @@ lugar:
 tema: tajibo
 costos_por_confirmar: true
 imagen: ./afiche.webp
+# Catedral de Santa Cruz y tajibos en flor, en la Plaza 24 de Septiembre (recortada para que no se vean personas).
+# Foto de Wikimedia Commons con licencia CC BY 2.0: se puede usar libremente si se nombra al autor (credito_foto).
+foto_cabecera: ./foto-cabecera.webp
+credito_foto:
+  autor: Rômulo Gama Ferreira
+  licencia: CC BY 2.0
+  url: https://commons.wikimedia.org/wiki/File:Catedral_Metropolitana_Bas%C3%ADlica_Menor_de_San_Lorenzo_de_Santa_Cruz_-_Bolivia_(53041053638).jpg
+whatsapp: "59171402980"
+pago:
+  qr: ./qr-pago.png
+  paypal: https://paypal.me/InstitutoPsitecBO

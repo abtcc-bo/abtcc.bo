@@ -63,11 +63,14 @@ La página completa del evento ya está hecha, pero **oculta**: el público sigu
 - [ ] Sede confirmada (nombre, dirección) y horario de cada día.
 - [ ] Lema del evento.
 - [ ] Programa y ponentes (foto, país y tema de cada uno).
-- [ ] Tarifas, fecha límite de la inscripción anticipada y forma de pago (también desde el exterior).
-- [ ] Enlace del formulario de inscripción y WhatsApp de consultas.
+- [x] Forma de inscripción: QR, PayPal y comprobante por WhatsApp (+591 71402980) ✔ ya está en la página.
+- [ ] Montos de cada tarifa (en Bs y en USD) y fecha límite de la inscripción anticipada.
+- [ ] Cuando la ABTCC tenga cuenta propia: mandarme el QR y el PayPal nuevos para cambiarlos.
+- [ ] El QR actual vence el **18/11/2027**: si el evento se mueve después de esa fecha, pedir uno nuevo al banco.
 - [ ] Horas y aval del certificado.
 - [ ] Hoteles recomendados y cómo llegar desde el aeropuerto.
 - [ ] Logos de los auspiciantes.
+- [x] **Foto de Santa Cruz de la cabecera:** cambiada el 20/11/2026 por una de uso libre de Wikimedia Commons (catedral con tajibos, de Rômulo Gama Ferreira, CC BY 2.0). Se puede usar sin pedir permiso; el crédito al autor ya sale en la cabecera.
 - [ ] Preguntar a ALAPCCO qué significa exactamente la sigla y confirmar la lista de ediciones anteriores.
 
 ### 5 ter. Para la sección "La institución"

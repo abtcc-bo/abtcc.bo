@@ -81,11 +81,13 @@ La página completa está hecha pero no se publica (`borrador: true` en `src/con
 - [ ] Programa científico (lo arma ALAPCCO): 4 conferencias, 2 talleres, conversatorios y comunicaciones orales; ponentes con foto, país y tema
 - [ ] Comunicaciones orales: criterios, fechas y forma de envío
 - [ ] Tarifas (profesionales, miembros de ALAPCCO, estudiantes) e inscripción anticipada con su fecha límite; ¿los miembros de la ABTCC pagan la tarifa de ALAPCCO?
-- [ ] Medio de pago nacional e internacional y enlace del formulario de inscripción
+- [x] Forma de inscripción ✔ (20/11/2026): sin plataforma. QR del Banco Económico (desde Bolivia, archivo `qr-pago.png`, vence el 18/11/2027) y PayPal `paypal.me/InstitutoPsitecBO` (desde el exterior); el comprobante se manda por WhatsApp. Las cuentas son del equipo organizador mientras la ABTCC abre la suya: cambiar QR, PayPal y la `nota` de es.md cuando exista la cuenta institucional
+- [ ] Montos de cada tarifa en bolivianos y en dólares (hoy dicen "Por confirmar")
 - [ ] ¿Habrá modalidad virtual?
 - [ ] Certificado: aval y horas
 - [ ] Para quien viene del exterior: traslado desde el aeropuerto, hoteles recomendados, idiomas de las sesiones
-- [ ] WhatsApp de consultas del evento
+- [x] WhatsApp del evento ✔ +591 71402980 (20/11/2026): recibe consultas e inscripciones
+- [x] Foto de la cabecera (`foto-cabecera.webp`): resuelto el 20/11/2026 con una foto de Wikimedia Commons, CC BY 2.0 (Rômulo Gama Ferreira), con su crédito en `credito_foto`
 - [ ] Auspiciantes (logos)
 - [ ] Que ALAPCCO confirme la lista de ediciones anteriores y el significado de la sigla (su web no lo explica)
 

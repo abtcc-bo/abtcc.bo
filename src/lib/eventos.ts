@@ -236,6 +236,16 @@ export function contactoWhatsapp(numero: string, mensaje: string) {
 	return { url: `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`, visible };
 }
 
+/**
+ * Inscripción por WhatsApp (evento con `pago` y `whatsapp`, sin enlace de inscripción propio): mientras el evento
+ * no empezó, devuelve el enlace al chat con el mensaje de inscripción ya escrito; si no corresponde, null.
+ */
+export function inscripcionPorWhatsapp(evento: Evento, mensaje: string, ahora = new Date()) {
+	const { estado, inscripcion, pago, whatsapp, inicio } = evento.datos;
+	if (estado !== 'programado' || inscripcion || !pago || !whatsapp || inicio <= ahora) return null;
+	return contactoWhatsapp(whatsapp, mensaje);
+}
+
 // ---------- Precios ----------
 
 export type Costo = Evento['datos']['costos'][number];

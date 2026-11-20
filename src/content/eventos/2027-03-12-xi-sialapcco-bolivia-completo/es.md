@@ -49,28 +49,50 @@ seminario:
       - titulo: Dónde alojarse
         texto: "[PENDIENTE: hoteles recomendados o con convenio]"
       - titulo: Pagos desde el exterior
-        texto: "La inscripción se puede pagar desde Bolivia y desde otros países. [PENDIENTE: medio de pago internacional]"
+        texto: Desde Bolivia pagas con QR y desde otros países, por PayPal. Más abajo te explicamos cómo.
       - titulo: Idiomas
         texto: "[PENDIENTE: idiomas de las sesiones y si habrá traducción]"
       - titulo: Una persona que te responde
-        texto: "Escríbenos y resolvemos tu consulta. [PENDIENTE: número de WhatsApp del evento]"
+        texto: Escríbenos por WhatsApp al +591 71402980 y resolvemos tu consulta.
   inscripcion:
     antetitulo: Inscripción
     titulo: Reserva tu lugar
-    texto: Los cupos son limitados. Las inscripciones abren pronto, con un precio especial de inscripción anticipada.
+    texto: Los cupos son limitados. Inscribirte es simple, en tres pasos, y te acompaña una persona del equipo por WhatsApp.
     # [PENDIENTE: montos, fecha límite de la inscripción anticipada y si los miembros de la ABTCC pagan la tarifa de ALAPCCO]
+    # Cuando estén los precios, poner cada monto así: "Bs 350 · USD 50".
     tarifas:
       - nombre: Inscripción anticipada
-        monto: "[PENDIENTE]"
+        monto: Por confirmar
         nota: "Hasta el [PENDIENTE: fecha límite]"
         destacada: true
       - nombre: Profesionales
-        monto: "[PENDIENTE]"
+        monto: Por confirmar
       - nombre: Miembros de ALAPCCO
-        monto: "[PENDIENTE]"
+        monto: Por confirmar
       - nombre: Estudiantes
-        monto: "[PENDIENTE]"
+        monto: Por confirmar
         nota: Con constancia de estudios
+    pasos:
+      tarifa:
+        titulo: Elige tu tarifa
+        texto: Estamos cerrando los montos. Si no sabes cuál te corresponde, escríbenos y te ayudamos.
+      pago:
+        titulo: Paga con QR o con PayPal
+        texto: Usa el QR si pagas desde Bolivia, o PayPal si pagas desde otro país. Guarda tu comprobante.
+      comprobante:
+        titulo: Envía tu comprobante por WhatsApp
+        texto: Mándanos la foto o captura del pago con tu nombre completo, tu país y la tarifa que elegiste. Te confirmamos la inscripción por el mismo chat.
+      qr:
+        titulo: "Desde Bolivia · QR"
+        texto: Escanea el código con la app de tu banco. Si estás en el celular, descárgalo y súbelo desde tu galería.
+        alt: Código QR del Banco Económico para pagar la inscripción al XI SIALAPCCO Bolivia
+        descargar: Descargar QR
+      paypal:
+        titulo: "Desde otros países · PayPal"
+        texto: Paga desde tu cuenta PayPal con el botón de abajo.
+        boton: Pagar con PayPal
+      # [PENDIENTE: cambiar esta nota cuando la ABTCC tenga cuentas a su nombre]
+      nota: Mientras la ABTCC abre su cuenta institucional, los pagos se reciben en cuentas del equipo organizador. El QR y PayPal pueden mostrar otro nombre como destinatario; es correcto.
     incluye_titulo: Tu inscripción incluye
     incluye:
       - Las dos jornadas completas
@@ -78,10 +100,6 @@ seminario:
       - Carpeta y bolígrafo
       - Agua y café durante las jornadas
       - "Certificado [PENDIENTE: aval y horas]"
-    aviso:
-      titulo: Entérate primero
-      texto: Escríbenos y te avisamos el día que abran las inscripciones.
-      boton: Quiero recibir novedades
   organizan:
     antetitulo: Organizan
     texto: La Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales (ALAPCCO) y la ABTCC, su grupo de trabajo en Bolivia.

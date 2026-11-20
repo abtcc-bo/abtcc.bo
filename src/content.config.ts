@@ -68,6 +68,17 @@ const eventos = defineCollection({
 				cupos: z.number().int().positive().optional(),
 				certificacion: z.object({ horas: z.number().positive().optional(), aval: z.string().optional() }).optional(),
 				imagen: image().optional(),
+				/**
+				 * Foto de fondo de la cabecera de la página del evento (p. ej. un paisaje de la ciudad sede), detrás del
+				 * título y del afiche, con un velo del color del tema para que el texto se lea. WebP de unos 2000 px de
+				 * ancho, apaisada, sin personas reconocibles y con permiso de uso.
+				 */
+				foto_cabecera: image().optional(),
+				/**
+				 * Crédito de `foto_cabecera` cuando es de otra persona (p. ej. de Wikimedia Commons con licencia CC BY):
+				 * sale pequeño en la esquina de la cabecera, con enlace a la página de la foto, donde está la licencia.
+				 */
+				credito_foto: z.object({ autor: z.string(), licencia: z.string(), url: z.url() }).optional(),
 				solo_socios: z.boolean().default(false),
 				/**
 				 * Anuncio previo: solo se conoce el mes. Se muestra "marzo de 2027 (fecha exacta por confirmar)", sin horario,
@@ -86,6 +97,12 @@ const eventos = defineCollection({
 				borrador: z.boolean().default(false),
 				/** WhatsApp para consultas, con código de país y sin espacios ni "+": "59170623387". */
 				whatsapp: z.string().regex(/^\d{8,15}$/, 'WhatsApp con código de país, solo números: "59170623387".').optional(),
+				/**
+				 * Pago directo, sin plataforma de inscripción: la persona paga con el QR del banco (desde Bolivia) o por
+				 * PayPal (desde otros países) y manda el comprobante al `whatsapp` del evento, que pasa a ser el botón
+				 * "Inscribirme por WhatsApp". `qr`: imagen del QR en la carpeta del evento (PNG, para que no pierda nitidez).
+				 */
+				pago: z.object({ qr: image().optional(), paypal: z.url().optional() }).optional(),
 				/** true mientras la inscripción está abierta pero aún no se publican los costos (se muestra "Por confirmar"). */
 				costos_por_confirmar: z.boolean().default(false),
 				/**
@@ -189,7 +206,23 @@ const eventosTextos = defineCollection({
 						tarifas: z.array(z.object({ nombre: z.string(), monto: z.string(), nota: z.string().optional(), destacada: z.boolean().default(false) })),
 						incluye_titulo: z.string(),
 						incluye: z.array(z.string()),
-						aviso: z.object({ titulo: z.string(), texto: z.string(), boton: z.string() }),
+						/** Sin pago directo: recuadro para pedir novedades (su botón lleva al WhatsApp o a Contacto). */
+						aviso: z.object({ titulo: z.string(), texto: z.string(), boton: z.string() }).optional(),
+						/**
+						 * Con `pago` en evento.yaml: "Cómo inscribirte" en tres pasos numerados: 1) `tarifa` (con las tarjetas
+						 * de tarifas), 2) `pago` (con los recuadros del `qr` y de `paypal`) y 3) `comprobante` (con el botón
+						 * "Inscribirme por WhatsApp"). `nota`: aclaración al pie (p. ej. a nombre de quién están las cuentas).
+						 */
+						pasos: z
+							.object({
+								tarifa: z.object({ titulo: z.string(), texto: z.string() }),
+								pago: z.object({ titulo: z.string(), texto: z.string() }),
+								comprobante: z.object({ titulo: z.string(), texto: z.string() }),
+								qr: z.object({ titulo: z.string(), texto: z.string(), alt: z.string(), descargar: z.string() }),
+								paypal: z.object({ titulo: z.string(), texto: z.string(), boton: z.string() }),
+								nota: z.string().optional(),
+							})
+							.optional(),
 					})
 					.optional(),
 				organizan: z.object({ antetitulo: z.string(), texto: z.string() }).optional(),
