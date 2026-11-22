@@ -7,10 +7,10 @@ import '@fontsource-variable/nunito/wght-italic.css';
 import '../styles/global.css';
 import Encabezado from '../components/Encabezado.astro';
 import Pie from '../components/Pie.astro';
+import AnuncioEmergente from '../components/AnuncioEmergente.astro';
 import Migas, { type Miga } from '../components/Migas.astro';
 import JsonLd from '../components/JsonLd.astro';
 import { ORGANIZACION } from '../datos/organizacion';
-import { VISTA_PREVIA } from '../lib/vistaPrevia';
 import { IDIOMA_PRINCIPAL, IDIOMAS, localeOpenGraph, ruta, t, type Alternos, type Idioma } from '../i18n';
 
 interface Props {
@@ -91,7 +91,7 @@ const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href:
 		<script is:inline>document.documentElement.classList.add('js');</script>
 		<title>{titulo}</title>
 		<meta name="description" content={descripcion} />
-		{(noIndexar || VISTA_PREVIA) && <meta name="robots" content="noindex" />}
+		{noIndexar && <meta name="robots" content="noindex" />}
 		{!noIndexar && <link rel="canonical" href={canonica} />}
 		{!noIndexar && Object.entries(alternos).map(([lang, ruta]) => <link rel="alternate" hreflang={lang} href={absoluta(ruta)} />)}
 		{!noIndexar && alternos[IDIOMA_PRINCIPAL] && <link rel="alternate" hreflang="x-default" href={absoluta(alternos[IDIOMA_PRINCIPAL])} />}
@@ -142,6 +142,7 @@ const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href:
 			<slot />
 		</main>
 		<Pie idioma={idioma} />
+		{!noIndexar && <AnuncioEmergente idioma={idioma} />}
 		<script>
 			// Animación suave al bajar: lo que todavía no está en pantalla aparece con un leve deslizamiento.
 			// Solo si el usuario no pidió "reducir movimiento". Sin JavaScript todo se ve normal.

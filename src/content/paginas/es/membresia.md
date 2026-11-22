@@ -61,8 +61,8 @@ preguntas:
     respuesta: Sí, como Miembro Adherente, la categoría para personas en formación. Necesitas una constancia de estudiante de psicología o de un área afín. Cuando cumplas los requisitos, puedes pedir tu cambio a Miembro Asociado.
   - pregunta: ¿Qué diferencia hay entre Miembro Asociado y Miembro Adherente?
     respuesta: Los Miembros Asociados tienen voz y voto en la Asamblea General y pueden postularse a cargos directivos. Los Adherentes participan con voz, sin voto, y pueden pasar a Asociados cuando cumplan los requisitos.
-  - pregunta: ¿Tengo que vivir en Santa Cruz?
-    respuesta: No. La ABTCC es de ámbito nacional; Santa Cruz es solo su sede. Puedes asociarte desde cualquier lugar de Bolivia.
+  - pregunta: ¿Tengo que vivir en Santa Cruz de la Sierra?
+    respuesta: No. La ABTCC es de ámbito nacional; Santa Cruz de la Sierra es solo su sede. Puedes asociarte desde cualquier lugar de Bolivia.
   - pregunta: ¿Cuánto cuesta y cuándo se paga?
     respuesta: La cuota anual es el equivalente en bolivianos a 100 UFV, al valor del día del pago. El período va del 1 de febrero al 31 de enero; si te incorporas durante el año, pagas solo la parte proporcional a los meses que faltan.
   - pregunta: ¿Cuánto tarda la respuesta a mi solicitud?

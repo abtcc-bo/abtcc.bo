@@ -56,17 +56,25 @@ Ya están en la web con su programa, ponentes, inscripción y WhatsApp, y la por
 
 La decoración navideña (gorrito del logo y nieve) se apaga sola después del 6 de enero en la portada; en las demás páginas, con la primera publicación posterior a esa fecha.
 
-### 5 bis. Simposio Internacional ALAPCCO–ABTCC 2027 (XI SIALAPCCO)
+### 5 bis. XI SIALAPCCO Bolivia (12 y 13 de marzo de 2027)
 
-La página completa ya tiene el nombre, la sede (Hotel Radisson, nombrado como apoyo), las tarifas, los medios de pago, los refrigerios y el certificado digital. Sigue **oculta**: el público ve solo el anuncio corto, ya con el nombre nuevo. La web solo informa y difunde; la organización interna no se publica. Cuando quieras que se vea, avísame. Para completarla:
+La página completa del evento **ya es pública** (desde el 22/11/2026, cuando se aprueba el cambio en GitHub). Ojo: el botón "Inscribirme por WhatsApp" ya funciona, aunque el plan decía abrir inscripciones el 15 de diciembre; si llegan mensajes antes, se pueden atender o pedir que esperen. Para completarla necesito:
 
-- [ ] Si Laboratorios Bagó acepta aparecer como auspiciante, y los logos (del hotel y de Bagó).
-- [x] WhatsApp para las inscripciones: +591 71402980 ✔
-- [ ] ¿El QR de pago y el PayPal van también en la web o solo se mandan por WhatsApp?
-- [ ] Programa y ponentes (foto, país y tema de cada uno) y lema del evento.
-- [ ] Horas y aval del certificado; idiomas de las sesiones.
-- [ ] Dirección del hotel.
-- [ ] ¿Hay descuento para miembros de ALAPCCO o de la ABTCC?
+- [x] Sede: Hotel Radisson ✔
+- [ ] Horario de cada día.
+- [ ] Confirmar que se llama "simposio" (como dice el plan) y no "seminario".
+- [ ] Lema del evento.
+- [ ] Programa y ponentes (foto, país y tema de cada uno).
+- [x] Forma de inscripción: QR, PayPal y comprobante por WhatsApp (+591 71402980) ✔ ya está en la página.
+- [x] Montos de cada tarifa (preventa y regular, en Bs y en USD) ✔
+- [ ] **Hasta qué fecha vale la preventa.**
+- [ ] Cuando la ABTCC tenga cuenta propia: mandarme el QR y el PayPal nuevos para cambiarlos.
+- [ ] El QR actual vence el **18/11/2027**: si el evento se mueve después de esa fecha, pedir uno nuevo al banco.
+- [ ] Horas del certificado (ya dice "certificado digital").
+- [ ] Si el Radisson tendrá precio especial para quienes vienen de fuera.
+- [ ] Logos de los auspiciantes.
+- [x] **Foto de Santa Cruz de la cabecera:** cambiada el 20/11/2026 por una de uso libre de Wikimedia Commons (catedral con tajibos, de Rômulo Gama Ferreira, CC BY 2.0). Se puede usar sin pedir permiso; el crédito al autor ya sale en la cabecera.
+- [ ] Preguntar a ALAPCCO qué significa exactamente la sigla y confirmar la lista de ediciones anteriores.
 
 ### 5 ter. Para la sección "La institución"
 
@@ -113,6 +121,56 @@ Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en
 - [ ] **Estatuto y código de ética** en PDF.
 - [x] Membresía: categorías, requisitos, beneficios y cuotas ✔ (sacados del estatuto y el reglamento)
 - [ ] **Logo** en buena calidad: pide al diseñador el archivo original (SVG, o PNG grande con fondo transparente) y una versión blanca para fondos oscuros. El de la web ya es el nuevo, pero recortado de una imagen.
+
+---
+
+## 📋 Próximos proyectos de la web (lista de pendientes, 22/11/2026)
+
+Ideas que pediste anotar. Ninguna está empezada. Van en este orden porque cada una se apoya en la anterior.
+
+### A. CLAPCCO de Argentina (el congreso grande de ALAPCCO)
+
+Es lo más fácil: es un evento más, como el SIALAPCCO.
+
+- **Cómo lo organizaría:** una carpeta de evento nueva (`src/content/eventos/AAAA-MM-DD-clapcco-argentina/`) con `tipo: congreso` y `modalidad: presencial`. Como lo organiza ALAPCCO (no la ABTCC), el botón principal llevaría a la inscripción en la web de ALAPCCO, no a nuestro WhatsApp. Saldría en el listado de eventos, en el calendario y en la portada.
+- **Opcional:** un tema de color propio (como "tajibo" para Santa Cruz de la Sierra), por ejemplo con los colores de Argentina.
+- **Lo que necesito de ti:**
+  - [ ] Nombre exacto y número de edición (¿"X CLAPCCO"?).
+  - [ ] Fechas, ciudad y sede.
+  - [ ] Enlace oficial de inscripción y de información (web de ALAPCCO).
+  - [ ] Afiche o logo del congreso.
+  - [ ] Si hay descuento o beneficio para miembros de la ABTCC.
+
+### B. Busca tu terapeuta (directorio público)
+
+Una página donde cualquier persona busca un terapeuta de la red por ciudad, enfoque o modalidad (presencial o en línea).
+
+- **Cómo lo organizaría:**
+  - Una ficha por terapeuta (como las de la comisión): nombre, foto, títulos, enfoques (TCC, ACT, DBT…), poblaciones (niños, adolescentes, adultos, parejas), ciudad, modalidad y forma de contacto (WhatsApp o correo profesional).
+  - Una página `/es/terapeutas/` con filtros (ciudad, enfoque, población, modalidad) que funcionan en el mismo navegador, sin servidor.
+  - Solo aparecen **miembros activos** que **firmaron su consentimiento** para publicar sus datos. Nunca se publica nada sin permiso escrito.
+  - Se puede empezar con la "Red de terapeutas" que ya existe (centros y profesionales) y sumar personas de a poco.
+- **Lo que necesito de ti:**
+  - [ ] Decidir quién entra (¿solo Miembros Asociados?, ¿con qué requisito de formación?).
+  - [ ] Un formulario de consentimiento para cada terapeuta (te puedo redactar el texto).
+  - [ ] Los datos de cada terapeuta con su foto.
+
+### C. Acceso para socios: inscribirse y bajar libros
+
+El área privada que ya está prevista (hoy dice "en preparación"). Es el proyecto más grande, la "fase 3".
+
+- **Cómo lo organizaría:**
+  - **Entrar con usuario:** cada socio entra con su correo (con Supabase, que es gratuito). Lo privado se verifica en el servidor: nadie sin cuenta puede ver ni descargar nada, aunque tenga el enlace.
+  - **Inscribirse:** un formulario de solicitud de membresía que llega a la comisión. Al aprobarla, la persona recibe su acceso. Más adelante, inscribirse a eventos con un clic y ver sus certificados.
+  - **Biblioteca:** libros, manuales y grabaciones para descargar, solo para socios con la cuota al día. Cada archivo con su ficha (título, autor, tema).
+  - **Panel del socio:** sus datos, el estado de su cuota y sus certificados.
+- **Importante sobre los libros:** solo podemos subir material propio de la ABTCC o de sus autores, o con permiso escrito. Los libros de editoriales no se pueden compartir aunque sea solo para socios.
+- **Lo que necesito de ti:**
+  - [ ] **Dominio propio** (ej. `abtcc.org.bo`): hace falta para mandar correos a los socios.
+  - [ ] Un Gmail de la asociación para crear la cuenta de Supabase.
+  - [ ] La lista de socios actuales (nombre, correo, categoría, cuota al día).
+  - [ ] Los primeros libros o materiales, con el permiso de sus autores.
+  - [ ] Quién de la comisión aprueba las solicitudes nuevas.
 
 ---
 

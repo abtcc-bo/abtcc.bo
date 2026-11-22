@@ -2,15 +2,8 @@
 import { defineConfig, envField } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 
-// Versión de prueba: Cloudflare construye cada rama en WORKERS_CI_BRANCH. Fuera de `main`, la web muestra también lo
-// que está en preparación (`borrador: true`) para poder revisarlo desde el celular, y pide a Google que no la indexe.
-// La web pública (`main`) y `npm run build` en la computadora nunca muestran borradores.
-const rama = process.env.WORKERS_CI_BRANCH;
-const vistaPrevia = Boolean(rama && rama !== 'main');
-
 // https://astro.build/config
 export default defineConfig({
-	vite: { define: { __VISTA_PREVIA__: JSON.stringify(vistaPrevia) } },
 	// Dirección pública (gratuita de Cloudflare hasta tener dominio propio). Se usa para URLs absolutas (canonical, hreflang, sitemap).
 	site: 'https://abtcc.abtcc-bo.workers.dev',
 	trailingSlash: 'always',

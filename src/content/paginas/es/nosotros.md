@@ -7,6 +7,19 @@ nosotros:
     - La Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales es una asociación civil sin fines de lucro, de ámbito nacional, con sede en Santa Cruz de la Sierra.
     - "[PENDIENTE: 2–3 líneas más de presentación: desde cuándo existimos y a quiénes reunimos]"
   objetivo: Promover el desarrollo, la difusión, la formación, la investigación y la aplicación ética y científicamente fundamentada de las terapias cognitivas conductuales y contextuales, contribuyendo a la salud mental, el desarrollo científico y el bienestar de la población boliviana.
+  mision: Fortalecer las terapias cognitivo-conductuales y contextuales en Bolivia mediante la formación, la colaboración y la difusión de prácticas éticas, científicas y culturalmente pertinentes.
+  vision: Ser la organización boliviana de referencia en terapias cognitivo-conductuales y contextuales, reconocida por su calidad académica, rigor científico y compromiso con el bienestar psicológico.
+  valores:
+    - Rigor científico
+    - Ética
+    - Colaboración
+    - Pertinencia cultural
+    - Inclusión
+    - Formación continua
+    - Accesibilidad
+    - Innovación
+    - Compromiso social
+    - Transparencia
   lineas:
     - titulo: Formación
       icono: titulo
@@ -59,11 +72,11 @@ nosotros:
     - anio: "[Año]"
       texto: "[PENDIENTE: fundación de la asociación]"
     - anio: "2023"
-      texto: Primer Congreso Nacional de Terapia Cognitivo Conductual y Terapia Contextual, en Santa Cruz.
+      texto: Primer Congreso Nacional de Terapia Cognitivo Conductual y Terapia Contextual, en Santa Cruz de la Sierra.
     - anio: "2026"
       texto: II Encuentro Internacional de Terapia Cognitivo Conductual y Contextual, en Cochabamba.
     - anio: "2027"
-      texto: Bolivia es sede del Simposio Internacional ALAPCCO–ABTCC 2027 (XI SIALAPCCO), en Santa Cruz.
+      texto: Bolivia es sede del XI SIALAPCCO en Santa Cruz de la Sierra, junto con ALAPCCO.
 ---
 
 <!-- El contenido de esta página está arriba, en bloques (vista src/vistas/Nosotros.astro). -->

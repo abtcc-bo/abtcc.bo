@@ -16,7 +16,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 
 - [ ] Presentación en una frase (para la portada)
 - [x] Objetivo, qué hacemos y principios (del estatuto y reglamento)
-- [ ] ¿Existen una misión y una visión aprobadas? Si no, la página usa el objetivo del estatuto
+- [x] Misión, visión y valores ✔ (22/11/2026): en "Quiénes somos", debajo del objetivo del estatuto
 - [ ] Historia breve
 - [ ] Enfoque (TCC y terapias contextuales)
 - [x] Comisión directiva: nombres y biografías de 5 integrantes
@@ -24,7 +24,8 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [x] Fotos de Guillermo Rivera, Halder Delgado, Carmen Barrón y Leonardo Eyzaguirre ✔
 - [x] Foto de Alexandra Shand (Alix) ✔
 - [ ] Hojas de vida completas de Guillermo, Halder, Carmen y Leonardo, para llenar "Formación" (universidad y país de cada título; ver los [PENDIENTE] en `src/content/personas/`). La de Alix ya está cargada
-- [ ] Orden de la comisión: se usó Guillermo, Halder, Carmen, Leonardo, Alix. Confirmar si es el orden definitivo (lo habitual es por cargo)
+- [x] Cargos de la comisión ✔ (22/11/2026): Carmen, Vicepresidenta; Halder, Secretaría Académica; Alix, Tesorera; Leonardo, Marketing y Publicidad. Orden por cargo: Guillermo, Carmen, Halder, Alix, Leonardo
+- [x] Cargo de Guillermo ✔ Presidente (22/11/2026)
 - [ ] ¿La ABTCC es "Grupo de trabajo de ALAPCCO" (como dice el logo) o "capítulo boliviano de ALAPCCO" (como dice la hoja de vida de Alix)? Definir una sola forma para la web
 - [ ] ¿"Barron" lleva tilde (Barrón)?
 - [ ] Enlaces opcionales de cada integrante (LinkedIn, ORCID, Instagram profesional)
@@ -53,7 +54,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
   - [ ] Confirmar el **enlace de inscripción** (el QR del segundo afiche lleva al mismo): lo saqué del QR del afiche (https://forms.gle/JNJT2veLtfBcMcFV8). El QR pasa por qrfy.io; en la web va directo al formulario
   - [ ] Confirmar el país de Laura Inés Rivera Betancourt y de Daniel Enríquez Cruz (el afiche muestra Bolivia)
   - [ ] Opcional: foto y una línea de presentación de los ponentes invitados (hoy salen con sus iniciales)
-- [ ] Simposio Internacional ALAPCCO–ABTCC 2027 (XI SIALAPCCO, Hotel Radisson, Santa Cruz): publicado solo el anuncio corto; la página completa está oculta hasta que la ABTCC diga. Lo que falta está en su sección más abajo
+- [ ] XI SIALAPCCO Bolivia (marzo 2027, Santa Cruz): ya publicado como anuncio con afiche. El mes está confirmado y el evento sigue en preparación (09/11/2026): la página lo dice así, sin [PENDIENTE]. Faltan fechas exactas, horario, sede, costos, enlace de inscripción, programa, horas y aval, y qué significa la sigla SIALAPCCO
 - [x] Eventos realizados con galería ✔: II Encuentro Internacional (Cochabamba, 4–5 sep. 2026) y Primer Congreso Nacional (Santa Cruz, 2023)
 - [ ] Primer Congreso Nacional: confirmar fechas (puse 28 y 29 de abril de 2023, según la hoja de vida de Alix), sede y nombre exacto
 - [ ] II Encuentro Internacional: confirmar sede (las fotos muestran Unifranz) y nombres de los ponentes que no identifiqué (ponencias sobre el ecosistema de la salud mental, ACT-RFT y metáforas, terapia de pareja, inteligencia artificial)
@@ -70,27 +71,32 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [x] Fuentes ✔ (Source Serif 4 en títulos, por el tono sobrio y académico pedido el 15/11/2026, y Nunito en textos, menú y botones)
 - [ ] Nombre: la web usa "Terapias Cognitivas Conductuales y Contextuales" (sin coma, confirmado otra vez el 15/11/2026). El estatuto lo escribe con coma y el logo dice "Cognitivo Conductuales": falta unificar los tres
 
-## Simposio Internacional ALAPCCO–ABTCC 2027 (XI SIALAPCCO; página completa, oculta)
+## XI SIALAPCCO Bolivia (publicada el 22/11/2026)
 
-La página completa está hecha pero no se publica (`borrador: true` en `src/content/eventos/2027-03-12-xi-sialapcco-bolivia-completo/`). Lo público sigue siendo el anuncio corto ("marzo de 2027"), ya con el nombre nuevo. **La web solo informa y difunde el evento: la organización interna (plazos, hospedaje, presupuesto) la lleva la ABTCC y no se publica** (pedido del 22/11/2026).
+La página completa ya es pública (`src/content/eventos/2027-03-12-xi-sialapcco-bolivia/`); el anuncio corto se borró. Datos tomados de la minuta de la reunión con ALAPCCO del 30/10/2026 y del plan operativo del simposio (22/11/2026). Solo está en español: faltan las versiones en inglés y portugués (revisadas por una persona).
 
-- [x] Nombre: **Simposio Internacional ALAPCCO–ABTCC 2027** ✔ (22/11/2026); SIALAPCCO = Simposio Internacional ALAPCCO
-- [x] Sede: Hotel Radisson, Santa Cruz ✔. Se puede nombrar como apoyo ✔ (22/11/2026)
-- [x] Tarifas por dos días ✔: estudiantes de Bolivia Bs 240 anticipada / Bs 300 regular; profesionales de Bolivia Bs 480 / Bs 600; estudiantes de otros países USD 25 / USD 30; profesionales de otros países USD 50 / USD 60
-- [x] Inscripción **sin formulario** ✔ (22/11/2026): por WhatsApp, guiada por una persona del equipo; pago con QR (Bolivia) o PayPal (exterior), datos que se envían por WhatsApp
-- [x] Refrigerios en ambas jornadas y certificado digital ✔
-- [ ] **Laboratorios Bagó:** ¿se puede nombrar como auspiciante? (la ABTCC lo consulta)
-- [ ] Logo del Hotel Radisson (y de Bagó si acepta), PNG o SVG con fondo transparente. Hoy el apoyo del hotel sale solo en texto
+- [x] Fechas: 12 y 13 de marzo de 2027, Santa Cruz de la Sierra ✔ (acordadas; falta el anuncio oficial con ALAPCCO)
+- [ ] Horario de cada día (las horas del archivo son provisionales)
+- [x] Sede ✔ Hotel Radisson, Santa Cruz (plan operativo, 22/11/2026); el mapa enlaza a la búsqueda en Google Maps
+- [ ] ¿Simposio o seminario? El plan dice "Simposio Internacional ALAPCCO–ABTCC 2027": la página ahora dice "simposio" (antes decía "seminario"). Confirmar
 - [ ] Lema o tema central
-- [ ] Programa científico y ponentes: foto, país y tema de cada uno (incluida la lista de ponentes nacionales)
-- [ ] Comunicaciones orales: ¿se mantienen? criterios y forma de envío
-- [x] WhatsApp de inscripción ✔: +591 71402980 (22/11/2026)
-- [ ] ¿Mostrar también en la web el QR de pago y el enlace de PayPal, o solo enviarlos por WhatsApp?
-- [ ] Dirección del Hotel Radisson y enlace de Google Maps
-- [ ] Certificado: aval y horas
-- [ ] Idiomas de las sesiones y si habrá traducción
-- [ ] ¿Descuento para miembros de ALAPCCO o de la ABTCC?
-- [ ] Que ALAPCCO confirme la lista de ediciones anteriores
+- [ ] Programa académico (lo cierra el Dr. Guillermo Rivera hacia el 10 dic.; ponentes internacionales hacia el 5 dic.): 4 conferencias, 2 talleres, conversatorios y comunicaciones orales; ponentes con foto, país y tema
+- [ ] Comunicaciones orales: criterios, fechas y forma de envío
+- [x] Tarifas ✔ (22/11/2026), por los dos días: estudiantes Bs 240 / 300, profesionales Bs 480 / 600; internacionales USD 25 / 30 y USD 50 / 60 (preventa / regular)
+- [ ] **Fecha en que termina la preventa** (va en `vigencia` de es.md y en `hasta` de los costos de evento.yaml)
+- [ ] ¿Hay tarifa especial para miembros de ALAPCCO o de la ABTCC? (el plan no la menciona: la saqué de la página)
+- [x] Forma de inscripción ✔ (20/11/2026): sin plataforma. QR del Banco Económico (desde Bolivia, archivo `qr-pago.png`, vence el 18/11/2027) y PayPal `paypal.me/InstitutoPsitecBO` (desde el exterior); el comprobante se manda por WhatsApp. Las cuentas son del equipo organizador mientras la ABTCC abre la suya: cambiar QR, PayPal y la `nota` de es.md cuando exista la cuenta institucional
+- [ ] ¿Habrá modalidad virtual?
+- [x] Certificado ✔ digital, lo emite la ABTCC después del evento
+- [ ] Horas del certificado
+- [x] Qué incluye ✔ las dos jornadas, refrigerios (los aporta un laboratorio) y certificado digital. Materiales (carpeta, bolígrafo): en negociación, no están en la página
+- [ ] Para quien viene del exterior: ¿tarifa especial en el hotel para participantes?, idiomas de las sesiones
+- [x] WhatsApp del evento ✔ +591 71402980 (20/11/2026): recibe consultas e inscripciones
+- [x] Foto de la cabecera (`foto-cabecera.webp`): resuelto el 20/11/2026 con una foto de Wikimedia Commons, CC BY 2.0 (Rômulo Gama Ferreira), con su crédito en `credito_foto`
+- [x] Fotos de Santa Cruz de "Sede y viaje" ✔ (22/11/2026): tres de Wikimedia Commons con licencia CC (catedral desde lo alto, plaza con tajibos y tajibo en flor), con su crédito al pie de la sección
+- [ ] Fotos del salón del Hotel Radisson (pedirlas al hotel) para la tarjeta de la sede
+- [ ] Auspiciantes (logos)
+- [ ] Que ALAPCCO confirme la lista de ediciones anteriores y el significado de la sigla (su web no lo explica)
 
 ## Institución (portada)
 

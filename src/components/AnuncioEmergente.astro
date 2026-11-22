@@ -1,0 +1,751 @@
+---
+// Anuncio emergente: ventana grande sobre la página, con una X para cerrarla, que lleva a la inscripción de un evento
+// (diseño "Web · banner de portada", 22/11/2026). Sale el del próximo evento con bloque `anuncio` en su texto, en
+// cualquier página menos la del propio evento. Va en Base.astro.
+// Cuándo aparece (script de abajo): poco después de entrar. Si la persona la cierra, no vuelve a salir en ese navegador
+// por 1 día; si toca el anuncio para inscribirse, por 14 días. Deja de salir sola cuando el evento pasó o llega
+// `anuncio.hasta` (también en páginas guardadas en caché). Sin JavaScript no aparece. Con "reducir movimiento", quieta.
+import { Image } from 'astro:assets';
+import logoBlanco from '../assets/logo-blanco.png';
+import { ruta, t, type Idioma } from '../i18n';
+import { obtenerEventosPublicos, yaPaso } from '../lib/contenido';
+import { fechaDelEvento } from '../lib/eventos';
+
+interface Props {
+	idioma: Idioma;
+}
+
+const { idioma } = Astro.props;
+const ahora = new Date();
+const evento = (await obtenerEventosPublicos(idioma)).find((e) => {
+	const anuncio = e.texto.data.anuncio;
+	return anuncio && e.datos.estado !== 'cancelado' && !yaPaso(e, ahora) && !(anuncio.hasta && anuncio.hasta < ahora);
+});
+const href = evento ? ruta('eventos', idioma, evento.slug) : undefined;
+const mostrar = evento && href && !Astro.url.pathname.startsWith(href);
+
+const textos = t(idioma);
+const v = textos.ventanaAnuncio;
+const d = textos.destacado;
+const a = evento?.texto.data.anuncio;
+const datos = evento?.datos;
+const foto = a?.foto ?? datos?.foto_cabecera ?? datos?.imagen;
+// El crédito de la foto de cabecera solo se pone si el anuncio usa esa foto.
+const credito = !a?.foto && datos?.foto_cabecera ? datos.credito_foto : undefined;
+const termina = datos ? (a?.hasta ?? datos.fin ?? datos.inicio) : undefined;
+const lugar = datos?.lugar && [datos.lugar.nombre, datos.lugar.ciudad].filter(Boolean).join(' · ');
+
+// Cuenta regresiva inicial (el script la actualiza cada segundo).
+const falta = datos ? Math.max(0, datos.inicio.getTime() - ahora.getTime()) : 0;
+const dos = (n: number) => String(n).padStart(2, '0');
+const cuenta = [
+	{ valor: String(Math.floor(falta / 86_400_000)), etiqueta: d.dias, parte: 'dias' },
+	{ valor: dos(Math.floor((falta % 86_400_000) / 3_600_000)), etiqueta: v.horas, parte: 'horas' },
+	{ valor: dos(Math.floor((falta % 3_600_000) / 60_000)), etiqueta: d.minutos, parte: 'minutos' },
+	{ valor: dos(Math.floor((falta % 60_000) / 1000)), etiqueta: d.segundos, parte: 'segundos' },
+];
+---
+
+{
+	mostrar && a && datos && termina && (
+		<dialog
+			class="ventana-anuncio"
+			aria-labelledby="titulo-ventana-anuncio"
+			data-ventana-anuncio
+			data-clave={evento.slug}
+			data-termina={termina.toISOString()}
+			data-inicio={datos.inicio.toISOString()}
+		>
+			<button type="button" class="cerrar" data-cerrar aria-label={v.cerrar} autofocus>
+				<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+					<path d="M6 6l12 12M18 6L6 18" />
+				</svg>
+			</button>
+			<a class="tarjeta" href={`${href}#inscripcion`} data-ir>
+				<div class="foto">
+					{foto && <Image src={foto} alt="" widths={[700, 1100, 1500]} sizes="(max-width: 47.5rem) 100vw, 740px" loading="lazy" />}
+					<svg class="curva" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+						<path class="curva-fondo" d="M0 0 L62 0 C28 35 88 66 44 100 L0 100 Z" />
+						<path class="curva-linea" d="M62 0 C28 35 88 66 44 100" vector-effect="non-scaling-stroke" />
+					</svg>
+				</div>
+				<div class="sombra" aria-hidden="true" />
+
+				{
+					a.sello.length > 0 && (
+						<div class="sello" aria-hidden="true">
+							<div class="sello-giro">
+								{a.sello.map((linea) => (
+									<span>{linea}</span>
+								))}
+							</div>
+						</div>
+					)
+				}
+
+				<div class="contenido">
+					<div class="logos aparece">
+						{a.logo_aliado && <Image class="logo-aliado" src={a.logo_aliado} alt={a.nombre_aliado ?? ''} widths={[180, 360]} sizes="180px" />}
+						{a.logo_aliado && <span class="separador" aria-hidden="true" />}
+						<Image class="logo-abtcc" src={logoBlanco} alt={textos.sitio.sigla} widths={[110, 220]} sizes="110px" />
+					</div>
+					<p class="antetitulo-anuncio aparece">{a.antetitulo}</p>
+					<h2 id="titulo-ventana-anuncio" class="aparece">
+						{a.titulo.realce && <span class="realce">{a.titulo.realce}</span>} {a.titulo.texto}
+						{
+							a.titulo.cursiva && (
+								<>
+									<br />
+									<em>{a.titulo.cursiva}</em>
+								</>
+							)
+						}
+					</h2>
+					<p class="datos aparece">
+						<span class="dato fuerte">
+							<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+								<path d="M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z M3 10h18 M8 3v4 M16 3v4" />
+							</svg>
+							{fechaDelEvento(evento, idioma)}
+						</span>
+						{
+							lugar && (
+								<span class="dato">
+									<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+										<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z M12 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 1 0 0-5z" />
+									</svg>
+									{lugar}
+								</span>
+							)
+						}
+					</p>
+					{
+						falta > 0 && (
+							<p class="cuenta aparece">
+								<span class="faltan">{d.faltan}</span>
+								{cuenta.map((c) => (
+									<span class="unidad">
+										<span class="valor" data-anuncio-parte={c.parte}>
+											{c.valor}
+										</span>
+										<span class="unidad-texto">{c.etiqueta}</span>
+									</span>
+								))}
+							</p>
+						)
+					}
+					<p class="accion aparece">
+						<span class="boton-anuncio">
+							{a.boton} <span class="flecha" aria-hidden="true">→</span>
+						</span>
+						{a.nota && <span class="nota">{a.nota}</span>}
+					</p>
+				</div>
+
+				<div class="tricolor" aria-hidden="true">
+					<span />
+					<span />
+					<span />
+					<span class="brillo" />
+				</div>
+			</a>
+			{
+				credito && (
+					<a class="credito" href={credito.url} rel="noopener" target="_blank">
+						{textos.eventos.foto}: {credito.autor} ({credito.licencia})
+					</a>
+				)
+			}
+		</dialog>
+	)
+}
+
+<style>
+	.ventana-anuncio {
+		--anuncio-fondo: #0f2f24;
+		--anuncio-oro: #e9c46a;
+		--anuncio-oro-claro: #f5d98f;
+		--anuncio-crema: #f6f1e6;
+		--anuncio-suave: #b9cbbf;
+		--anuncio-sello: #b5532c;
+		position: fixed;
+		width: min(68rem, 100vw - 2rem);
+		max-width: none;
+		max-height: calc(100dvh - 2rem);
+		margin: auto;
+		padding: 0;
+		border: 0;
+		border-radius: 28px;
+		background: transparent;
+		overflow: visible;
+	}
+	.ventana-anuncio::backdrop {
+		background: rgb(8 26 19 / 0.72);
+		backdrop-filter: blur(3px);
+	}
+	:global(html:has(.ventana-anuncio[open])) {
+		overflow: hidden;
+	}
+
+	.cerrar {
+		position: absolute;
+		top: 0.9rem;
+		right: 0.9rem;
+		z-index: 10;
+		display: grid;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		padding: 0;
+		border: 1px solid rgb(246 241 230 / 0.45);
+		border-radius: 50%;
+		background: rgb(15 47 36 / 0.78);
+		color: var(--anuncio-crema);
+		cursor: pointer;
+		transition:
+			background-color 0.2s,
+			color 0.2s,
+			transform 0.2s;
+	}
+	.cerrar svg {
+		width: 1.25rem;
+		height: 1.25rem;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2.2;
+		stroke-linecap: round;
+	}
+	.cerrar:hover {
+		background: var(--anuncio-oro);
+		color: var(--anuncio-fondo);
+		transform: rotate(90deg);
+	}
+	.cerrar:focus-visible {
+		outline: 3px solid var(--anuncio-oro);
+		outline-offset: 3px;
+	}
+
+	.tarjeta {
+		position: relative;
+		display: block;
+		min-height: min(37.5rem, 100dvh - 2rem);
+		max-height: calc(100dvh - 2rem);
+		overflow: hidden auto;
+		border-radius: 28px;
+		background: var(--anuncio-fondo);
+		box-shadow: 0 20px 50px rgb(15 47 36 / 0.3);
+		color: var(--anuncio-crema);
+		text-decoration: none;
+	}
+	.tarjeta:hover {
+		color: var(--anuncio-crema);
+	}
+	.tarjeta:focus-visible {
+		outline: 3px solid var(--anuncio-oro);
+		outline-offset: 4px;
+	}
+
+	.foto {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 66%;
+		height: 100%;
+		overflow: hidden;
+	}
+	.foto img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 30%;
+	}
+	.curva {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 24%;
+		height: 100%;
+	}
+	.curva-fondo {
+		fill: var(--anuncio-fondo);
+	}
+	.curva-linea {
+		fill: none;
+		stroke: var(--anuncio-oro);
+		stroke-width: 2.5;
+	}
+	.sombra {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(90deg, #0f2f24 0%, #0f2f24 33%, rgb(15 47 36 / 0.7) 48%, rgb(15 47 36 / 0.1) 70%, rgb(15 47 36 / 0) 85%);
+	}
+
+	.sello {
+		position: absolute;
+		top: 4.25rem;
+		right: 2.25rem;
+		z-index: 3;
+	}
+	.sello-giro {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 150px;
+		height: 150px;
+		border-radius: 50%;
+		background: var(--anuncio-sello);
+		box-shadow:
+			inset 0 0 0 7px var(--anuncio-sello),
+			inset 0 0 0 9px rgb(255 248 236 / 0.7),
+			0 14px 30px rgb(0 0 0 / 0.35);
+		color: #fff8ec;
+		font-family: var(--fuente-interfaz);
+		text-align: center;
+		transform: rotate(-11deg);
+	}
+	.sello span:nth-child(1) {
+		font-size: 11px;
+		font-weight: 800;
+		letter-spacing: 0.2em;
+	}
+	.sello span:nth-child(2) {
+		font-size: 22px;
+		font-weight: 900;
+		line-height: 1.1;
+		letter-spacing: 0.05em;
+	}
+	.sello span:nth-child(3) {
+		font-family: var(--fuente-titulos);
+		font-size: 25px;
+		font-style: italic;
+		font-weight: 600;
+		line-height: 1.05;
+	}
+
+	.contenido {
+		position: relative;
+		z-index: 4;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.1rem;
+		max-width: 40rem;
+		padding: clamp(1.75rem, 5vw, 3.5rem) clamp(1.5rem, 5vw, 3.5rem) clamp(2.25rem, 5vw, 3.75rem);
+		font-family: var(--fuente-interfaz);
+	}
+	.logos {
+		display: flex;
+		align-items: center;
+		gap: 1.1rem;
+	}
+	.logo-aliado {
+		width: auto;
+		height: 32px;
+	}
+	.logo-abtcc {
+		width: auto;
+		height: 66px;
+	}
+	.separador {
+		width: 1px;
+		height: 54px;
+		background: rgb(246 241 230 / 0.45);
+	}
+	.antetitulo-anuncio {
+		margin: 0.75rem 0 0;
+		font-size: 0.8125rem;
+		font-weight: 800;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--anuncio-oro);
+	}
+	h2 {
+		margin: 0;
+		font-family: var(--fuente-titulos);
+		font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+		font-weight: 600;
+		line-height: 0.95;
+		letter-spacing: -0.015em;
+		color: #fff;
+	}
+	h2 .realce,
+	h2 em {
+		color: var(--anuncio-oro);
+	}
+	h2 em {
+		font-size: 1.4em;
+		font-style: italic;
+		font-weight: 500;
+	}
+	.datos {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem 1.6rem;
+		margin: 0;
+		font-size: clamp(1rem, 1.6vw, 1.15rem);
+	}
+	.dato {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		font-weight: 600;
+		color: var(--anuncio-crema);
+	}
+	.dato.fuerte {
+		font-weight: 800;
+		color: #fff;
+	}
+	.dato svg {
+		flex-shrink: 0;
+		width: 1.4rem;
+		height: 1.4rem;
+		fill: none;
+		stroke: var(--anuncio-oro);
+		stroke-width: 1.8;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.cuenta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.4rem 0.85rem;
+		margin: 0;
+	}
+	.faltan {
+		font-family: var(--fuente-titulos);
+		font-size: 1.1rem;
+		font-style: italic;
+		color: var(--anuncio-oro);
+	}
+	.unidad {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.25rem;
+	}
+	.valor {
+		font-family: var(--fuente-titulos);
+		font-size: 1.9rem;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		color: #fff;
+	}
+	.unidad-texto {
+		font-size: 0.8125rem;
+		font-weight: 700;
+		color: var(--anuncio-suave);
+	}
+	.accion {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.85rem 1.3rem;
+		margin: 0.5rem 0 0;
+	}
+	.boton-anuncio {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-height: 3.5rem;
+		padding: 0 1.8rem;
+		border-radius: 999px;
+		background: var(--anuncio-oro);
+		box-shadow: 0 12px 26px rgb(0 0 0 / 0.3);
+		color: #123a2c;
+		font-size: 1.05rem;
+		font-weight: 900;
+		transition:
+			background-color 0.2s,
+			transform 0.2s;
+	}
+	.flecha {
+		transition: transform 0.2s;
+	}
+	.tarjeta:hover .boton-anuncio {
+		background: var(--anuncio-oro-claro);
+		transform: scale(1.03);
+	}
+	.tarjeta:hover .flecha {
+		transform: translateX(6px);
+	}
+	.nota {
+		font-family: var(--fuente-titulos);
+		font-size: 1.05rem;
+		font-style: italic;
+		color: var(--anuncio-crema);
+	}
+
+	/* Franja con los colores de Bolivia y un brillo que la recorre. */
+	.tricolor {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 5;
+		display: flex;
+		height: 8px;
+		overflow: hidden;
+	}
+	.tricolor span {
+		flex: 1;
+	}
+	.tricolor span:nth-child(1) {
+		background: #d52b1e;
+	}
+	.tricolor span:nth-child(2) {
+		background: #f4c300;
+	}
+	.tricolor span:nth-child(3) {
+		background: #009739;
+	}
+	.tricolor .brillo {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		width: 25%;
+		background: linear-gradient(90deg, rgb(255 255 255 / 0), rgb(255 255 255 / 0.6), rgb(255 255 255 / 0));
+		transform: translateX(-120%);
+	}
+
+	.credito {
+		position: absolute;
+		right: 1.25rem;
+		bottom: 1rem;
+		z-index: 6;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.6875rem;
+		color: rgb(246 241 230 / 0.85);
+		text-decoration: none;
+		text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
+	}
+	.credito:hover {
+		color: #fff;
+		text-decoration: underline;
+	}
+
+	/* Celular: la foto arriba, el texto debajo; sin sello ni curva. */
+	@media (max-width: 47.5rem) {
+		.ventana-anuncio {
+			width: calc(100vw - 1.5rem);
+			max-height: calc(100dvh - 1.5rem);
+			border-radius: 22px;
+		}
+		.tarjeta {
+			min-height: 0;
+			max-height: calc(100dvh - 1.5rem);
+			border-radius: 22px;
+		}
+		.foto {
+			width: 100%;
+			height: 13rem;
+		}
+		.sombra {
+			background: linear-gradient(180deg, rgb(15 47 36 / 0.45) 0, rgb(15 47 36 / 0.05) 5rem, rgb(15 47 36 / 0.85) 10rem, #0f2f24 13rem);
+		}
+		.sello,
+		.curva {
+			display: none;
+		}
+		.contenido {
+			gap: 0.8rem;
+			padding: 9rem 1.25rem 2rem;
+		}
+		h2 {
+			font-size: clamp(1.9rem, 9vw, 2.6rem);
+		}
+		.datos {
+			font-size: 0.9375rem;
+		}
+		.cuenta {
+			gap: 0.3rem 0.55rem;
+		}
+		.faltan {
+			font-size: 1rem;
+		}
+		.boton-anuncio {
+			min-height: 3.1rem;
+			padding: 0 1.4rem;
+			font-size: 1rem;
+		}
+		.logo-aliado {
+			height: 24px;
+		}
+		.logo-abtcc {
+			height: 50px;
+		}
+		.separador {
+			height: 40px;
+		}
+		.antetitulo-anuncio {
+			margin-top: 0.25rem;
+			font-size: 0.75rem;
+		}
+		.valor {
+			font-size: 1.35rem;
+		}
+		.credito {
+			top: 0.75rem;
+			right: auto;
+			bottom: auto;
+			left: 1rem;
+		}
+	}
+
+	/* Movimiento: la ventana entra suave, el texto sube por partes, la foto se acerca despacio, el sello se mece y un
+	   brillo recorre la franja. */
+	@media (prefers-reduced-motion: no-preference) {
+		.ventana-anuncio[open] {
+			animation: entrar 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+		}
+		.ventana-anuncio[open]::backdrop {
+			animation: oscurecer 0.4s ease both;
+		}
+		.aparece {
+			animation: subir 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+		}
+		.aparece:nth-child(1) {
+			animation-delay: 0.25s;
+		}
+		.aparece:nth-child(2),
+		.aparece:nth-child(3) {
+			animation-delay: 0.4s;
+		}
+		.aparece:nth-child(4) {
+			animation-delay: 0.55s;
+		}
+		.aparece:nth-child(5) {
+			animation-delay: 0.7s;
+		}
+		.aparece:nth-child(6) {
+			animation-delay: 0.85s;
+		}
+		.foto img {
+			animation: acercar 18s ease-in-out infinite alternate;
+		}
+		.sello-giro {
+			animation: mecer 4s ease-in-out infinite;
+		}
+		.tricolor .brillo {
+			animation: barrer 3.8s ease-in-out infinite;
+		}
+	}
+	@keyframes entrar {
+		from {
+			opacity: 0;
+			transform: translateY(24px) scale(0.97);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	@keyframes oscurecer {
+		from {
+			opacity: 0;
+		}
+	}
+	@keyframes subir {
+		from {
+			opacity: 0;
+			transform: translateY(22px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	@keyframes acercar {
+		from {
+			transform: scale(1);
+		}
+		to {
+			transform: scale(1.08);
+		}
+	}
+	@keyframes mecer {
+		0%,
+		100% {
+			transform: rotate(-11deg);
+		}
+		50% {
+			transform: rotate(-4deg) scale(1.05);
+		}
+	}
+	@keyframes barrer {
+		from {
+			transform: translateX(-120%);
+		}
+		to {
+			transform: translateX(420%);
+		}
+	}
+</style>
+
+<script>
+	// Abre la ventana poco después de entrar, salvo que la persona la haya cerrado hace poco (se recuerda en este
+	// navegador) o que el evento ya haya pasado. La cuenta regresiva avanza cada segundo mientras está abierta.
+	const ventana = document.querySelector<HTMLDialogElement>('[data-ventana-anuncio]');
+	if (ventana && typeof ventana.showModal === 'function') {
+		const clave = `anuncio-${ventana.dataset.clave}`;
+		const DIA = 86_400_000;
+		const silenciadoHasta = () => {
+			try {
+				return Number(localStorage.getItem(clave)) || 0;
+			} catch {
+				return 0;
+			}
+		};
+		const silenciar = (dias: number) => {
+			try {
+				localStorage.setItem(clave, String(Date.now() + dias * DIA));
+			} catch {
+				// Sin almacenamiento (ventana privada): volverá a salir en la próxima visita.
+			}
+		};
+
+		const inicio = Date.parse(ventana.dataset.inicio!);
+		const dos = (n: number) => String(n).padStart(2, '0');
+		const partes = {
+			dias: (ms: number) => String(Math.floor(ms / DIA)),
+			horas: (ms: number) => dos(Math.floor((ms % DIA) / 3_600_000)),
+			minutos: (ms: number) => dos(Math.floor((ms % 3_600_000) / 60_000)),
+			segundos: (ms: number) => dos(Math.floor((ms % 60_000) / 1000)),
+		};
+		const valores = ventana.querySelectorAll<HTMLElement>('[data-anuncio-parte]');
+		const actualizar = () => {
+			const ms = Math.max(0, inicio - Date.now());
+			for (const v of valores) v.textContent = partes[v.dataset.anuncioParte as keyof typeof partes](ms);
+		};
+		let reloj: ReturnType<typeof setInterval> | undefined;
+
+		// Se recuerda en el mismo momento del clic (el evento `close` llega un instante después y podría perderse si
+		// la persona cambia de página enseguida).
+		const cerrar = () => {
+			silenciar(1);
+			ventana.close();
+		};
+		ventana.querySelector('[data-ir]')?.addEventListener('click', () => silenciar(14));
+		ventana.querySelector('[data-cerrar]')?.addEventListener('click', cerrar);
+		// Un clic fuera de la tarjeta (en el fondo oscuro) o la tecla Esc también la cierran.
+		ventana.addEventListener('click', (e) => {
+			if (e.target === ventana) cerrar();
+		});
+		ventana.addEventListener('cancel', () => silenciar(1));
+		ventana.addEventListener('close', () => clearInterval(reloj));
+
+		const vigente = Date.parse(ventana.dataset.termina!) > Date.now();
+		if (vigente && silenciadoHasta() < Date.now()) {
+			// La foto se empieza a bajar ya, para que esté lista al abrirse (si no va a salir, no se baja).
+			for (const img of ventana.querySelectorAll('img')) img.loading = 'eager';
+			setTimeout(() => {
+				if (document.querySelector('dialog[open]')) return;
+				actualizar();
+				reloj = setInterval(actualizar, 1000);
+				ventana.showModal();
+			}, 1200);
+		}
+	}
+</script>

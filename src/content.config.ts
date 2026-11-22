@@ -28,7 +28,7 @@ const eventos = defineCollection({
 	schema: ({ image }) =>
 		z
 			.object({
-				tipo: z.enum(['taller', 'curso', 'diplomado', 'jornada', 'congreso', 'simposio', 'seminario', 'webinar', 'supervision', 'asamblea']),
+				tipo: z.enum(['taller', 'curso', 'diplomado', 'jornada', 'congreso', 'seminario', 'simposio', 'webinar', 'supervision', 'asamblea']),
 				inicio: fechaHora,
 				fin: fechaHora.optional(),
 				/** Para cursos en varias sesiones. */
@@ -68,6 +68,17 @@ const eventos = defineCollection({
 				cupos: z.number().int().positive().optional(),
 				certificacion: z.object({ horas: z.number().positive().optional(), aval: z.string().optional() }).optional(),
 				imagen: image().optional(),
+				/**
+				 * Foto de fondo de la cabecera de la página del evento (p. ej. un paisaje de la ciudad sede), detrás del
+				 * título y del afiche, sin velo de color (solo una sombra suave para que el texto se lea). WebP de unos 2000 px de
+				 * ancho, apaisada, sin personas reconocibles y con permiso de uso.
+				 */
+				foto_cabecera: image().optional(),
+				/**
+				 * Crédito de `foto_cabecera` cuando es de otra persona (p. ej. de Wikimedia Commons con licencia CC BY):
+				 * sale pequeño en la esquina de la cabecera, con enlace a la página de la foto, donde está la licencia.
+				 */
+				credito_foto: z.object({ autor: z.string(), licencia: z.string(), url: z.url() }).optional(),
 				solo_socios: z.boolean().default(false),
 				/**
 				 * Anuncio previo: solo se conoce el mes. Se muestra "marzo de 2027 (fecha exacta por confirmar)", sin horario,
@@ -87,10 +98,11 @@ const eventos = defineCollection({
 				/** WhatsApp para consultas, con código de país y sin espacios ni "+": "59170623387". */
 				whatsapp: z.string().regex(/^\d{8,15}$/, 'WhatsApp con código de país, solo números: "59170623387".').optional(),
 				/**
-				 * true = la inscripción se hace por WhatsApp con una persona del equipo (sin formulario): la cabecera muestra
-				 * el botón "Inscribirme por WhatsApp". Necesita `whatsapp`.
+				 * Pago directo, sin plataforma de inscripción: la persona paga con el QR del banco (desde Bolivia) o por
+				 * PayPal (desde otros países) y manda el comprobante al `whatsapp` del evento, que pasa a ser el botón
+				 * "Inscribirme por WhatsApp". `qr`: imagen del QR en la carpeta del evento (PNG, para que no pierda nitidez).
 				 */
-				inscripcion_whatsapp: z.boolean().default(false),
+				pago: z.object({ qr: image().optional(), paypal: z.url().optional() }).optional(),
 				/** true mientras la inscripción está abierta pero aún no se publican los costos (se muestra "Por confirmar"). */
 				costos_por_confirmar: z.boolean().default(false),
 				/**
@@ -101,7 +113,6 @@ const eventos = defineCollection({
 			})
 			.refine((e) => e.modalidad || e.por_confirmar, { error: 'Indica la "modalidad" (presencial, online o hibrido).', path: ['modalidad'] })
 			.refine((e) => !e.modalidad || e.modalidad === 'online' || e.lugar, { error: 'Un evento presencial o híbrido necesita "lugar".', path: ['lugar'] })
-			.refine((e) => !e.inscripcion_whatsapp || e.whatsapp, { error: '"inscripcion_whatsapp" necesita el número en "whatsapp".', path: ['whatsapp'] })
 			.refine((e) => !e.fin || e.fin > e.inicio, { error: '"fin" debe ser posterior a "inicio".', path: ['fin'] })
 			.refine((e) => e.gratuito || e.costos.length > 0 || e.costos_por_confirmar || e.solo_socios || e.por_confirmar || (e.fin ?? e.inicio) < new Date(), {
 				error: 'Indica los "costos" o marca "gratuito: true" (no hace falta en eventos ya realizados).',
@@ -143,7 +154,7 @@ const programa = z
 
 const eventosTextos = defineCollection({
 	loader: glob({ pattern: '*/{es,en,pt}.md', base: './src/content/eventos', generateId: sinExtension }),
-	schema: z.object({
+	schema: ({ image }) => z.object({
 		titulo: z.string().max(100),
 		resumen: z.string().max(200, 'El resumen debe tener como máximo 200 caracteres.'),
 		/** Tema central o lema del evento (una frase). */
@@ -161,22 +172,54 @@ const eventosTextos = defineCollection({
 		/** Título de la banda final (con su parte en cursiva). */
 		cierre: z.object({ titulo: z.string(), cursiva: z.string() }).optional(),
 		/**
+		 * Anuncio emergente: ventana grande que aparece sobre cualquier página del sitio (menos la del propio evento)
+		 * con una X para cerrarla, y lleva a la inscripción. La dibuja AnuncioEmergente.astro (en Base.astro); solo
+		 * sale el del próximo evento que lo tenga. Título en tres partes: `realce` (dorado), `texto` y `cursiva`
+		 * ("XI" + "SIALAPCCO" + "Bolivia"). `sello`: hasta 3 líneas del sello girado ("YA ESTÁ" / "PREVENTA" /
+		 * "abierta", la última en cursiva). `foto`: si falta, usa `foto_cabecera`. `logo_aliado`: logo BLANCO de
+		 * quien organiza junto con la ABTCC. `hasta`: desde esa fecha deja de salir.
+		 */
+		anuncio: z
+			.object({
+				antetitulo: z.string(),
+				titulo: z.object({ realce: z.string().optional(), texto: z.string(), cursiva: z.string().optional() }),
+				sello: z.array(z.string()).max(3).default([]),
+				boton: z.string(),
+				nota: z.string().optional(),
+				foto: image().optional(),
+				logo_aliado: image().optional(),
+				nombre_aliado: z.string().optional(),
+				hasta: fechaHora.optional(),
+			})
+			.optional(),
+		/**
 		 * Página de un seminario o congreso que todavía no tiene programa hora a hora (XI SIALAPCCO): qué es y sus
 		 * formatos, historia de las ediciones, sede y viaje, tarifas y banda final. La dibuja EventoSeminario.astro.
 		 */
 		seminario: z
 			.object({
+				/** Franja de datos clave debajo de la cabecera (fecha, sede, certificado...), cada uno con su ícono. */
+				datos_clave: z.array(z.object({ icono: z.enum(NOMBRES_ICONOS), titulo: z.string(), texto: z.string() })).default([]),
+				/** Rótulo de la cuenta regresiva que encabeza la franja de datos clave ("Faltan"); sin él, no hay cuenta. */
+				cuenta_regresiva: z.string().optional(),
+				/** Título de la franja de fotos de encuentros anteriores de la ABTCC; sin él, no se muestra. */
+				fotos_encuentros: z.string().optional(),
 				presentacion: z.object({ antetitulo: z.string(), titulo: z.string() }),
 				formatos: z.object({
 					nota: z.string().optional(),
-					lista: z.array(z.object({ cifra: z.string().optional(), titulo: z.string(), texto: z.string() })),
+					/** `cifra` sube desde 0 al aparecer en pantalla; `icono` (opcional) va arriba de la tarjeta. */
+					lista: z.array(z.object({ cifra: z.string().optional(), icono: z.enum(NOMBRES_ICONOS).optional(), titulo: z.string(), texto: z.string() })),
 				}),
 				historia: z
 					.object({
 						antetitulo: z.string(),
 						titulo: z.string(),
 						texto: z.string(),
-						ediciones: z.array(z.object({ edicion: z.string(), anio: z.number(), lugar: z.string() })),
+						/**
+						 * `lon` / `lat`: coordenadas de la ciudad (con signo) para el mapa del recorrido. Sin ellas (ediciones en
+						 * línea), la edición sale en la lista pero no en el mapa.
+						 */
+						ediciones: z.array(z.object({ edicion: z.string(), anio: z.number(), lugar: z.string(), lon: z.number().optional(), lat: z.number().optional() })),
 					})
 					.optional(),
 				viaje: z
@@ -184,7 +227,19 @@ const eventosTextos = defineCollection({
 						antetitulo: z.string(),
 						titulo: z.string(),
 						texto: z.string(),
-						puntos: z.array(z.object({ titulo: z.string(), texto: z.string() })),
+						/** `enlace`: opcional, p. ej. "Ver en el mapa" en el punto de la sede. */
+						puntos: z.array(
+							z.object({ icono: z.enum(NOMBRES_ICONOS).optional(), titulo: z.string(), texto: z.string(), enlace: z.object({ texto: z.string(), url: z.url() }).optional() }),
+						),
+						/**
+						 * Fotos pequeñas y redondas de la ciudad junto al texto de la sección (WebP cuadrado de ~600 px, sin
+						 * personas reconocibles). `credito` si la foto es de otra persona: sale al pie de la sección.
+						 */
+						fotos: z
+							.array(z.object({ imagen: image(), alt: z.string(), credito: z.object({ autor: z.string(), licencia: z.string(), url: z.url() }).optional() }))
+							.default([]),
+						/** Rótulo de los créditos de las fotos ("Fotos"). */
+						creditos: z.string().optional(),
 					})
 					.optional(),
 				inscripcion: z
@@ -192,10 +247,46 @@ const eventosTextos = defineCollection({
 						antetitulo: z.string(),
 						titulo: z.string(),
 						texto: z.string(),
-						tarifas: z.array(z.object({ nombre: z.string(), monto: z.string(), nota: z.string().optional(), destacada: z.boolean().default(false) })),
+						tarifas: z.array(z.object({ nombre: z.string(), monto: z.string(), nota: z.string().optional(), destacada: z.boolean().default(false) })).default([]),
+						/**
+						 * Tabla de precios en lugar de `tarifas`: un recuadro por grupo (p. ej. "Desde Bolivia" en Bs y "Desde
+						 * otros países" en USD, con cómo se paga en `medio`) y en cada fila el precio de preventa (`anticipada`,
+						 * grande) y el `regular`. `anticipada` / `regular`: rótulos de las dos columnas; `vigencia`: hasta
+						 * cuándo vale la preventa.
+						 */
+						precios: z
+							.object({
+								anticipada: z.string(),
+								regular: z.string(),
+								vigencia: z.string().optional(),
+								grupos: z.array(
+									z.object({
+										titulo: z.string(),
+										medio: z.string(),
+										filas: z.array(z.object({ nombre: z.string(), nota: z.string().optional(), anticipada: z.string(), regular: z.string() })),
+									}),
+								),
+							})
+							.optional(),
 						incluye_titulo: z.string(),
 						incluye: z.array(z.string()),
-						aviso: z.object({ titulo: z.string(), texto: z.string(), boton: z.string() }),
+						/** Sin pago directo: recuadro para pedir novedades (su botón lleva al WhatsApp o a Contacto). */
+						aviso: z.object({ titulo: z.string(), texto: z.string(), boton: z.string() }).optional(),
+						/**
+						 * Con `pago` en evento.yaml: "Cómo inscribirte" en tres pasos numerados: 1) `tarifa` (con las tarjetas
+						 * de tarifas), 2) `pago` (con los recuadros del `qr` y de `paypal`) y 3) `comprobante` (con el botón
+						 * "Inscribirme por WhatsApp"). `nota`: aclaración al pie (p. ej. a nombre de quién están las cuentas).
+						 */
+						pasos: z
+							.object({
+								tarifa: z.object({ titulo: z.string(), texto: z.string() }),
+								pago: z.object({ titulo: z.string(), texto: z.string() }),
+								comprobante: z.object({ titulo: z.string(), texto: z.string() }),
+								qr: z.object({ titulo: z.string(), texto: z.string(), alt: z.string(), descargar: z.string() }),
+								paypal: z.object({ titulo: z.string(), texto: z.string(), boton: z.string() }),
+								nota: z.string().optional(),
+							})
+							.optional(),
 					})
 					.optional(),
 				organizan: z.object({ antetitulo: z.string(), texto: z.string() }).optional(),
@@ -301,6 +392,10 @@ const nosotros = z.object({
 	/** Párrafos de presentación (arriba de todo). */
 	presentacion: z.array(z.string()),
 	objetivo: z.string(),
+	/** Misión, visión y valores aprobados por la asociación (se muestran juntos, debajo del objetivo). */
+	mision: z.string().optional(),
+	vision: z.string().optional(),
+	valores: z.array(z.string()).default([]),
 	lineas: z.array(textoConIcono),
 	congreso: z.object({ antetitulo: z.string(), titulo: z.string() }),
 	evidencia: z.object({ titulo: z.string(), texto: z.string(), pilares: z.array(z.string()) }),
@@ -336,10 +431,15 @@ const camino = z.object({
 /** Textos de la portada (vista Inicio.astro), en src/content/paginas/{idioma}/inicio.md. */
 const portada = z.object({
 	antetitulo: z.string(),
-	/** Título en tres partes: "Asociación Boliviana de" (cursiva dorada) + "Terapias Cognitivas Conductuales y" + "Contextuales" (cursiva). */
+	/**
+	 * Título. Con `tresC` (lo actual): "Asociación Boliviana de" + "Terapias" en una línea dorada en cursiva y debajo,
+	 * grandes, las tres C, cada una con una esfera del logo (roja, amarilla, verde; la última en cursiva).
+	 * Sin `tresC`: "Asociación Boliviana de" (cursiva dorada) + `titulo` + `tituloCursiva` (cursiva).
+	 */
 	tituloPrevio: z.string(),
 	titulo: z.string(),
-	tituloCursiva: z.string(),
+	tituloCursiva: z.string().optional(),
+	tresC: z.array(z.string()).length(3).optional(),
 	bajada: z.string(),
 	datos: z.array(z.string()).default([]),
 	/** Franja de datos debajo de la presentación: un título corto y una línea que lo explica. */

@@ -4,8 +4,7 @@
 // evento destacado, quiénes somos, membresía, agenda, "¿por dónde empiezo?", fotos, comisión directiva, cómo se
 // organiza la asociación, red de terapeutas y contacto.
 import type { CollectionEntry } from 'astro:content';
-import AlbumPortada from '../components/AlbumPortada.astro';
-import BandaEvento from '../components/BandaEvento.astro';
+import AlbumPortada from '../components/AlbumPortada.astro';import BandaEvento from '../components/BandaEvento.astro';
 import CarruselEventos from '../components/CarruselEventos.astro';
 import CintaConceptos from '../components/CintaConceptos.astro';
 import FranjaAliados from '../components/FranjaAliados.astro';
@@ -50,11 +49,23 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 	<RegistroAcumulativo />
 	<div class="presentacion">
 		{p && <p class="antetitulo">{p.antetitulo}</p>}
-		<h1 id="titulo-portada">
+		<h1 id="titulo-portada" class:list={{ 'tres-c': p?.tresC }}>
 			{
-				p ? (
+				p?.tresC ? (
 					<>
-						<span class="previo">{p.tituloPrevio}</span> {p.titulo} <span class="cursiva">{p.tituloCursiva}</span>
+						<span class="previo">
+							{p.tituloPrevio} {p.titulo}
+						</span>{' '}
+						{p.tresC.map((c, i) => (
+							<span class:list={['c', `c-${i + 1}`, { cursiva: i === 2 }]}>
+								<span class="esfera" aria-hidden="true" />
+								{c}{' '}
+							</span>
+						))}
+					</>
+				) : p ? (
+					<>
+						<span class="previo">{p.tituloPrevio}</span> {p.titulo} {p.tituloCursiva && <span class="cursiva">{p.tituloCursiva}</span>}
 					</>
 				) : (
 					textos.sitio.nombre
@@ -434,6 +445,78 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 		font-size: 0.5em;
 		font-style: italic;
 		color: var(--color-realce);
+	}
+	/* Las tres C: cada palabra con su esfera del logo (con brillo, como en el logo). La letra se achica más en
+	   celulares para que "Conductuales" quepa entera aun en pantallas de 320 px. */
+	.portada h1.tres-c {
+		font-size: clamp(2.1rem, 0.9rem + 6.6vw, 4.6rem);
+	}
+	.c {
+		display: flex;
+		align-items: center;
+		gap: 0.32em;
+	}
+	.c + .c {
+		margin-top: 0.04em;
+	}
+	.esfera {
+		flex-shrink: 0;
+		width: 0.42em;
+		height: 0.42em;
+		border-radius: 50%;
+		box-shadow: 0 0.06em 0.14em rgb(0 0 0 / 0.35);
+	}
+	.c-1 .esfera {
+		background: radial-gradient(circle at 34% 30%, #ffb3a8 0, #e3151b 42%, #7d0a0e 100%);
+	}
+	.c-2 .esfera {
+		background: radial-gradient(circle at 34% 30%, #fff0b8 0, #f2b416 42%, #9a6400 100%);
+	}
+	.c-3 .esfera {
+		background: radial-gradient(circle at 34% 30%, #a6ecbc 0, #0c9439 42%, #034a18 100%);
+	}
+	.c.cursiva {
+		font-style: italic;
+		font-weight: 500;
+	}
+	/* Al cargar, cada C entra desde la izquierda y su esfera aparece con un pequeño rebote, una tras otra. */
+	@media (prefers-reduced-motion: no-preference) {
+		.c {
+			animation: entrar-c 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+		}
+		.esfera {
+			animation: rebotar 0.7s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+		}
+		.c-1,
+		.c-1 .esfera {
+			animation-delay: 0.15s;
+		}
+		.c-2,
+		.c-2 .esfera {
+			animation-delay: 0.35s;
+		}
+		.c-3,
+		.c-3 .esfera {
+			animation-delay: 0.55s;
+		}
+	}
+	@keyframes entrar-c {
+		from {
+			opacity: 0;
+			transform: translateX(-0.4em);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	@keyframes rebotar {
+		from {
+			transform: scale(0);
+		}
+		to {
+			transform: scale(1);
+		}
 	}
 	.bajada {
 		max-width: 34rem;

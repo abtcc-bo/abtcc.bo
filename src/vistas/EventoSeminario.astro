@@ -8,10 +8,14 @@ import { render } from 'astro:content';
 import logoCompleto from '../assets/logo-completo.png';
 import logoAlapcco from '../content/aliados/logos/alapcco.webp';
 import Icono from '../components/Icono.astro';
+import TablaPrecios from '../components/TablaPrecios.astro';
+import MapaEdiciones from '../components/MapaEdiciones.astro';
+import FranjaFotos from '../components/FranjaFotos.astro';
+import PetalosTajibo from '../components/PetalosTajibo.astro';
 import { ORGANIZACION } from '../datos/organizacion';
 import { formato, ruta, t, type Idioma } from '../i18n';
-import { contactoWhatsapp, inscripcionAbierta } from '../lib/eventos';
-import type { Evento } from '../lib/contenido';
+import { contactoWhatsapp, inscripcionAbierta, inscripcionPorWhatsapp } from '../lib/eventos';
+import { obtenerEventos, yaPaso, type Evento } from '../lib/contenido';
 
 interface Props {
 	evento: Evento;
@@ -25,14 +29,52 @@ const { titulo } = evento.texto.data;
 const s = evento.texto.data.seminario!;
 const { Content } = await render(evento.texto);
 const abierta = inscripcionAbierta(evento) && datos.inscripcion;
-const mensaje = datos.inscripcion_whatsapp ? textos.eventos.mensajeInscripcion : textos.eventos.mensajeWhatsapp;
-const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(mensaje, { evento: titulo }));
-// Para avisar o consultar: la inscripción si ya abrió; si no, el WhatsApp del evento o la página de contacto.
-const enlaceAviso = abierta ? datos.inscripcion!.url : whatsapp ? whatsapp.url : ruta('contacto', idioma);
+const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(textos.eventos.mensajeWhatsapp, { evento: titulo }));
+// Pago directo (QR / PayPal): la inscripción se cierra por WhatsApp, con el mensaje de inscripción ya escrito.
+const porWhatsapp = inscripcionPorWhatsapp(evento, formato(textos.eventos.mensajeInscripcion, { evento: titulo }));
+const pasos = porWhatsapp && s.inscripcion?.pasos;
+// Botón principal: la inscripción si ya abrió (en otra página o por WhatsApp); si no, el WhatsApp del evento o Contacto.
+const enlaceAviso = abierta ? datos.inscripcion!.url : porWhatsapp ? porWhatsapp.url : whatsapp ? whatsapp.url : ruta('contacto', idioma);
+const textoBoton = (otro: string) => (abierta ? textos.comun.inscribirme : porWhatsapp ? textos.eventos.inscribirmeWhatsapp : otro);
 const ultima = s.historia?.ediciones.at(-1);
+// Cuenta regresiva (se actualiza en el navegador): días grandes y el reloj de horas, minutos y segundos.
+const d = textos.destacado;
+const falta = Math.max(0, datos.inicio.getTime() - Date.now());
+const dosCifras = (n: number) => String(n).padStart(2, '0');
+const reloj = [Math.floor((falta % 86_400_000) / 3_600_000), Math.floor((falta % 3_600_000) / 60_000), Math.floor((falta % 60_000) / 1000)].map(dosCifras).join(':');
+const conCuenta = Boolean(s.cuenta_regresiva) && falta > 0;
+// Fotos de los encuentros que la ABTCC ya realizó (franja en movimiento).
+const realizados = s.fotos_encuentros ? (await obtenerEventos(idioma)).filter((e) => yaPaso(e) && !e.datos.solo_socios).reverse() : [];
+const creditosViaje = (s.viaje?.fotos ?? []).filter((f) => f.credito);
 ---
 
 <div class:list={datos.tema && ['banda cuerpo-tema', `papel-${datos.tema}`]}>
+	{
+		s.datos_clave.length > 0 && (
+			<ul class:list={['datos-clave', { 'con-cuenta': conCuenta }]} data-animar>
+				{conCuenta && (
+					<li class="cuenta" data-cuenta-evento data-inicio={datos.inicio.toISOString()}>
+						<span class="rotulo-cuenta">{s.cuenta_regresiva}</span>
+						<strong>
+							<span data-dias>{Math.floor(falta / 86_400_000)}</span> {d.dias}
+						</strong>
+						<span class="reloj" data-reloj aria-hidden="true">
+							{reloj}
+						</span>
+					</li>
+				)}
+				{s.datos_clave.map((dato) => (
+					<li>
+						<Icono nombre={dato.icono} />
+						<span>
+							<strong>{dato.titulo}</strong>
+							{dato.texto}
+						</span>
+					</li>
+				))}
+			</ul>
+		)
+	}
 	<section class="banda sobre" aria-labelledby="titulo-sobre">
 		<div>
 			<p class="antetitulo">{s.presentacion.antetitulo}</p>
@@ -41,10 +83,15 @@ const ultima = s.historia?.ediciones.at(-1);
 		</div>
 		<div>
 			{s.formatos.nota && <p class="etiqueta nota-formatos">{s.formatos.nota}</p>}
-			<ul class="formatos">
+			<ul class="formatos" data-animar>
 				{s.formatos.lista.map((f) => (
 					<li class="tarjeta">
-						{f.cifra && <span class="cifra">{f.cifra}</span>}
+						{f.icono && <Icono nombre={f.icono} circulo />}
+						{f.cifra && (
+							<span class="cifra" data-contar={f.cifra}>
+								{f.cifra}
+							</span>
+						)}
 						<h3>{f.titulo}</h3>
 						<p>{f.texto}</p>
 					</li>
@@ -59,38 +106,82 @@ const ultima = s.historia?.ediciones.at(-1);
 				<p class="antetitulo">{s.historia.antetitulo}</p>
 				<h2 id="titulo-historia">{s.historia.titulo}</h2>
 				<p class="texto">{s.historia.texto}</p>
-				<ol>
-					{s.historia.ediciones.map((e) => (
-						<li class:list={['tarjeta', { actual: e === ultima }]}>
-							<strong>
-								{e.edicion} · {e.anio}
-							</strong>
-							<span>{e.lugar}</span>
-						</li>
-					))}
-				</ol>
+				<div class="recorrido-ediciones">
+					<div class="marco-mapa" data-animar-mapa>
+						<MapaEdiciones ediciones={s.historia.ediciones} titulo={s.historia.titulo} />
+					</div>
+					<ol>
+						{s.historia.ediciones.map((e, i) => (
+							<li class:list={['tarjeta', { actual: e === ultima }]} data-edicion={i}>
+								<strong>
+									{e.edicion} · {e.anio}
+								</strong>
+								<span>{e.lugar}</span>
+							</li>
+						))}
+					</ol>
+				</div>
 			</section>
 		)
 	}
 
+	{s.fotos_encuentros && <FranjaFotos eventos={realizados} idioma={idioma} titulo={s.fotos_encuentros} />}
+
 	{
 		s.viaje && (
 			<section class="banda banda-color banda-hoja viaje" aria-labelledby="titulo-viaje">
+				<div class="vuelo" aria-hidden="true">
+					<svg class="estela" viewBox="0 0 1000 120" preserveAspectRatio="none" focusable="false">
+						<path d="M-20 100C250 10 650 0 1020 70" />
+					</svg>
+					<span class="avion">
+						<Icono nombre="avion" />
+					</span>
+				</div>
 				<div class="cabecera-seccion">
 					<div>
 						<p class="antetitulo">{s.viaje.antetitulo}</p>
 						<h2 id="titulo-viaje">{s.viaje.titulo}</h2>
+						<p class="entrada">{s.viaje.texto}</p>
 					</div>
-					<p class="entrada">{s.viaje.texto}</p>
+					{s.viaje.fotos.length > 0 && (
+						<ul class="fotos-ciudad" data-animar>
+							{s.viaje.fotos.map((foto) => (
+								<li>
+									<Image src={foto.imagen} alt={foto.alt} widths={[240, 480]} sizes="11rem" />
+								</li>
+							))}
+						</ul>
+					)}
 				</div>
-				<ul>
+				<ul class="puntos" data-animar>
 					{s.viaje.puntos.map((punto) => (
 						<li>
+							{punto.icono && <Icono nombre={punto.icono} circulo />}
 							<h3>{punto.titulo}</h3>
 							<p>{punto.texto}</p>
+							{punto.enlace && (
+								<a class="enlace-punto" href={punto.enlace.url} rel="noopener">
+									<Icono nombre="ubicacion" />
+									{punto.enlace.texto}
+								</a>
+							)}
 						</li>
 					))}
 				</ul>
+				{creditosViaje.length > 0 && (
+					<p class="creditos">
+						{s.viaje.creditos}:{' '}
+						{creditosViaje.map((foto, i) => (
+							<>
+								{i > 0 && ' · '}
+								<a href={foto.credito!.url} rel="noopener">
+									{foto.credito!.autor} ({foto.credito!.licencia})
+								</a>
+							</>
+						))}
+					</p>
+				)}
 			</section>
 		)
 	}
@@ -101,38 +192,128 @@ const ultima = s.historia?.ediciones.at(-1);
 				<p class="antetitulo">{s.inscripcion.antetitulo}</p>
 				<h2 id="titulo-inscripcion">{s.inscripcion.titulo}</h2>
 				<p class="texto">{s.inscripcion.texto}</p>
-				<ul class="tarifas">
-					{s.inscripcion.tarifas.map((tarifa) => (
-						<li class:list={['tarjeta', { destacada: tarifa.destacada }]}>
-							<span class="nombre-tarifa">{tarifa.nombre}</span>
-							<span class="monto">{tarifa.monto}</span>
-							{tarifa.nota && <span class="nota-tarifa">{tarifa.nota}</span>}
-						</li>
-					))}
-				</ul>
-				<div class="detalle">
-					<div class="tarjeta incluye">
-						<h3>{s.inscripcion.incluye_titulo}</h3>
-						<ul>
-							{s.inscripcion.incluye.map((item) => (
-								<li>
-									<Icono nombre="check" />
-									{item}
+				{pasos && porWhatsapp ? (
+					<>
+						<ol class="pasos" data-animar>
+							<li>
+								<span class="numero" aria-hidden="true">1</span>
+								<h3>{pasos.tarifa.titulo}</h3>
+								<p class="texto-paso">{pasos.tarifa.texto}</p>
+								{s.inscripcion.precios && (
+									<div class="tabla-precios">
+										<TablaPrecios precios={s.inscripcion.precios} />
+									</div>
+								)}
+								<ul class="tarifas">
+									{s.inscripcion.tarifas.map((tarifa) => (
+										<li class:list={['tarjeta', { destacada: tarifa.destacada }]}>
+											<span class="nombre-tarifa">{tarifa.nombre}</span>
+											<span class="monto">{tarifa.monto}</span>
+											{tarifa.nota && <span class="nota-tarifa">{tarifa.nota}</span>}
+										</li>
+									))}
+								</ul>
+							</li>
+							<li>
+								<span class="numero" aria-hidden="true">2</span>
+								<h3>{pasos.pago.titulo}</h3>
+								<p class="texto-paso">{pasos.pago.texto}</p>
+								<div class="medios">
+									{datos.pago?.qr && (
+										<div class="tarjeta medio medio-qr">
+											<div>
+												<h4>{pasos.qr.titulo}</h4>
+												<p>{pasos.qr.texto}</p>
+												<a class="boton boton-contorno" href={datos.pago.qr.src} download="qr-pago-xi-sialapcco.png">
+													<Icono nombre="descarga" />
+													{pasos.qr.descargar}
+												</a>
+											</div>
+											<span class="marco-qr">
+												<Image class="qr" src={datos.pago.qr} alt={pasos.qr.alt} widths={[360, 720]} sizes="15rem" quality={95} />
+											</span>
+										</div>
+									)}
+									{datos.pago?.paypal && (
+										<div class="tarjeta medio medio-paypal">
+											<h4>{pasos.paypal.titulo}</h4>
+											<p>{pasos.paypal.texto}</p>
+											<a class="boton" href={datos.pago.paypal} rel="noopener">
+												{pasos.paypal.boton} <span class="flecha" aria-hidden="true">→</span>
+											</a>
+										</div>
+									)}
+								</div>
+							</li>
+							<li>
+								<span class="numero" aria-hidden="true">3</span>
+								<h3>{pasos.comprobante.titulo}</h3>
+								<p class="texto-paso">{pasos.comprobante.texto}</p>
+								<p class="acciones-whatsapp">
+									<a class="boton boton-whatsapp latido" href={porWhatsapp.url} rel="noopener">
+										<Icono nombre="dialogo" />
+										{textos.eventos.inscribirmeWhatsapp}
+									</a>
+									<span class="numero-visible">{porWhatsapp.visible}</span>
+								</p>
+							</li>
+						</ol>
+						{pasos.nota && <p class="nota-pago">{pasos.nota}</p>}
+						<div class="tarjeta incluye incluye-ancho">
+							<h3>{s.inscripcion.incluye_titulo}</h3>
+							<ul>
+								{s.inscripcion.incluye.map((item) => (
+									<li>
+										<Icono nombre="check" />
+										{item}
+									</li>
+								))}
+							</ul>
+						</div>
+					</>
+				) : (
+					<>
+						{s.inscripcion.precios && (
+							<div class="tabla-precios">
+								<TablaPrecios precios={s.inscripcion.precios} />
+							</div>
+						)}
+						<ul class="tarifas">
+							{s.inscripcion.tarifas.map((tarifa) => (
+								<li class:list={['tarjeta', { destacada: tarifa.destacada }]}>
+									<span class="nombre-tarifa">{tarifa.nombre}</span>
+									<span class="monto">{tarifa.monto}</span>
+									{tarifa.nota && <span class="nota-tarifa">{tarifa.nota}</span>}
 								</li>
 							))}
 						</ul>
-					</div>
-					<div class="aviso">
-						<h3>{s.inscripcion.aviso.titulo}</h3>
-						<p>{s.inscripcion.aviso.texto}</p>
-						<p class="acciones">
-							<a class="boton" href={enlaceAviso} rel="noopener">
-								{abierta ? textos.comun.inscribirme : s.inscripcion.aviso.boton} <span class="flecha" aria-hidden="true">→</span>
-							</a>
-							{ORGANIZACION.correo && <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>}
-						</p>
-					</div>
-				</div>
+						<div class="detalle">
+							<div class="tarjeta incluye">
+								<h3>{s.inscripcion.incluye_titulo}</h3>
+								<ul>
+									{s.inscripcion.incluye.map((item) => (
+										<li>
+											<Icono nombre="check" />
+											{item}
+										</li>
+									))}
+								</ul>
+							</div>
+							{s.inscripcion.aviso && (
+								<div class="aviso">
+									<h3>{s.inscripcion.aviso.titulo}</h3>
+									<p>{s.inscripcion.aviso.texto}</p>
+									<p class="acciones">
+										<a class="boton" href={enlaceAviso} rel="noopener">
+											{textoBoton(s.inscripcion.aviso.boton)} <span class="flecha" aria-hidden="true">→</span>
+										</a>
+										{ORGANIZACION.correo && <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>}
+									</p>
+								</div>
+							)}
+						</div>
+					</>
+				)}
 			</section>
 		)
 	}
@@ -159,13 +340,22 @@ const ultima = s.historia?.ediciones.at(-1);
 	{
 		s.final && (
 			<section class="banda final" aria-labelledby="titulo-final">
+				<svg class="sol" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+					<g class="rayos">
+						{Array.from({ length: 16 }, (_, i) => (
+							<rect x="96" y="6" width="8" height="34" rx="4" transform={`rotate(${i * 22.5} 100 100)`} />
+						))}
+					</g>
+					<circle cx="100" cy="100" r="52" />
+				</svg>
+				{datos.tema === 'tajibo' && <PetalosTajibo cantidad={8} />}
 				<div>
 					<h2 id="titulo-final">{s.final.titulo}</h2>
 					<p>{s.final.texto}</p>
 				</div>
 				<p class="acciones">
 					<a class="boton boton-realce" href={enlaceAviso} rel="noopener">
-						{abierta ? textos.comun.inscribirme : s.final.boton} <span class="flecha" aria-hidden="true">→</span>
+						{textoBoton(s.final.boton)} <span class="flecha" aria-hidden="true">→</span>
 					</a>
 					<a class="boton boton-contorno" href={ruta('nosotros', idioma)}>
 						{textos.nav.nosotros}
@@ -176,6 +366,70 @@ const ultima = s.historia?.ediciones.at(-1);
 	}
 </div>
 
+<script>
+	// Movimiento de la página del seminario. Cada bloque con `data-animar` recibe la clase `animado` cuando entra en
+	// pantalla (una sola vez) y ahí arrancan sus animaciones CSS; el mapa (`data-animar-mapa`) la pasa a su dibujo.
+	// Las cifras con `data-contar` suben desde 0. Con "reducir movimiento" todo queda quieto y completo.
+	const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	function contar(bloque: Element) {
+		for (const cifra of bloque.querySelectorAll<HTMLElement>('[data-contar]')) {
+			const meta = Number.parseInt(cifra.dataset.contar!, 10);
+			if (Number.isNaN(meta)) continue;
+			const inicio = performance.now();
+			const paso = (ahora: number) => {
+				const avance = Math.min(1, (ahora - inicio) / 1400);
+				cifra.textContent = String(Math.round(meta * (1 - (1 - avance) ** 3)));
+				if (avance < 1) requestAnimationFrame(paso);
+			};
+			requestAnimationFrame(paso);
+		}
+	}
+
+	function marcar(bloque: Element) {
+		bloque.classList.add('animado');
+		bloque.querySelector('.mapa')?.classList.add('animado');
+		if (!reducir) contar(bloque);
+	}
+
+	const bloques = document.querySelectorAll('[data-animar], [data-animar-mapa]');
+	if (reducir || !('IntersectionObserver' in window)) {
+		bloques.forEach(marcar);
+	} else {
+		// Las cifras arrancan en 0 hasta que se ven.
+		for (const cifra of document.querySelectorAll<HTMLElement>('[data-contar]')) {
+			if (!Number.isNaN(Number.parseInt(cifra.dataset.contar!, 10))) cifra.textContent = '0';
+		}
+		const observador = new IntersectionObserver(
+			(entradas) => {
+				for (const entrada of entradas) {
+					if (!entrada.isIntersecting) continue;
+					marcar(entrada.target);
+					observador.unobserve(entrada.target);
+				}
+			},
+			{ rootMargin: '0px 0px -15% 0px' },
+		);
+		bloques.forEach((bloque) => observador.observe(bloque));
+	}
+
+	// Cuenta regresiva: días y reloj (horas:minutos:segundos), en vivo.
+	for (const cuenta of document.querySelectorAll<HTMLElement>('[data-cuenta-evento]')) {
+		const inicio = Date.parse(cuenta.dataset.inicio!);
+		const dias = cuenta.querySelector<HTMLElement>('[data-dias]')!;
+		const reloj = cuenta.querySelector<HTMLElement>('[data-reloj]')!;
+		const dos = (n: number) => String(n).padStart(2, '0');
+		const actualizar = () => {
+			const ms = Math.max(0, inicio - Date.now());
+			dias.textContent = String(Math.floor(ms / 86_400_000));
+			reloj.textContent = [Math.floor((ms % 86_400_000) / 3_600_000), Math.floor((ms % 3_600_000) / 60_000), Math.floor((ms % 60_000) / 1000)].map(dos).join(':');
+			if (ms === 0) clearInterval(intervalo);
+		};
+		const intervalo = setInterval(actualizar, 1000);
+		actualizar();
+	}
+</script>
+
 <style>
 	h2 {
 		margin-top: 0.75rem;
@@ -183,6 +437,80 @@ const ultima = s.historia?.ediciones.at(-1);
 	.texto {
 		max-width: 38rem;
 		color: var(--color-texto-suave);
+	}
+
+	/* ---------- Datos clave: franja de tarjetas que se apoya sobre la curva de la cabecera ---------- */
+	.datos-clave {
+		position: relative;
+		z-index: 2;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		/* Las líneas entre tarjetas son el fondo que asoma por el `gap` de 1 px (sirve en 5, 2 o 1 columnas). */
+		gap: 1px;
+		margin: calc(-1 * clamp(2.5rem, 5vw, 4rem)) 0 0;
+		padding: 0;
+		overflow: hidden;
+		list-style: none;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		border-start-start-radius: 2.25rem;
+		background: var(--color-borde);
+		box-shadow: var(--sombra-grande);
+	}
+	.datos-clave.con-cuenta {
+		grid-template-columns: minmax(0, 1.15fr) repeat(4, minmax(0, 1fr));
+	}
+	.datos-clave li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.85rem;
+		padding: 1.5rem 1.5rem;
+		background: var(--color-tarjeta);
+		font-family: var(--fuente-interfaz);
+		font-size: 0.9375rem;
+		line-height: 1.4;
+		color: var(--color-texto-suave);
+	}
+	/* Cuenta regresiva: la primera tarjeta, en el color de los rótulos (rosa tajibo). */
+	.datos-clave .cuenta {
+		display: grid;
+		align-content: center;
+		gap: 0.1rem;
+		background: var(--color-rotulo);
+		color: #fff;
+	}
+	.rotulo-cuenta {
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		opacity: 0.9;
+	}
+	.datos-clave .cuenta strong {
+		font-size: 1.9rem;
+		line-height: 1.1;
+		color: #fff;
+	}
+	.reloj {
+		font-size: 1rem;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		letter-spacing: 0.04em;
+		opacity: 0.9;
+	}
+	.datos-clave :global(.icono) {
+		flex-shrink: 0;
+		width: 1.6rem;
+		height: 1.6rem;
+		margin-top: 0.1rem;
+		color: var(--color-rotulo);
+	}
+	.datos-clave strong {
+		display: block;
+		font-family: var(--fuente-titulos);
+		font-size: 1.2rem;
+		line-height: 1.25;
+		color: var(--color-titulos);
 	}
 
 	/* ---------- Qué es y formatos ---------- */
@@ -218,6 +546,13 @@ const ultima = s.historia?.ediciones.at(-1);
 		line-height: 1;
 		color: var(--color-rotulo);
 	}
+	.formatos li :global(.icono.circulo) {
+		margin-bottom: 0.75rem;
+		color: var(--color-rotulo);
+	}
+	.cifra {
+		font-variant-numeric: tabular-nums;
+	}
 	.formatos h3 {
 		margin: 0.35rem 0 0.25rem;
 		font-size: 1.35rem;
@@ -232,11 +567,25 @@ const ultima = s.historia?.ediciones.at(-1);
 	.historia {
 		padding-top: 0;
 	}
+	/* Mapa del recorrido a la izquierda (sobre un sol suave) y la lista de ediciones a la derecha. */
+	.recorrido-ediciones {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: 2rem 3.5rem;
+		align-items: center;
+		margin-top: 2rem;
+	}
+	.marco-mapa {
+		width: 100%;
+		padding: 1.5rem;
+		border-radius: 50%;
+		background: radial-gradient(circle, color-mix(in srgb, var(--color-realce), transparent 65%) 0 45%, transparent 70%);
+	}
 	.historia ol {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(min(9rem, 100%), 1fr));
 		gap: 0.75rem;
-		margin: 2rem 0 0;
+		margin: 0;
 		padding: 0;
 		list-style: none;
 	}
@@ -264,17 +613,113 @@ const ultima = s.historia?.ediciones.at(-1);
 	.historia .actual span {
 		color: #fff;
 	}
+	/* Tarjeta encendida por el viaje del mapa (o con el mouse encima): se levanta y toma el color del rótulo. */
+	.historia li {
+		transition:
+			transform 0.35s ease,
+			border-color 0.3s,
+			box-shadow 0.35s;
+	}
+	.historia li:is(.encendida, :hover) {
+		border-color: var(--color-rotulo);
+		box-shadow:
+			0 0 0 1px var(--color-rotulo),
+			0 10px 24px color-mix(in srgb, var(--color-rotulo), transparent 78%);
+		transform: translateY(-3px);
+	}
+	.historia li:not(.actual):is(.encendida, :hover) strong {
+		color: var(--color-rotulo);
+	}
 
 	/* ---------- Sede y viaje ---------- */
+	.viaje {
+		position: relative;
+		overflow: hidden;
+	}
+	.viaje > :not(.vuelo) {
+		position: relative;
+		z-index: 1;
+	}
 	.viaje .cabecera-seccion {
-		align-items: end;
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem 3rem;
 	}
 	.viaje .entrada {
-		max-width: 26rem;
-		margin: 0;
+		max-width: 34rem;
+		margin: 1rem 0 0;
 		color: var(--texto-banda);
 	}
-	.viaje ul {
+	/* Estela punteada y avión que cruza la parte de arriba de la banda. */
+	.vuelo {
+		position: absolute;
+		inset: 0 0 auto;
+		height: 7rem;
+		pointer-events: none;
+	}
+	.estela {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+	.estela path {
+		fill: none;
+		stroke: rgb(255 255 255 / 0.3);
+		stroke-width: 2;
+		stroke-dasharray: 2 10;
+		stroke-linecap: round;
+		vector-effect: non-scaling-stroke;
+	}
+	.avion {
+		position: absolute;
+		top: 1.4rem;
+		left: 50%;
+		translate: -50% -50%;
+	}
+	.avion :global(.icono) {
+		width: 2rem;
+		height: 2rem;
+		/* El ícono apunta en diagonal: girado, mira hacia la derecha. */
+		rotate: 45deg;
+		color: var(--color-realce);
+	}
+	/* Fotos redondas de la ciudad, encimadas como en un álbum. */
+	.fotos-ciudad {
+		display: flex;
+		flex-shrink: 0;
+		margin: 0;
+		padding: 0 0 0 1.25rem;
+		list-style: none;
+	}
+	.fotos-ciudad li {
+		width: 9.5rem;
+		aspect-ratio: 1;
+		margin-left: -1.25rem;
+		overflow: hidden;
+		border: 0.3rem solid #fff;
+		border-radius: 50%;
+		box-shadow: 0 0.75rem 1.75rem rgb(0 0 0 / 0.3);
+	}
+	.fotos-ciudad li:nth-child(1) {
+		rotate: -6deg;
+	}
+	.fotos-ciudad li:nth-child(2) {
+		z-index: 1;
+		margin-top: -1.5rem;
+	}
+	.fotos-ciudad li:nth-child(3) {
+		rotate: 6deg;
+	}
+	.fotos-ciudad img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.puntos {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
 		gap: 1rem;
@@ -282,11 +727,25 @@ const ultima = s.historia?.ediciones.at(-1);
 		padding: 0;
 		list-style: none;
 	}
-	.viaje li {
+	.puntos li {
 		padding: 1.5rem;
 		border-radius: var(--radio);
 		border-start-start-radius: 1.75rem;
 		background: rgb(0 0 0 / 0.18);
+	}
+	.puntos li :global(.icono.circulo) {
+		margin-bottom: 0.9rem;
+		background: rgb(255 255 255 / 0.1);
+		color: var(--color-realce);
+	}
+	.creditos {
+		margin: 1.5rem 0 0;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.8125rem;
+		color: var(--texto-banda-suave);
+	}
+	.creditos a {
+		color: inherit;
 	}
 	.viaje h3 {
 		margin: 0 0 0.4rem;
@@ -296,6 +755,29 @@ const ultima = s.historia?.ediciones.at(-1);
 		margin: 0;
 		font-size: 1rem;
 		color: var(--texto-banda);
+	}
+	.enlace-punto {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.75rem;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.9375rem;
+		font-weight: 700;
+		color: var(--color-realce);
+	}
+	.viaje .enlace-punto :global(.icono) {
+		width: 1.1rem;
+		height: 1.1rem;
+		color: var(--color-realce);
+	}
+
+	/* ---------- Tabla de precios (TablaPrecios) ---------- */
+	.tabla-precios {
+		margin-top: 1.25rem;
+	}
+	.tarifas:empty {
+		display: none;
 	}
 
 	/* ---------- Inscripción ---------- */
@@ -387,6 +869,152 @@ const ultima = s.historia?.ediciones.at(-1);
 		margin-top: 1.25rem;
 	}
 
+	/* ---------- Cómo inscribirte (pago directo): tres pasos en línea vertical ---------- */
+	.pasos {
+		display: grid;
+		gap: 2.5rem;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		counter-reset: none;
+	}
+	.pasos > li {
+		position: relative;
+		padding-left: 4.25rem;
+	}
+	/* Línea que une los números de los pasos. */
+	.pasos > li:not(:last-child)::before {
+		content: '';
+		position: absolute;
+		top: 3.25rem;
+		bottom: -2rem;
+		left: 1.4rem;
+		border-left: 2px dashed color-mix(in srgb, var(--color-rotulo), transparent 55%);
+	}
+	.numero {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: grid;
+		place-items: center;
+		width: 2.9rem;
+		height: 2.9rem;
+		border-radius: 50%;
+		background: var(--color-rotulo);
+		color: #fff;
+		font-family: var(--fuente-titulos);
+		font-size: 1.4rem;
+		font-weight: 700;
+	}
+	.pasos h3 {
+		margin: 0.35rem 0 0.35rem;
+		font-size: clamp(1.4rem, 1.2rem + 0.6vw, 1.75rem);
+	}
+	.texto-paso {
+		max-width: 40rem;
+		margin: 0;
+		color: var(--color-texto-suave);
+	}
+	.pasos .tarifas {
+		margin-top: 1.25rem;
+	}
+	.medios {
+		display: grid;
+		grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+		gap: 1rem;
+		margin-top: 1.25rem;
+	}
+	.medio {
+		display: grid;
+		align-content: start;
+		gap: 0.75rem;
+		padding: 1.75rem;
+		border-start-start-radius: 2.25rem;
+	}
+	.medio h4 {
+		margin: 0;
+		font-family: var(--fuente-titulos);
+		font-size: 1.35rem;
+		color: var(--color-titulos);
+	}
+	.medio p {
+		margin: 0;
+		font-size: 1rem;
+		color: var(--color-texto-suave);
+	}
+	.medio .boton {
+		justify-self: start;
+		margin-top: 0.5rem;
+	}
+	.medio-qr {
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 1.5rem;
+		align-items: center;
+	}
+	.medio-qr > div {
+		display: grid;
+		gap: 0.75rem;
+	}
+	.qr {
+		display: block;
+		width: 15rem;
+		height: auto;
+	}
+	/* Marco del QR: recorta el brillo que lo cruza cada tanto. */
+	.marco-qr {
+		position: relative;
+		display: block;
+		width: fit-content;
+		overflow: hidden;
+		border-radius: 1rem;
+		box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.12);
+	}
+	.marco-qr::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.7) 50%, transparent 65%);
+		transform: translateX(-120%);
+		pointer-events: none;
+	}
+	.medio-paypal {
+		background: var(--color-acento-suave);
+		border-color: var(--color-acento-suave);
+	}
+	.acciones-whatsapp {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1.25rem;
+		margin: 1.25rem 0 0;
+	}
+	.boton-whatsapp {
+		min-height: 3.25rem;
+		padding-inline: 1.75rem;
+		font-size: 1.05rem;
+	}
+	.boton-whatsapp :global(.icono) {
+		width: 1.25rem;
+		height: 1.25rem;
+		color: inherit;
+	}
+	.numero-visible {
+		font-weight: 700;
+		color: var(--color-texto-suave);
+	}
+	.nota-pago {
+		max-width: 46rem;
+		margin: 2rem 0 0 4.25rem;
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+	.incluye-ancho {
+		margin-top: 2.5rem;
+	}
+	.incluye-ancho ul {
+		grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+	}
+
 	/* ---------- Organizan ---------- */
 	.organizan {
 		display: flex;
@@ -409,6 +1037,10 @@ const ultima = s.historia?.ediciones.at(-1);
 		display: block;
 		width: auto;
 		height: 5.5rem;
+		/* En el celular el logo ancho de ALAPCCO no cabe: se achica sin deformarse. */
+		max-width: 100%;
+		object-fit: contain;
+		object-position: left center;
 	}
 
 	/* ---------- Banda final ---------- */
@@ -420,6 +1052,33 @@ const ultima = s.historia?.ediciones.at(-1);
 		gap: 1.5rem 3rem;
 		background: var(--color-rotulo);
 		color: #fff;
+	}
+	.final {
+		position: relative;
+		overflow: hidden;
+	}
+	.final > div,
+	.final > .acciones {
+		position: relative;
+		z-index: 2;
+	}
+	/* Sol del emblema, grande y medio escondido a la derecha. */
+	.sol {
+		position: absolute;
+		top: 50%;
+		right: -4rem;
+		width: 20rem;
+		translate: 0 -50%;
+		opacity: 0.55;
+		pointer-events: none;
+	}
+	.sol circle,
+	.sol rect {
+		fill: var(--color-realce);
+	}
+	.rayos {
+		transform-box: view-box;
+		transform-origin: center;
 	}
 	.final h2 {
 		margin: 0;
@@ -448,15 +1107,226 @@ const ultima = s.historia?.ediciones.at(-1);
 		color: #fff;
 	}
 
+	@media (min-width: 34.01rem) and (max-width: 75rem) {
+		.datos-clave,
+		.datos-clave.con-cuenta {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
 	@media (max-width: 56rem) {
 		.sobre,
 		.detalle {
 			grid-template-columns: 1fr;
+		}
+		.recorrido-ediciones {
+			grid-template-columns: 1fr;
+		}
+		.marco-mapa {
+			max-width: 26rem;
+			justify-self: center;
+		}
+		.viaje .cabecera-seccion {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		.sol {
+			opacity: 0.35;
+		}
+	}
+	@media (max-width: 34rem) {
+		.datos-clave,
+		.datos-clave.con-cuenta {
+			grid-template-columns: 1fr;
+		}
+		.datos-clave li {
+			padding: 1.1rem 1.25rem;
+		}
+		.fotos-ciudad li {
+			width: 6.5rem;
+		}
+	}
+	@media (max-width: 75rem) {
+		.medios {
+			grid-template-columns: 1fr;
+		}
+		/* Con la cuenta regresiva: la cuenta ocupa toda la primera fila y los datos van de a dos (o de a uno). */
+		.datos-clave .cuenta {
+			grid-column: 1 / -1;
+			grid-template-columns: auto auto 1fr;
+			align-items: baseline;
+			gap: 0.2rem 1rem;
 		}
 	}
 	@media (max-width: 30rem) {
 		.formatos {
 			grid-template-columns: 1fr;
 		}
+		/* En el celular, los pasos usan todo el ancho: el número va arriba del título. */
+		.pasos > li {
+			padding-left: 0;
+		}
+		.pasos > li:not(:last-child)::before {
+			display: none;
+		}
+		.numero {
+			position: static;
+			margin-bottom: 0.5rem;
+		}
+		.nota-pago {
+			margin-left: 0;
+		}
+		.medio-qr {
+			grid-template-columns: 1fr;
+		}
+		.qr {
+			width: min(100%, 16rem);
+		}
+		.marco-qr {
+			justify-self: center;
+		}
+	}
+
+	/* ====================================================================================================
+	   Movimiento. Todo se anima una sola vez al entrar en pantalla (clase `animado`, script de arriba), salvo
+	   el avión, el sol, el brillo del QR y el latido de WhatsApp, que siguen suaves. Con "reducir movimiento"
+	   no se mueve nada y todo se ve desde el principio (los estados ocultos solo existen con JavaScript).
+	   ==================================================================================================== */
+	@media (prefers-reduced-motion: no-preference) {
+		/* Íconos que se dibujan solos, uno tras otro. */
+		:global(.js) [data-animar]:not(.animado) :global(.icono path) {
+			stroke-dasharray: 1;
+			stroke-dashoffset: 1;
+		}
+		.animado :global(.icono path) {
+			stroke-dasharray: 1;
+			animation: dibujar 1.3s ease-out both;
+		}
+		.animado > li:nth-child(2) :global(.icono path) { animation-delay: 0.15s; }
+		.animado > li:nth-child(3) :global(.icono path) { animation-delay: 0.3s; }
+		.animado > li:nth-child(4) :global(.icono path) { animation-delay: 0.45s; }
+		.animado > li:nth-child(5) :global(.icono path) { animation-delay: 0.6s; }
+		.animado > li:nth-child(6) :global(.icono path) { animation-delay: 0.75s; }
+
+		/* Tarjetas que se levantan al pasar el mouse. */
+		.formatos li,
+		.puntos li {
+			transition:
+				transform 0.3s ease,
+				box-shadow 0.3s ease;
+		}
+		.formatos li:hover,
+		.puntos li:hover {
+			transform: translateY(-4px);
+			box-shadow: var(--sombra-grande);
+		}
+
+		/* Fotos de la ciudad: entran girando y después flotan, cada una a su ritmo. */
+		:global(.js) .fotos-ciudad:not(.animado) li {
+			opacity: 0;
+			transform: scale(0.6) rotate(-12deg);
+		}
+		.fotos-ciudad.animado li {
+			animation:
+				entrar-foto 0.8s cubic-bezier(0.3, 1.5, 0.5, 1) both,
+				flotar-foto 6s 1s ease-in-out infinite alternate;
+		}
+		.fotos-ciudad.animado li:nth-child(2) { animation-delay: 0.2s, 1.6s; }
+		.fotos-ciudad.animado li:nth-child(3) { animation-delay: 0.4s, 2.2s; }
+
+		/* Avión que cruza la banda de viaje sobre su estela punteada. */
+		.avion {
+			animation: volar 18s linear infinite;
+		}
+
+		/* Pasos de la inscripción: se encienden de a uno y la línea que los une baja. */
+		:global(.js) .pasos:not(.animado) .numero {
+			opacity: 0.25;
+			transform: scale(0.5);
+		}
+		:global(.js) .pasos:not(.animado) > li::before {
+			transform: scaleY(0);
+		}
+		.pasos.animado .numero {
+			animation: encender 0.8s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+		}
+		.pasos.animado > li:nth-child(2) .numero { animation-delay: 0.7s; }
+		.pasos.animado > li:nth-child(3) .numero { animation-delay: 1.4s; }
+		.pasos.animado > li::before {
+			transform-origin: top;
+			animation: bajar-linea 0.7s 0.3s ease-out both;
+		}
+		.pasos.animado > li:nth-child(2)::before { animation-delay: 1s; }
+
+		/* Brillo que cruza el QR cada tanto. */
+		.marco-qr::after {
+			animation: brillo 5s 1s ease-in-out infinite;
+		}
+
+		/* Latido suave del botón de WhatsApp. */
+		.latido {
+			animation: latido 2.6s ease-out infinite;
+		}
+
+		/* Sol de la banda final, girando muy lento. */
+		.rayos {
+			animation: girar-sol 60s linear infinite;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.vuelo {
+			display: none;
+		}
+	}
+
+	@keyframes dibujar {
+		from { stroke-dashoffset: 1; }
+		to { stroke-dashoffset: 0; }
+	}
+	@keyframes entrar-foto {
+		from { opacity: 0; transform: scale(0.6) rotate(-12deg); }
+		to { opacity: 1; transform: none; }
+	}
+	@keyframes flotar-foto {
+		from { translate: 0 0; }
+		to { translate: 0 -0.5rem; }
+	}
+	@keyframes volar {
+		0% { left: -6%; top: 4.6rem; rotate: -16deg; }
+		25% { left: 22%; top: 2.3rem; rotate: -8deg; }
+		50% { left: 50%; top: 1.4rem; rotate: 0deg; }
+		75% { left: 78%; top: 2.1rem; rotate: 8deg; }
+		100% { left: 106%; top: 3.9rem; rotate: 14deg; }
+	}
+	@keyframes encender {
+		from {
+			opacity: 0.25;
+			transform: scale(0.5);
+			box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-rotulo), transparent 40%);
+		}
+		60% {
+			opacity: 1;
+			transform: scale(1.15);
+			box-shadow: 0 0 0 0.9rem color-mix(in srgb, var(--color-rotulo), transparent 100%);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+			box-shadow: none;
+		}
+	}
+	@keyframes bajar-linea {
+		from { transform: scaleY(0); }
+		to { transform: scaleY(1); }
+	}
+	@keyframes brillo {
+		0%, 55% { transform: translateX(-120%); }
+		100% { transform: translateX(120%); }
+	}
+	@keyframes latido {
+		from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-acento), transparent 45%); }
+		70%, to { box-shadow: 0 0 0 0.9rem color-mix(in srgb, var(--color-acento), transparent 100%); }
+	}
+	@keyframes girar-sol {
+		to { rotate: 360deg; }
 	}
 </style>

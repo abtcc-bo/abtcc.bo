@@ -99,8 +99,8 @@
 			"diplomado": "Diplomado",
 			"jornada": "Jornada",
 			"congreso": "Congreso",
-			"simposio": "Simposio",
 			"seminario": "Seminario",
+			"simposio": "Simposio",
 			"webinar": "Webinar",
 			"supervision": "Supervisión",
 			"asamblea": "Asamblea"
@@ -157,9 +157,11 @@
 			"cierre": "Cierre",
 			"pausa": "Pausa"
 		},
-		"inscribirmeWhatsapp": "Inscribirme por WhatsApp",
-		"mensajeInscripcion": "Hola, quiero inscribirme en {evento}.",
 		"mensajeWhatsapp": "Hola, quiero información sobre {evento}.",
+		"inscribirmeWhatsapp": "Inscribirme por WhatsApp",
+		"comoPagar": "Cómo pagar",
+		"mensajeInscripcion": "Hola, quiero inscribirme al evento {evento}.\nNombre completo: \nPaís: \nTarifa: \nTe envío mi comprobante de pago.",
+		"foto": "Foto",
 		"costoHasta": "hasta el {fecha}",
 		"costoDesde": "desde el {fecha}",
 		"reservaTitulo": "Reserva tu lugar",
@@ -247,6 +249,11 @@
 		"pausar": "Pausar fotos",
 		"reanudar": "Mover fotos"
 	},
+	"ventanaAnuncio": {
+		"etiqueta": "Anuncio",
+		"cerrar": "Cerrar anuncio",
+		"horas": "h"
+	},
 	"destacado": {
 		"etiqueta": "Evento destacado",
 		"faltan": "Faltan",
@@ -313,6 +320,7 @@
 	"nosotros": {
 		"atajos": {
 			"objetivo": "Objetivo",
+			"mision": "Misión y visión",
 			"que-hacemos": "Qué hacemos",
 			"evidencia": "Práctica basada en evidencia",
 			"principios": "Principios",
@@ -321,6 +329,11 @@
 		},
 		"objetivoAntetitulo": "Nuestro objetivo",
 		"objetivoTitulo": "Para qué existimos",
+		"misionAntetitulo": "Nuestra identidad",
+		"misionVisionTitulo": "Misión, visión y valores",
+		"misionTitulo": "Misión",
+		"visionTitulo": "Visión",
+		"valoresTitulo": "Valores",
 		"queHacemosAntetitulo": "Qué hacemos",
 		"queHacemosTitulo": "Nuestras líneas de trabajo",
 		"evidenciaAntetitulo": "Práctica basada en evidencia",

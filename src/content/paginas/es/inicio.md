@@ -5,9 +5,13 @@ descripcion: Asociación Boliviana de Terapias Cognitivas Conductuales y Context
 portada:
   antetitulo: Bolivia · Red latinoamericana ALAPCCO
   tituloPrevio: Asociación Boliviana de
-  titulo: Terapias Cognitivas Conductuales y
-  tituloCursiva: Contextuales
-  bajada: Impulsamos la formación, la investigación y la práctica ética de las terapias basadas en evidencia, al servicio de la salud mental en Bolivia.
+  titulo: Terapias
+  # Las tres C del nombre, cada una con una esfera del logo (roja, amarilla y verde).
+  tresC:
+    - Cognitivas
+    - Conductuales
+    - y Contextuales
+  bajada: Impulsamos la formación, la investigación y la práctica ética de las terapias basadas en evidencia, al servicio de la salud psicológica en Bolivia.
   hechos:
     - titulo: Asociación civil
       texto: Científica y profesional, sin fines de lucro
@@ -15,7 +19,7 @@ portada:
       texto: Miembros y actividades en todo el país
     - titulo: Red ALAPCCO
       texto: Grupo de trabajo en Bolivia de la federación latinoamericana
-    - titulo: Simposio ALAPCCO–ABTCC
+    - titulo: Sede del XI SIALAPCCO
       texto: Santa Cruz de la Sierra, marzo de 2027
   conceptos:
     - Análisis funcional
@@ -113,7 +117,7 @@ portada:
   red:
     antetitulo: Red internacional
     titulo: Grupo de trabajo de ALAPCCO en Bolivia
-    texto: Formamos parte de la Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales, con la que organizamos el Simposio Internacional ALAPCCO–ABTCC 2027 en Santa Cruz.
+    texto: Formamos parte de la Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales, con la que organizamos el XI SIALAPCCO en Santa Cruz de la Sierra.
 ---
 
 <!-- Los textos de la portada están arriba, en bloques (vista src/vistas/Inicio.astro). -->

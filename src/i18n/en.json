@@ -99,8 +99,8 @@
 			"diplomado": "Diploma programme",
 			"jornada": "Conference day",
 			"congreso": "Congress",
-			"simposio": "Symposium",
 			"seminario": "Seminar",
+			"simposio": "Symposium",
 			"webinar": "Webinar",
 			"supervision": "Supervision",
 			"asamblea": "General assembly"
@@ -157,9 +157,11 @@
 			"cierre": "Closing",
 			"pausa": "Break"
 		},
-		"inscribirmeWhatsapp": "Register via WhatsApp",
-		"mensajeInscripcion": "Hello, I would like to register for {evento}.",
 		"mensajeWhatsapp": "Hello, I would like information about {evento}.",
+		"inscribirmeWhatsapp": "Register via WhatsApp",
+		"comoPagar": "How to pay",
+		"mensajeInscripcion": "Hello, I would like to register for {evento}.\nFull name: \nCountry: \nRate: \nHere is my payment receipt.",
+		"foto": "Photo",
 		"costoHasta": "until {fecha}",
 		"costoDesde": "from {fecha}",
 		"reservaTitulo": "Save your spot",
@@ -247,6 +249,11 @@
 		"pausar": "Pause photos",
 		"reanudar": "Play photos"
 	},
+	"ventanaAnuncio": {
+		"etiqueta": "Announcement",
+		"cerrar": "Close announcement",
+		"horas": "h"
+	},
 	"destacado": {
 		"etiqueta": "Featured event",
 		"faltan": "Time left",
@@ -313,6 +320,7 @@
 	"nosotros": {
 		"atajos": {
 			"objetivo": "Purpose",
+			"mision": "Mission and vision",
 			"que-hacemos": "What we do",
 			"evidencia": "Evidence-based practice",
 			"principios": "Principles",
@@ -321,6 +329,11 @@
 		},
 		"objetivoAntetitulo": "Our purpose",
 		"objetivoTitulo": "Why we exist",
+		"misionAntetitulo": "Our identity",
+		"misionVisionTitulo": "Mission, vision and values",
+		"misionTitulo": "Mission",
+		"visionTitulo": "Vision",
+		"valoresTitulo": "Values",
 		"queHacemosAntetitulo": "What we do",
 		"queHacemosTitulo": "Our lines of work",
 		"evidenciaAntetitulo": "Evidence-based practice",

@@ -8,8 +8,9 @@ import AdornoNavidad from './AdornoNavidad.astro';
 import Guirnalda from './Guirnalda.astro';
 import TicketEvento from './TicketEvento.astro';
 import Icono from './Icono.astro';
+import PetalosTajibo from './PetalosTajibo.astro';
 import { formato, t, type Idioma } from '../i18n';
-import { contactoWhatsapp, fechaDelEvento, inscripcionAbierta } from '../lib/eventos';
+import { contactoWhatsapp, fechaDelEvento, inscripcionAbierta, inscripcionPorWhatsapp } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
 
 interface Props {
@@ -25,18 +26,34 @@ const { titulo, lema, programa } = evento.texto.data;
 const palabras = titulo.trim().split(' ');
 const ultima = palabras.pop();
 const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.mensajeWhatsapp, { evento: titulo }));
-// Inscripción por WhatsApp (sin formulario): botón principal que abre el chat con un mensaje para inscribirse.
-const inscripcionWhatsapp =
-	datos.inscripcion_whatsapp && datos.whatsapp && datos.estado === 'programado' && !datos.inscripcion && !datos.por_confirmar
-		? contactoWhatsapp(datos.whatsapp, formato(ev.mensajeInscripcion, { evento: titulo }))
-		: undefined;
-const lugar = datos.modalidad !== 'online' && datos.lugar ? ` · ${datos.lugar.ciudad}` : '';
+// Evento con pago directo (QR / PayPal): el botón principal abre el WhatsApp con el mensaje de inscripción, y
+// "Cómo pagar" baja a los pasos de la página (si los tiene). El enlace de consultas sobra: es el mismo número.
+const porWhatsapp = inscripcionPorWhatsapp(evento, formato(ev.mensajeInscripcion, { evento: titulo }));
+const conPasos = Boolean(evento.texto.data.seminario?.inscripcion?.pasos);
+// "Presencial · Hotel Radisson, Santa Cruz de la Sierra" (o solo la ciudad si la sede aún no está definida).
+const lugar = datos.modalidad !== 'online' && datos.lugar ? ` · ${[datos.lugar.nombre, datos.lugar.ciudad].filter(Boolean).join(', ')}` : '';
 const navidad = datos.tema === 'navidad';
 const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 ---
 
 {navidad && <Guirnalda />}
-<div class:list={['cabecera-evento', { 'con-visual': datos.imagen || datos.tema, navidad }]}>
+{
+	// Foto de fondo (paisaje de la sede): ocupa toda la cabecera, detrás del texto, con un velo del color del tema.
+	datos.foto_cabecera && (
+		<div class="foto-cabecera" aria-hidden="true">
+			<Image src={datos.foto_cabecera} alt="" widths={[800, 1400, 2000]} sizes="100vw" loading="eager" fetchpriority="high" />
+		</div>
+	)
+}
+{datos.tema === 'tajibo' && <PetalosTajibo />}
+{
+	datos.foto_cabecera && datos.credito_foto && (
+		<a class="credito-foto" href={datos.credito_foto.url} rel="noopener">
+			{ev.foto}: {datos.credito_foto.autor} · {datos.credito_foto.licencia}
+		</a>
+	)
+}
+<div class:list={['cabecera-evento', { 'con-visual': datos.imagen || datos.tema, navidad, 'con-foto': datos.foto_cabecera }]}>
 	<div class="texto">
 		<p class="antetitulo">
 			{ev.tipos[datos.tipo]}
@@ -79,9 +96,17 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 				)
 			}
 			{
-				inscripcionWhatsapp && (
-					<a class="boton boton-realce" href={inscripcionWhatsapp.url} rel="noopener">
-						{ev.inscribirmeWhatsapp} <span class="flecha" aria-hidden="true">→</span>
+				porWhatsapp && (
+					<a class="boton boton-realce" href={porWhatsapp.url} rel="noopener">
+						<Icono nombre="dialogo" />
+						{ev.inscribirmeWhatsapp}
+					</a>
+				)
+			}
+			{
+				porWhatsapp && conPasos && (
+					<a class="boton boton-contorno" href="#inscripcion">
+						{ev.comoPagar}
 					</a>
 				)
 			}
@@ -93,7 +118,7 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 				)
 			}
 			{
-				whatsapp && (
+				whatsapp && !porWhatsapp && (
 					<a class="whatsapp" href={whatsapp.url} rel="noopener">
 						<Icono nombre="dialogo" />
 						<span>
@@ -210,6 +235,120 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		border-radius: var(--radio);
 		box-shadow: var(--sombra-grande);
 		background: #fff;
+	}
+
+	/* ---------- Foto de fondo (paisaje de la sede) ---------- */
+	/* Cubre toda la cabecera (la sección de Base.astro es la referencia). El velo va del color oscuro del tema,
+	   casi opaco a la izquierda donde está el título, a transparente a la derecha, donde se ve el paisaje. */
+	.foto-cabecera {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+	}
+	/* Con foto, la cabecera no lleva la decoración del tema (sol y pétalos de fondo): mientras la foto carga se
+	   vería un instante encima del color. Queda el color oscuro liso. */
+	:global(.cabecera-pagina.banda:has(.foto-cabecera)) {
+		background: var(--color-oscuro);
+	}
+	.foto-cabecera img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 40%;
+	}
+	.foto-cabecera::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		/* Sin velo de color: la foto se ve tal cual. Solo una sombra negra muy suave detrás del texto (izquierda). */
+		background: linear-gradient(90deg, rgb(0 0 0 / 0.38) 0%, rgb(0 0 0 / 0.18) 40%, transparent 62%);
+	}
+	.con-foto {
+		min-height: clamp(26rem, 38vw, 34rem);
+	}
+	/* Crédito que pide la licencia de la foto: discreto, arriba a la derecha (abajo lo cortaría la curva). */
+	.credito-foto {
+		position: absolute;
+		top: 0.6rem;
+		right: 1rem;
+		z-index: 2;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.75rem;
+		color: rgb(255 255 255 / 0.85);
+		text-decoration: none;
+		text-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+	}
+	.credito-foto:hover {
+		text-decoration: underline;
+	}
+	.con-foto h1,
+	.con-foto .lema,
+	.con-foto .antetitulo,
+	.con-foto .datos-evento {
+		text-shadow:
+			0 1px 3px rgb(0 0 0 / 0.55),
+			0 2px 18px rgb(0 0 0 / 0.45);
+	}
+	/* Sin velo, el botón de contorno necesita un fondo oscuro translúcido para destacarse sobre la foto. */
+	.con-foto .boton-contorno {
+		border-color: rgb(255 255 255 / 0.85);
+		background: rgb(0 0 0 / 0.28);
+		color: #fff;
+	}
+	.con-foto .boton-contorno:hover {
+		background: rgb(0 0 0 / 0.45);
+	}
+	/* El afiche se apoya sobre la foto como una tarjeta: más chico y algo girado, con borde blanco. */
+	.con-foto .afiche {
+		max-width: 19rem;
+	}
+	.con-foto .afiche img {
+		border: 0.5rem solid #fff;
+		transform: rotate(2deg);
+		box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.35);
+	}
+	/* En el celular el texto ocupa todo el ancho: velo parejo y el afiche debajo, sin girar. */
+	@media (max-width: 56rem) {
+		.foto-cabecera::after {
+			background: linear-gradient(180deg, rgb(0 0 0 / 0.2), rgb(0 0 0 / 0.32) 50%, rgb(0 0 0 / 0.42));
+		}
+		.con-foto {
+			min-height: 0;
+		}
+		.credito-foto {
+			top: 0.3rem;
+			font-size: 0.6875rem;
+		}
+		.con-foto .afiche img {
+			transform: none;
+		}
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.foto-cabecera img {
+			animation: acercar 18s ease-out both;
+		}
+		/* El afiche se mece apenas, como si colgara (solo en pantallas anchas, donde va girado sobre la foto). */
+		@media (min-width: 56.01rem) {
+			.con-foto .afiche {
+				animation: flotar 7s ease-in-out infinite alternate;
+			}
+		}
+	}
+	@keyframes flotar {
+		from {
+			transform: translateY(0) rotate(0deg);
+		}
+		to {
+			transform: translateY(-0.6rem) rotate(-1.5deg);
+		}
+	}
+	@keyframes acercar {
+		from {
+			transform: scale(1.08);
+		}
+		to {
+			transform: scale(1);
+		}
 	}
 
 	/* ---------- Navidad ---------- */
