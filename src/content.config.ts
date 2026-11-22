@@ -28,7 +28,7 @@ const eventos = defineCollection({
 	schema: ({ image }) =>
 		z
 			.object({
-				tipo: z.enum(['taller', 'curso', 'diplomado', 'jornada', 'congreso', 'seminario', 'webinar', 'supervision', 'asamblea']),
+				tipo: z.enum(['taller', 'curso', 'diplomado', 'jornada', 'congreso', 'simposio', 'seminario', 'webinar', 'supervision', 'asamblea']),
 				inicio: fechaHora,
 				fin: fechaHora.optional(),
 				/** Para cursos en varias sesiones. */

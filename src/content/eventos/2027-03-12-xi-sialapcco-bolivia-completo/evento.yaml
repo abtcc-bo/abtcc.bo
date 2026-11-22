@@ -1,20 +1,26 @@
-# XI SIALAPCCO Bolivia: PÁGINA COMPLETA, EN PREPARACIÓN (no se publica mientras diga `borrador: true`).
+# XI SIALAPCCO Bolivia (Simposio Internacional ALAPCCO–ABTCC 2027): PÁGINA COMPLETA, EN PREPARACIÓN
+# (no se publica mientras diga `borrador: true`).
 # Lo que hoy ve el público es el anuncio corto de la carpeta 2027-03-01-xi-sialapcco-bolivia ("marzo de 2027").
 #
-# Para publicarla (cuando ALAPCCO y la ABTCC anuncien las fechas):
+# Para publicarla (según el plan operativo, el 15 de diciembre de 2026, junto con la apertura de inscripciones):
 #   1. Borrar la carpeta 2027-03-01-xi-sialapcco-bolivia.
 #   2. Cambiar el nombre de esta carpeta a 2027-03-12-xi-sialapcco-bolivia (así conserva la misma dirección).
 #   3. Quitar la línea `borrador: true`.
+#   4. Agregar `inscripcion: { url: ... }` con el enlace del formulario (con eso los botones dicen "Inscribirme").
 #
-# Fechas acordadas con ALAPCCO (reunión del 30/10/2026): 12 y 13 de marzo de 2027, en Santa Cruz de la Sierra.
-# [PENDIENTE: horario de cada día (las horas de abajo son provisionales), sede, costos, enlace de inscripción,
-#  WhatsApp de consultas, y si habrá modalidad virtual]
+# Datos: minuta de la reunión con ALAPCCO (30/10/2026) y "Plan operativo y presupuesto" (recibido el 22/11/2026).
+# Sede confirmada: Hotel Radisson, Santa Cruz (salón y sonido donados por el hotel).
+# Las tarifas (anticipada y regular, por dos días) están en el bloque `seminario.inscripcion` de es.md.
+# No se cargan como `costos` porque falta la fecha en que termina la tarifa anticipada.
+# [PENDIENTE: horario de cada día (las horas de abajo son provisionales), dirección y mapa de la sede,
+#  enlace de inscripción, WhatsApp de consultas, fecha límite de la tarifa anticipada, aval y horas del certificado]
 borrador: true
-tipo: seminario
+tipo: simposio
 inicio: "2027-03-12T09:00-04:00"
 fin: "2027-03-13T18:00-04:00"
 modalidad: presencial
 lugar:
+  nombre: Hotel Radisson
   ciudad: Santa Cruz de la Sierra
 tema: tajibo
 costos_por_confirmar: true

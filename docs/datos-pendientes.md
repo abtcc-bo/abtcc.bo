@@ -53,7 +53,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
   - [ ] Confirmar el **enlace de inscripción** (el QR del segundo afiche lleva al mismo): lo saqué del QR del afiche (https://forms.gle/JNJT2veLtfBcMcFV8). El QR pasa por qrfy.io; en la web va directo al formulario
   - [ ] Confirmar el país de Laura Inés Rivera Betancourt y de Daniel Enríquez Cruz (el afiche muestra Bolivia)
   - [ ] Opcional: foto y una línea de presentación de los ponentes invitados (hoy salen con sus iniciales)
-- [ ] XI SIALAPCCO Bolivia (marzo 2027, Santa Cruz): ya publicado como anuncio con afiche. El mes está confirmado y el evento sigue en preparación (09/11/2026): la página lo dice así, sin [PENDIENTE]. Faltan fechas exactas, horario, sede, costos, enlace de inscripción, programa, horas y aval, y qué significa la sigla SIALAPCCO
+- [ ] XI SIALAPCCO Bolivia (12 y 13 de marzo de 2027, Hotel Radisson, Santa Cruz): publicado solo el anuncio corto; la página completa está oculta hasta el 15 de diciembre. Lo que falta está en la sección "XI SIALAPCCO Bolivia" más abajo
 - [x] Eventos realizados con galería ✔: II Encuentro Internacional (Cochabamba, 4–5 sep. 2026) y Primer Congreso Nacional (Santa Cruz, 2023)
 - [ ] Primer Congreso Nacional: confirmar fechas (puse 28 y 29 de abril de 2023, según la hoja de vida de Alix), sede y nombre exacto
 - [ ] II Encuentro Internacional: confirmar sede (las fotos muestran Unifranz) y nombres de los ponentes que no identifiqué (ponencias sobre el ecosistema de la salud mental, ACT-RFT y metáforas, terapia de pareja, inteligencia artificial)
@@ -72,22 +72,33 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 
 ## XI SIALAPCCO Bolivia (página completa, oculta)
 
-La página completa está hecha pero no se publica (`borrador: true` en `src/content/eventos/2027-03-12-xi-sialapcco-bolivia-completo/`). Lo público sigue siendo el anuncio corto ("marzo de 2027"). Datos tomados de la minuta de la reunión con ALAPCCO del 30/10/2026.
+La página completa está hecha pero no se publica (`borrador: true` en `src/content/eventos/2027-03-12-xi-sialapcco-bolivia-completo/`). Lo público sigue siendo el anuncio corto ("marzo de 2027"). Datos tomados de la minuta de la reunión con ALAPCCO del 30/10/2026 y del **"Plan operativo y presupuesto"** (recibido el 22/11/2026). Según el plan, la web se publica y las inscripciones abren el **15 de diciembre de 2026**.
 
-- [x] Fechas: 12 y 13 de marzo de 2027, Santa Cruz de la Sierra ✔ (acordadas; falta el anuncio oficial con ALAPCCO)
-- [ ] Horario de cada día (las horas del archivo son provisionales)
-- [ ] Sede (se evaluaba un hotel; sin confirmar), dirección y mapa
+- [x] Fechas: 12 y 13 de marzo de 2027, Santa Cruz de la Sierra ✔
+- [x] Qué significa la sigla: SIALAPCCO = **Simposio** Internacional ALAPCCO ✔ (la web decía "seminario"; corregido)
+- [x] Sede: **Hotel Radisson**, Santa Cruz (salón y sonido donados) ✔
+- [x] Tarifas por dos días ✔: estudiantes de Bolivia Bs 240 anticipada / Bs 300 regular; profesionales de Bolivia Bs 480 / Bs 600; estudiantes de otros países USD 25 / USD 30; profesionales de otros países USD 50 / USD 60
+- [x] Medio de pago ✔: cuenta bancaria (Bolivia) y PayPal (exterior)
+- [x] Refrigerios en ambas jornadas ✔ (aporte de Laboratorios Bagó) y certificado digital después del evento ✔
+- [ ] **Fecha en que termina la tarifa anticipada** (sin ella no se puede programar el cambio automático de precio)
+- [ ] Horario de cada día (las horas del archivo son provisionales: 9:00 a 18:00)
+- [ ] Dirección exacta del Hotel Radisson y enlace de Google Maps
 - [ ] Lema o tema central
-- [ ] Programa científico (lo arma ALAPCCO): 4 conferencias, 2 talleres, conversatorios y comunicaciones orales; ponentes con foto, país y tema
-- [ ] Comunicaciones orales: criterios, fechas y forma de envío
-- [ ] Tarifas (profesionales, miembros de ALAPCCO, estudiantes) e inscripción anticipada con su fecha límite; ¿los miembros de la ABTCC pagan la tarifa de ALAPCCO?
-- [ ] Medio de pago nacional e internacional y enlace del formulario de inscripción
-- [ ] ¿Habrá modalidad virtual?
+- [ ] Programa científico (cierra el Dr. Guillermo Rivera; objetivo propuesto: 10 dic.) y ponentes internacionales (objetivo: 5 dic.): foto, país y tema de cada uno. La lista de **ponentes nacionales** ya está disponible: enviármela
+- [ ] Comunicaciones orales: ¿se mantienen? criterios, fechas y forma de envío
+- [ ] **Enlace del formulario de inscripción** (para el 15 de diciembre)
+- [ ] Datos que verá quien paga: banco y número de cuenta (o si se envían por WhatsApp al inscribirse), y enlace o correo de PayPal
+- [ ] ¿Descuento para miembros de ALAPCCO o de la ABTCC? (el plan no lo menciona; quité esa tarifa de la página)
+- [ ] ¿Estudiantes de otros países también presentan constancia de estudios?
 - [ ] Certificado: aval y horas
-- [ ] Para quien viene del exterior: traslado desde el aeropuerto, hoteles recomendados, idiomas de las sesiones
+- [ ] Materiales (carpeta, bolígrafo...): auspicio en negociación; en la web dice "materiales del simposio" con [PENDIENTE]
+- [ ] Idiomas de las sesiones y si habrá traducción
+- [ ] ¿Tarifa especial en el Radisson para asistentes de otros países?
 - [ ] WhatsApp de consultas del evento
-- [ ] Auspiciantes (logos)
-- [ ] Que ALAPCCO confirme la lista de ediciones anteriores y el significado de la sigla (su web no lo explica)
+- [ ] ¿Habrá modalidad virtual? (el plan habla solo de presencial)
+- [ ] **Auspiciantes:** ¿se puede nombrar en la web a Laboratorios Bagó y al Hotel Radisson como auspiciantes? Si es así, sus logos (PNG o SVG con fondo transparente)
+- [ ] Que ALAPCCO confirme la lista de ediciones anteriores
+- [ ] ¿Título de la página: "XI SIALAPCCO Bolivia" (como el afiche) o "Simposio Internacional ALAPCCO–ABTCC 2027" (como el plan)?
 
 ## Institución (portada)
 

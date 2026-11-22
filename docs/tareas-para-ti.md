@@ -56,19 +56,24 @@ Ya están en la web con su programa, ponentes, inscripción y WhatsApp, y la por
 
 La decoración navideña (gorrito del logo y nieve) se apaga sola después del 6 de enero en la portada; en las demás páginas, con la primera publicación posterior a esa fecha.
 
-### 5 bis. XI SIALAPCCO Bolivia (12 y 13 de marzo de 2027)
+### 5 bis. XI SIALAPCCO Bolivia (12 y 13 de marzo de 2027, Hotel Radisson)
 
-La página completa del evento ya está hecha, pero **oculta**: el público sigue viendo solo el anuncio corto ("marzo de 2027"). Cuando quieras publicarla, avísame y la hago visible. Para completarla necesito:
+La página completa ya tiene la sede, las tarifas (anticipada y regular), los medios de pago, los refrigerios y el certificado digital, tomados del plan operativo. Sigue **oculta**: el público ve solo el anuncio corto ("marzo de 2027"). El plan dice que la web se publica el **15 de diciembre de 2026**, junto con las inscripciones: avísame unos días antes y la hago visible. Para esa fecha necesito sí o sí:
 
-- [ ] Sede confirmada (nombre, dirección) y horario de cada día.
+- [ ] **Enlace del formulario de inscripción.**
+- [ ] **Hasta qué fecha vale la tarifa anticipada.**
+- [ ] Cómo pagar: banco y cuenta (o si se envían al inscribirse) y PayPal.
+- [ ] WhatsApp de consultas.
+- [ ] Horario de cada día y dirección del hotel.
+
+Y en cuanto los tengan:
+
+- [ ] Programa y ponentes (foto, país y tema de cada uno). La lista de ponentes nacionales ya existe: mándamela.
 - [ ] Lema del evento.
-- [ ] Programa y ponentes (foto, país y tema de cada uno).
-- [ ] Tarifas, fecha límite de la inscripción anticipada y forma de pago (también desde el exterior).
-- [ ] Enlace del formulario de inscripción y WhatsApp de consultas.
 - [ ] Horas y aval del certificado.
-- [ ] Hoteles recomendados y cómo llegar desde el aeropuerto.
-- [ ] Logos de los auspiciantes.
-- [ ] Preguntar a ALAPCCO qué significa exactamente la sigla y confirmar la lista de ediciones anteriores.
+- [ ] Si se puede nombrar a Laboratorios Bagó y al Hotel Radisson como auspiciantes, y sus logos.
+- [ ] ¿Hay descuento para miembros de ALAPCCO o de la ABTCC?
+- [ ] Idiomas de las sesiones y si el Radisson da tarifa especial a quienes vienen de fuera.
 
 ### 5 ter. Para la sección "La institución"
 
