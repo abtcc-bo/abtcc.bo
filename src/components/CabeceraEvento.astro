@@ -245,6 +245,11 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		inset: 0;
 		z-index: 0;
 	}
+	/* Con foto, la cabecera no lleva la decoración del tema (sol y pétalos de fondo): mientras la foto carga se
+	   vería un instante encima del color. Queda el color oscuro liso. */
+	:global(.cabecera-pagina.banda:has(.foto-cabecera)) {
+		background: var(--color-oscuro);
+	}
 	.foto-cabecera img {
 		width: 100%;
 		height: 100%;
