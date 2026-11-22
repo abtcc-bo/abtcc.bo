@@ -1,12 +1,11 @@
 ---
-titulo: XI SIALAPCCO Bolivia
-resumen: El Simposio Internacional ALAPCCO–ABTCC llega a Bolivia. 12 y 13 de marzo de 2027 en el Hotel Radisson de Santa Cruz, con especialistas de América Latina.
+titulo: Simposio Internacional ALAPCCO–ABTCC 2027
+resumen: El XI Simposio Internacional de ALAPCCO llega a Bolivia. 12 y 13 de marzo de 2027 en el Hotel Radisson de Santa Cruz, con especialistas de América Latina.
 # [PENDIENTE: lema o tema central del XI SIALAPCCO → agregar aquí como `lema: ...`]
 seminario:
   presentacion:
     antetitulo: El simposio
     titulo: ¿Qué es el SIALAPCCO?
-  # Programa académico: lo cierra el Dr. Guillermo Rivera (objetivo propuesto: 10 de diciembre de 2026).
   formatos:
     nota: Programa científico en preparación
     lista:
@@ -40,15 +39,13 @@ seminario:
       - { edicion: XI, anio: 2027, lugar: "Santa Cruz, Bolivia" }
   viaje:
     antetitulo: Sede y viaje
-    titulo: Si vienes de otro país, te ayudamos a llegar
-    texto: Santa Cruz de la Sierra es la ciudad más grande de Bolivia, cálida y verde. Aquí reunimos lo que necesitas para organizar tu viaje.
+    titulo: Te esperamos en Santa Cruz
+    texto: Santa Cruz de la Sierra es la ciudad más grande de Bolivia, cálida y verde. Si vienes desde otra ciudad o desde otro país, aquí tienes lo esencial.
     puntos:
       - titulo: La sede
         texto: "Hotel Radisson, Santa Cruz de la Sierra. Las dos jornadas se realizan en el mismo salón. [PENDIENTE: dirección y mapa]"
       - titulo: Cómo llegar
         texto: Aeropuerto Internacional Viru Viru (VVI), a unos 30 minutos del centro de la ciudad en taxi.
-      - titulo: Dónde alojarse
-        texto: "Puedes alojarte en el mismo hotel de la sede o en sus alrededores. [PENDIENTE: ¿tarifa especial del Radisson para asistentes?]"
       - titulo: Pagos desde el exterior
         texto: "Desde Bolivia pagas en bolivianos, por transferencia bancaria; desde otros países, en dólares, por PayPal."
       - titulo: Idiomas
@@ -58,7 +55,7 @@ seminario:
   inscripcion:
     antetitulo: Inscripción
     titulo: Reserva tu lugar
-    texto: "Las inscripciones abren el 15 de diciembre de 2026. Cada tarifa cubre los dos días; quien se inscribe antes paga el precio anticipado, hasta el [PENDIENTE: fecha límite de la tarifa anticipada]. Los cupos son limitados."
+    texto: Cada tarifa cubre los dos días del simposio. Quien se inscribe antes paga el precio anticipado. Los cupos son limitados.
     # Tarifas del plan operativo (por dos días). El monto grande es el anticipado; la nota, el regular.
     # [PENDIENTE: ¿descuento para miembros de ALAPCCO o de la ABTCC?]
     tarifas:
@@ -88,13 +85,13 @@ seminario:
       boton: Quiero recibir novedades
   organizan:
     antetitulo: Organizan
-    texto: La Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales (ALAPCCO) y la ABTCC, su grupo de trabajo en Bolivia.
+    texto: La Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales (ALAPCCO) y la ABTCC, su grupo de trabajo en Bolivia. Con el apoyo del Hotel Radisson Santa Cruz, que recibe el simposio.
   final:
     titulo: Nos vemos en Santa Cruz
-    texto: XI SIALAPCCO Bolivia · 12 y 13 de marzo de 2027 · Hotel Radisson
+    texto: Simposio Internacional ALAPCCO–ABTCC 2027 · 12 y 13 de marzo · Hotel Radisson
     boton: Quiero recibir novedades
 ---
 
-Es el Simposio Internacional que promueve la Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales (ALAPCCO). Cada edición se celebra en un país distinto: los socios de ALAPCCO viajan a encontrarse con la comunidad local y a compartir la evidencia científica más actual.
+Es el Simposio Internacional (SIALAPCCO) que promueve la Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales (ALAPCCO). Cada edición se celebra en un país distinto: los socios de ALAPCCO viajan a encontrarse con la comunidad local y a compartir la evidencia científica más actual.
 
-En su undécima edición, el país anfitrión es Bolivia. Lo organiza la ABTCC, grupo de trabajo de ALAPCCO en el país, durante dos días en el Hotel Radisson de Santa Cruz de la Sierra.
+En su undécima edición, el país anfitrión es Bolivia: por eso esta vez se llama **Simposio Internacional ALAPCCO–ABTCC 2027**. Lo organiza la ABTCC, grupo de trabajo de ALAPCCO en el país, durante dos días en el Hotel Radisson de Santa Cruz de la Sierra.

@@ -15,7 +15,7 @@ portada:
       texto: Miembros y actividades en todo el país
     - titulo: Red ALAPCCO
       texto: Grupo de trabajo en Bolivia de la federación latinoamericana
-    - titulo: Sede del XI SIALAPCCO
+    - titulo: Simposio ALAPCCO–ABTCC
       texto: Santa Cruz de la Sierra, marzo de 2027
   conceptos:
     - Análisis funcional
@@ -113,7 +113,7 @@ portada:
   red:
     antetitulo: Red internacional
     titulo: Grupo de trabajo de ALAPCCO en Bolivia
-    texto: Formamos parte de la Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales, con la que organizamos el XI SIALAPCCO en Santa Cruz.
+    texto: Formamos parte de la Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales, con la que organizamos el Simposio Internacional ALAPCCO–ABTCC 2027 en Santa Cruz.
 ---
 
 <!-- Los textos de la portada están arriba, en bloques (vista src/vistas/Inicio.astro). -->
