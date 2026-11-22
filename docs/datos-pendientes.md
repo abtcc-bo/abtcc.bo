@@ -25,7 +25,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [x] Foto de Alexandra Shand (Alix) ✔
 - [ ] Hojas de vida completas de Guillermo, Halder, Carmen y Leonardo, para llenar "Formación" (universidad y país de cada título; ver los [PENDIENTE] en `src/content/personas/`). La de Alix ya está cargada
 - [x] Cargos de la comisión ✔ (22/11/2026): Carmen, Vicepresidenta; Halder, Secretaría Académica; Alix, Tesorera; Leonardo, Marketing y Publicidad. Orden por cargo: Guillermo, Carmen, Halder, Alix, Leonardo
-- [ ] Cargo de Guillermo: hoy dice "Coordinador". ¿Es "Presidente"?
+- [x] Cargo de Guillermo ✔ Presidente (22/11/2026)
 - [ ] ¿La ABTCC es "Grupo de trabajo de ALAPCCO" (como dice el logo) o "capítulo boliviano de ALAPCCO" (como dice la hoja de vida de Alix)? Definir una sola forma para la web
 - [ ] ¿"Barron" lleva tilde (Barrón)?
 - [ ] Enlaces opcionales de cada integrante (LinkedIn, ORCID, Instagram profesional)

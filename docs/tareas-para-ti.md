@@ -124,6 +124,56 @@ Ninguna pide tarjeta de crédito. Las "claves" que generan **no me las pegues en
 
 ---
 
+## 📋 Próximos proyectos de la web (lista de pendientes, 22/11/2026)
+
+Ideas que pediste anotar. Ninguna está empezada. Van en este orden porque cada una se apoya en la anterior.
+
+### A. CLAPCCO de Argentina (el congreso grande de ALAPCCO)
+
+Es lo más fácil: es un evento más, como el SIALAPCCO.
+
+- **Cómo lo organizaría:** una carpeta de evento nueva (`src/content/eventos/AAAA-MM-DD-clapcco-argentina/`) con `tipo: congreso` y `modalidad: presencial`. Como lo organiza ALAPCCO (no la ABTCC), el botón principal llevaría a la inscripción en la web de ALAPCCO, no a nuestro WhatsApp. Saldría en el listado de eventos, en el calendario y en la portada.
+- **Opcional:** un tema de color propio (como "tajibo" para Santa Cruz de la Sierra), por ejemplo con los colores de Argentina.
+- **Lo que necesito de ti:**
+  - [ ] Nombre exacto y número de edición (¿"X CLAPCCO"?).
+  - [ ] Fechas, ciudad y sede.
+  - [ ] Enlace oficial de inscripción y de información (web de ALAPCCO).
+  - [ ] Afiche o logo del congreso.
+  - [ ] Si hay descuento o beneficio para miembros de la ABTCC.
+
+### B. Busca tu terapeuta (directorio público)
+
+Una página donde cualquier persona busca un terapeuta de la red por ciudad, enfoque o modalidad (presencial o en línea).
+
+- **Cómo lo organizaría:**
+  - Una ficha por terapeuta (como las de la comisión): nombre, foto, títulos, enfoques (TCC, ACT, DBT…), poblaciones (niños, adolescentes, adultos, parejas), ciudad, modalidad y forma de contacto (WhatsApp o correo profesional).
+  - Una página `/es/terapeutas/` con filtros (ciudad, enfoque, población, modalidad) que funcionan en el mismo navegador, sin servidor.
+  - Solo aparecen **miembros activos** que **firmaron su consentimiento** para publicar sus datos. Nunca se publica nada sin permiso escrito.
+  - Se puede empezar con la "Red de terapeutas" que ya existe (centros y profesionales) y sumar personas de a poco.
+- **Lo que necesito de ti:**
+  - [ ] Decidir quién entra (¿solo Miembros Asociados?, ¿con qué requisito de formación?).
+  - [ ] Un formulario de consentimiento para cada terapeuta (te puedo redactar el texto).
+  - [ ] Los datos de cada terapeuta con su foto.
+
+### C. Acceso para socios: inscribirse y bajar libros
+
+El área privada que ya está prevista (hoy dice "en preparación"). Es el proyecto más grande, la "fase 3".
+
+- **Cómo lo organizaría:**
+  - **Entrar con usuario:** cada socio entra con su correo (con Supabase, que es gratuito). Lo privado se verifica en el servidor: nadie sin cuenta puede ver ni descargar nada, aunque tenga el enlace.
+  - **Inscribirse:** un formulario de solicitud de membresía que llega a la comisión. Al aprobarla, la persona recibe su acceso. Más adelante, inscribirse a eventos con un clic y ver sus certificados.
+  - **Biblioteca:** libros, manuales y grabaciones para descargar, solo para socios con la cuota al día. Cada archivo con su ficha (título, autor, tema).
+  - **Panel del socio:** sus datos, el estado de su cuota y sus certificados.
+- **Importante sobre los libros:** solo podemos subir material propio de la ABTCC o de sus autores, o con permiso escrito. Los libros de editoriales no se pueden compartir aunque sea solo para socios.
+- **Lo que necesito de ti:**
+  - [ ] **Dominio propio** (ej. `abtcc.org.bo`): hace falta para mandar correos a los socios.
+  - [ ] Un Gmail de la asociación para crear la cuenta de Supabase.
+  - [ ] La lista de socios actuales (nombre, correo, categoría, cuota al día).
+  - [ ] Los primeros libros o materiales, con el permiso de sus autores.
+  - [ ] Quién de la comisión aprueba las solicitudes nuevas.
+
+---
+
 ## 🔎 Para aparecer en Google
 
 Primer lugar nadie lo garantiza, pero **buscando "ABTCC" o el nombre completo** es muy alcanzable en pocas semanas. En búsquedas generales ("terapia cognitivo conductual Bolivia", "curso DBT Bolivia") se sube poco a poco con contenido y enlaces. La parte técnica ya está hecha (velocidad, celular, mapa del sitio, datos para Google de la asociación, las personas y los eventos).
