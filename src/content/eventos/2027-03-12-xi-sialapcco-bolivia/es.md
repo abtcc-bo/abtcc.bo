@@ -101,10 +101,6 @@ seminario:
       - icono: billetera
         titulo: Pagos desde el exterior
         texto: Desde Bolivia pagas con QR y desde otros países, por PayPal, en dólares. Más abajo te explicamos cómo.
-      - icono: idiomas
-        titulo: Idiomas
-        # [PENDIENTE: idiomas de las sesiones y si habrá traducción]
-        texto: Pronto confirmaremos los idiomas de las sesiones y si habrá traducción.
       - icono: dialogo
         titulo: Una persona que te responde
         texto: Escríbenos por WhatsApp al +591 71402980 y resolvemos tu consulta.
