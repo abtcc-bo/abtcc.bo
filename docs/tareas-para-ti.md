@@ -61,7 +61,8 @@ La decoración navideña (gorrito del logo y nieve) se apaga sola después del 6
 La página completa ya tiene el nombre, la sede (Hotel Radisson, nombrado como apoyo), las tarifas, los medios de pago, los refrigerios y el certificado digital. Sigue **oculta**: el público ve solo el anuncio corto, ya con el nombre nuevo. La web solo informa y difunde; la organización interna no se publica. Cuando quieras que se vea, avísame. Para completarla:
 
 - [ ] Si Laboratorios Bagó acepta aparecer como auspiciante, y los logos (del hotel y de Bagó).
-- [ ] Enlace del formulario de inscripción y WhatsApp de consultas.
+- [ ] **Número de WhatsApp** para las inscripciones (ya no hace falta formulario).
+- [ ] ¿El QR de pago y el PayPal van también en la web o solo se mandan por WhatsApp?
 - [ ] Programa y ponentes (foto, país y tema de cada uno) y lema del evento.
 - [ ] Horas y aval del certificado; idiomas de las sesiones.
 - [ ] Dirección del hotel.

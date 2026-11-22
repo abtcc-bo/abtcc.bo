@@ -46,16 +46,16 @@ seminario:
         texto: "Hotel Radisson, Santa Cruz de la Sierra. Las dos jornadas se realizan en el mismo salón. [PENDIENTE: dirección y mapa]"
       - titulo: Cómo llegar
         texto: Aeropuerto Internacional Viru Viru (VVI), a unos 30 minutos del centro de la ciudad en taxi.
-      - titulo: Pagos desde el exterior
-        texto: "Desde Bolivia pagas en bolivianos, por transferencia bancaria; desde otros países, en dólares, por PayPal."
+      - titulo: Cómo pagar
+        texto: Desde Bolivia, en bolivianos con QR; desde otros países, en dólares con PayPal. Te enviamos los datos por WhatsApp al inscribirte.
       - titulo: Idiomas
         texto: "[PENDIENTE: idiomas de las sesiones y si habrá traducción]"
       - titulo: Una persona que te responde
-        texto: "Escríbenos y resolvemos tu consulta. [PENDIENTE: número de WhatsApp del evento]"
+        texto: Por WhatsApp te atiende una persona del equipo, que responde tus dudas y te acompaña en la inscripción.
   inscripcion:
     antetitulo: Inscripción
     titulo: Reserva tu lugar
-    texto: Cada tarifa cubre los dos días del simposio. Quien se inscribe antes paga el precio anticipado. Los cupos son limitados.
+    texto: Cada tarifa cubre los dos días del simposio. Quien se inscribe antes paga el precio anticipado. Los cupos son limitados. La inscripción se hace por WhatsApp, con una persona del equipo.
     # Tarifas del plan operativo (por dos días). El monto grande es el anticipado; la nota, el regular.
     # [PENDIENTE: ¿descuento para miembros de ALAPCCO o de la ABTCC?]
     tarifas:
@@ -79,17 +79,18 @@ seminario:
       - Refrigerios en ambas jornadas
       - "Materiales del simposio [PENDIENTE: depende del auspicio en negociación]"
       - "Certificado digital, enviado después del evento [PENDIENTE: aval y horas]"
+    # El botón lleva al WhatsApp del evento (`whatsapp` en evento.yaml); mientras no esté, a la página de Contacto.
     aviso:
-      titulo: Entérate primero
-      texto: Escríbenos y te avisamos el día que abran las inscripciones.
-      boton: Quiero recibir novedades
+      titulo: Inscríbete por WhatsApp
+      texto: Escríbenos y una persona del equipo te guía paso a paso. Te envía los datos de pago (QR desde Bolivia, PayPal desde otros países) y confirma tu lugar.
+      boton: Inscribirme por WhatsApp
   organizan:
     antetitulo: Organizan
     texto: La Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales (ALAPCCO) y la ABTCC, su grupo de trabajo en Bolivia. Con el apoyo del Hotel Radisson Santa Cruz, que recibe el simposio.
   final:
     titulo: Nos vemos en Santa Cruz
     texto: Simposio Internacional ALAPCCO–ABTCC 2027 · 12 y 13 de marzo · Hotel Radisson
-    boton: Quiero recibir novedades
+    boton: Inscribirme por WhatsApp
 ---
 
 Es el Simposio Internacional (SIALAPCCO) que promueve la Federación Latinoamericana de Psicoterapias Cognitivas y Conductuales (ALAPCCO). Cada edición se celebra en un país distinto: los socios de ALAPCCO viajan a encontrarse con la comunidad local y a compartir la evidencia científica más actual.

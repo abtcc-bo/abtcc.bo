@@ -77,14 +77,15 @@ La página completa está hecha pero no se publica (`borrador: true` en `src/con
 - [x] Nombre: **Simposio Internacional ALAPCCO–ABTCC 2027** ✔ (22/11/2026); SIALAPCCO = Simposio Internacional ALAPCCO
 - [x] Sede: Hotel Radisson, Santa Cruz ✔. Se puede nombrar como apoyo ✔ (22/11/2026)
 - [x] Tarifas por dos días ✔: estudiantes de Bolivia Bs 240 anticipada / Bs 300 regular; profesionales de Bolivia Bs 480 / Bs 600; estudiantes de otros países USD 25 / USD 30; profesionales de otros países USD 50 / USD 60
-- [x] Medio de pago ✔: cuenta bancaria (Bolivia) y PayPal (exterior)
+- [x] Inscripción **sin formulario** ✔ (22/11/2026): por WhatsApp, guiada por una persona del equipo; pago con QR (Bolivia) o PayPal (exterior), datos que se envían por WhatsApp
 - [x] Refrigerios en ambas jornadas y certificado digital ✔
 - [ ] **Laboratorios Bagó:** ¿se puede nombrar como auspiciante? (la ABTCC lo consulta)
 - [ ] Logo del Hotel Radisson (y de Bagó si acepta), PNG o SVG con fondo transparente. Hoy el apoyo del hotel sale solo en texto
 - [ ] Lema o tema central
 - [ ] Programa científico y ponentes: foto, país y tema de cada uno (incluida la lista de ponentes nacionales)
 - [ ] Comunicaciones orales: ¿se mantienen? criterios y forma de envío
-- [ ] Enlace del formulario de inscripción y WhatsApp de consultas
+- [ ] **Número de WhatsApp** de inscripción (con eso se activan todos los botones "Inscribirme por WhatsApp")
+- [ ] ¿Mostrar también en la web el QR de pago y el enlace de PayPal, o solo enviarlos por WhatsApp?
 - [ ] Dirección del Hotel Radisson y enlace de Google Maps
 - [ ] Certificado: aval y horas
 - [ ] Idiomas de las sesiones y si habrá traducción
