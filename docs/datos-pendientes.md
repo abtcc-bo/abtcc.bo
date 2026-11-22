@@ -16,7 +16,7 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 
 - [ ] Presentación en una frase (para la portada)
 - [x] Objetivo, qué hacemos y principios (del estatuto y reglamento)
-- [ ] ¿Existen una misión y una visión aprobadas? Si no, la página usa el objetivo del estatuto
+- [x] Misión, visión y valores ✔ (22/11/2026): en "Quiénes somos", debajo del objetivo del estatuto
 - [ ] Historia breve
 - [ ] Enfoque (TCC y terapias contextuales)
 - [x] Comisión directiva: nombres y biografías de 5 integrantes

@@ -315,6 +315,7 @@
 	"nosotros": {
 		"atajos": {
 			"objetivo": "Purpose",
+			"mision": "Mission and vision",
 			"que-hacemos": "What we do",
 			"evidencia": "Evidence-based practice",
 			"principios": "Principles",
@@ -323,6 +324,11 @@
 		},
 		"objetivoAntetitulo": "Our purpose",
 		"objetivoTitulo": "Why we exist",
+		"misionAntetitulo": "Our identity",
+		"misionVisionTitulo": "Mission, vision and values",
+		"misionTitulo": "Mission",
+		"visionTitulo": "Vision",
+		"valoresTitulo": "Values",
 		"queHacemosAntetitulo": "What we do",
 		"queHacemosTitulo": "Our lines of work",
 		"evidenciaAntetitulo": "Evidence-based practice",

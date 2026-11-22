@@ -1,30 +1,31 @@
-/* Diseño "azul institucional" (noviembre 2026), cercano al de las asociaciones de la red ALAPCCO: fondo blanco y azules
-   fríos. Azul noche del logo (portada, cabeceras, pie y títulos), azul acero (botones, enlaces y la banda de color) y
-   celeste (realces sobre azul). El rojo, el amarillo y el verde del logo quedan solo en el logo y en la firma tricolor
-   (franja, barra de los rótulos y las tres esferas). Dos letras: Source Serif 4 en títulos (con cursiva propia para las
-   palabras destacadas) y Nunito en textos e interfaz. Cada evento puede traer su propia paleta (ver "Temas de evento",
-   al final). Todo se ajusta desde estas variables. El movimiento se detiene con "reducir movimiento". */
+/* Diseño "verde bosque" (elegido por el equipo el 22/11/2026, de la propuesta de paletas): parte del verde del logo;
+   transmite cuidado y salud. Verde bosque oscuro (portada, cabeceras, pie y títulos), verde de acción (botones y
+   enlaces), verde medio (banda de color) y oro suave (realces sobre verde). El rojo del logo queda solo en el logo y en
+   la firma tricolor (franja, barra de los rótulos y las tres esferas). Dos letras: Source Serif 4 en títulos (con cursiva
+   propia para las palabras destacadas) y Nunito en textos e interfaz. Cada evento puede traer su propia paleta (ver
+   "Temas de evento", al final). Todo se ajusta desde estas variables. El movimiento se detiene con "reducir movimiento".
+   La clase .banda-azul conserva su nombre: es la banda del color oscuro de la marca (hoy verde bosque). */
 :root {
-	--color-fondo: #ffffff;
-	--color-superficie: #f6f9fc;
+	--color-fondo: #fbfcfa;
+	--color-superficie: #f4f8f5;
 	--color-tarjeta: #ffffff;
-	--color-texto: #14263b;
-	--color-texto-suave: #46566a; /* contraste 7:1 sobre blanco: cómodo para leer párrafos largos */
-	--color-titulos: #0b233b;
-	--color-acento: #245f8c; /* azul acero: botones y enlaces */
-	--color-acento-hover: #17486e;
-	--color-acento-suave: #e1ecf5;
-	--color-rotulo: #245f8c; /* rótulos y números de orden sobre fondo claro */
-	--color-realce: #a9d0ee; /* celeste: palabras y detalles destacados sobre azul */
-	--color-boton-realce: #ffffff; /* botón principal sobre azul */
-	--color-borde: #d5e0ea;
-	--color-division: #c9d6e2;
-	--color-banda: #245f8c; /* banda de color en medio de una página (.banda-color) */
-	--color-banda-clara: #e9f0f6; /* fondo alterno de sección (.banda-clara) */
-	--color-oscuro: #0b233b; /* azul del logo */
-	--color-oscuro-profundo: #071a2d;
-	--color-oscuro-texto: #e9ecf2;
-	--color-oscuro-suave: #aab3c5;
+	--color-texto: #1d2b25;
+	--color-texto-suave: #4a5a52; /* contraste 7:1 sobre blanco: cómodo para leer párrafos largos */
+	--color-titulos: #123a2c;
+	--color-acento: #1e6b4f; /* verde de acción: botones y enlaces */
+	--color-acento-hover: #154f3a;
+	--color-acento-suave: #e2efe8;
+	--color-rotulo: #1e6b4f; /* rótulos y números de orden sobre fondo claro */
+	--color-realce: #e9c46a; /* oro suave: palabras y detalles destacados sobre verde */
+	--color-boton-realce: #ffffff; /* botón principal sobre verde */
+	--color-borde: #d9e3dc;
+	--color-division: #cddbd1;
+	--color-banda: #2a7a5c; /* banda de color en medio de una página (.banda-color) */
+	--color-banda-clara: #ebf3ee; /* fondo alterno de sección (.banda-clara) */
+	--color-oscuro: #123a2c; /* verde bosque */
+	--color-oscuro-profundo: #0b281e;
+	--color-oscuro-texto: #e8f0eb;
+	--color-oscuro-suave: #a9c2b3;
 	/* Colores del logo oficial. */
 	--logo-rojo: #b7282a;
 	--logo-amarillo: #ebba3c;
@@ -44,8 +45,8 @@
 	--curva: clamp(1.25rem, 3.5vw, 3rem);
 	/* Permite animar alturas hasta "auto" (despliegue de las preguntas frecuentes). */
 	interpolate-size: allow-keywords;
-	--sombra: 0 1px 2px rgb(20 33 61 / 0.04), 0 12px 32px rgb(20 33 61 / 0.08);
-	--sombra-grande: 0 30px 60px rgb(10 20 40 / 0.18);
+	--sombra: 0 1px 2px rgb(18 40 32 / 0.04), 0 12px 32px rgb(18 40 32 / 0.08);
+	--sombra-grande: 0 30px 60px rgb(8 26 19 / 0.18);
 }
 
 *,
@@ -89,15 +90,15 @@ body::after {
 }
 body::before {
 	inset: 0;
-	background-image: radial-gradient(rgb(20 33 61 / 0.05) 1px, transparent 1.2px);
+	background-image: radial-gradient(rgb(18 58 44 / 0.05) 1px, transparent 1.2px);
 	background-size: 24px 24px;
 }
 body::after {
 	inset: -25%;
 	background:
-		radial-gradient(closest-side, rgb(36 95 140 / 0.09), transparent) 15% 20% / 45% 45% no-repeat,
-		radial-gradient(closest-side, rgb(169 208 238 / 0.22), transparent) 85% 35% / 40% 40% no-repeat,
-		radial-gradient(closest-side, rgb(20 33 61 / 0.05), transparent) 40% 80% / 50% 50% no-repeat;
+		radial-gradient(closest-side, rgb(30 107 79 / 0.08), transparent) 15% 20% / 45% 45% no-repeat,
+		radial-gradient(closest-side, rgb(233 196 106 / 0.14), transparent) 85% 35% / 40% 40% no-repeat,
+		radial-gradient(closest-side, rgb(18 58 44 / 0.05), transparent) 40% 80% / 50% 50% no-repeat;
 	animation: deriva 30s ease-in-out infinite alternate;
 	will-change: transform;
 }
@@ -131,15 +132,15 @@ body::after {
 }
 /* Texto secundario sobre cada color de banda (bajadas, migas, descripciones). */
 .banda-color {
-	--texto-banda: #e3eef7;
-	--texto-banda-suave: #c5dbec;
-	/* Sobre el azul acero el celeste se aclara para que los textos pequeños se lean bien. */
-	--color-realce: #d6e8f6;
+	--texto-banda: #f2f8f4;
+	--texto-banda-suave: #e8f3ec;
+	/* Sobre el verde medio el oro se aclara para que los textos pequeños se lean bien. */
+	--color-realce: #fbefc9;
 	background: var(--color-banda);
 }
 .banda-azul {
-	--texto-banda: #d3dbe8;
-	--texto-banda-suave: #aebbd0;
+	--texto-banda: #d5e3da;
+	--texto-banda-suave: #a9c2b3;
 	background: var(--color-oscuro);
 }
 :is(.banda-color, .banda-azul) :is(h1, h2, h3) {
@@ -156,13 +157,13 @@ body::after {
 	border-start-start-radius: var(--radio-hoja);
 	border-end-end-radius: var(--radio-hoja);
 }
-/* Cabecera azul de cada sección: borde inferior en curva suave. */
+/* Cabecera verde de cada sección: borde inferior en curva suave. */
 .cabecera-pagina {
 	overflow: hidden;
 	border-end-start-radius: 50% var(--curva);
 	border-end-end-radius: 50% var(--curva);
 }
-/* Migas dentro de la cabecera azul. */
+/* Migas dentro de la cabecera verde. */
 .cabecera-pagina .migas {
 	position: relative;
 	z-index: 1;
@@ -608,7 +609,7 @@ a:hover .flecha {
 .papel-tajibo {
 	background: #fff7ec;
 }
-/* La banda de color de un evento con tema conserva el realce del tema (el sitio lo aclara sobre el azul acero). */
+/* La banda de color de un evento con tema conserva el realce del tema (el sitio lo aclara sobre la banda de color). */
 :is(.tema-tajibo, .papel-tajibo, .tajibo) .banda-color {
 	--texto-banda: #e3f0e6;
 	--texto-banda-suave: #c4dccb;

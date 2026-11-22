@@ -7,6 +7,19 @@ nosotros:
     - La Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales es una asociación civil sin fines de lucro, de ámbito nacional, con sede en Santa Cruz de la Sierra.
     - "[PENDIENTE: 2–3 líneas más de presentación: desde cuándo existimos y a quiénes reunimos]"
   objetivo: Promover el desarrollo, la difusión, la formación, la investigación y la aplicación ética y científicamente fundamentada de las terapias cognitivas conductuales y contextuales, contribuyendo a la salud mental, el desarrollo científico y el bienestar de la población boliviana.
+  mision: Fortalecer las terapias cognitivo-conductuales y contextuales en Bolivia mediante la formación, la colaboración y la difusión de prácticas éticas, científicas y culturalmente pertinentes.
+  vision: Ser la organización boliviana de referencia en terapias cognitivo-conductuales y contextuales, reconocida por su calidad académica, rigor científico y compromiso con el bienestar psicológico.
+  valores:
+    - Rigor científico
+    - Ética
+    - Colaboración
+    - Pertinencia cultural
+    - Inclusión
+    - Formación continua
+    - Accesibilidad
+    - Innovación
+    - Compromiso social
+    - Transparencia
   lineas:
     - titulo: Formación
       icono: titulo

@@ -315,6 +315,7 @@
 	"nosotros": {
 		"atajos": {
 			"objetivo": "Objetivo",
+			"mision": "Missão e visão",
 			"que-hacemos": "O que fazemos",
 			"evidencia": "Prática baseada em evidências",
 			"principios": "Princípios",
@@ -323,6 +324,11 @@
 		},
 		"objetivoAntetitulo": "Nosso objetivo",
 		"objetivoTitulo": "Por que existimos",
+		"misionAntetitulo": "Nossa identidade",
+		"misionVisionTitulo": "Missão, visão e valores",
+		"misionTitulo": "Missão",
+		"visionTitulo": "Visão",
+		"valoresTitulo": "Valores",
 		"queHacemosAntetitulo": "O que fazemos",
 		"queHacemosTitulo": "Nossas linhas de trabalho",
 		"evidenciaAntetitulo": "Prática baseada em evidências",

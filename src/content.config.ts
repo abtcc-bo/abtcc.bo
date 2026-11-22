@@ -371,6 +371,10 @@ const nosotros = z.object({
 	/** Párrafos de presentación (arriba de todo). */
 	presentacion: z.array(z.string()),
 	objetivo: z.string(),
+	/** Misión, visión y valores aprobados por la asociación (se muestran juntos, debajo del objetivo). */
+	mision: z.string().optional(),
+	vision: z.string().optional(),
+	valores: z.array(z.string()).default([]),
 	lineas: z.array(textoConIcono),
 	congreso: z.object({ antetitulo: z.string(), titulo: z.string() }),
 	evidencia: z.object({ titulo: z.string(), texto: z.string(), pilares: z.array(z.string()) }),
