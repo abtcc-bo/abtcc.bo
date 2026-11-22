@@ -5,8 +5,12 @@ descripcion: Asociación Boliviana de Terapias Cognitivas Conductuales y Context
 portada:
   antetitulo: Bolivia · Red latinoamericana ALAPCCO
   tituloPrevio: Asociación Boliviana de
-  titulo: Terapias Cognitivas Conductuales y
-  tituloCursiva: Contextuales
+  titulo: Terapias
+  # Las tres C del nombre, cada una con una esfera del logo (roja, amarilla y verde).
+  tresC:
+    - Cognitivas
+    - Conductuales
+    - y Contextuales
   bajada: Impulsamos la formación, la investigación y la práctica ética de las terapias basadas en evidencia, al servicio de la salud mental en Bolivia.
   hechos:
     - titulo: Asociación civil
