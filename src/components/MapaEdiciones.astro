@@ -54,7 +54,7 @@ const ultima = puntos.at(-1);
 	<svg viewBox="0 0 504 540" role="img" aria-label={titulo}>
 		<path class="continente" d={CONTINENTE} />
 		<path class="recorrido" d={recorrido} pathLength="1" />
-		{tramos.map((t) => <path class="tramo" d={t.d} data-hasta={t.hasta} />)}
+		{tramos.map((t) => <path class="tramo" d={t.d} data-tramo-hasta={t.hasta} />)}
 		{
 			puntos.map((p, i) => (
 				<g class:list={['sede', { actual: p === ultima }]} data-orden={i} data-edicion={p.indice}>
@@ -270,7 +270,7 @@ const ultima = puntos.at(-1);
 		const viajero = mapa.querySelector<SVGGElement>('.viajero');
 		if (reducir || !viajero) continue;
 		const tramos = new Map<number, SVGPathElement>();
-		for (const t of mapa.querySelectorAll<SVGPathElement>('.tramo')) tramos.set(Number(t.dataset.hasta), t);
+		for (const t of mapa.querySelectorAll<SVGPathElement>('.tramo')) tramos.set(Number(t.dataset.tramoHasta), t);
 		const total = Math.max(...tarjetas.keys(), ...sedes.keys());
 
 		let visible = false;
