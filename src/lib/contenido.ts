@@ -1,6 +1,7 @@
 // Acceso al contenido ya combinado y validado. Las vistas usan estas funciones, no getCollection directamente.
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { IDIOMAS, esIdioma, ruta, type Alternos, type Idioma, type Seccion } from '../i18n';
+import { VER_BORRADORES } from './vistaPrevia';
 
 /** "es/mi-articulo" → "es". */
 export function idiomaDeEntrada(id: string): Idioma {
@@ -41,8 +42,9 @@ function eventosCombinados() {
 	if (cacheEventos && !import.meta.env.DEV) return cacheEventos;
 	cacheEventos = (async () => {
 		const [todos, textos] = await Promise.all([getCollection('eventos'), getCollection('eventosTextos')]);
-		// Los eventos en preparación (`borrador: true`) no se publican: solo existen al trabajar en la web.
-		const borradores = new Set(todos.filter((d) => d.data.borrador && !import.meta.env.DEV).map((d) => d.id));
+		// Los eventos en preparación (`borrador: true`) no se publican: solo existen al trabajar en la web y en las
+		// versiones de prueba de Cloudflare (ver src/lib/vistaPrevia.ts).
+		const borradores = new Set(todos.filter((d) => d.data.borrador && !VER_BORRADORES).map((d) => d.id));
 		const datos = todos.filter((d) => !borradores.has(d.id));
 		const mapa = new Map(datos.map((d) => [d.id, { datos: d, textos: {} as Partial<Record<Idioma, CollectionEntry<'eventosTextos'>>> }]));
 		for (const texto of textos) {
@@ -108,9 +110,9 @@ export function textosDePersona(persona: CollectionEntry<'personas'>, idioma: Id
 
 // ---------- Blog ----------
 
-/** Artículos publicados en `idioma`, del más reciente al más antiguo. Los borradores solo se ven en desarrollo. */
+/** Artículos publicados en `idioma`, del más reciente al más antiguo. Los borradores solo se ven en desarrollo y en las versiones de prueba. */
 export async function obtenerArticulos(idioma: Idioma): Promise<CollectionEntry<'blog'>[]> {
-	const articulos = await getCollection('blog', (a) => idiomaDeEntrada(a.id) === idioma && (import.meta.env.DEV || !a.data.borrador));
+	const articulos = await getCollection('blog', (a) => idiomaDeEntrada(a.id) === idioma && (VER_BORRADORES || !a.data.borrador));
 	return articulos.sort((a, b) => b.data.publicado.getTime() - a.data.publicado.getTime());
 }
 
@@ -123,7 +125,7 @@ export function slugDeArticulo(articulo: Articulo): string {
 
 /** URL del artículo en cada idioma en que está traducido (las traducciones comparten `clave`). */
 export async function alternosDeArticulo(articulo: Articulo): Promise<Alternos> {
-	const traducciones = await getCollection('blog', (a) => a.data.clave === articulo.data.clave && (import.meta.env.DEV || !a.data.borrador));
+	const traducciones = await getCollection('blog', (a) => a.data.clave === articulo.data.clave && (VER_BORRADORES || !a.data.borrador));
 	return Object.fromEntries(traducciones.map((a) => [idiomaDeEntrada(a.id), ruta('blog', idiomaDeEntrada(a.id), slugDeArticulo(a))]));
 }
 

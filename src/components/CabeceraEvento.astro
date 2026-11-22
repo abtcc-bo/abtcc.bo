@@ -25,6 +25,11 @@ const { titulo, lema, programa } = evento.texto.data;
 const palabras = titulo.trim().split(' ');
 const ultima = palabras.pop();
 const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.mensajeWhatsapp, { evento: titulo }));
+// Inscripción por WhatsApp (sin formulario): botón principal que abre el chat con un mensaje para inscribirse.
+const inscripcionWhatsapp =
+	datos.inscripcion_whatsapp && datos.whatsapp && datos.estado === 'programado' && !datos.inscripcion && !datos.por_confirmar
+		? contactoWhatsapp(datos.whatsapp, formato(ev.mensajeInscripcion, { evento: titulo }))
+		: undefined;
 const lugar = datos.modalidad !== 'online' && datos.lugar ? ` · ${datos.lugar.ciudad}` : '';
 const navidad = datos.tema === 'navidad';
 const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
@@ -70,6 +75,13 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 				inscripcionAbierta(evento) && datos.inscripcion && (
 					<a class="boton boton-realce" href={datos.inscripcion.url} rel="noopener">
 						{textos.comun.inscribirme} <span class="flecha" aria-hidden="true">→</span>
+					</a>
+				)
+			}
+			{
+				inscripcionWhatsapp && (
+					<a class="boton boton-realce" href={inscripcionWhatsapp.url} rel="noopener">
+						{ev.inscribirmeWhatsapp} <span class="flecha" aria-hidden="true">→</span>
 					</a>
 				)
 			}

@@ -157,6 +157,8 @@
 			"cierre": "Closing",
 			"pausa": "Break"
 		},
+		"inscribirmeWhatsapp": "Register via WhatsApp",
+		"mensajeInscripcion": "Hello, I would like to register for {evento}.",
 		"mensajeWhatsapp": "Hello, I would like information about {evento}.",
 		"costoHasta": "until {fecha}",
 		"costoDesde": "from {fecha}",

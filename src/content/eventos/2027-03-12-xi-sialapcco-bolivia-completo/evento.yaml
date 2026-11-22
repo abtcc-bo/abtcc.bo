@@ -26,4 +26,5 @@ lugar:
 tema: tajibo
 costos_por_confirmar: true
 whatsapp: "59171402980"
+inscripcion_whatsapp: true
 imagen: ./afiche.webp

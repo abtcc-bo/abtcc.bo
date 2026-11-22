@@ -157,6 +157,8 @@
 			"cierre": "Cierre",
 			"pausa": "Pausa"
 		},
+		"inscribirmeWhatsapp": "Inscribirme por WhatsApp",
+		"mensajeInscripcion": "Hola, quiero inscribirme en {evento}.",
 		"mensajeWhatsapp": "Hola, quiero información sobre {evento}.",
 		"costoHasta": "hasta el {fecha}",
 		"costoDesde": "desde el {fecha}",

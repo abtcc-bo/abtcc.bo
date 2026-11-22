@@ -86,6 +86,11 @@ const eventos = defineCollection({
 				borrador: z.boolean().default(false),
 				/** WhatsApp para consultas, con código de país y sin espacios ni "+": "59170623387". */
 				whatsapp: z.string().regex(/^\d{8,15}$/, 'WhatsApp con código de país, solo números: "59170623387".').optional(),
+				/**
+				 * true = la inscripción se hace por WhatsApp con una persona del equipo (sin formulario): la cabecera muestra
+				 * el botón "Inscribirme por WhatsApp". Necesita `whatsapp`.
+				 */
+				inscripcion_whatsapp: z.boolean().default(false),
 				/** true mientras la inscripción está abierta pero aún no se publican los costos (se muestra "Por confirmar"). */
 				costos_por_confirmar: z.boolean().default(false),
 				/**
@@ -96,6 +101,7 @@ const eventos = defineCollection({
 			})
 			.refine((e) => e.modalidad || e.por_confirmar, { error: 'Indica la "modalidad" (presencial, online o hibrido).', path: ['modalidad'] })
 			.refine((e) => !e.modalidad || e.modalidad === 'online' || e.lugar, { error: 'Un evento presencial o híbrido necesita "lugar".', path: ['lugar'] })
+			.refine((e) => !e.inscripcion_whatsapp || e.whatsapp, { error: '"inscripcion_whatsapp" necesita el número en "whatsapp".', path: ['whatsapp'] })
 			.refine((e) => !e.fin || e.fin > e.inicio, { error: '"fin" debe ser posterior a "inicio".', path: ['fin'] })
 			.refine((e) => e.gratuito || e.costos.length > 0 || e.costos_por_confirmar || e.solo_socios || e.por_confirmar || (e.fin ?? e.inicio) < new Date(), {
 				error: 'Indica los "costos" o marca "gratuito: true" (no hace falta en eventos ya realizados).',

@@ -25,7 +25,8 @@ const { titulo } = evento.texto.data;
 const s = evento.texto.data.seminario!;
 const { Content } = await render(evento.texto);
 const abierta = inscripcionAbierta(evento) && datos.inscripcion;
-const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(textos.eventos.mensajeWhatsapp, { evento: titulo }));
+const mensaje = datos.inscripcion_whatsapp ? textos.eventos.mensajeInscripcion : textos.eventos.mensajeWhatsapp;
+const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(mensaje, { evento: titulo }));
 // Para avisar o consultar: la inscripción si ya abrió; si no, el WhatsApp del evento o la página de contacto.
 const enlaceAviso = abierta ? datos.inscripcion!.url : whatsapp ? whatsapp.url : ruta('contacto', idioma);
 const ultima = s.historia?.ediciones.at(-1);
