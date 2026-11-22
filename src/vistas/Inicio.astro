@@ -5,6 +5,7 @@
 // organiza la asociación, red de terapeutas y contacto.
 import type { CollectionEntry } from 'astro:content';
 import AlbumPortada from '../components/AlbumPortada.astro';
+import EsferasPortada from '../components/EsferasPortada.astro';
 import BandaEvento from '../components/BandaEvento.astro';
 import CarruselEventos from '../components/CarruselEventos.astro';
 import CintaConceptos from '../components/CintaConceptos.astro';
@@ -78,6 +79,7 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 			)
 		}
 	</div>
+	{!clara && <EsferasPortada />}
 	<div class="lateral">
 		{
 			conAlbum ? (
@@ -914,6 +916,32 @@ const conPrograma = destacado && destacado.texto.data.programa.length > 0;
 		}
 		.lateral {
 			justify-self: start;
+		}
+		/* Pantallas medianas y celulares: el álbum baja debajo del título y a su lado aparecen las esferas del logo. */
+		.portada :global(.esferas-portada) {
+			display: block;
+		}
+		.lateral {
+			grid-column: 1 / -1;
+		}
+	}
+	@media (min-width: 36.01rem) and (max-width: 56rem) {
+		.portada {
+			grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+			gap: 3rem 1.5rem;
+		}
+		.portada :global(.esferas-portada) {
+			align-self: center;
+			margin-right: -1.5rem;
+		}
+	}
+	/* Celular: las esferas, más chicas, arriba a la derecha, antes del texto. */
+	@media (max-width: 36rem) {
+		.portada :global(.esferas-portada) {
+			order: -1;
+			justify-self: end;
+			width: 8.5rem;
+			margin: -1.5rem -0.5rem -2.5rem 0;
 		}
 	}
 	@media (max-width: 36rem) {
