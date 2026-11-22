@@ -11,7 +11,7 @@ portada:
     - Cognitivas
     - Conductuales
     - y Contextuales
-  bajada: Impulsamos la formación, la investigación y la práctica ética de las terapias basadas en evidencia, al servicio de la salud mental en Bolivia.
+  bajada: Impulsamos la formación, la investigación y la práctica ética de las terapias basadas en evidencia, al servicio de la salud psicológica en Bolivia.
   hechos:
     - titulo: Asociación civil
       texto: Científica y profesional, sin fines de lucro
