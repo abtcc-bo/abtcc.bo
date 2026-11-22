@@ -172,6 +172,27 @@ const eventosTextos = defineCollection({
 		/** Título de la banda final (con su parte en cursiva). */
 		cierre: z.object({ titulo: z.string(), cursiva: z.string() }).optional(),
 		/**
+		 * Anuncio emergente: ventana grande que aparece sobre cualquier página del sitio (menos la del propio evento)
+		 * con una X para cerrarla, y lleva a la inscripción. La dibuja AnuncioEmergente.astro (en Base.astro); solo
+		 * sale el del próximo evento que lo tenga. Título en tres partes: `realce` (dorado), `texto` y `cursiva`
+		 * ("XI" + "SIALAPCCO" + "Bolivia"). `sello`: hasta 3 líneas del sello girado ("YA ESTÁ" / "PREVENTA" /
+		 * "abierta", la última en cursiva). `foto`: si falta, usa `foto_cabecera`. `logo_aliado`: logo BLANCO de
+		 * quien organiza junto con la ABTCC. `hasta`: desde esa fecha deja de salir.
+		 */
+		anuncio: z
+			.object({
+				antetitulo: z.string(),
+				titulo: z.object({ realce: z.string().optional(), texto: z.string(), cursiva: z.string().optional() }),
+				sello: z.array(z.string()).max(3).default([]),
+				boton: z.string(),
+				nota: z.string().optional(),
+				foto: image().optional(),
+				logo_aliado: image().optional(),
+				nombre_aliado: z.string().optional(),
+				hasta: fechaHora.optional(),
+			})
+			.optional(),
+		/**
 		 * Página de un seminario o congreso que todavía no tiene programa hora a hora (XI SIALAPCCO): qué es y sus
 		 * formatos, historia de las ediciones, sede y viaje, tarifas y banda final. La dibuja EventoSeminario.astro.
 		 */

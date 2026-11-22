@@ -7,6 +7,7 @@ import '@fontsource-variable/nunito/wght-italic.css';
 import '../styles/global.css';
 import Encabezado from '../components/Encabezado.astro';
 import Pie from '../components/Pie.astro';
+import AnuncioEmergente from '../components/AnuncioEmergente.astro';
 import Migas, { type Miga } from '../components/Migas.astro';
 import JsonLd from '../components/JsonLd.astro';
 import { ORGANIZACION } from '../datos/organizacion';
@@ -141,6 +142,7 @@ const migasCompletas = nombreEnMigas ? [...migas, { nombre: nombreEnMigas, href:
 			<slot />
 		</main>
 		<Pie idioma={idioma} />
+		{!noIndexar && <AnuncioEmergente idioma={idioma} />}
 		<script>
 			// Animación suave al bajar: lo que todavía no está en pantalla aparece con un leve deslizamiento.
 			// Solo si el usuario no pidió "reducir movimiento". Sin JavaScript todo se ve normal.

@@ -249,6 +249,11 @@
 		"pausar": "Pause photos",
 		"reanudar": "Play photos"
 	},
+	"ventanaAnuncio": {
+		"etiqueta": "Announcement",
+		"cerrar": "Close announcement",
+		"horas": "h"
+	},
 	"destacado": {
 		"etiqueta": "Featured event",
 		"faltan": "Time left",

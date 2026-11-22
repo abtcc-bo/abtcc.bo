@@ -2,6 +2,22 @@
 titulo: XI SIALAPCCO Bolivia
 resumen: El simposio internacional de ALAPCCO llega a Bolivia. 12 y 13 de marzo de 2027 en el Hotel Radisson de Santa Cruz de la Sierra, con especialistas de América Latina.
 # [PENDIENTE: lema o tema central del XI SIALAPCCO → agregar aquí como `lema: ...`]
+# Ventana de anuncio que aparece al entrar a la web (diseño "Web · banner de portada", 22/11/2026). Para quitarla,
+# borrar este bloque. Para que deje de salir sola en una fecha: `hasta: "AAAA-MM-DDT23:59-04:00"`.
+anuncio:
+  antetitulo: Simposio internacional ALAPCCO
+  titulo:
+    realce: XI
+    texto: SIALAPCCO
+    cursiva: Bolivia
+  sello:
+    - YA ESTÁ
+    - PREVENTA
+    - abierta
+  boton: Quiero inscribirme
+  nota: Por primera vez en Bolivia
+  logo_aliado: ./alapcco-blanco.png
+  nombre_aliado: ALAPCCO
 seminario:
   cuenta_regresiva: Faltan
   datos_clave:

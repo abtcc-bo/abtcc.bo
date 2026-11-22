@@ -249,6 +249,11 @@
 		"pausar": "Pausar fotos",
 		"reanudar": "Mover fotos"
 	},
+	"ventanaAnuncio": {
+		"etiqueta": "Anuncio",
+		"cerrar": "Cerrar anuncio",
+		"horas": "h"
+	},
 	"destacado": {
 		"etiqueta": "Evento destacado",
 		"faltan": "Faltan",
