@@ -6,7 +6,7 @@
 #   1. Borrar la carpeta 2027-03-01-xi-sialapcco-bolivia.
 #   2. Cambiar el nombre de esta carpeta a 2027-03-12-xi-sialapcco-bolivia (así conserva la misma dirección).
 #   3. Quitar la línea `borrador: true`.
-#   4. Agregar `whatsapp: "591..."` (número del evento). No hay formulario: la inscripción la guía una persona por
+#   4. WhatsApp del evento ya cargado (`whatsapp`). No hay formulario: la inscripción la guía una persona por
 #      WhatsApp y el pago es con QR (Bolivia) o PayPal (exterior). Sin `inscripcion`, los botones van al WhatsApp.
 #
 # Datos: minuta de la reunión con ALAPCCO (30/10/2026) y plan del simposio (22/11/2026).
@@ -14,7 +14,7 @@
 # NO se publica (pedido de la ABTCC, 22/11/2026). Sede: Hotel Radisson, Santa Cruz (se puede nombrar como apoyo).
 # Las tarifas (anticipada y regular, por dos días) están en el bloque `seminario.inscripcion` de es.md.
 # No se cargan como `costos` (el cambio de anticipada a regular no tiene fecha publicada).
-# [PENDIENTE: número de WhatsApp de inscripción, dirección y mapa de la sede, aval y horas del certificado]
+# [PENDIENTE: dirección y mapa de la sede, aval y horas del certificado]
 borrador: true
 tipo: simposio
 inicio: "2027-03-12T09:00-04:00"
@@ -25,4 +25,5 @@ lugar:
   ciudad: Santa Cruz de la Sierra
 tema: tajibo
 costos_por_confirmar: true
+whatsapp: "59171402980"
 imagen: ./afiche.webp

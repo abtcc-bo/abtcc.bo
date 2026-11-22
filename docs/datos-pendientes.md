@@ -84,7 +84,7 @@ La página completa está hecha pero no se publica (`borrador: true` en `src/con
 - [ ] Lema o tema central
 - [ ] Programa científico y ponentes: foto, país y tema de cada uno (incluida la lista de ponentes nacionales)
 - [ ] Comunicaciones orales: ¿se mantienen? criterios y forma de envío
-- [ ] **Número de WhatsApp** de inscripción (con eso se activan todos los botones "Inscribirme por WhatsApp")
+- [x] WhatsApp de inscripción ✔: +591 71402980 (22/11/2026)
 - [ ] ¿Mostrar también en la web el QR de pago y el enlace de PayPal, o solo enviarlos por WhatsApp?
 - [ ] Dirección del Hotel Radisson y enlace de Google Maps
 - [ ] Certificado: aval y horas
