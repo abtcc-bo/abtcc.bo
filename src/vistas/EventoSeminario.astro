@@ -111,8 +111,8 @@ const creditosViaje = (s.viaje?.fotos ?? []).filter((f) => f.credito);
 						<MapaEdiciones ediciones={s.historia.ediciones} titulo={s.historia.titulo} />
 					</div>
 					<ol>
-						{s.historia.ediciones.map((e) => (
-							<li class:list={['tarjeta', { actual: e === ultima }]}>
+						{s.historia.ediciones.map((e, i) => (
+							<li class:list={['tarjeta', { actual: e === ultima }]} data-edicion={i}>
 								<strong>
 									{e.edicion} · {e.anio}
 								</strong>
@@ -612,6 +612,23 @@ const creditosViaje = (s.viaje?.fotos ?? []).filter((f) => f.credito);
 	.historia .actual strong,
 	.historia .actual span {
 		color: #fff;
+	}
+	/* Tarjeta encendida por el viaje del mapa (o con el mouse encima): se levanta y toma el color del rótulo. */
+	.historia li {
+		transition:
+			transform 0.35s ease,
+			border-color 0.3s,
+			box-shadow 0.35s;
+	}
+	.historia li:is(.encendida, :hover) {
+		border-color: var(--color-rotulo);
+		box-shadow:
+			0 0 0 1px var(--color-rotulo),
+			0 10px 24px color-mix(in srgb, var(--color-rotulo), transparent 78%);
+		transform: translateY(-3px);
+	}
+	.historia li:not(.actual):is(.encendida, :hover) strong {
+		color: var(--color-rotulo);
 	}
 
 	/* ---------- Sede y viaje ---------- */

@@ -2,7 +2,11 @@
 // Mapa del recorrido de un seminario o simposio por América Latina: la silueta del continente, un punto por cada
 // edición con sede (campos `lon` / `lat` de `historia.ediciones`) y una línea punteada que los une en orden y se
 // dibuja al aparecer en pantalla (clase `animado`, script en EventoSeminario.astro). La última edición late.
-// La silueta es una simplificación hecha a mano (proyección equirectangular, 6 px por grado).
+// Después, un puntito luminoso viaja por la ruta de edición en edición, sin parar: al llegar a cada sede la enciende, y
+// también su tarjeta en la lista de ediciones (`li[data-edicion]` de la misma sección; las ediciones en línea, sin
+// punto en el mapa, se encienden solo en la lista). Al pasar el mouse por una tarjeta se señala su punto.
+// Con "reducir movimiento" no hay viaje. La silueta es una simplificación hecha a mano (proyección equirectangular,
+// 6 px por grado).
 interface Edicion {
 	edicion: string;
 	anio: number;
@@ -24,7 +28,9 @@ const CONTINENTE =
 	'M19.2 3L42 10.2L58.8 7.2L69.6 7.2L81 20.4L90 24L99.6 19.2L111 33L124.8 42L121.8 48L123.6 69L132 82.8L141 88.8L156 86.4L165 81L165.6 70.8L186 69L178.8 87L178.2 103.8L192 102L207.6 108.6L205.8 132.6L213 141L219 144L231 140.4L243.6 146.4L247.2 146.4L255 135.6L261 132L276 126L279 133.2L288 127.2L297 135L312 134.4L324 134.4L336 133.8L345 147L357 156.6L366 162L378 162.6L393 168L400.8 174L408 198L417 205.2L442.2 213L459 215.4L477 220.2L495 229.2L499.2 240L496.8 252L477 276L474 303L462 330L448.8 336L426 342L417 354L405 381L387.6 400.2L372 407.4L357.6 405.6L367.8 417L363 426L334.8 430.8L318 444L326.4 454.8L318 468L303 477L294 498L298.2 511.8L312 528L297 531L282 522L264 516L255 498L261 474L265.2 447L267 420L277.8 396L278.4 378L285 342L286.2 309L279 303L250.8 279L231 243L220.8 225L225 204L235.2 189L243 159L240 147L228 153.6L207 148.2L193.8 138L192 126L180 118.8L162 114.6L153 111L132 103.8L102 93L76.2 81L75 72L54 45L42 24L19.2 9Z M5.4 3L8.4 12L13.8 21L24 30L31.2 42L39 51L48 60.6L51 58.8L44.4 52.2L39.6 42L31.2 27L19.8 12Z';
 
 const puntos = ediciones
-	.filter((e): e is Edicion & { lon: number; lat: number } => e.lon !== undefined && e.lat !== undefined)
+	// `indice`: posición en la lista completa de ediciones (incluidas las que no tienen sede en el mapa).
+	.map((e, indice) => ({ ...e, indice }))
+	.filter((e): e is Edicion & { indice: number; lon: number; lat: number } => e.lon !== undefined && e.lat !== undefined)
 	.map((e) => ({ ...e, x: X(e.lon), y: Y(e.lat) }))
 	// El número de la edición va a la derecha del punto, salvo que haya otra sede muy cerca a su derecha
 	// (Buenos Aires y Montevideo): entonces va a la izquierda, para que no se encimen.
@@ -33,25 +39,25 @@ const puntos = ediciones
 		izquierda: todos.some((q) => q !== p && Math.hypot(q.x - p.x, q.y - p.y) < 30 && q.x > p.x),
 	}));
 // Línea suave entre las sedes: cada tramo es una curva que se arquea hacia un costado.
-const recorrido = puntos
-	.map((p, i) => {
-		if (i === 0) return `M${p.x} ${p.y}`;
-		const a = puntos[i - 1];
-		const mx = (a.x + p.x) / 2 + (p.y - a.y) * 0.18;
-		const my = (a.y + p.y) / 2 - (p.x - a.x) * 0.18;
-		return `Q${mx.toFixed(1)} ${my.toFixed(1)} ${p.x} ${p.y}`;
-	})
-	.join(' ');
+const curva = (a: { x: number; y: number }, p: { x: number; y: number }) => {
+	const mx = (a.x + p.x) / 2 + (p.y - a.y) * 0.18;
+	const my = (a.y + p.y) / 2 - (p.x - a.x) * 0.18;
+	return `Q${mx.toFixed(1)} ${my.toFixed(1)} ${p.x} ${p.y}`;
+};
+const recorrido = puntos.map((p, i) => (i === 0 ? `M${p.x} ${p.y}` : curva(puntos[i - 1], p))).join(' ');
+// Cada tramo por separado (invisible): el viajero los recorre uno por uno.
+const tramos = puntos.slice(1).map((p, i) => ({ hasta: p.indice, d: `M${puntos[i].x} ${puntos[i].y} ${curva(puntos[i], p)}` }));
 const ultima = puntos.at(-1);
 ---
 
-<figure class="mapa">
+<figure class="mapa" data-mapa-ediciones>
 	<svg viewBox="0 0 504 540" role="img" aria-label={titulo}>
 		<path class="continente" d={CONTINENTE} />
 		<path class="recorrido" d={recorrido} pathLength="1" />
+		{tramos.map((t) => <path class="tramo" d={t.d} data-hasta={t.hasta} />)}
 		{
 			puntos.map((p, i) => (
-				<g class:list={['sede', { actual: p === ultima }]} data-orden={i}>
+				<g class:list={['sede', { actual: p === ultima }]} data-orden={i} data-edicion={p.indice}>
 					{p === ultima && <circle class="onda" cx={p.x} cy={p.y} r="9" />}
 					<circle class="punto" cx={p.x} cy={p.y} r={p === ultima ? 8 : 5.5} />
 					<text x={p.x + (p.izquierda ? -11 : 11)} y={p.y + 5} text-anchor={p.izquierda ? 'end' : 'start'}>
@@ -60,6 +66,12 @@ const ultima = puntos.at(-1);
 				</g>
 			))
 		}
+		{puntos.length > 1 && (
+			<g class="viajero" aria-hidden="true">
+				<circle class="halo" r="13" />
+				<circle class="luz" r="5" />
+			</g>
+		)}
 		{/* Nombre de la sede actual, en dos líneas ("Santa Cruz de la Sierra" / "Bolivia") para que quepa. */}
 		{ultima && (
 			<text class="etiqueta-actual" x={ultima.x + 14} y={ultima.y - 30}>
@@ -107,6 +119,42 @@ const ultima = puntos.at(-1);
 	.onda {
 		fill: var(--color-rotulo);
 		opacity: 0;
+	}
+	.tramo {
+		fill: none;
+		stroke: none;
+	}
+	/* Sede encendida (por el viajero) o señalada (mouse sobre su tarjeta): el punto crece y toma el color del rótulo. */
+	.punto {
+		transform-box: fill-box;
+		transform-origin: center;
+		transition:
+			transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+			fill 0.3s;
+	}
+	:is(.encendida, .senalada) .punto {
+		fill: var(--color-rotulo);
+		transform: scale(1.6);
+	}
+	:is(.encendida, .senalada) text {
+		fill: var(--color-rotulo);
+	}
+	.viajero {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.5s;
+	}
+	.viajero.en-camino {
+		opacity: 1;
+	}
+	.halo {
+		fill: var(--color-rotulo);
+		opacity: 0.22;
+	}
+	.luz {
+		fill: #fff;
+		stroke: var(--color-rotulo);
+		stroke-width: 3;
 	}
 	text {
 		font-family: var(--fuente-titulos);
@@ -196,3 +244,92 @@ const ultima = puntos.at(-1);
 		}
 	}
 </style>
+
+<script>
+	// Viaje del puntito por las ediciones, en bucle. Arranca cuando la ruta ya se dibujó (el mapa recibe la clase
+	// `animado` al entrar en pantalla) y solo avanza mientras el mapa se ve.
+	const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const espera = (ms: number) => new Promise((listo) => setTimeout(listo, ms));
+	const suave = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+
+	for (const mapa of document.querySelectorAll<HTMLElement>('[data-mapa-ediciones]')) {
+		const zona = mapa.closest('section') ?? document;
+		const tarjetas = new Map<number, HTMLElement>();
+		for (const li of zona.querySelectorAll<HTMLElement>('li[data-edicion]')) tarjetas.set(Number(li.dataset.edicion), li);
+		const sedes = new Map<number, SVGGElement>();
+		for (const g of mapa.querySelectorAll<SVGGElement>('.sede[data-edicion]')) sedes.set(Number(g.dataset.edicion), g);
+
+		// Mouse sobre una tarjeta de la lista: se señala su punto en el mapa.
+		for (const [i, li] of tarjetas) {
+			const sede = sedes.get(i);
+			if (!sede) continue;
+			li.addEventListener('pointerenter', () => sede.classList.add('senalada'));
+			li.addEventListener('pointerleave', () => sede.classList.remove('senalada'));
+		}
+
+		const viajero = mapa.querySelector<SVGGElement>('.viajero');
+		if (reducir || !viajero) continue;
+		const tramos = new Map<number, SVGPathElement>();
+		for (const t of mapa.querySelectorAll<SVGPathElement>('.tramo')) tramos.set(Number(t.dataset.hasta), t);
+		const total = Math.max(...tarjetas.keys(), ...sedes.keys());
+
+		let visible = false;
+		new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(mapa);
+		const cuandoSeVea = async () => {
+			while (!visible || document.hidden) await espera(400);
+		};
+		const ubicar = (x: number, y: number) => viajero.setAttribute('transform', `translate(${x} ${y})`);
+		const encender = (i: number, si: boolean) => {
+			sedes.get(i)?.classList.toggle('encendida', si);
+			tarjetas.get(i)?.classList.toggle('encendida', si);
+		};
+		const recorrer = (tramo: SVGPathElement) =>
+			new Promise<void>((listo) => {
+				const largo = tramo.getTotalLength();
+				const dura = Math.min(2600, Math.max(900, largo * 7));
+				const inicio = performance.now();
+				const paso = (ahora: number) => {
+					const t = Math.min(1, (ahora - inicio) / dura);
+					const p = tramo.getPointAtLength(largo * suave(t));
+					ubicar(p.x, p.y);
+					if (t < 1) requestAnimationFrame(paso);
+					else listo();
+				};
+				requestAnimationFrame(paso);
+			});
+
+		const viajar = async () => {
+			await espera(5600); // lo que tarda en dibujarse la ruta la primera vez
+			for (;;) {
+				for (let i = 0; i <= total; i++) {
+					await cuandoSeVea();
+					const tramo = tramos.get(i);
+					if (tramo) {
+						await recorrer(tramo);
+					} else if (sedes.has(i)) {
+						// Primera sede: el viajero aparece sobre ella.
+						const c = sedes.get(i)!.querySelector('.punto')!;
+						ubicar(Number(c.getAttribute('cx')), Number(c.getAttribute('cy')));
+						viajero.classList.add('en-camino');
+					}
+					encender(i, true);
+					// En la última sede descansa un rato; las ediciones en línea (sin punto) se encienden un instante.
+					await espera(i === total ? 3500 : sedes.has(i) ? 900 : 700);
+					encender(i, false);
+				}
+				viajero.classList.remove('en-camino');
+				await espera(1200);
+			}
+		};
+
+		if (mapa.classList.contains('animado')) viajar();
+		else {
+			const vigia = new MutationObserver(() => {
+				if (!mapa.classList.contains('animado')) return;
+				vigia.disconnect();
+				viajar();
+			});
+			vigia.observe(mapa, { attributes: true, attributeFilter: ['class'] });
+		}
+	}
+</script>
