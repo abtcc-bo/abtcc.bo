@@ -121,11 +121,11 @@ const cuenta = [
 					</p>
 					{
 						falta > 0 && (
-							<p class="cuenta aparece" data-cuenta>
+							<p class="cuenta aparece">
 								<span class="faltan">{d.faltan}</span>
 								{cuenta.map((c) => (
 									<span class="unidad">
-										<span class="valor" data-parte={c.parte}>
+										<span class="valor" data-anuncio-parte={c.parte}>
 											{c.valor}
 										</span>
 										<span class="unidad-texto">{c.etiqueta}</span>
@@ -714,10 +714,10 @@ const cuenta = [
 			minutos: (ms: number) => dos(Math.floor((ms % 3_600_000) / 60_000)),
 			segundos: (ms: number) => dos(Math.floor((ms % 60_000) / 1000)),
 		};
-		const valores = ventana.querySelectorAll<HTMLElement>('[data-parte]');
+		const valores = ventana.querySelectorAll<HTMLElement>('[data-anuncio-parte]');
 		const actualizar = () => {
 			const ms = Math.max(0, inicio - Date.now());
-			for (const v of valores) v.textContent = partes[v.dataset.parte as keyof typeof partes](ms);
+			for (const v of valores) v.textContent = partes[v.dataset.anuncioParte as keyof typeof partes](ms);
 		};
 		let reloj: ReturnType<typeof setInterval> | undefined;
 
