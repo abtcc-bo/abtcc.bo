@@ -28,7 +28,7 @@ const eventos = defineCollection({
 	schema: ({ image }) =>
 		z
 			.object({
-				tipo: z.enum(['taller', 'curso', 'diplomado', 'jornada', 'congreso', 'seminario', 'webinar', 'supervision', 'asamblea']),
+				tipo: z.enum(['taller', 'curso', 'diplomado', 'jornada', 'congreso', 'seminario', 'simposio', 'webinar', 'supervision', 'asamblea']),
 				inicio: fechaHora,
 				fin: fechaHora.optional(),
 				/** Para cursos en varias sesiones. */
@@ -70,7 +70,7 @@ const eventos = defineCollection({
 				imagen: image().optional(),
 				/**
 				 * Foto de fondo de la cabecera de la página del evento (p. ej. un paisaje de la ciudad sede), detrás del
-				 * título y del afiche, con un velo del color del tema para que el texto se lea. WebP de unos 2000 px de
+				 * título y del afiche, sin velo de color (solo una sombra suave para que el texto se lea). WebP de unos 2000 px de
 				 * ancho, apaisada, sin personas reconocibles y con permiso de uso.
 				 */
 				foto_cabecera: image().optional(),
@@ -154,7 +154,7 @@ const programa = z
 
 const eventosTextos = defineCollection({
 	loader: glob({ pattern: '*/{es,en,pt}.md', base: './src/content/eventos', generateId: sinExtension }),
-	schema: z.object({
+	schema: ({ image }) => z.object({
 		titulo: z.string().max(100),
 		resumen: z.string().max(200, 'El resumen debe tener como máximo 200 caracteres.'),
 		/** Tema central o lema del evento (una frase). */
@@ -177,17 +177,28 @@ const eventosTextos = defineCollection({
 		 */
 		seminario: z
 			.object({
+				/** Franja de datos clave debajo de la cabecera (fecha, sede, certificado...), cada uno con su ícono. */
+				datos_clave: z.array(z.object({ icono: z.enum(NOMBRES_ICONOS), titulo: z.string(), texto: z.string() })).default([]),
+				/** Rótulo de la cuenta regresiva que encabeza la franja de datos clave ("Faltan"); sin él, no hay cuenta. */
+				cuenta_regresiva: z.string().optional(),
+				/** Título de la franja de fotos de encuentros anteriores de la ABTCC; sin él, no se muestra. */
+				fotos_encuentros: z.string().optional(),
 				presentacion: z.object({ antetitulo: z.string(), titulo: z.string() }),
 				formatos: z.object({
 					nota: z.string().optional(),
-					lista: z.array(z.object({ cifra: z.string().optional(), titulo: z.string(), texto: z.string() })),
+					/** `cifra` sube desde 0 al aparecer en pantalla; `icono` (opcional) va arriba de la tarjeta. */
+					lista: z.array(z.object({ cifra: z.string().optional(), icono: z.enum(NOMBRES_ICONOS).optional(), titulo: z.string(), texto: z.string() })),
 				}),
 				historia: z
 					.object({
 						antetitulo: z.string(),
 						titulo: z.string(),
 						texto: z.string(),
-						ediciones: z.array(z.object({ edicion: z.string(), anio: z.number(), lugar: z.string() })),
+						/**
+						 * `lon` / `lat`: coordenadas de la ciudad (con signo) para el mapa del recorrido. Sin ellas (ediciones en
+						 * línea), la edición sale en la lista pero no en el mapa.
+						 */
+						ediciones: z.array(z.object({ edicion: z.string(), anio: z.number(), lugar: z.string(), lon: z.number().optional(), lat: z.number().optional() })),
 					})
 					.optional(),
 				viaje: z
@@ -195,7 +206,19 @@ const eventosTextos = defineCollection({
 						antetitulo: z.string(),
 						titulo: z.string(),
 						texto: z.string(),
-						puntos: z.array(z.object({ titulo: z.string(), texto: z.string() })),
+						/** `enlace`: opcional, p. ej. "Ver en el mapa" en el punto de la sede. */
+						puntos: z.array(
+							z.object({ icono: z.enum(NOMBRES_ICONOS).optional(), titulo: z.string(), texto: z.string(), enlace: z.object({ texto: z.string(), url: z.url() }).optional() }),
+						),
+						/**
+						 * Fotos pequeñas y redondas de la ciudad junto al texto de la sección (WebP cuadrado de ~600 px, sin
+						 * personas reconocibles). `credito` si la foto es de otra persona: sale al pie de la sección.
+						 */
+						fotos: z
+							.array(z.object({ imagen: image(), alt: z.string(), credito: z.object({ autor: z.string(), licencia: z.string(), url: z.url() }).optional() }))
+							.default([]),
+						/** Rótulo de los créditos de las fotos ("Fotos"). */
+						creditos: z.string().optional(),
 					})
 					.optional(),
 				inscripcion: z
@@ -203,7 +226,27 @@ const eventosTextos = defineCollection({
 						antetitulo: z.string(),
 						titulo: z.string(),
 						texto: z.string(),
-						tarifas: z.array(z.object({ nombre: z.string(), monto: z.string(), nota: z.string().optional(), destacada: z.boolean().default(false) })),
+						tarifas: z.array(z.object({ nombre: z.string(), monto: z.string(), nota: z.string().optional(), destacada: z.boolean().default(false) })).default([]),
+						/**
+						 * Tabla de precios en lugar de `tarifas`: un recuadro por grupo (p. ej. "Desde Bolivia" en Bs y "Desde
+						 * otros países" en USD, con cómo se paga en `medio`) y en cada fila el precio de preventa (`anticipada`,
+						 * grande) y el `regular`. `anticipada` / `regular`: rótulos de las dos columnas; `vigencia`: hasta
+						 * cuándo vale la preventa.
+						 */
+						precios: z
+							.object({
+								anticipada: z.string(),
+								regular: z.string(),
+								vigencia: z.string().optional(),
+								grupos: z.array(
+									z.object({
+										titulo: z.string(),
+										medio: z.string(),
+										filas: z.array(z.object({ nombre: z.string(), nota: z.string().optional(), anticipada: z.string(), regular: z.string() })),
+									}),
+								),
+							})
+							.optional(),
 						incluye_titulo: z.string(),
 						incluye: z.array(z.string()),
 						/** Sin pago directo: recuadro para pedir novedades (su botón lleva al WhatsApp o a Contacto). */

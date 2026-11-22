@@ -1,0 +1,174 @@
+---
+// Precios de un seminario o simposio (`seminario.inscripcion.precios` del es.md): un recuadro por grupo ("Desde
+// Bolivia" en Bs, "Desde otros países" en USD) y, en cada fila, el precio de preventa en grande y el regular al lado.
+// El primer recuadro va en el color de los rótulos del tema (en el tajibo, rosa); el segundo, en el de la banda.
+import type { Evento } from '../lib/contenido';
+
+type Precios = NonNullable<NonNullable<NonNullable<Evento['texto']['data']['seminario']>['inscripcion']>['precios']>;
+
+interface Props {
+	precios: Precios;
+}
+
+const { precios } = Astro.props;
+---
+
+<div class="precios">
+	{precios.vigencia && <p class="etiqueta vigencia">{precios.vigencia}</p>}
+	<div class="grupos">
+		{
+			precios.grupos.map((grupo, i) => (
+				<section class:list={['grupo', `grupo-${i % 2 === 0 ? 'a' : 'b'}`]} aria-label={grupo.titulo}>
+					<header>
+						<h4>{grupo.titulo}</h4>
+						<p>{grupo.medio}</p>
+					</header>
+					<table>
+						<thead>
+							<tr>
+								<td />
+								<th scope="col">{precios.anticipada}</th>
+								<th scope="col">{precios.regular}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{grupo.filas.map((fila) => (
+								<tr>
+									<th scope="row">
+										<span class="nombre">{fila.nombre}</span>
+										{fila.nota && <span class="nota">{fila.nota}</span>}
+									</th>
+									<td class="anticipada">{fila.anticipada}</td>
+									<td class="regular">{fila.regular}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</section>
+			))
+		}
+	</div>
+</div>
+
+<style>
+	.vigencia {
+		margin: 0 0 1rem;
+		background: var(--color-acento-suave);
+		border-color: var(--color-acento-suave);
+		color: var(--color-rotulo);
+	}
+	.grupos {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+		gap: 1.25rem;
+	}
+	.grupo {
+		overflow: hidden;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		border-start-start-radius: 2.25rem;
+		background: var(--color-tarjeta);
+		box-shadow: var(--sombra);
+	}
+	header {
+		padding: 1.4rem 1.75rem 1.25rem;
+		color: #fff;
+	}
+	.grupo-a header {
+		background: var(--color-rotulo);
+	}
+	.grupo-b header {
+		background: var(--color-banda);
+	}
+	h4 {
+		margin: 0;
+		font-family: var(--fuente-titulos);
+		font-size: 1.5rem;
+		line-height: 1.2;
+		color: #fff;
+	}
+	header p {
+		margin: 0.2rem 0 0;
+		font-family: var(--fuente-interfaz);
+		font-size: 0.9375rem;
+		opacity: 0.92;
+	}
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-family: var(--fuente-interfaz);
+	}
+	thead th {
+		padding: 1rem 1rem 0.25rem;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-align: right;
+		text-transform: uppercase;
+		color: var(--color-texto-suave);
+	}
+	thead th:last-child,
+	tbody td:last-child {
+		padding-right: 1.75rem;
+	}
+	tbody tr + tr {
+		border-top: 1px solid var(--color-borde);
+	}
+	tbody th {
+		padding: 1rem 0.5rem 1rem 1.75rem;
+		font-weight: 400;
+		text-align: left;
+	}
+	.nombre {
+		display: block;
+		font-weight: 700;
+		color: var(--color-texto);
+	}
+	.nota {
+		display: block;
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+	tbody td {
+		padding: 1rem;
+		text-align: right;
+		white-space: nowrap;
+	}
+	.anticipada {
+		font-family: var(--fuente-titulos);
+		font-size: clamp(1.5rem, 1.25rem + 0.8vw, 1.9rem);
+		font-weight: 700;
+		color: var(--color-rotulo);
+	}
+	.grupo-b .anticipada {
+		color: var(--color-acento);
+	}
+	.regular {
+		font-size: 1.05rem;
+		font-weight: 600;
+		color: var(--color-texto-suave);
+	}
+	@media (max-width: 30rem) {
+		header,
+		tbody th {
+			padding-left: 1rem;
+		}
+		thead th,
+		tbody td {
+			padding-inline: 0.4rem;
+		}
+		thead th {
+			letter-spacing: 0.04em;
+		}
+		thead th:last-child,
+		tbody td:last-child {
+			padding-right: 1rem;
+		}
+		.anticipada {
+			font-size: 1.35rem;
+		}
+		.regular {
+			font-size: 0.9375rem;
+		}
+	}
+</style>

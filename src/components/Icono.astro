@@ -14,7 +14,8 @@ const { nombre, circulo = false, class: clase } = Astro.props;
 
 <span class:list={['icono', { circulo }, clase]} aria-hidden="true">
 	<svg viewBox="0 0 24 24" focusable="false">
-		<path d={ICONOS[nombre]} />
+		{/* pathLength="1": permite animar el trazo ("se dibuja solo") con stroke-dasharray: 1. */}
+		<path d={ICONOS[nombre]} pathLength="1" />
 	</svg>
 </span>
 

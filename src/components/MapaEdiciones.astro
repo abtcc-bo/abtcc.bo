@@ -1,0 +1,198 @@
+---
+// Mapa del recorrido de un seminario o simposio por América Latina: la silueta del continente, un punto por cada
+// edición con sede (campos `lon` / `lat` de `historia.ediciones`) y una línea punteada que los une en orden y se
+// dibuja al aparecer en pantalla (clase `animado`, script en EventoSeminario.astro). La última edición late.
+// La silueta es una simplificación hecha a mano (proyección equirectangular, 6 px por grado).
+interface Edicion {
+	edicion: string;
+	anio: number;
+	lugar: string;
+	lon?: number;
+	lat?: number;
+}
+
+interface Props {
+	ediciones: Edicion[];
+	/** Descripción del mapa para lectores de pantalla. */
+	titulo: string;
+}
+
+const { ediciones, titulo } = Astro.props;
+const X = (lon: number) => +((lon + 118) * 6).toFixed(1);
+const Y = (lat: number) => +((33 - lat) * 6).toFixed(1);
+const CONTINENTE =
+	'M19.2 3L42 10.2L58.8 7.2L69.6 7.2L81 20.4L90 24L99.6 19.2L111 33L124.8 42L121.8 48L123.6 69L132 82.8L141 88.8L156 86.4L165 81L165.6 70.8L186 69L178.8 87L178.2 103.8L192 102L207.6 108.6L205.8 132.6L213 141L219 144L231 140.4L243.6 146.4L247.2 146.4L255 135.6L261 132L276 126L279 133.2L288 127.2L297 135L312 134.4L324 134.4L336 133.8L345 147L357 156.6L366 162L378 162.6L393 168L400.8 174L408 198L417 205.2L442.2 213L459 215.4L477 220.2L495 229.2L499.2 240L496.8 252L477 276L474 303L462 330L448.8 336L426 342L417 354L405 381L387.6 400.2L372 407.4L357.6 405.6L367.8 417L363 426L334.8 430.8L318 444L326.4 454.8L318 468L303 477L294 498L298.2 511.8L312 528L297 531L282 522L264 516L255 498L261 474L265.2 447L267 420L277.8 396L278.4 378L285 342L286.2 309L279 303L250.8 279L231 243L220.8 225L225 204L235.2 189L243 159L240 147L228 153.6L207 148.2L193.8 138L192 126L180 118.8L162 114.6L153 111L132 103.8L102 93L76.2 81L75 72L54 45L42 24L19.2 9Z M5.4 3L8.4 12L13.8 21L24 30L31.2 42L39 51L48 60.6L51 58.8L44.4 52.2L39.6 42L31.2 27L19.8 12Z';
+
+const puntos = ediciones
+	.filter((e): e is Edicion & { lon: number; lat: number } => e.lon !== undefined && e.lat !== undefined)
+	.map((e) => ({ ...e, x: X(e.lon), y: Y(e.lat) }))
+	// El número de la edición va a la derecha del punto, salvo que haya otra sede muy cerca a su derecha
+	// (Buenos Aires y Montevideo): entonces va a la izquierda, para que no se encimen.
+	.map((p, _, todos) => ({
+		...p,
+		izquierda: todos.some((q) => q !== p && Math.hypot(q.x - p.x, q.y - p.y) < 30 && q.x > p.x),
+	}));
+// Línea suave entre las sedes: cada tramo es una curva que se arquea hacia un costado.
+const recorrido = puntos
+	.map((p, i) => {
+		if (i === 0) return `M${p.x} ${p.y}`;
+		const a = puntos[i - 1];
+		const mx = (a.x + p.x) / 2 + (p.y - a.y) * 0.18;
+		const my = (a.y + p.y) / 2 - (p.x - a.x) * 0.18;
+		return `Q${mx.toFixed(1)} ${my.toFixed(1)} ${p.x} ${p.y}`;
+	})
+	.join(' ');
+const ultima = puntos.at(-1);
+---
+
+<figure class="mapa">
+	<svg viewBox="0 0 504 540" role="img" aria-label={titulo}>
+		<path class="continente" d={CONTINENTE} />
+		<path class="recorrido" d={recorrido} pathLength="1" />
+		{
+			puntos.map((p, i) => (
+				<g class:list={['sede', { actual: p === ultima }]} data-orden={i}>
+					{p === ultima && <circle class="onda" cx={p.x} cy={p.y} r="9" />}
+					<circle class="punto" cx={p.x} cy={p.y} r={p === ultima ? 8 : 5.5} />
+					<text x={p.x + (p.izquierda ? -11 : 11)} y={p.y + 5} text-anchor={p.izquierda ? 'end' : 'start'}>
+						{p.edicion}
+					</text>
+				</g>
+			))
+		}
+		{/* Nombre de la sede actual, en dos líneas ("Santa Cruz de la Sierra" / "Bolivia") para que quepa. */}
+		{ultima && (
+			<text class="etiqueta-actual" x={ultima.x + 14} y={ultima.y - 30}>
+				{ultima.lugar.split(', ').map((linea, i) => (
+					<tspan x={ultima.x + 14} dy={i === 0 ? 0 : 17}>
+						{linea}
+					</tspan>
+				))}
+			</text>
+		)}
+	</svg>
+</figure>
+
+<style>
+	.mapa {
+		margin: 0;
+	}
+	svg {
+		display: block;
+		width: 100%;
+		height: auto;
+		overflow: visible;
+	}
+	.continente {
+		fill: color-mix(in srgb, var(--color-titulos), transparent 90%);
+		stroke: color-mix(in srgb, var(--color-titulos), transparent 70%);
+		stroke-width: 1.5;
+		stroke-linejoin: round;
+	}
+	.recorrido {
+		fill: none;
+		stroke: var(--color-rotulo);
+		stroke-width: 2.5;
+		stroke-linecap: round;
+		stroke-dasharray: 0.012 0.008;
+	}
+	.punto {
+		fill: var(--color-titulos);
+		stroke: #fff;
+		stroke-width: 2;
+	}
+	.actual .punto {
+		fill: var(--color-rotulo);
+	}
+	.onda {
+		fill: var(--color-rotulo);
+		opacity: 0;
+	}
+	text {
+		font-family: var(--fuente-titulos);
+		font-size: 15px;
+		font-weight: 700;
+		fill: var(--color-titulos);
+		paint-order: stroke;
+		stroke: var(--color-superficie);
+		stroke-width: 4px;
+		stroke-linejoin: round;
+	}
+	.etiqueta-actual {
+		font-family: var(--fuente-interfaz);
+		font-size: 15px;
+		fill: var(--color-rotulo);
+	}
+
+	/* Animación: la línea se dibuja de sede en sede, cada punto aparece cuando la línea llega, y la última late. */
+	@media (prefers-reduced-motion: no-preference) {
+		:global(.js) .mapa:not(.animado) .recorrido {
+			stroke-dasharray: 1;
+			stroke-dashoffset: 1;
+		}
+		:global(.js) .mapa:not(.animado) .sede,
+		:global(.js) .mapa:not(.animado) .etiqueta-actual {
+			opacity: 0;
+		}
+		.animado .recorrido {
+			animation: trazar 4.5s ease-in-out both;
+		}
+		.animado .sede {
+			animation: asomar 0.5s ease-out both;
+			transform-box: fill-box;
+			transform-origin: center;
+		}
+		.animado .sede[data-orden='1'] { animation-delay: 0.45s; }
+		.animado .sede[data-orden='2'] { animation-delay: 0.9s; }
+		.animado .sede[data-orden='3'] { animation-delay: 1.35s; }
+		.animado .sede[data-orden='4'] { animation-delay: 1.8s; }
+		.animado .sede[data-orden='5'] { animation-delay: 2.25s; }
+		.animado .sede[data-orden='6'] { animation-delay: 2.7s; }
+		.animado .sede[data-orden='7'] { animation-delay: 3.15s; }
+		.animado .sede[data-orden='8'] { animation-delay: 3.6s; }
+		.animado .sede[data-orden='9'] { animation-delay: 4.05s; }
+		.animado .sede.actual { animation-delay: 4.4s; }
+		.animado .etiqueta-actual {
+			animation: asomar 0.6s 4.7s ease-out both;
+		}
+		.animado .onda {
+			animation: latir 2.2s 5s ease-out infinite;
+			transform-box: fill-box;
+			transform-origin: center;
+		}
+	}
+	@keyframes trazar {
+		from {
+			stroke-dasharray: 1;
+			stroke-dashoffset: 1;
+		}
+		99% {
+			stroke-dasharray: 1;
+			stroke-dashoffset: 0;
+		}
+		to {
+			stroke-dasharray: 0.012 0.008;
+			stroke-dashoffset: 0;
+		}
+	}
+	@keyframes asomar {
+		from {
+			opacity: 0;
+			transform: scale(0.3);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	@keyframes latir {
+		from {
+			opacity: 0.55;
+			transform: scale(1);
+		}
+		to {
+			opacity: 0;
+			transform: scale(3.2);
+		}
+	}
+</style>

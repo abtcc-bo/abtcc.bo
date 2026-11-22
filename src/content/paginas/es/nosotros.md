@@ -59,11 +59,11 @@ nosotros:
     - anio: "[Año]"
       texto: "[PENDIENTE: fundación de la asociación]"
     - anio: "2023"
-      texto: Primer Congreso Nacional de Terapia Cognitivo Conductual y Terapia Contextual, en Santa Cruz.
+      texto: Primer Congreso Nacional de Terapia Cognitivo Conductual y Terapia Contextual, en Santa Cruz de la Sierra.
     - anio: "2026"
       texto: II Encuentro Internacional de Terapia Cognitivo Conductual y Contextual, en Cochabamba.
     - anio: "2027"
-      texto: Bolivia es sede del XI SIALAPCCO en Santa Cruz, junto con ALAPCCO.
+      texto: Bolivia es sede del XI SIALAPCCO en Santa Cruz de la Sierra, junto con ALAPCCO.
 ---
 
 <!-- El contenido de esta página está arriba, en bloques (vista src/vistas/Nosotros.astro). -->

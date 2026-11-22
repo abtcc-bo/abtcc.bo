@@ -11,9 +11,11 @@ interface Props {
 	eventos: Evento[];
 	idioma: Idioma;
 	maximo?: number;
+	/** Título de la franja; por defecto, el de la portada ("Así vivimos nuestros eventos"). */
+	titulo?: string;
 }
 
-const { eventos, idioma, maximo = 14 } = Astro.props;
+const { eventos, idioma, maximo = 14, titulo } = Astro.props;
 const g = t(idioma).galeria;
 
 const miniaturas = import.meta.glob<{ default: ImageMetadata }>('/src/content/eventos/*/galeria/mini/*.webp', { eager: true });
@@ -33,7 +35,7 @@ const fotos = eventos
 	fotos.length > 3 && (
 		<section class="fotos banda" aria-labelledby="titulo-fotos" data-franja>
 			<div class="cabecera">
-				<h2 id="titulo-fotos">{g.portada}</h2>
+				<h2 id="titulo-fotos">{titulo ?? g.portada}</h2>
 				<button type="button" class="pausa" data-pausa-franja aria-pressed="false" hidden>
 					<span data-texto-pausar>{g.pausar}</span>
 					<span data-texto-reanudar hidden>{g.reanudar}</span>

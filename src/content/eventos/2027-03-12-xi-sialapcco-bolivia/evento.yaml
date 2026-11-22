@@ -1,0 +1,42 @@
+# XI SIALAPCCO Bolivia (Simposio Internacional ALAPCCO–ABTCC 2027). Publicada el 22/11/2026 (reemplazó al anuncio
+# corto "marzo de 2027", que se borró). Solo en español: no hay en.md ni pt.md todavía.
+#
+# Datos del plan operativo (22/11/2026): 12 y 13 de marzo de 2027, Hotel Radisson de Santa Cruz de la Sierra.
+# [PENDIENTE: horario de cada día (las horas de abajo son provisionales), ponentes y programa (se cierran el 10 dic.)]
+#
+# Inscripción SIN plataforma (decidido el 20/11/2026): la persona paga con el QR (desde Bolivia) o por PayPal
+# (desde otros países) y manda su comprobante al WhatsApp. El botón "Inscribirme por WhatsApp" sale solo
+# porque están `pago` y `whatsapp`. Para cambiar el QR: reemplazar qr-pago.png por el nuevo (vence el 18/11/2027).
+tipo: simposio
+inicio: "2027-03-12T09:00-04:00"
+fin: "2027-03-13T18:00-04:00"
+modalidad: presencial
+lugar:
+  nombre: Hotel Radisson
+  ciudad: Santa Cruz de la Sierra
+  mapa: https://www.google.com/maps/search/?api=1&query=Hotel+Radisson+Santa+Cruz+de+la+Sierra
+tema: tajibo
+# Precios de preventa (por los dos días). Los de la página están en es.md (`precios`), con preventa y regular.
+# [PENDIENTE: fecha en que termina la preventa → agregar `hasta: "AAAA-MM-DDT23:59-04:00"` a estos dos y sumar los
+#  regulares con `desde` el día siguiente: estudiante Bs 300 / USD 30 y general Bs 600 / USD 60]
+costos:
+  - categoria: estudiante
+    bob: 240
+    usd: 25
+  - categoria: general
+    bob: 480
+    usd: 50
+certificacion:
+  aval: Certificado digital de la ABTCC
+imagen: ./afiche.webp
+# Catedral de Santa Cruz de la Sierra y tajibos en flor, en la Plaza 24 de Septiembre (recortada para que no se vean personas).
+# Foto de Wikimedia Commons con licencia CC BY 2.0: se puede usar libremente si se nombra al autor (credito_foto).
+foto_cabecera: ./foto-cabecera.webp
+credito_foto:
+  autor: Rômulo Gama Ferreira
+  licencia: CC BY 2.0
+  url: https://commons.wikimedia.org/wiki/File:Catedral_Metropolitana_Bas%C3%ADlica_Menor_de_San_Lorenzo_de_Santa_Cruz_-_Bolivia_(53041053638).jpg
+whatsapp: "59171402980"
+pago:
+  qr: ./qr-pago.png
+  paypal: https://paypal.me/InstitutoPsitecBO

@@ -1,11 +1,11 @@
 nombre: Carmen Barrón
 titulo_profesional: MSc. · Psicóloga clínica
 comision: true
-orden: 3
+orden: 2
 foto: ./fotos/carmen-barron.webp
 textos:
   es:
-    cargo: Tesorera
+    cargo: Vicepresidenta
     bio: >-
       Psicóloga clínica y psicoterapeuta especializada en terapia cognitivo-conductual. Tiene
       experiencia en el tratamiento de trastornos de ansiedad, TOC, trauma, depresión, TEPT y

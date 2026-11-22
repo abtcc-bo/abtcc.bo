@@ -8,6 +8,7 @@ import AdornoNavidad from './AdornoNavidad.astro';
 import Guirnalda from './Guirnalda.astro';
 import TicketEvento from './TicketEvento.astro';
 import Icono from './Icono.astro';
+import PetalosTajibo from './PetalosTajibo.astro';
 import { formato, t, type Idioma } from '../i18n';
 import { contactoWhatsapp, fechaDelEvento, inscripcionAbierta, inscripcionPorWhatsapp } from '../lib/eventos';
 import type { Evento } from '../lib/contenido';
@@ -29,7 +30,8 @@ const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.m
 // "Cómo pagar" baja a los pasos de la página (si los tiene). El enlace de consultas sobra: es el mismo número.
 const porWhatsapp = inscripcionPorWhatsapp(evento, formato(ev.mensajeInscripcion, { evento: titulo }));
 const conPasos = Boolean(evento.texto.data.seminario?.inscripcion?.pasos);
-const lugar = datos.modalidad !== 'online' && datos.lugar ? ` · ${datos.lugar.ciudad}` : '';
+// "Presencial · Hotel Radisson, Santa Cruz de la Sierra" (o solo la ciudad si la sede aún no está definida).
+const lugar = datos.modalidad !== 'online' && datos.lugar ? ` · ${[datos.lugar.nombre, datos.lugar.ciudad].filter(Boolean).join(', ')}` : '';
 const navidad = datos.tema === 'navidad';
 const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 ---
@@ -43,6 +45,7 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		</div>
 	)
 }
+{datos.tema === 'tajibo' && <PetalosTajibo />}
 {
 	datos.foto_cabecera && datos.credito_foto && (
 		<a class="credito-foto" href={datos.credito_foto.url} rel="noopener">
@@ -252,9 +255,8 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		content: '';
 		position: absolute;
 		inset: 0;
-		background:
-			linear-gradient(90deg, color-mix(in srgb, var(--color-oscuro-profundo), transparent 12%) 0%, color-mix(in srgb, var(--color-oscuro), transparent 45%) 45%, color-mix(in srgb, var(--color-oscuro), transparent 92%) 72%, transparent 100%),
-			linear-gradient(0deg, color-mix(in srgb, var(--color-oscuro-profundo), transparent 60%), transparent 30%);
+		/* Sin velo de color: la foto se ve tal cual. Solo una sombra negra muy suave detrás del texto (izquierda). */
+		background: linear-gradient(90deg, rgb(0 0 0 / 0.38) 0%, rgb(0 0 0 / 0.18) 40%, transparent 62%);
 	}
 	.con-foto {
 		min-height: clamp(26rem, 38vw, 34rem);
@@ -275,8 +277,21 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		text-decoration: underline;
 	}
 	.con-foto h1,
+	.con-foto .lema,
+	.con-foto .antetitulo,
 	.con-foto .datos-evento {
-		text-shadow: 0 1px 12px rgb(0 0 0 / 0.35);
+		text-shadow:
+			0 1px 3px rgb(0 0 0 / 0.55),
+			0 2px 18px rgb(0 0 0 / 0.45);
+	}
+	/* Sin velo, el botón de contorno necesita un fondo oscuro translúcido para destacarse sobre la foto. */
+	.con-foto .boton-contorno {
+		border-color: rgb(255 255 255 / 0.85);
+		background: rgb(0 0 0 / 0.28);
+		color: #fff;
+	}
+	.con-foto .boton-contorno:hover {
+		background: rgb(0 0 0 / 0.45);
 	}
 	/* El afiche se apoya sobre la foto como una tarjeta: más chico y algo girado, con borde blanco. */
 	.con-foto .afiche {
@@ -290,7 +305,7 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 	/* En el celular el texto ocupa todo el ancho: velo parejo y el afiche debajo, sin girar. */
 	@media (max-width: 56rem) {
 		.foto-cabecera::after {
-			background: linear-gradient(180deg, color-mix(in srgb, var(--color-oscuro), transparent 55%), color-mix(in srgb, var(--color-oscuro), transparent 35%) 45%, color-mix(in srgb, var(--color-oscuro-profundo), transparent 15%) 80%);
+			background: linear-gradient(180deg, rgb(0 0 0 / 0.2), rgb(0 0 0 / 0.32) 50%, rgb(0 0 0 / 0.42));
 		}
 		.con-foto {
 			min-height: 0;
@@ -306,6 +321,20 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 	@media (prefers-reduced-motion: no-preference) {
 		.foto-cabecera img {
 			animation: acercar 18s ease-out both;
+		}
+		/* El afiche se mece apenas, como si colgara (solo en pantallas anchas, donde va girado sobre la foto). */
+		@media (min-width: 56.01rem) {
+			.con-foto .afiche {
+				animation: flotar 7s ease-in-out infinite alternate;
+			}
+		}
+	}
+	@keyframes flotar {
+		from {
+			transform: translateY(0) rotate(0deg);
+		}
+		to {
+			transform: translateY(-0.6rem) rotate(-1.5deg);
 		}
 	}
 	@keyframes acercar {

@@ -58,17 +58,20 @@ La decoración navideña (gorrito del logo y nieve) se apaga sola después del 6
 
 ### 5 bis. XI SIALAPCCO Bolivia (12 y 13 de marzo de 2027)
 
-La página completa del evento ya está hecha, pero **oculta**: el público sigue viendo solo el anuncio corto ("marzo de 2027"). Cuando quieras publicarla, avísame y la hago visible. Para completarla necesito:
+La página completa del evento **ya es pública** (desde el 22/11/2026, cuando se aprueba el cambio en GitHub). Ojo: el botón "Inscribirme por WhatsApp" ya funciona, aunque el plan decía abrir inscripciones el 15 de diciembre; si llegan mensajes antes, se pueden atender o pedir que esperen. Para completarla necesito:
 
-- [ ] Sede confirmada (nombre, dirección) y horario de cada día.
+- [x] Sede: Hotel Radisson ✔
+- [ ] Horario de cada día.
+- [ ] Confirmar que se llama "simposio" (como dice el plan) y no "seminario".
 - [ ] Lema del evento.
 - [ ] Programa y ponentes (foto, país y tema de cada uno).
 - [x] Forma de inscripción: QR, PayPal y comprobante por WhatsApp (+591 71402980) ✔ ya está en la página.
-- [ ] Montos de cada tarifa (en Bs y en USD) y fecha límite de la inscripción anticipada.
+- [x] Montos de cada tarifa (preventa y regular, en Bs y en USD) ✔
+- [ ] **Hasta qué fecha vale la preventa.**
 - [ ] Cuando la ABTCC tenga cuenta propia: mandarme el QR y el PayPal nuevos para cambiarlos.
 - [ ] El QR actual vence el **18/11/2027**: si el evento se mueve después de esa fecha, pedir uno nuevo al banco.
-- [ ] Horas y aval del certificado.
-- [ ] Hoteles recomendados y cómo llegar desde el aeropuerto.
+- [ ] Horas del certificado (ya dice "certificado digital").
+- [ ] Si el Radisson tendrá precio especial para quienes vienen de fuera.
 - [ ] Logos de los auspiciantes.
 - [x] **Foto de Santa Cruz de la cabecera:** cambiada el 20/11/2026 por una de uso libre de Wikimedia Commons (catedral con tajibos, de Rômulo Gama Ferreira, CC BY 2.0). Se puede usar sin pedir permiso; el crédito al autor ya sale en la cabecera.
 - [ ] Preguntar a ALAPCCO qué significa exactamente la sigla y confirmar la lista de ediciones anteriores.
