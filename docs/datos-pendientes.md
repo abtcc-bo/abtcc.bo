@@ -80,7 +80,7 @@ La página completa ya es pública (`src/content/eventos/2027-03-12-xi-sialapcco
 - [x] Sede ✔ Hotel Radisson, Santa Cruz (plan operativo, 22/11/2026); el mapa enlaza a la búsqueda en Google Maps
 - [ ] ¿Simposio o seminario? El plan dice "Simposio Internacional ALAPCCO–ABTCC 2027": la página ahora dice "simposio" (antes decía "seminario"). Confirmar
 - [ ] Lema o tema central
-- [ ] Programa académico (lo cierra el Dr. Guillermo Rivera hacia el 10 dic.; ponentes internacionales hacia el 5 dic.): 4 conferencias, 2 talleres, conversatorios y comunicaciones orales; ponentes con foto, país y tema
+- [ ] Programa académico (lo cierra el Dr. Guillermo Rivera hacia el 10 dic.; ponentes internacionales hacia el 5 dic.): conferencias, talleres, conversatorios y mesas redondas, y comunicaciones orales; ponentes con foto, país y tema. Por pedido de ALAPCCO (23/11/2026) la web no muestra cantidades hasta que el programa esté cerrado: entonces agregar `cifra` a cada formato en `es.md`
 - [ ] Comunicaciones orales: criterios, fechas y forma de envío
 - [x] Tarifas ✔ (22/11/2026), por los dos días: estudiantes Bs 240 / 300, profesionales Bs 480 / 600; internacionales USD 25 / 30 y USD 50 / 60 (preventa / regular)
 - [ ] **Fecha en que termina la preventa** (va en `vigencia` de es.md y en `hasta` de los costos de evento.yaml)
