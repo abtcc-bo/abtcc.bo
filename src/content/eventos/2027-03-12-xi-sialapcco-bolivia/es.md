@@ -18,6 +18,12 @@ anuncio:
   nota: Por primera vez en Bolivia
   logo_aliado: ./alapcco-blanco.png
   nombre_aliado: ALAPCCO
+# Arriba del título de la cabecera: quién promueve el simposio (logo blanco).
+sello_cabecera:
+  rotulo: Un simposio de
+  logo: ./alapcco-blanco.png
+  nombre: ALAPCCO
+  url: https://alapcco.com/
 seminario:
   cuenta_regresiva: Faltan
   datos_clave:
@@ -36,22 +42,24 @@ seminario:
   presentacion:
     antetitulo: El simposio
     titulo: ¿Qué es el SIALAPCCO?
+    sellos:
+      promueve: Un simposio de
+      organiza: Organiza en Bolivia
   # [PENDIENTE: ponentes internacionales (se confirman hacia el 5 dic.) y programa académico (hacia el 10 dic.).
-  #  Las cifras de conferencias y talleres son provisionales: confirmarlas con el programa]
+  #  Pedido de ALAPCCO (23/11/2026): sin cantidad de conferencias, talleres ni mesas redondas hasta cerrar el
+  #  programa. Cuando se defina, agregar `cifra: "N"` a cada formato (sube desde 0 al aparecer en pantalla)]
   formatos:
     nota: Programa académico en preparación
     lista:
-      - cifra: "4"
-        icono: microfono
+      - icono: microfono
         titulo: Conferencias
         texto: Con invitados de distintos países.
-      - cifra: "2"
-        icono: taller
+      - icono: taller
         titulo: Talleres
         texto: Práctica clínica guiada.
       - icono: dialogo
-        titulo: Conversatorios
-        texto: Mesas redondas con profesionales de Bolivia.
+        titulo: Conversatorios y mesas redondas
+        texto: Con profesionales de Bolivia y de la región.
       - icono: documento
         titulo: Comunicaciones orales
         # [PENDIENTE: criterios, fechas y forma de envío de las comunicaciones orales]
