@@ -34,7 +34,9 @@ Para la página "Comisión directiva", de cada persona:
 - [x] Título profesional y formación ✔
 - [x] Fotos de Guillermo, Halder, Carmen y Leonardo ✔
 - [x] Foto de Alix ✔
-- [ ] **Hojas de vida** de Guillermo, Halder, Carmen y Leonardo (como la que mandó Alix). Con ellas completo la parte de "Formación", que ahora tiene datos [PENDIENTE]. Todas quedan con el mismo formato: un párrafo corto, la lista de títulos y las áreas de trabajo.
+- [x] Hojas de vida de Guillermo, Halder y Leonardo ✔ (23/11/2026): sus perfiles ya están actualizados.
+- [ ] **Hoja de vida de Carmen** (como la que mandó Alix). Con ella completo su maestría, que ahora dice [PENDIENTE].
+- [ ] **Guillermo:** dónde hizo la especialidad en Psiquiatría (universidad o institución y país).
 - [ ] Enlaces opcionales: LinkedIn, ORCID, Instagram profesional.
 - [ ] **Su permiso** para publicar su foto y datos. Las hojas de vida traen datos privados (carnet, dirección, teléfono, fecha de nacimiento): esos **nunca** se publican.
 

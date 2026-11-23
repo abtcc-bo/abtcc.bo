@@ -23,7 +23,9 @@ Lo que hace falta para reemplazar el relleno `[PENDIENTE: ...]`. Completa a tu r
 - [x] Cargos ✔ (01/11/2026): Guillermo Rivera, Coordinador; Alexandra Shand, Secretaria General; Carmen Barrón, Tesorera; Halder Delgado, Primer vocal; Leonardo Eyzaguirre, Segundo vocal
 - [x] Fotos de Guillermo Rivera, Halder Delgado, Carmen Barrón y Leonardo Eyzaguirre ✔
 - [x] Foto de Alexandra Shand (Alix) ✔
-- [ ] Hojas de vida completas de Guillermo, Halder, Carmen y Leonardo, para llenar "Formación" (universidad y país de cada título; ver los [PENDIENTE] en `src/content/personas/`). La de Alix ya está cargada
+- [x] Perfiles de Guillermo, Halder y Leonardo actualizados con sus hojas de vida ✔ (23/11/2026). La de Alix ya estaba cargada
+- [ ] Guillermo: institución y país de su especialidad en Psiquiatría
+- [ ] Carmen: hoja de vida (nombre, universidad y país de su maestría)
 - [x] Cargos de la comisión ✔ (22/11/2026): Carmen, Vicepresidenta; Halder, Secretaría Académica; Alix, Tesorera; Leonardo, Marketing y Publicidad. Orden por cargo: Guillermo, Carmen, Halder, Alix, Leonardo
 - [x] Cargo de Guillermo ✔ Presidente (22/11/2026)
 - [ ] ¿La ABTCC es "Grupo de trabajo de ALAPCCO" (como dice el logo) o "capítulo boliviano de ALAPCCO" (como dice la hoja de vida de Alix)? Definir una sola forma para la web
