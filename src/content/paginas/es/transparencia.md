@@ -25,9 +25,8 @@ Nuestras actividades académicas y científicas toman como marco ético de refer
 - **Consejo Consultivo y Fiscal:** asesora y fiscaliza la gestión administrativa, financiera, académica y ética, y emite un dictamen anual.
 - **Asamblea de Socios Fundadores:** órgano transitorio de ratificación de decisiones estratégicas durante los primeros diez años.
 
-## Personería jurídica
-
-En trámite. [PENDIENTE: número y fecha de la resolución cuando se obtenga]
+<!-- Personería jurídica: agregar aquí una sección "## Personería jurídica" con número y fecha de la resolución
+     cuando se obtenga. Mientras tanto no se menciona (pedido del 23/11/2026). -->
 
 ## Actas y convocatorias públicas
 

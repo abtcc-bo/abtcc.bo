@@ -87,7 +87,7 @@ La página completa ya es pública (`src/content/eventos/2027-03-12-xi-sialapcco
 - [x] Tarifas ✔ (22/11/2026), por los dos días: estudiantes Bs 240 / 300, profesionales Bs 480 / 600; internacionales USD 25 / 30 y USD 50 / 60 (preventa / regular)
 - [ ] **Fecha en que termina la preventa** (va en `vigencia` de es.md y en `hasta` de los costos de evento.yaml)
 - [ ] ¿Hay tarifa especial para miembros de ALAPCCO o de la ABTCC? (el plan no la menciona: la saqué de la página)
-- [x] Forma de inscripción ✔ (20/11/2026): sin plataforma. QR del Banco Económico (desde Bolivia, archivo `qr-pago.png`, vence el 18/11/2027) y PayPal `paypal.me/InstitutoPsitecBO` (desde el exterior); el comprobante se manda por WhatsApp. Las cuentas son del equipo organizador mientras la ABTCC abre la suya: cambiar QR, PayPal y la `nota` de es.md cuando exista la cuenta institucional
+- [x] Forma de inscripción ✔ (20/11/2026): sin plataforma. QR del Banco Económico (desde Bolivia, archivo `qr-pago.png`, vence el 18/11/2027) y PayPal `paypal.me/InstitutoPsitecBO` (desde el exterior); el comprobante se manda por WhatsApp. Las cuentas son del equipo organizador mientras la ABTCC abre la suya: cambiar QR y PayPal cuando exista la cuenta institucional (la web ya no lo menciona; sin `nota`, pedido del 23/11/2026)
 - [ ] ¿Habrá modalidad virtual?
 - [x] Certificado ✔ digital, lo emite la ABTCC después del evento
 - [ ] Horas del certificado

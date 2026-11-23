@@ -4,7 +4,9 @@ clave: avisoLegal
 descripcion: Datos de la entidad titular del sitio web de la ABTCC y condiciones de uso de su contenido.
 ---
 
-<!-- BORRADOR: revisar con asesoría legal antes de publicar. -->
+<!-- BORRADOR: revisar con asesoría legal antes de publicar.
+     Personería jurídica: agregar "- **Personería jurídica:** N° … de …" en "Titular del sitio" cuando se obtenga;
+     mientras tanto no se menciona (pedido del 23/11/2026). -->
 
 *Última actualización: 27 de octubre de 2026.*
 
@@ -12,7 +14,6 @@ descripcion: Datos de la entidad titular del sitio web de la ABTCC y condiciones
 
 - **Nombre:** Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales (ABTCC)
 - **Naturaleza:** asociación civil de derecho privado, sin fines de lucro
-- **Personería jurídica:** en trámite [PENDIENTE: número y fecha de la resolución]
 - **Domicilio legal:** Calle 2, N° 1, barrio Las Palmas, Santa Cruz de la Sierra, Bolivia [PENDIENTE: confirmar]
 - **Correo:** [abtcc.bo@gmail.com](mailto:abtcc.bo@gmail.com)
 - **Representante legal:** [PENDIENTE]
