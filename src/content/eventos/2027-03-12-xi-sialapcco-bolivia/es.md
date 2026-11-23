@@ -18,6 +18,12 @@ anuncio:
   nota: Por primera vez en Bolivia
   logo_aliado: ./alapcco-blanco.png
   nombre_aliado: ALAPCCO
+# Arriba del título de la cabecera: quién promueve el simposio (logo blanco).
+sello_cabecera:
+  rotulo: Un simposio de
+  logo: ./alapcco-blanco.png
+  nombre: ALAPCCO
+  url: https://alapcco.com/
 seminario:
   cuenta_regresiva: Faltan
   datos_clave:

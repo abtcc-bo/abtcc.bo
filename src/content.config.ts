@@ -193,6 +193,11 @@ const eventosTextos = defineCollection({
 			})
 			.optional(),
 		/**
+		 * Sello en la cabecera del evento, arriba del antetítulo: "Un simposio de" + logo BLANCO de quien lo promueve
+		 * (p. ej. ALAPCCO), con enlace a su web. El logo de la ABTCC no va: ya está en el encabezado del sitio.
+		 */
+		sello_cabecera: z.object({ rotulo: z.string(), logo: image(), nombre: z.string(), url: z.url() }).optional(),
+		/**
 		 * Página de un seminario o congreso que todavía no tiene programa hora a hora (XI SIALAPCCO): qué es y sus
 		 * formatos, historia de las ediciones, sede y viaje, tarifas y banda final. La dibuja EventoSeminario.astro.
 		 */

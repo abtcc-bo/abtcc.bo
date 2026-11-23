@@ -22,7 +22,7 @@ const { evento, idioma } = Astro.props;
 const textos = t(idioma);
 const ev = textos.eventos;
 const { datos } = evento;
-const { titulo, lema, programa } = evento.texto.data;
+const { titulo, lema, programa, sello_cabecera: sello } = evento.texto.data;
 const palabras = titulo.trim().split(' ');
 const ultima = palabras.pop();
 const whatsapp = datos.whatsapp && contactoWhatsapp(datos.whatsapp, formato(ev.mensajeWhatsapp, { evento: titulo }));
@@ -55,6 +55,14 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 }
 <div class:list={['cabecera-evento', { 'con-visual': datos.imagen || datos.tema, navidad, 'con-foto': datos.foto_cabecera }]}>
 	<div class="texto">
+		{
+			sello && (
+				<a class="sello-cabecera" href={sello.url} rel="noopener">
+					<span>{sello.rotulo}</span>
+					<Image src={sello.logo} alt={sello.nombre} widths={[240, 480]} sizes="12rem" loading="eager" />
+				</a>
+			)
+		}
 		<p class="antetitulo">
 			{ev.tipos[datos.tipo]}
 			{datos.modalidad && <> · {ev.modalidades[datos.modalidad]}</>}
@@ -267,6 +275,42 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		min-height: clamp(26rem, 38vw, 34rem);
 	}
 	/* Crédito que pide la licencia de la foto: discreto, arriba a la derecha (abajo lo cortaría la curva). */
+	/* Sello de quien promueve el evento (logo blanco), arriba del antetítulo, separado por una línea fina. */
+	.sello-cabecera {
+		display: inline-flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: 1.5rem;
+		padding-bottom: 1.25rem;
+		border-bottom: 1px solid rgb(255 255 255 / 0.4);
+		color: #fff;
+		text-decoration: none;
+		filter: drop-shadow(0 1px 6px rgb(0 0 0 / 0.55));
+	}
+	.sello-cabecera span {
+		font-family: var(--fuente-interfaz);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+	.sello-cabecera img {
+		display: block;
+		width: 12rem;
+		height: auto;
+	}
+	@media (max-width: 30rem) {
+		.sello-cabecera {
+			gap: 0.75rem;
+		}
+		.sello-cabecera span {
+			font-size: 0.6875rem;
+		}
+		.sello-cabecera img {
+			width: 9.5rem;
+		}
+	}
 	.credito-foto {
 		position: absolute;
 		top: 0.6rem;
