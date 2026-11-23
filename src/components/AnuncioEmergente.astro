@@ -2,8 +2,9 @@
 // Anuncio emergente: ventana grande sobre la página, con una X para cerrarla, que lleva a la inscripción de un evento
 // (diseño "Web · banner de portada", 22/11/2026). Sale el del próximo evento con bloque `anuncio` en su texto, en
 // cualquier página menos la del propio evento. Va en Base.astro.
-// Cuándo aparece (script de abajo): poco después de entrar. Si la persona la cierra, no vuelve a salir en ese navegador
-// por 1 día; si toca el anuncio para inscribirse, por 14 días. Deja de salir sola cuando el evento pasó o llega
+// Cuándo aparece (script de abajo): en cada visita, poco después de entrar. Si la persona la cierra o toca el anuncio,
+// no vuelve a salir mientras siga navegando por la web (`sessionStorage`); en la próxima visita sale otra vez
+// (pedido de la ABTCC, 22/11/2026: que salga siempre al entrar). Deja de salir sola cuando el evento pasó o llega
 // `anuncio.hasta` (también en páginas guardadas en caché). Sin JavaScript no aparece. Con "reducir movimiento", quieta.
 import { Image } from 'astro:assets';
 import logoBlanco from '../assets/logo-blanco.png';
@@ -685,24 +686,31 @@ const cuenta = [
 </style>
 
 <script>
-	// Abre la ventana poco después de entrar, salvo que la persona la haya cerrado hace poco (se recuerda en este
-	// navegador) o que el evento ya haya pasado. La cuenta regresiva avanza cada segundo mientras está abierta.
+	// Abre la ventana poco después de entrar, en cada visita. Si la persona ya la cerró (o tocó el anuncio) en esta
+	// visita, no vuelve a salir al pasar de una página a otra; al volver otro día, o en una pestaña nueva, sale de nuevo.
+	// No sale si el evento ya pasó. La cuenta regresiva avanza cada segundo mientras está abierta.
 	const ventana = document.querySelector<HTMLDialogElement>('[data-ventana-anuncio]');
 	if (ventana && typeof ventana.showModal === 'function') {
 		const clave = `anuncio-${ventana.dataset.clave}`;
 		const DIA = 86_400_000;
-		const silenciadoHasta = () => {
+		// La versión anterior la silenciaba por días en localStorage: se borra para que vuelva a salir.
+		try {
+			localStorage.removeItem(clave);
+		} catch {
+			// Sin almacenamiento: nada que borrar.
+		}
+		const yaVista = () => {
 			try {
-				return Number(localStorage.getItem(clave)) || 0;
+				return sessionStorage.getItem(clave) === 'vista';
 			} catch {
-				return 0;
+				return false;
 			}
 		};
-		const silenciar = (dias: number) => {
+		const silenciar = () => {
 			try {
-				localStorage.setItem(clave, String(Date.now() + dias * DIA));
+				sessionStorage.setItem(clave, 'vista');
 			} catch {
-				// Sin almacenamiento (ventana privada): volverá a salir en la próxima visita.
+				// Sin almacenamiento: puede volver a salir en la página siguiente.
 			}
 		};
 
@@ -724,20 +732,20 @@ const cuenta = [
 		// Se recuerda en el mismo momento del clic (el evento `close` llega un instante después y podría perderse si
 		// la persona cambia de página enseguida).
 		const cerrar = () => {
-			silenciar(1);
+			silenciar();
 			ventana.close();
 		};
-		ventana.querySelector('[data-ir]')?.addEventListener('click', () => silenciar(14));
+		ventana.querySelector('[data-ir]')?.addEventListener('click', silenciar);
 		ventana.querySelector('[data-cerrar]')?.addEventListener('click', cerrar);
 		// Un clic fuera de la tarjeta (en el fondo oscuro) o la tecla Esc también la cierran.
 		ventana.addEventListener('click', (e) => {
 			if (e.target === ventana) cerrar();
 		});
-		ventana.addEventListener('cancel', () => silenciar(1));
+		ventana.addEventListener('cancel', silenciar);
 		ventana.addEventListener('close', () => clearInterval(reloj));
 
 		const vigente = Date.parse(ventana.dataset.termina!) > Date.now();
-		if (vigente && silenciadoHasta() < Date.now()) {
+		if (vigente && !yaVista()) {
 			// La foto se empieza a bajar ya, para que esté lista al abrirse (si no va a salir, no se baja).
 			for (const img of ventana.querySelectorAll('img')) img.loading = 'eager';
 			setTimeout(() => {
