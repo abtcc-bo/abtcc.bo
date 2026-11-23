@@ -2,18 +2,22 @@
 titulo: Estatuto y ética
 clave: transparencia
 descripcion: Estatuto, reglamento interno, marco ético y órganos de gobierno de la ABTCC.
+# Notas internas (van aquí y no en el texto: un comentario <!-- --> del texto sale en el código
+# fuente de la página publicada).
+# [PENDIENTE: PDF del estatuto aprobado. Cuando llegue el archivo se guarda en `public/docs/estatuto.pdf` y aquí va el enlace de descarga.]
+# [PENDIENTE: PDF del reglamento interno aprobado.]
+# Personería jurídica: agregar aquí una sección "## Personería jurídica" con número y fecha de la resolución cuando se obtenga. Mientras tanto no se menciona (pedido del 23/11/2026).
+# [PENDIENTE: sección "## Actas y convocatorias públicas" con las actas de asamblea que se decida hacer públicas]
 ---
 
 La ABTCC es una asociación civil de derecho privado, sin fines de lucro, que se rige por su Estatuto Orgánico y su Reglamento Interno. Los cargos directivos son *ad honorem* y todos los recursos se reinvierten en los fines de la asociación.
 
 ## Estatuto Orgánico
 
-<!-- [PENDIENTE: PDF del estatuto aprobado. Cuando llegue el archivo se guarda en `public/docs/estatuto.pdf` y aquí va el enlace de descarga.] -->
 Está a disposición de los miembros y de las instituciones que lo soliciten. Escríbenos a [abtcc.bo@gmail.com](mailto:abtcc.bo@gmail.com).
 
 ## Reglamento Interno
 
-<!-- [PENDIENTE: PDF del reglamento interno aprobado.] -->
 Regula la membresía, los órganos de gobierno y el funcionamiento interno de la asociación. Está a disposición de los miembros.
 
 ## Marco ético
@@ -27,7 +31,3 @@ Nuestras actividades académicas y científicas toman como marco ético de refer
 - **Consejo Consultivo y Fiscal:** asesora y fiscaliza la gestión administrativa, financiera, académica y ética, y emite un dictamen anual.
 - **Asamblea de Socios Fundadores:** órgano transitorio de ratificación de decisiones estratégicas durante los primeros diez años.
 
-<!-- Personería jurídica: agregar aquí una sección "## Personería jurídica" con número y fecha de la resolución
-     cuando se obtenga. Mientras tanto no se menciona (pedido del 23/11/2026). -->
-
-<!-- [PENDIENTE: sección "## Actas y convocatorias públicas" con las actas de asamblea que se decida hacer públicas] -->

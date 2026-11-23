@@ -16,6 +16,7 @@ preguntas:
   #  los inscritos y por cuánto tiempo, y volver a ponerla aquí]
   - pregunta: ¿Cómo me entero de los próximos eventos?
     respuesta: Esta página y la portada muestran siempre la agenda al día. Los miembros reciben además las comunicaciones y los boletines de la asociación.
+# Notas internas (van aquí y no en el texto: un comentario <!-- --> del texto sale en el código
+# fuente de la página publicada).
+# Esta página solo aporta las preguntas frecuentes del final; el listado de eventos lo dibuja src/vistas/Eventos.astro.
 ---
-
-<!-- Esta página solo aporta las preguntas frecuentes del final; el listado de eventos lo dibuja src/vistas/Eventos.astro. -->

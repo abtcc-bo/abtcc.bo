@@ -69,6 +69,7 @@ preguntas:
     respuesta: Recibes una respuesta escrita y fundamentada en un plazo de 25 días hábiles. Si falta algún documento, te avisamos y tienes 10 días hábiles para completarlo.
   - pregunta: ¿Y si no estoy de acuerdo con la decisión?
     respuesta: Puedes pedir que se revise. La evaluación se hace con criterios objetivos y públicos, y la respuesta siempre explica sus motivos.
+# Notas internas (van aquí y no en el texto: un comentario <!-- --> del texto sale en el código
+# fuente de la página publicada).
+# El contenido de esta página está arriba, en bloques (vista src/vistas/Membresia.astro).
 ---
-
-<!-- El contenido de esta página está arriba, en bloques (vista src/vistas/Membresia.astro). -->

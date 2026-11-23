@@ -2,9 +2,12 @@
 titulo: Política de privacidad
 clave: privacidad
 descripcion: Qué datos personales recoge la ABTCC en su sitio web, para qué los usa, dónde se guardan y cómo ejercer tus derechos.
+# Notas internas (van aquí y no en el texto: un comentario <!-- --> del texto sale en el código
+# fuente de la página publicada).
+# BORRADOR: revisar con asesoría legal antes de publicar. Actualizar cuando se agreguen el formulario de contacto, el boletín o el área de socios.
+# [PENDIENTE: agregar aquí los servicios que se sumen: boletín, área de socios]
+# [PENDIENTE: confirmar cuando se elija la herramienta de estadísticas de visitas, que debe ser sin cookies.]
 ---
-
-<!-- BORRADOR: revisar con asesoría legal antes de publicar. Actualizar cuando se agreguen el formulario de contacto, el boletín o el área de socios. -->
 
 *Última actualización: 27 de octubre de 2026.*
 
@@ -34,7 +37,6 @@ Tratamos tus datos porque tú nos los das con ese fin y das tu consentimiento al
 - Los correos que nos envías se reciben en una cuenta de Google (Gmail) de la asociación.
 - Los mensajes del formulario de contacto se reenvían a ese correo mediante Resend, un servicio de envío de correos.
 - Para filtrar mensajes automáticos (spam) usamos Cloudflare Turnstile, que verifica que quien escribe es una persona sin usar cookies de seguimiento.
-<!-- [PENDIENTE: agregar aquí los servicios que se sumen: boletín, área de socios] -->
 
 Estos proveedores pueden almacenar datos fuera de Bolivia y aplican sus propias medidas de seguridad.
 
@@ -53,8 +55,6 @@ Tomamos como referencia los principios de la Ley General de Protección de Datos
 ## Cookies
 
 Este sitio no usa cookies de publicidad ni de seguimiento.
-
-<!-- [PENDIENTE: confirmar cuando se elija la herramienta de estadísticas de visitas, que debe ser sin cookies.] -->
 
 ## Cambios en esta política
 
