@@ -204,7 +204,12 @@ const eventosTextos = defineCollection({
 				cuenta_regresiva: z.string().optional(),
 				/** Título de la franja de fotos de encuentros anteriores de la ABTCC; sin él, no se muestra. */
 				fotos_encuentros: z.string().optional(),
-				presentacion: z.object({ antetitulo: z.string(), titulo: z.string() }),
+				/** `sellos` (opcional): logos de ALAPCCO y de la ABTCC debajo del texto, con su rótulo cada uno. */
+				presentacion: z.object({
+					antetitulo: z.string(),
+					titulo: z.string(),
+					sellos: z.object({ promueve: z.string(), organiza: z.string() }).optional(),
+				}),
 				formatos: z.object({
 					nota: z.string().optional(),
 					/** `cifra` sube desde 0 al aparecer en pantalla; `icono` (opcional) va arriba de la tarjeta. */

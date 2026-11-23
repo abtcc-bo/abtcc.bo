@@ -36,6 +36,9 @@ seminario:
   presentacion:
     antetitulo: El simposio
     titulo: ¿Qué es el SIALAPCCO?
+    sellos:
+      promueve: Un simposio de
+      organiza: Organiza en Bolivia
   # [PENDIENTE: ponentes internacionales (se confirman hacia el 5 dic.) y programa académico (hacia el 10 dic.).
   #  Las cifras de conferencias y talleres son provisionales: confirmarlas con el programa]
   formatos:
