@@ -21,7 +21,8 @@ textos:
       - Doctorado en Salud Mental Comunitaria — Universidad Nacional de Lanús (Argentina)
       - Estancia posdoctoral de investigación (Research Fellowship) — Universidad de Melbourne (Australia)
       - Máster en Políticas y Servicios de Salud Mental — Universidade Nova de Lisboa (Portugal)
-      - "Especialidad en Psiquiatría — [PENDIENTE: institución y país]"
+      # [PENDIENTE: institución y país de la especialidad en Psiquiatría]
+      - Especialidad en Psiquiatría
     areas:
       - Psiquiatría y psicoterapia
       - Psicofarmacología clínica

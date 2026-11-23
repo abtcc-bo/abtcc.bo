@@ -2,7 +2,7 @@
 	"sitio": {
 		"nombre": "Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales",
 		"sigla": "ABTCC",
-		"descripcion": "[PENDIENTE: presentación de la asociación en una frase]",
+		"descripcion": "Asociación sin fines de lucro que impulsa la formación, la investigación y la práctica ética de las terapias cognitivas conductuales y contextuales en Bolivia.",
 		"afiliacion": "Grupo de trabajo ALAPCCO"
 	},
 	"idioma": {
@@ -30,11 +30,12 @@
 	},
 	"comun": {
 		"saltarAlContenido": "Saltar al contenido",
-		"enConstruccion": "Esta sección está en construcción.",
+		"enConstruccion": "Esta página se está actualizando.",
+		"disponibleEn": "Puedes leer esta página en:",
 		"proximosEventos": "Próximos eventos",
 		"verTodos": "Ver todos",
 		"inscribirme": "Inscribirme",
-		"pendiente": "[PENDIENTE]"
+		"pendiente": ""
 	},
 	"hora": {
 		"zonaBolivia": "hora de Bolivia (UTC−4)"
@@ -377,8 +378,8 @@
 			"preguntas": "Preguntas frecuentes",
 			"solicitar": "Solicitar la membresía"
 		},
-		"avisoSolicitud": "Formulario en línea en preparación",
-		"verEventos": "Mientras tanto, conoce nuestros eventos"
+		"avisoSolicitud": "Solicitud por correo",
+		"verEventos": "Conoce nuestros eventos"
 	},
 	"inicio": {
 		"verEventos": "Ver formación y eventos",
@@ -422,10 +423,11 @@
 		}
 	},
 	"socios": {
-		"aviso": "En preparación",
-		"titulo": "Estamos preparando el área de socios",
-		"texto": "Muy pronto los miembros de la ABTCC podrán ingresar aquí a sus beneficios, materiales y comunicaciones de la asociación.",
-		"mientras": "Mientras tanto, te invitamos a conocer nuestros eventos y a formar parte de la comunidad.",
+		"aviso": "Solo para miembros",
+		"titulo": "Acceso para miembros",
+		"texto": "El área de socios es un espacio reservado para los miembros de la ABTCC. Para solicitar tu acceso, escríbenos desde el correo con el que te registraste.",
+		"solicitarAcceso": "Solicitar acceso",
+		"mientras": "¿Todavía no eres miembro? Conoce cómo sumarte a la comunidad.",
 		"verEventos": "Ver formación y eventos",
 		"serMiembro": "Quiero ser miembro"
 	},

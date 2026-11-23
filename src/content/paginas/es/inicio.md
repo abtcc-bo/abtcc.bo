@@ -59,7 +59,8 @@ portada:
             seccion: eventos
       - icono: cuidado
         titulo: Busco atención psicológica
-        texto: "La ABTCC no brinda atención directa, pero puede orientarte para que encuentres a un profesional formado en estas terapias. [PENDIENTE: confirmar si la asociación orienta o deriva a profesionales]"
+        texto: "La ABTCC no brinda atención directa, pero puede orientarte para que encuentres a un profesional formado en estas terapias."
+        # [PENDIENTE: confirmar si la asociación orienta o deriva a profesionales]
         enlaces:
           - texto: Escríbenos
             seccion: contacto

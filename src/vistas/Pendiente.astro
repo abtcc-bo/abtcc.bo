@@ -13,7 +13,7 @@ const textos = t(idioma);
 const otros = IDIOMAS.filter((otro) => otro !== idioma && alternos[otro]);
 ---
 
-<p class="pendiente">{textos.comun.enConstruccion}</p>
+<p class="pendiente">{otros.length > 0 ? textos.comun.disponibleEn : textos.comun.enConstruccion}</p>
 {
 	otros.length > 0 && (
 		<ul>

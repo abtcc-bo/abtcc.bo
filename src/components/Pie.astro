@@ -1,6 +1,7 @@
 ---
 import { ORGANIZACION } from '../datos/organizacion';
-import { IDIOMAS, MENU, MENU_LEGAL, ruta, t, type Idioma } from '../i18n';
+import { IDIOMAS, MENU_LEGAL, ruta, t, type Idioma } from '../i18n';
+import { menuDelSitio } from '../lib/contenido';
 
 interface Props {
 	idioma: Idioma;
@@ -9,6 +10,7 @@ interface Props {
 const { idioma } = Astro.props;
 const textos = t(idioma);
 const anio = new Date().getFullYear();
+const menu = await menuDelSitio(idioma);
 // [PENDIENTE fase 2: suscripción al boletín]
 ---
 
@@ -24,7 +26,7 @@ const anio = new Date().getFullYear();
 			<h2 id="pie-explorar">{textos.pie.explorar}</h2>
 			<ul>
 				{
-					MENU.filter((s) => s !== 'contacto').map((seccion) => (
+					menu.filter((s) => s !== 'contacto').map((seccion) => (
 						<li>
 							<a href={ruta(seccion, idioma)}>{textos.nav[seccion]}</a>
 						</li>
