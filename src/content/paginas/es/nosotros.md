@@ -76,6 +76,7 @@ nosotros:
       texto: II Encuentro Internacional de Terapia Cognitivo Conductual y Contextual, en Cochabamba.
     - anio: "2027"
       texto: Bolivia es sede del XI SIALAPCCO en Santa Cruz de la Sierra, junto con ALAPCCO.
+# Notas internas (van aquí y no en el texto: un comentario <!-- --> del texto sale en el código
+# fuente de la página publicada).
+# El contenido de esta página está arriba, en bloques (vista src/vistas/Nosotros.astro).
 ---
-
-<!-- El contenido de esta página está arriba, en bloques (vista src/vistas/Nosotros.astro). -->

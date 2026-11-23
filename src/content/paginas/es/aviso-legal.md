@@ -2,13 +2,10 @@
 titulo: Aviso legal
 clave: avisoLegal
 descripcion: Datos de la entidad titular del sitio web de la ABTCC y condiciones de uso de su contenido.
+# Notas internas (van aquí y no en el texto: un comentario <!-- --> del texto sale en el código
+# fuente de la página publicada).
+# BORRADOR: revisar con asesoría legal antes de publicar. Personería jurídica: agregar "- **Personería jurídica:** N° … de …" en "Titular del sitio" cuando se obtenga; mientras tanto no se menciona (pedido del 23/11/2026). Domicilio legal: confirmar "Calle 2, N° 1, barrio Las Palmas" y agregarlo; Representante legal: nombre de quien ejerza la Presidencia.
 ---
-
-<!-- BORRADOR: revisar con asesoría legal antes de publicar.
-     Personería jurídica: agregar "- **Personería jurídica:** N° … de …" en "Titular del sitio" cuando se obtenga;
-     mientras tanto no se menciona (pedido del 23/11/2026).
-     Domicilio legal: confirmar "Calle 2, N° 1, barrio Las Palmas" y agregarlo; Representante legal: nombre de quien
-     ejerza la Presidencia. -->
 
 *Última actualización: 27 de octubre de 2026.*
 
