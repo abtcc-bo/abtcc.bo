@@ -202,6 +202,15 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		font-size: 0.9375rem;
 		color: var(--texto-banda);
 	}
+	/* Sobre la foto, fecha y sede en letra más gruesa y blanca: se leen al primer vistazo. */
+	.con-foto .datos-evento {
+		font-size: 1.0625rem;
+		font-weight: 700;
+		color: #fff;
+	}
+	.con-foto .antetitulo {
+		font-weight: 800;
+	}
 	.datos-evento li {
 		display: inline-flex;
 		align-items: center;
@@ -268,8 +277,15 @@ const conTicket = navidad && !datos.por_confirmar && inscripcionAbierta(evento);
 		content: '';
 		position: absolute;
 		inset: 0;
-		/* Sin velo de color: la foto se ve tal cual. Solo una sombra negra muy suave detrás del texto (izquierda). */
-		background: linear-gradient(90deg, rgb(0 0 0 / 0.38) 0%, rgb(0 0 0 / 0.18) 40%, transparent 62%);
+		/* Sin velo de color: la foto conserva sus colores. Solo una sombra negra detrás del texto (izquierda), más
+		   marcada desde el 23/11/2026 para que las letras blancas se lean mejor; el lado del afiche queda limpio. */
+		background: linear-gradient(90deg, rgb(0 0 0 / 0.58) 0%, rgb(0 0 0 / 0.42) 38%, rgb(0 0 0 / 0.12) 62%, transparent 75%);
+	}
+	/* En el celular el texto ocupa todo el ancho: la sombra cubre toda la foto, un poco más oscura arriba. */
+	@media (max-width: 56rem) {
+		.foto-cabecera::after {
+			background: linear-gradient(180deg, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0.4) 70%, rgb(0 0 0 / 0.3));
+		}
 	}
 	.con-foto {
 		min-height: clamp(26rem, 38vw, 34rem);
