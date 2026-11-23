@@ -177,8 +177,8 @@ seminario:
         titulo: "Desde otros países · PayPal"
         texto: Paga desde tu cuenta PayPal con el botón de abajo.
         boton: Pagar con PayPal
-      # [PENDIENTE: cambiar esta nota cuando la ABTCC tenga cuentas a su nombre]
-      nota: Mientras la ABTCC abre su cuenta institucional, los pagos se reciben en cuentas del equipo organizador. El QR y PayPal pueden mostrar otro nombre como destinatario; es correcto.
+      # Sin nota sobre cuentas ni destinatarios: la página no explica el estado interno de la asociación
+      # (pedido del 23/11/2026). Si hiciera falta un aviso, va con `nota:` aquí.
     incluye_titulo: Tu inscripción incluye
     incluye:
       - Las dos jornadas completas
