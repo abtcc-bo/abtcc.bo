@@ -2,7 +2,7 @@
 	"sitio": {
 		"nombre": "Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales",
 		"sigla": "ABTCC",
-		"descripcion": "[PENDENTE: apresentação da associação em uma frase]",
+		"descripcion": "Associação sem fins lucrativos que promove a formação, a pesquisa e a prática ética das terapias cognitivo-comportamentais e contextuais na Bolívia.",
 		"afiliacion": "Grupo de trabalho ALAPCCO"
 	},
 	"idioma": {
@@ -30,11 +30,12 @@
 	},
 	"comun": {
 		"saltarAlContenido": "Pular para o conteúdo",
-		"enConstruccion": "Esta seção está em construção.",
+		"enConstruccion": "Esta página está sendo atualizada.",
+		"disponibleEn": "Você pode ler esta página em:",
 		"proximosEventos": "Próximos eventos",
 		"verTodos": "Ver todos",
 		"inscribirme": "Inscrever-me",
-		"pendiente": "[PENDENTE]"
+		"pendiente": ""
 	},
 	"hora": {
 		"zonaBolivia": "horário da Bolívia (UTC−4)"
@@ -377,8 +378,8 @@
 			"preguntas": "Perguntas frequentes",
 			"solicitar": "Solicitar filiação"
 		},
-		"avisoSolicitud": "Formulário on-line em preparação",
-		"verEventos": "Enquanto isso, conheça nossos eventos"
+		"avisoSolicitud": "Solicitação por e-mail",
+		"verEventos": "Conheça nossos eventos"
 	},
 	"inicio": {
 		"verEventos": "Ver formação e eventos",
@@ -422,10 +423,11 @@
 		}
 	},
 	"socios": {
-		"aviso": "Em preparação",
-		"titulo": "Estamos preparando a área de sócios",
-		"texto": "Em breve os membros da ABTCC poderão acessar aqui seus benefícios, materiais e comunicações da associação.",
-		"mientras": "Enquanto isso, convidamos você a conhecer nossos eventos e fazer parte da comunidade.",
+		"aviso": "Somente para membros",
+		"titulo": "Acesso para membros",
+		"texto": "A área de sócios é um espaço reservado aos membros da ABTCC. Para solicitar seu acesso, escreva-nos a partir do e-mail com que você se cadastrou.",
+		"solicitarAcceso": "Solicitar acesso",
+		"mientras": "Ainda não é membro? Saiba como fazer parte da comunidade.",
 		"verEventos": "Ver formação e eventos",
 		"serMiembro": "Quero ser membro"
 	},

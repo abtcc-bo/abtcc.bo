@@ -5,6 +5,24 @@ Cuando termines algo, márcalo con [x] o simplemente avísame en el chat.
 
 ---
 
+
+## 🟡 Datos que la web dejó de mostrar hasta tenerlos (revisión de credibilidad, 23/11/2026)
+
+La web ya no muestra rellenos como "[PENDIENTE]" ni avisos de "en preparación". Lo que faltaba se quitó o se escribió de otra forma. Cuando tengas estos datos, pásamelos y vuelven a aparecer:
+
+- [ ] **Quiénes somos:** año de fundación (para la línea de tiempo) y 2–3 líneas más de presentación (desde cuándo existimos y a quiénes reunimos).
+- [ ] **Estatuto y ética:** PDF del Estatuto y del Reglamento Interno (hoy dice que están a disposición por correo) y las actas que se quieran hacer públicas.
+- [ ] **Personería jurídica:** número y fecha, cuando salga (hoy no se menciona).
+- [ ] **Aviso legal:** domicilio legal confirmado y nombre de quien representa a la asociación (hoy dice "Santa Cruz de la Sierra" y "Presidencia de la Comisión Directiva").
+- [ ] **Preguntas de eventos:** condiciones para recibir el certificado (p. ej. asistencia mínima) y si se comparten las grabaciones de los eventos en línea (esa pregunta se quitó).
+- [ ] **Portada, "Busco atención psicológica":** ¿la ABTCC orienta o deriva a profesionales?
+- [ ] **Comisión directiva:** institución y país de la especialidad en Psiquiatría de Guillermo Rivera, y la maestría de Carmen Barrón (se quitó).
+- [ ] **Privacidad:** cuánto tiempo se guardan los mensajes de contacto (hoy: "el necesario para responderte").
+- [ ] **Blog:** los dos artículos de ejemplo quedaron ocultos y el Blog no sale en el menú hasta que haya un artículo real.
+- [ ] **Textos en inglés y portugués:** revisar la frase de presentación de la asociación y los textos del área de socios, que escribí yo.
+
+---
+
 ## 🔴 Pronto (antes de publicar la primera versión)
 
 ### 1. Crear un Gmail de la asociación

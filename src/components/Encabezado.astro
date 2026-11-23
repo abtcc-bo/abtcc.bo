@@ -3,9 +3,9 @@ import { Image } from 'astro:assets';
 import SelectorIdioma from './SelectorIdioma.astro';
 import logo from '../assets/logo-simbolo.png';
 import { esNavidad } from '../datos/temporada';
-import { obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
+import { menuDelSitio, obtenerEventosPublicos, paginaDeSeccion, yaPaso } from '../lib/contenido';
 import { fechaDelEvento, inscripcionAbierta } from '../lib/eventos';
-import { MENU, hijasDe, ruta, t, type Alternos, type Idioma, type Seccion } from '../i18n';
+import { hijasDe, ruta, t, type Alternos, type Idioma, type Seccion } from '../i18n';
 
 interface Props {
 	idioma: Idioma;
@@ -25,8 +25,9 @@ interface Opcion {
 }
 
 // Submenús: la sección principal va siempre primero; después, estas opciones.
+const menu = await menuDelSitio(idioma);
 const submenus: Partial<Record<Seccion, Opcion[]>> = {};
-for (const seccion of MENU) {
+for (const seccion of menu) {
 	const hijas = hijasDe(seccion);
 	if (hijas.length) submenus[seccion] = hijas.map((hija) => ({ nombre: textos.nav[hija], href: ruta(hija, idioma) }));
 }
@@ -83,7 +84,7 @@ if (paginaMembresia?.data.membresia) {
 			<nav aria-label={textos.nav.principal}>
 				<ul>
 					{
-						MENU.map((seccion) => {
+						menu.map((seccion) => {
 							const href = ruta(seccion, idioma);
 							const opciones = submenus[seccion] ?? [];
 							// Con submenú: desplegable con la página principal y sus opciones.

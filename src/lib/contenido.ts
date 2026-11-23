@@ -1,6 +1,6 @@
 // Acceso al contenido ya combinado y validado. Las vistas usan estas funciones, no getCollection directamente.
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { IDIOMAS, esIdioma, ruta, type Alternos, type Idioma, type Seccion } from '../i18n';
+import { IDIOMAS, MENU, esIdioma, ruta, type Alternos, type Idioma, type Seccion } from '../i18n';
 
 /** "es/mi-articulo" → "es". */
 export function idiomaDeEntrada(id: string): Idioma {
@@ -115,6 +115,15 @@ export async function obtenerArticulos(idioma: Idioma): Promise<CollectionEntry<
 }
 
 export type Articulo = CollectionEntry<'blog'>;
+
+/**
+ * Secciones del menú principal (y del pie) en `idioma`. El Blog sale solo si tiene artículos publicados en ese
+ * idioma: una sección vacía resta credibilidad (pedido del 23/11/2026). La página del blog sigue existiendo.
+ */
+export async function menuDelSitio(idioma: Idioma): Promise<Seccion[]> {
+	const conBlog = (await obtenerArticulos(idioma)).length > 0;
+	return MENU.filter((seccion) => seccion !== 'blog' || conBlog);
+}
 
 /** Parte de la URL de un artículo: "es/que-es-act" → "que-es-act". */
 export function slugDeArticulo(articulo: Articulo): string {

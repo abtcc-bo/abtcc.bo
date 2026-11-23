@@ -34,13 +34,13 @@ Tratamos tus datos porque tú nos los das con ese fin y das tu consentimiento al
 - Los correos que nos envías se reciben en una cuenta de Google (Gmail) de la asociación.
 - Los mensajes del formulario de contacto se reenvían a ese correo mediante Resend, un servicio de envío de correos.
 - Para filtrar mensajes automáticos (spam) usamos Cloudflare Turnstile, que verifica que quien escribe es una persona sin usar cookies de seguimiento.
-- [PENDIENTE: servicios que se agreguen más adelante: boletín, área de socios]
+<!-- [PENDIENTE: agregar aquí los servicios que se sumen: boletín, área de socios] -->
 
 Estos proveedores pueden almacenar datos fuera de Bolivia y aplican sus propias medidas de seguridad.
 
 ## Cuánto tiempo los conservamos
 
-- Mensajes de contacto: [PENDIENTE: p. ej. hasta dos años después de la última comunicación].
+- Mensajes de contacto: el tiempo necesario para responderte y dar seguimiento a tu consulta.
 - Inscripciones a eventos: mientras sea necesario para emitir y verificar certificados.
 - Datos de socios: mientras dure la membresía y el tiempo que exijan las normas aplicables.
 
@@ -52,7 +52,9 @@ Tomamos como referencia los principios de la Ley General de Protección de Datos
 
 ## Cookies
 
-Este sitio no usa cookies de publicidad ni de seguimiento. [PENDIENTE: confirmar cuando se elija la herramienta de estadísticas de visitas, que debe ser sin cookies.]
+Este sitio no usa cookies de publicidad ni de seguimiento.
+
+<!-- [PENDIENTE: confirmar cuando se elija la herramienta de estadísticas de visitas, que debe ser sin cookies.] -->
 
 ## Cambios en esta política
 

@@ -8,11 +8,13 @@ La ABTCC es una asociación civil de derecho privado, sin fines de lucro, que se
 
 ## Estatuto Orgánico
 
-[PENDIENTE: PDF del estatuto aprobado. Cuando llegue el archivo se guarda en `public/docs/estatuto.pdf` y aquí va el enlace de descarga.]
+<!-- [PENDIENTE: PDF del estatuto aprobado. Cuando llegue el archivo se guarda en `public/docs/estatuto.pdf` y aquí va el enlace de descarga.] -->
+Está a disposición de los miembros y de las instituciones que lo soliciten. Escríbenos a [abtcc.bo@gmail.com](mailto:abtcc.bo@gmail.com).
 
 ## Reglamento Interno
 
-[PENDIENTE: PDF del reglamento interno aprobado.]
+<!-- [PENDIENTE: PDF del reglamento interno aprobado.] -->
+Regula la membresía, los órganos de gobierno y el funcionamiento interno de la asociación. Está a disposición de los miembros.
 
 ## Marco ético
 
@@ -28,6 +30,4 @@ Nuestras actividades académicas y científicas toman como marco ético de refer
 <!-- Personería jurídica: agregar aquí una sección "## Personería jurídica" con número y fecha de la resolución
      cuando se obtenga. Mientras tanto no se menciona (pedido del 23/11/2026). -->
 
-## Actas y convocatorias públicas
-
-[PENDIENTE: actas de asamblea que se decida hacer públicas]
+<!-- [PENDIENTE: sección "## Actas y convocatorias públicas" con las actas de asamblea que se decida hacer públicas] -->

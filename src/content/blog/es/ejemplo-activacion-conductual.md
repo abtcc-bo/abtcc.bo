@@ -1,5 +1,6 @@
 ---
 titulo: "[EJEMPLO] Activación conductual: cuando hacer va antes que sentir"
+borrador: true
 clave: activacion-conductual
 autor: ejemplo-presidencia
 publicado: 2026-09-15

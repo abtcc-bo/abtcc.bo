@@ -2,7 +2,7 @@
 	"sitio": {
 		"nombre": "Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales",
 		"sigla": "ABTCC",
-		"descripcion": "[PENDING: one-sentence description of the association]",
+		"descripcion": "Non-profit association that promotes training, research and the ethical practice of cognitive behavioral and contextual therapies in Bolivia.",
 		"afiliacion": "ALAPCCO working group"
 	},
 	"idioma": {
@@ -30,11 +30,12 @@
 	},
 	"comun": {
 		"saltarAlContenido": "Skip to content",
-		"enConstruccion": "This section is under construction.",
+		"enConstruccion": "This page is being updated.",
+		"disponibleEn": "You can read this page in:",
 		"proximosEventos": "Upcoming events",
 		"verTodos": "See all",
 		"inscribirme": "Register",
-		"pendiente": "[PENDING]"
+		"pendiente": ""
 	},
 	"hora": {
 		"zonaBolivia": "Bolivia time (UTC−4)"
@@ -377,8 +378,8 @@
 			"preguntas": "FAQ",
 			"solicitar": "Apply"
 		},
-		"avisoSolicitud": "Online form coming soon",
-		"verEventos": "Meanwhile, explore our events"
+		"avisoSolicitud": "Apply by email",
+		"verEventos": "Explore our events"
 	},
 	"inicio": {
 		"verEventos": "See training and events",
@@ -422,10 +423,11 @@
 		}
 	},
 	"socios": {
-		"aviso": "Coming soon",
-		"titulo": "We are preparing the members area",
-		"texto": "Very soon ABTCC members will be able to access their benefits, materials and association news here.",
-		"mientras": "In the meantime, we invite you to explore our events and join the community.",
+		"aviso": "Members only",
+		"titulo": "Members access",
+		"texto": "The members area is reserved for ABTCC members. To request access, write to us from the email address you registered with.",
+		"solicitarAcceso": "Request access",
+		"mientras": "Not a member yet? Find out how to join the community.",
 		"verEventos": "See training and events",
 		"serMiembro": "I want to become a member"
 	},

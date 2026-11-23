@@ -1,5 +1,6 @@
 ---
 titulo: "[EJEMPLO] ¿Qué es la Terapia de Aceptación y Compromiso?"
+borrador: true
 clave: que-es-act
 autor: ejemplo-presidencia
 publicado: 2026-10-01
