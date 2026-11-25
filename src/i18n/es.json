@@ -423,13 +423,117 @@
 		}
 	},
 	"socios": {
-		"aviso": "Solo para miembros",
-		"titulo": "Acceso para miembros",
-		"texto": "El área de socios es un espacio reservado para los miembros de la ABTCC. Para solicitar tu acceso, escríbenos desde el correo con el que te registraste.",
-		"solicitarAcceso": "Solicitar acceso",
-		"mientras": "¿Todavía no eres miembro? Conoce cómo sumarte a la comunidad.",
-		"verEventos": "Ver formación y eventos",
-		"serMiembro": "Quiero ser miembro"
+		"titulos": {
+			"inicio": "Acceso socios",
+			"cuenta": "Mi cuenta",
+			"recuperar": "Recuperar contraseña",
+			"nuevaClave": "Crear contraseña"
+		},
+		"ingreso": {
+			"titulo": "Ingresa a tu cuenta",
+			"texto": "Usa tu nombre de usuario, tu código de socio o tu correo, y tu contraseña.",
+			"identificador": "Usuario, código o correo",
+			"clave": "Contraseña",
+			"recordar": "Recordarme en este aparato (30 días)",
+			"entrar": "Ingresar",
+			"olvide": "¿Olvidaste tu contraseña?",
+			"problemas": "¿Problemas para entrar? Escríbenos a",
+			"noSocio": "¿Todavía no eres miembro?",
+			"serMiembro": "Conoce cómo sumarte"
+		},
+		"panel": {
+			"hola": "Hola, {nombre}",
+			"texto": "Este es tu espacio en la ABTCC.",
+			"codigo": "Código de socio",
+			"usuario": "Nombre de usuario",
+			"categoria": "Categoría",
+			"membresia": "Membresía",
+			"eligeUsuario": "Todavía usas tu código como nombre de usuario. Puedes cambiarlo por uno con tu nombre.",
+			"elegir": "Elegir mi nombre de usuario",
+			"miCuenta": "Mi cuenta",
+			"salir": "Cerrar sesión",
+			"inactivo": "Tu membresía no está activa en este momento. Escríbenos para regularizarla y recuperar el acceso a todo el material:"
+		},
+		"categorias": {
+			"asociado": "Miembro asociado",
+			"adherente": "Miembro adherente",
+			"honorario": "Miembro honorario",
+			"fundador": "Socio fundador"
+		},
+		"estados": {
+			"activo": "Activa",
+			"inactivo": "No activa"
+		},
+		"cuenta": {
+			"datos": "Tus datos",
+			"correo": "Correo",
+			"codigoFijo": "Tu código no cambia: es tu número de miembro.",
+			"usuarioTitulo": "Nombre de usuario",
+			"usuarioTexto": "Sirve para ingresar en lugar del código o del correo. De 3 a 30 caracteres: letras, números, punto o guion. Las tildes y las mayúsculas se ajustan solas.",
+			"usuarioCampo": "Nuevo nombre de usuario",
+			"usuarioGuardar": "Guardar nombre de usuario",
+			"usuarioQuedara": "Quedará así: {usuario}",
+			"usuarioProximo": "Podrás volver a cambiarlo desde el {fecha}.",
+			"revisando": "Revisando…",
+			"sugerencias": "Prueba con:",
+			"claveTitulo": "Cambiar contraseña",
+			"claveActual": "Contraseña actual",
+			"claveOtros": "Al cambiarla, se cierra la sesión en tus otros aparatos.",
+			"volver": "Volver al panel"
+		},
+		"usuario": {
+			"disponible": "Disponible.",
+			"ocupado": "Ese nombre ya está ocupado.",
+			"reservado": "Ese nombre está reservado para la asociación.",
+			"invalido": "Usa de 3 a 30 caracteres: letras, números, punto o guion, sin empezar ni terminar en un signo.",
+			"tuyo": "Ya es tu nombre de usuario.",
+			"muyPronto": "Ya cambiaste tu nombre hace poco: podrás cambiarlo otra vez 30 días después del último cambio.",
+			"inactivo": "Tu membresía no está activa: por ahora no puedes cambiar tu nombre de usuario.",
+			"error": "No pudimos guardar el cambio. Inténtalo de nuevo en unos minutos."
+		},
+		"recuperar": {
+			"texto": "Escribe el correo con el que te registraste y te enviaremos un enlace para crear una contraseña nueva.",
+			"correo": "Correo electrónico",
+			"enviar": "Enviar enlace",
+			"volver": "Volver al ingreso"
+		},
+		"nuevaClave": {
+			"titulo": "Elige tu contraseña",
+			"texto": "Con ella vas a entrar al área de socios.",
+			"sinEnlace": "Para crear una contraseña nueva necesitas el enlace que te enviamos por correo.",
+			"pedirOtro": "Pedir un enlace nuevo"
+		},
+		"clave": {
+			"nueva": "Contraseña nueva",
+			"repetir": "Repite la contraseña nueva",
+			"ayuda": "Al menos 10 caracteres. Una frase corta es fácil de recordar y difícil de adivinar.",
+			"guardar": "Guardar contraseña",
+			"mostrar": "Mostrar",
+			"ocultar": "Ocultar"
+		},
+		"avisos": {
+			"sesionCerrada": "Cerraste tu sesión.",
+			"usuarioCambiado": "Listo: tu nombre de usuario cambió.",
+			"claveCambiada": "Listo: tu contraseña cambió. Cerramos la sesión en tus otros aparatos.",
+			"bienvenida": "¡Te damos la bienvenida a la ABTCC! Ya tienes tu contraseña. Si quieres, elige ahora tu nombre de usuario.",
+			"correoEnviado": "Si ese correo está registrado, te llegó un enlace para crear una contraseña nueva. Vence en una hora. Revisa también las carpetas Spam y Promociones."
+		},
+		"errores": {
+			"campos": "Completa todos los campos.",
+			"credenciales": "Usuario o contraseña incorrectos.",
+			"demasiados": "Hubo demasiados intentos. Espera unos minutos y vuelve a probar.",
+			"verificacion": "No pudimos comprobar que no eres un robot. Recarga la página e inténtalo de nuevo.",
+			"servidor": "Algo falló de nuestro lado. Inténtalo de nuevo en unos minutos.",
+			"correo": "Escribe un correo válido.",
+			"enlace": "Ese enlace ya se usó o venció. Pide uno nuevo.",
+			"distintas": "Las dos contraseñas nuevas no coinciden.",
+			"claveActual": "La contraseña actual no es correcta.",
+			"misma": "La contraseña nueva es igual a la anterior.",
+			"corta": "La contraseña debe tener al menos 10 caracteres.",
+			"larga": "La contraseña es demasiado larga.",
+			"comun": "Esa contraseña es muy fácil de adivinar. Elige otra.",
+			"parecida": "La contraseña no puede contener tu usuario, tu código ni tu correo."
+		}
 	},
 	"aliados": {
 		"antetitulo": "Red de terapeutas",

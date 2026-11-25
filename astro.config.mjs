@@ -13,7 +13,7 @@ export default defineConfig({
 	// Imágenes optimizadas al construir (`compile`), sin el servicio de pago Cloudflare Images.
 	adapter: cloudflare({ imageService: 'compile' }),
 	// Sin sesiones de Astro: la web no las usa y el adaptador crearía un almacén KV ("SESSION") que hacía fallar
-	// la publicación. El área de socios (fase 3) usará Supabase.
+	// la publicación. El área de socios guarda su sesión en cookies propias (src/lib/area-socios.ts).
 	session: false,
 	i18n: {
 		defaultLocale: 'es',
@@ -60,6 +60,12 @@ export default defineConfig({
 			// Clave del sitio de Turnstile: es pública (aparece en el HTML de la página), por eso puede ir aquí.
 			TURNSTILE_SITE_KEY: envField.string({ context: 'client', access: 'public', default: '0x4AAAAAAFvKbPiV2OAM-Zmp' }),
 			CONTACTO_DESTINO: envField.string({ context: 'server', access: 'secret', optional: true }),
+			// Área de socios (Supabase, proyecto "abtcc.bo"). La dirección y la clave publicable son públicas por diseño:
+			// lo que protege los datos son las reglas de la base de datos (supabase/migrations/).
+			SUPABASE_URL: envField.string({ context: 'server', access: 'public', default: 'https://wovpcapdjvxiarbdwmyf.supabase.co' }),
+			SUPABASE_PUBLISHABLE_KEY: envField.string({ context: 'server', access: 'public', default: 'sb_publishable_T-OOxRo-wUVPRaGo-eSrcA_Rq1rU_Fg' }),
+			// Clave secreta: solo como Secreto en Cloudflare y en el .env local. Sin ella se entra solo con el correo.
+			SUPABASE_SECRET_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
 		},
 	},
 });

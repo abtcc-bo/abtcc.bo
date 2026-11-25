@@ -14,7 +14,7 @@ La idea central es separar la web en dos capas. La **capa pública** (quiénes s
 | Framework | Astro | Genera HTML sin JavaScript innecesario, trae rutas multilenguaje y "colecciones de contenido" en Markdown |
 | Contenido | Archivos Markdown en el repositorio | Lo editas con Claude Code; queda versionado y respaldado |
 | Idiomas | es (principal), en, pt en subcarpetas `/es/`, `/en/`, `/pt/` | Es la estructura que Google entiende mejor para sitios multilenguaje |
-| Área de socios | Supabase (login, base de datos, archivos privados) | Autenticación segura sin programar un servidor propio |
+| Área de socios | Supabase (login y base de datos) + Cloudflare R2 (archivos privados) | Autenticación segura sin programar un servidor propio |
 | Código | Repositorio en GitHub | Historial de cambios, respaldo y despliegue automático |
 | Alojamiento | Cloudflare Workers (alternativas: Netlify, Vercel) | Red global (CDN), HTTPS gratis, publica sola cada vez que guardas cambios |
 | Dirección web | Por ahora subdominio gratuito (`abtcc.<cuenta>.workers.dev`); dominio propio más adelante | Permite publicar ya; al comprar el dominio se redirige con 301 sin perder posicionamiento |
@@ -79,7 +79,8 @@ Cada cambio guardado en GitHub se publica solo; Supabase solo interviene cuando 
 | Generador del sitio | Astro | Convierte Markdown + plantillas en HTML; manda JavaScript solo donde hace falta ("islas") | Eleventy (más simple, sin área de socios integrada) |
 | Estilos | CSS propio con variables, o Tailwind | Colores y tipografía definidos una sola vez | — |
 | Alojamiento + CDN | Cloudflare Workers | Sirve el sitio desde servidores cercanos a cada visitante; HTTPS automático; ejecuta las rutas dinámicas y protegidas; tareas programadas | Netlify, Vercel |
-| Autenticación y datos | Supabase | Login de socios, tabla de socios y pagos de cuota, archivos privados | Firebase |
+| Autenticación y datos | Supabase | Login de socios, tabla de socios y pagos de cuota | Firebase |
+| Archivos de socios | Cloudflare R2 | Biblioteca privada de PDF (10 GB gratis, descargas sin costo) | Backblaze B2 |
 | Correo transaccional | Resend o el SMTP del correo institucional | Envía enlaces de acceso, confirmaciones de formularios | Brevo |
 | Correo institucional | Google Workspace o Zoho Mail | `contacto@`, `secretaria@`, `socios@` con el dominio propio | — |
 | Boletín | Brevo o MailerLite | Envío de novedades y eventos a suscriptores | — |
@@ -212,7 +213,7 @@ El área de socios es la única parte del sitio que maneja datos personales, as�
 2. La solicitud queda guardada con estado "pendiente" y llega un aviso al correo de la asociación.
 3. Un administrador revisa y cambia el estado a "activo" (desde un panel simple dentro del área, o desde Supabase al principio).
 4. El sistema envía al socio un correo de bienvenida con un enlace de acceso.
-5. El socio entra con **enlace mágico** (recibe un enlace por correo, sin contraseña que olvidar) o con correo y contraseña si lo prefiere.
+5. El socio entra con su **código de socio (o correo) y contraseña**; si la olvida, pide un enlace por correo para crear una nueva (decidido el 25/11/2026; plan completo en `docs/area-socios.md`).
 
 **Roles**
 
@@ -232,14 +233,14 @@ El área de socios es la única parte del sitio que maneja datos personales, as�
 
 - **Verificación en el servidor:** las páginas `/socios/` se generan en el servidor solo después de comprobar la sesión. Ocultar contenido con JavaScript en el navegador no protege nada.
 - **Seguridad a nivel de fila (RLS) en Supabase:** cada tabla tiene reglas que dicen quién puede leer o modificar cada fila. Un socio solo puede ver y editar su propio perfil, aunque alguien manipule la página.
-- **Archivos privados:** el material exclusivo va en un almacenamiento privado de Supabase y se entrega con enlaces firmados que caducan en minutos; así, compartir el enlace no sirve.
+- **Archivos privados:** el material exclusivo va en un depósito privado de Cloudflare R2 (sin enlaces públicos). La descarga pasa por el Worker, que comprueba la sesión en el servidor antes de entregar el archivo; así, compartir el enlace no sirve. Los socios solo descargan; los archivos los sube la asociación con Claude Code.
 - **Claves:** la clave pública de Supabase puede estar en el sitio; la clave de servicio (con permisos totales) solo en variables de entorno del servidor, jamás en GitHub.
 - **Datos mínimos:** pedir solo lo que se usa. No guardar números de carnet ni datos bancarios en la web.
 - **Sesiones:** cierre de sesión visible, expiración automática y cookies seguras.
-- **Registro abierto desactivado:** en Supabase se desactiva "Allow new users to sign up" y el enlace mágico se pide con `shouldCreateUser: false`. Si no, cualquiera podría crearse una cuenta solo pidiendo un enlace.
+- **Registro abierto desactivado:** en Supabase se desactiva "Allow new users to sign up" y las cuentas las crea la asociación (invitación por correo para elegir la contraseña). Si no, cualquiera podría crearse una cuenta.
 - **Pausa del plan gratuito:** Supabase pausa los proyectos gratuitos tras una semana sin actividad. Se evita con la tarea diaria de mantenimiento (`scheduled` en `src/worker.ts`, cron de Cloudflare), que hará una consulta a Supabase; alternativa: plan de pago.
 
-**Tablas básicas en Supabase:** `socios` (perfil, categoría, estado, fechas), `cuotas` (año, monto, fecha de pago, registrado por), `materiales` (título, archivo, categoría, visible para), `inscripciones` (socio, evento, asistencia, certificado). Claude Code puede crearlas con migraciones versionadas para que la estructura quede documentada en el repositorio.
+**Tablas básicas en Supabase:** `socios` (perfil, categoría, estado, fechas), `cuotas` (año, monto, fecha de pago, registrado por), `materiales` (título, tipo, tema, archivo en R2 o enlace, visible para), `inscripciones` (socio, evento, asistencia, certificado). Claude Code puede crearlas con migraciones versionadas para que la estructura quede documentada en el repositorio.
 
 ## 8. Rendimiento: que no se trabe
 

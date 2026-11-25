@@ -423,13 +423,117 @@
 		}
 	},
 	"socios": {
-		"aviso": "Members only",
-		"titulo": "Members access",
-		"texto": "The members area is reserved for ABTCC members. To request access, write to us from the email address you registered with.",
-		"solicitarAcceso": "Request access",
-		"mientras": "Not a member yet? Find out how to join the community.",
-		"verEventos": "See training and events",
-		"serMiembro": "I want to become a member"
+		"titulos": {
+			"inicio": "Members access",
+			"cuenta": "My account",
+			"recuperar": "Reset password",
+			"nuevaClave": "Create password"
+		},
+		"ingreso": {
+			"titulo": "Sign in to your account",
+			"texto": "Use your username, your member code or your email, and your password.",
+			"identificador": "Username, code or email",
+			"clave": "Password",
+			"recordar": "Remember me on this device (30 days)",
+			"entrar": "Sign in",
+			"olvide": "Forgot your password?",
+			"problemas": "Trouble signing in? Write to us at",
+			"noSocio": "Not a member yet?",
+			"serMiembro": "Find out how to join"
+		},
+		"panel": {
+			"hola": "Hello, {nombre}",
+			"texto": "This is your space at ABTCC.",
+			"codigo": "Member code",
+			"usuario": "Username",
+			"categoria": "Category",
+			"membresia": "Membership",
+			"eligeUsuario": "You are still using your code as your username. You can change it to one with your name.",
+			"elegir": "Choose my username",
+			"miCuenta": "My account",
+			"salir": "Sign out",
+			"inactivo": "Your membership is not active right now. Write to us to renew it and regain access to all the material:"
+		},
+		"categorias": {
+			"asociado": "Associate member",
+			"adherente": "Supporting member",
+			"honorario": "Honorary member",
+			"fundador": "Founding member"
+		},
+		"estados": {
+			"activo": "Active",
+			"inactivo": "Not active"
+		},
+		"cuenta": {
+			"datos": "Your details",
+			"correo": "Email",
+			"codigoFijo": "Your code never changes: it is your member number.",
+			"usuarioTitulo": "Username",
+			"usuarioTexto": "You can use it to sign in instead of your code or email. 3 to 30 characters: letters, numbers, dot or hyphen. Accents and capital letters are adjusted automatically.",
+			"usuarioCampo": "New username",
+			"usuarioGuardar": "Save username",
+			"usuarioQuedara": "It will look like this: {usuario}",
+			"usuarioProximo": "You can change it again from {fecha}.",
+			"revisando": "Checking…",
+			"sugerencias": "Try:",
+			"claveTitulo": "Change password",
+			"claveActual": "Current password",
+			"claveOtros": "Changing it signs you out on your other devices.",
+			"volver": "Back to dashboard"
+		},
+		"usuario": {
+			"disponible": "Available.",
+			"ocupado": "That name is already taken.",
+			"reservado": "That name is reserved for the association.",
+			"invalido": "Use 3 to 30 characters: letters, numbers, dot or hyphen, not starting or ending with a symbol.",
+			"tuyo": "That is already your username.",
+			"muyPronto": "You changed your username recently: you can change it again 30 days after the last change.",
+			"inactivo": "Your membership is not active: you cannot change your username for now.",
+			"error": "We could not save the change. Please try again in a few minutes."
+		},
+		"recuperar": {
+			"texto": "Enter the email you registered with and we will send you a link to create a new password.",
+			"correo": "Email",
+			"enviar": "Send link",
+			"volver": "Back to sign in"
+		},
+		"nuevaClave": {
+			"titulo": "Choose your password",
+			"texto": "You will use it to enter the members area.",
+			"sinEnlace": "To create a new password you need the link we sent you by email.",
+			"pedirOtro": "Request a new link"
+		},
+		"clave": {
+			"nueva": "New password",
+			"repetir": "Repeat the new password",
+			"ayuda": "At least 10 characters. A short phrase is easy to remember and hard to guess.",
+			"guardar": "Save password",
+			"mostrar": "Show",
+			"ocultar": "Hide"
+		},
+		"avisos": {
+			"sesionCerrada": "You have signed out.",
+			"usuarioCambiado": "Done: your username has changed.",
+			"claveCambiada": "Done: your password has changed. We signed you out on your other devices.",
+			"bienvenida": "Welcome to ABTCC! Your password is ready. If you like, choose your username now.",
+			"correoEnviado": "If that email is registered, you will receive a link to create a new password. It expires in one hour. Please also check your Spam and Promotions folders."
+		},
+		"errores": {
+			"campos": "Please fill in all the fields.",
+			"credenciales": "Incorrect username or password.",
+			"demasiados": "Too many attempts. Please wait a few minutes and try again.",
+			"verificacion": "We could not verify that you are not a robot. Reload the page and try again.",
+			"servidor": "Something went wrong on our side. Please try again in a few minutes.",
+			"correo": "Please enter a valid email.",
+			"enlace": "That link has already been used or has expired. Request a new one.",
+			"distintas": "The two new passwords do not match.",
+			"claveActual": "Your current password is not correct.",
+			"misma": "The new password is the same as the old one.",
+			"corta": "The password must be at least 10 characters long.",
+			"larga": "The password is too long.",
+			"comun": "That password is too easy to guess. Choose another one.",
+			"parecida": "The password cannot contain your username, your code or your email."
+		}
 	},
 	"aliados": {
 		"antetitulo": "Therapist network",

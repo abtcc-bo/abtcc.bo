@@ -39,7 +39,7 @@ const nombre =
 		? props.evento.texto.data.titulo
 		: props.tipo === 'articulo'
 			? props.articulo.data.titulo
-			: (pagina?.data.titulo ?? textos.nav[props.seccion]);
+			: (props.subpagina ?? pagina?.data.titulo ?? textos.nav[props.seccion]);
 // Cabecera verde (todas las secciones menos la portada): rótulo, entradilla y atajos propios de cada sección.
 const seccion = props.tipo === 'seccion' ? props.seccion : undefined;
 const cabecera = seccion && seccion !== 'inicio' ? textos.cabeceras[seccion] : undefined;
@@ -58,7 +58,7 @@ const titulo = props.tipo === 'seccion' && props.seccion === 'inicio' ? `${texto
 			titulo={titulo}
 			descripcion={pagina?.data.descripcion}
 			alternos={props.alternos}
-			migas={migasHasta(props.seccion).slice(0, -1)}
+			migas={props.subpagina ? migasHasta(props.seccion) : migasHasta(props.seccion).slice(0, -1)}
 			nombreEnMigas={props.seccion === 'inicio' ? undefined : nombre}
 			noIndexar={!props.indexable}
 			conCabecera={Boolean(cabecera)}

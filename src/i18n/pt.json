@@ -423,13 +423,117 @@
 		}
 	},
 	"socios": {
-		"aviso": "Somente para membros",
-		"titulo": "Acesso para membros",
-		"texto": "A área de sócios é um espaço reservado aos membros da ABTCC. Para solicitar seu acesso, escreva-nos a partir do e-mail com que você se cadastrou.",
-		"solicitarAcceso": "Solicitar acesso",
-		"mientras": "Ainda não é membro? Saiba como fazer parte da comunidade.",
-		"verEventos": "Ver formação e eventos",
-		"serMiembro": "Quero ser membro"
+		"titulos": {
+			"inicio": "Acesso sócios",
+			"cuenta": "Minha conta",
+			"recuperar": "Recuperar senha",
+			"nuevaClave": "Criar senha"
+		},
+		"ingreso": {
+			"titulo": "Entre na sua conta",
+			"texto": "Use seu nome de usuário, seu código de sócio ou seu e-mail, e sua senha.",
+			"identificador": "Usuário, código ou e-mail",
+			"clave": "Senha",
+			"recordar": "Lembrar de mim neste aparelho (30 dias)",
+			"entrar": "Entrar",
+			"olvide": "Esqueceu sua senha?",
+			"problemas": "Problemas para entrar? Escreva para",
+			"noSocio": "Ainda não é membro?",
+			"serMiembro": "Saiba como fazer parte"
+		},
+		"panel": {
+			"hola": "Olá, {nombre}",
+			"texto": "Este é o seu espaço na ABTCC.",
+			"codigo": "Código de sócio",
+			"usuario": "Nome de usuário",
+			"categoria": "Categoria",
+			"membresia": "Filiação",
+			"eligeUsuario": "Você ainda usa seu código como nome de usuário. Pode trocá-lo por um com o seu nome.",
+			"elegir": "Escolher meu nome de usuário",
+			"miCuenta": "Minha conta",
+			"salir": "Sair",
+			"inactivo": "Sua filiação não está ativa no momento. Escreva para nós para regularizá-la e recuperar o acesso a todo o material:"
+		},
+		"categorias": {
+			"asociado": "Membro associado",
+			"adherente": "Membro aderente",
+			"honorario": "Membro honorário",
+			"fundador": "Sócio fundador"
+		},
+		"estados": {
+			"activo": "Ativa",
+			"inactivo": "Não ativa"
+		},
+		"cuenta": {
+			"datos": "Seus dados",
+			"correo": "E-mail",
+			"codigoFijo": "Seu código não muda: é o seu número de membro.",
+			"usuarioTitulo": "Nome de usuário",
+			"usuarioTexto": "Serve para entrar no lugar do código ou do e-mail. De 3 a 30 caracteres: letras, números, ponto ou hífen. Acentos e maiúsculas se ajustam sozinhos.",
+			"usuarioCampo": "Novo nome de usuário",
+			"usuarioGuardar": "Salvar nome de usuário",
+			"usuarioQuedara": "Ficará assim: {usuario}",
+			"usuarioProximo": "Você poderá trocá-lo de novo a partir de {fecha}.",
+			"revisando": "Verificando…",
+			"sugerencias": "Experimente:",
+			"claveTitulo": "Trocar senha",
+			"claveActual": "Senha atual",
+			"claveOtros": "Ao trocá-la, sua sessão é encerrada nos seus outros aparelhos.",
+			"volver": "Voltar ao painel"
+		},
+		"usuario": {
+			"disponible": "Disponível.",
+			"ocupado": "Esse nome já está em uso.",
+			"reservado": "Esse nome está reservado para a associação.",
+			"invalido": "Use de 3 a 30 caracteres: letras, números, ponto ou hífen, sem começar nem terminar com um símbolo.",
+			"tuyo": "Esse já é o seu nome de usuário.",
+			"muyPronto": "Você trocou seu nome há pouco tempo: poderá trocá-lo de novo 30 dias depois da última troca.",
+			"inactivo": "Sua filiação não está ativa: por enquanto não é possível trocar o nome de usuário.",
+			"error": "Não conseguimos salvar a alteração. Tente de novo em alguns minutos."
+		},
+		"recuperar": {
+			"texto": "Escreva o e-mail com que você se cadastrou e enviaremos um link para criar uma senha nova.",
+			"correo": "E-mail",
+			"enviar": "Enviar link",
+			"volver": "Voltar ao acesso"
+		},
+		"nuevaClave": {
+			"titulo": "Escolha sua senha",
+			"texto": "Com ela você vai entrar na área de sócios.",
+			"sinEnlace": "Para criar uma senha nova você precisa do link que enviamos por e-mail.",
+			"pedirOtro": "Pedir um link novo"
+		},
+		"clave": {
+			"nueva": "Senha nova",
+			"repetir": "Repita a senha nova",
+			"ayuda": "Pelo menos 10 caracteres. Uma frase curta é fácil de lembrar e difícil de adivinhar.",
+			"guardar": "Salvar senha",
+			"mostrar": "Mostrar",
+			"ocultar": "Ocultar"
+		},
+		"avisos": {
+			"sesionCerrada": "Você saiu da sua conta.",
+			"usuarioCambiado": "Pronto: seu nome de usuário mudou.",
+			"claveCambiada": "Pronto: sua senha mudou. Encerramos a sessão nos seus outros aparelhos.",
+			"bienvenida": "Boas-vindas à ABTCC! Sua senha está pronta. Se quiser, escolha agora seu nome de usuário.",
+			"correoEnviado": "Se esse e-mail estiver cadastrado, você receberá um link para criar uma senha nova. Ele vence em uma hora. Confira também as pastas Spam e Promoções."
+		},
+		"errores": {
+			"campos": "Preencha todos os campos.",
+			"credenciales": "Usuário ou senha incorretos.",
+			"demasiados": "Houve tentativas demais. Espere alguns minutos e tente de novo.",
+			"verificacion": "Não conseguimos confirmar que você não é um robô. Recarregue a página e tente de novo.",
+			"servidor": "Algo deu errado do nosso lado. Tente de novo em alguns minutos.",
+			"correo": "Escreva um e-mail válido.",
+			"enlace": "Esse link já foi usado ou venceu. Peça um novo.",
+			"distintas": "As duas senhas novas não coincidem.",
+			"claveActual": "A senha atual não está correta.",
+			"misma": "A senha nova é igual à anterior.",
+			"corta": "A senha deve ter pelo menos 10 caracteres.",
+			"larga": "A senha é longa demais.",
+			"comun": "Essa senha é fácil demais de adivinhar. Escolha outra.",
+			"parecida": "A senha não pode conter seu usuário, seu código nem seu e-mail."
+		}
 	},
 	"aliados": {
 		"antetitulo": "Rede de terapeutas",

@@ -1,0 +1,111 @@
+---
+// Panel del socio con sesión abierta: saludo, sus datos, acceso a "Mi cuenta" y cerrar sesión.
+// Aquí se sumará la biblioteca (docs/area-socios.md, etapa C).
+import Mensaje from './Mensaje.astro';
+import type { EstadoAreaSocios } from '../../lib/area-socios';
+import type { Socio } from '../../lib/socios';
+import { ORGANIZACION } from '../../datos/organizacion';
+import { formato, rutaSocios, t } from '../../i18n';
+
+interface Props {
+	estado: EstadoAreaSocios;
+	socio: Socio;
+}
+
+const { estado, socio } = Astro.props;
+const { idioma } = estado;
+const textos = t(idioma).socios;
+const primerNombre = socio.nombre.split(/\s+/)[0];
+const usaCodigo = socio.usuario === socio.codigo.toLowerCase();
+---
+
+<div class="tarjeta-socios panel">
+	{estado.aviso === 'claveCambiada' && <Mensaje tipo="exito">{textos.avisos.claveCambiada}</Mensaje>}
+
+	<h2>{formato(textos.panel.hola, { nombre: primerNombre })}</h2>
+	<p class="bajada">{textos.panel.texto}</p>
+
+	{
+		socio.estado !== 'activo' && (
+			<Mensaje tipo="error">
+				{textos.panel.inactivo} {ORGANIZACION.correo && <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>}
+			</Mensaje>
+		)
+	}
+
+	<dl class="datos">
+		<div>
+			<dt>{textos.panel.codigo}</dt>
+			<dd>{socio.codigo}</dd>
+		</div>
+		<div>
+			<dt>{textos.panel.usuario}</dt>
+			<dd>{socio.usuario}</dd>
+		</div>
+		<div>
+			<dt>{textos.panel.categoria}</dt>
+			<dd>{textos.categorias[socio.categoria]}</dd>
+		</div>
+		<div>
+			<dt>{textos.panel.membresia}</dt>
+			<dd>{textos.estados[socio.estado]}</dd>
+		</div>
+	</dl>
+
+	{
+		usaCodigo && socio.estado === 'activo' && (
+			<p class="sugerencia">
+				{textos.panel.eligeUsuario} <a href={`${rutaSocios('cuenta', idioma)}#usuario`}>{textos.panel.elegir} →</a>
+			</p>
+		)
+	}
+
+	<div class="acciones">
+		<a class="boton" href={rutaSocios('cuenta', idioma)}>{textos.panel.miCuenta}</a>
+		<form method="post" action={rutaSocios('inicio', idioma)}>
+			<input type="hidden" name="accion" value="salir" />
+			<button class="boton boton-contorno" type="submit">{textos.panel.salir}</button>
+		</form>
+	</div>
+</div>
+
+<style>
+	.panel {
+		max-width: 44rem !important;
+	}
+	.datos {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+		gap: 1rem;
+		margin: 0 0 1.5rem;
+	}
+	.datos div {
+		padding: 0.9rem 1rem;
+		border-radius: var(--radio);
+		background: var(--color-banda-clara);
+	}
+	dt {
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: var(--color-texto-suave);
+	}
+	dd {
+		margin: 0.2rem 0 0;
+		font-weight: 700;
+		overflow-wrap: anywhere;
+	}
+	.sugerencia {
+		margin: 0 0 1.5rem;
+		padding: 0.9rem 1rem;
+		border-inline-start: 4px solid var(--color-realce);
+		background: var(--color-acento-suave);
+	}
+	.acciones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+	.acciones form {
+		display: block;
+	}
+</style>

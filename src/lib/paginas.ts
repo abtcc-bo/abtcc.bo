@@ -6,10 +6,11 @@ import { alternosDeArticulo, obtenerArticulos, obtenerEventosPublicos, paginaDeS
 import { IDIOMAS, SECCIONES, ruta, type Alternos, type Idioma, type Seccion } from '../i18n';
 
 /**
- * Secciones que se generan en cada visita en lugar de al publicar, para que los eventos pasados
- * desaparezcan solos de "próximos". Cada una necesita su archivo en src/pages/{es,en,pt}/ (ver CLAUDE.md).
+ * Secciones que se generan en cada visita en lugar de al publicar: la portada y los eventos, para que los eventos pasados
+ * desaparezcan solos de "próximos", y el área de socios, que revisa la sesión. Cada una necesita su archivo en
+ * src/pages/{es,en,pt}/ (ver CLAUDE.md).
  */
-export const SECCIONES_DINAMICAS: Seccion[] = ['inicio', 'eventos'];
+export const SECCIONES_DINAMICAS: Seccion[] = ['inicio', 'eventos', 'socios'];
 
 export type PaginaDelSitio =
 	| {
@@ -23,6 +24,8 @@ export type PaginaDelSitio =
 			indexable: boolean;
 			/** true = se genera en cada visita (SECCIONES_DINAMICAS). */
 			dinamica: boolean;
+			/** Página interna de la sección (p. ej. "Mi cuenta" en el área de socios): su nombre en el título y las migas. */
+			subpagina?: string;
 	  }
 	| { tipo: 'evento'; idioma: Idioma; evento: Evento; alternos: Alternos; indexable: true; dinamica: false }
 	| { tipo: 'articulo'; idioma: Idioma; articulo: Articulo; alternos: Alternos; indexable: true; dinamica: false };

@@ -57,6 +57,23 @@ export function ruta(seccion: Seccion, idioma: Idioma, slug?: string): string {
 	return `/${partes.join('/')}/`;
 }
 
+/**
+ * Páginas dentro del área de socios (todas se generan en el servidor: src/pages/{es/socios,en/members,pt/socios}/).
+ * `inicio` es la portada del área: el ingreso o, con sesión abierta, el panel del socio.
+ */
+export const SUBPAGINAS_SOCIOS = {
+	inicio: { es: '', en: '', pt: '' },
+	cuenta: { es: 'mi-cuenta', en: 'my-account', pt: 'minha-conta' },
+	recuperar: { es: 'recuperar-contrasena', en: 'forgot-password', pt: 'recuperar-senha' },
+	nuevaClave: { es: 'nueva-contrasena', en: 'new-password', pt: 'nova-senha' },
+} as const satisfies Record<string, Record<Idioma, string>>;
+
+export type SubpaginaSocios = keyof typeof SUBPAGINAS_SOCIOS;
+
+export function rutaSocios(subpagina: SubpaginaSocios, idioma: Idioma): string {
+	return ruta('socios', idioma, SUBPAGINAS_SOCIOS[subpagina][idioma] || undefined);
+}
+
 /** Versiones de una página por idioma; un idioma ausente significa que no existe en ese idioma. */
 export type Alternos = Partial<Record<Idioma, string>>;
 

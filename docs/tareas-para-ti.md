@@ -6,6 +6,93 @@ Cuando termines algo, márcalo con [x] o simplemente avísame en el chat.
 ---
 
 
+## 🔵 Área de socios (empezamos el 25/11/2026)
+
+El plan completo y la lista de tareas están en `docs/area-socios.md`. Primero hay que preparar las cuentas gratuitas; hazlas **en este orden** y avísame al terminar cada una. Si algo en pantalla no coincide con lo que dice aquí, mándame una captura.
+
+### A1. Gmail: verificación en dos pasos y contraseña de aplicación
+Sirve para que la web pueda mandar los correos de "crea tu contraseña" desde abtcc.bo@gmail.com.
+
+- [ ] Entra a https://myaccount.google.com con abtcc.bo@gmail.com.
+- [ ] Menú **Seguridad** → **Verificación en 2 pasos** → actívala (te pedirá un celular).
+- [ ] Luego entra a https://myaccount.google.com/apppasswords
+- [ ] En "Nombre de la app" escribe `Web ABTCC` y toca **Crear**.
+- [ ] Aparece una clave de 16 letras. **Cópiala y guárdala** donde guardas las contraseñas de la asociación. **No me la pegues en el chat**: en el paso A2 te digo dónde ponerla tú.
+
+### A2. Supabase: usamos el proyecto que ya tiene la ABTCC
+La ABTCC ya tiene cuenta en Supabase, con un proyecto que se hizo para inscribir participantes y cobrarles (y que ya no se usará). **No hace falta crear otro ni borrarlo**: lo reutilizamos. Primero yo reviso qué tiene adentro; si guarda datos de personas inscritas, decidimos juntos qué hacer con ellos antes de tocar nada.
+
+- [x] Entra a https://supabase.com/dashboard con la cuenta de la ABTCC.
+- [x] Verás un cuadro con el nombre del proyecto. Si dice **Paused** (pausado), tócalo y luego toca el botón **Restore project** (restaurar). Espera unos minutos hasta que deje de decir "Restoring". *(Supabase pone en pausa los proyectos gratis que nadie usa durante una semana; es normal.)*
+- [x] **No lo borres** por ahora.
+- [x] Invita a tu correo personal (el mismo con el que tienes tus otros proyectos de Supabase, "psico-web-db" y "dbt-app") para que yo pueda trabajar en el proyecto:
+  1. Arriba a la izquierda, toca el **nombre de la organización** (lo primero que aparece, antes del nombre del proyecto).
+  2. En el menú de la izquierda toca **Team** (equipo).
+  3. Toca el botón **Invite member** (invitar).
+  4. Escribe tu correo personal, en "Role" elige **Owner** (dueño) y toca **Invite**.
+  5. Abre tu correo personal: llega un mensaje de Supabase. Toca **Accept invite** (aceptar).
+- [x] Proyecto activo: se llama **abtcc.bo** ✔ (25/11/2026)
+- [x] ✔ Hecho (25/11/2026). Comprobar que aceptaste la invitación: entra a Supabase con tu correo personal; arriba a la izquierda, al tocar el nombre de la organización, tienen que aparecer **dos**: la tuya y la de la ABTCC.
+- [x] ✔ Hecho (25/11/2026): Claude ya ve la organización "abtcc-bo" y el proyecto "abtcc.bo" (vacío, listo para empezar). Volver a conectar a Claude con Supabase eligiendo la organización de la ABTCC (cuando se conectó por primera vez solo se le dio permiso para tu organización personal):
+  1. En la app de Claude, abre **Configuración** (Settings) → **Conectores** (Connectors).
+  2. Busca **Supabase**, toca **Desconectar** (Disconnect) y luego **Conectar** (Connect).
+  3. Entra con tu correo personal. En la pantalla de Supabase que pide permiso, en **Organization** elige la de la **ABTCC** y toca **Authorize**.
+  4. Avísame. El paso de pegar la clave del Gmail en Supabase lo hacemos juntos.
+
+### A3. Crear el "depósito" de archivos en Cloudflare (R2)
+**✔ Hecho el 25/11/2026:** el depósito `abtcc-biblioteca` ya existe y está vacío. No actives nunca "Acceso público" en su pestaña Configuración: los archivos tienen que pasar por la web, que revisa quién es socio.
+
+**Qué es:** R2 es como un **disco duro en internet** (parecido a un Google Drive, pero privado), dentro de la misma cuenta de Cloudflare donde ya está publicada la web. Ahí van a vivir los PDF. Cloudflare a la carpeta grande la llama **bucket** (cubeta); acá le decimos **depósito**. Tú solo lo creas vacío: los archivos los subo yo.
+
+1. - [ ] Abre https://dash.cloudflare.com y entra con **abtcc.bo@gmail.com** (la misma cuenta de la web).
+2. - [ ] Ya adentro, a la izquierda hay un menú. Busca **R2 object storage**. Suele estar dentro de un grupo que se llama **Storage & databases** (almacenamiento y bases de datos): tócalo para que se abra y aparezca R2.
+   - *Atajo:* arriba hay una **lupa** o un cuadro de búsqueda. Escribe `R2` y toca el resultado que dice "R2".
+3. - [ ] La primera vez sale una página de presentación con un **botón azul**. Puede decir **Purchase R2 Plan**, **Get started** o **Enable R2**. Tócalo.
+   - Aunque diga "Purchase" (comprar), es el **plan gratuito**: en la pantalla tiene que figurar **$0.00**. Si ves otro monto, no sigas y mándame una captura.
+4. - [ ] Si te pide una **forma de pago** (tarjeta de débito, de crédito o PayPal): Cloudflare la pide solo para verificar que eres una persona. **No cobra nada** mientras usemos menos de 10 GB, y yo vigilo el espacio. Complétala y confirma.
+   - Si no tienes cómo poner una tarjeta, **para aquí y avísame**: buscamos otra opción.
+5. - [ ] Ya en la página de R2, toca el botón azul **Create bucket** (crear depósito).
+6. - [ ] Llena el formulario así:
+   - **Bucket name** (nombre): `abtcc-biblioteca` (todo en minúsculas, con el guion del medio, sin espacios).
+   - **Location** (ubicación): déjalo en **Automatic**.
+   - **Default storage class** (si aparece): deja **Standard**. *(Lo gratis vale solo para "Standard".)*
+   - Toca **Create bucket**.
+7. - [ ] Aparece una página que dice **abtcc-biblioteca** y que está vacía. ¡Listo! No subas nada ahí.
+8. - [ ] Avísame o mándame una captura de esa pantalla.
+
+Si en algún momento la pantalla no se parece a lo que dice aquí (Cloudflare cambia sus botones de vez en cuando), mándame una captura y te digo dónde tocar.
+
+### A4. Darme permiso para subir archivos
+**✔ Hecho el 25/11/2026:** Claude ya puede ver y usar el depósito.
+
+- [ ] En la pestaña **Terminal** de esta app, escribe `npx wrangler login` y presiona Enter.
+- [ ] Se abre el navegador: entra con la cuenta de Cloudflare de la web y toca **Allow**.
+- [ ] Avísame. Con eso puedo subir los PDF al depósito por ti.
+
+### A5. Ajustes de Supabase para que funcionen los correos (nuevo, 25/11/2026)
+La página de ingreso ya funciona. Faltan estos ajustes en el panel de Supabase, que solo puedes hacer tú. Entra a https://supabase.com/dashboard con tu correo personal y abre el proyecto **abtcc.bo**. Todo está en el menú de la izquierda, en **Authentication** (el ícono de la persona).
+
+1. - [x] ✔ **Que nadie pueda crearse una cuenta solo.** Authentication → **Sign In / Providers**. Apaga la opción **Allow new users to sign up** y toca **Save**.
+2. - [x] ✔ **Largo mínimo de contraseña.** En esa misma pantalla, toca **Email** y busca **Minimum password length**: escribe `10` y toca **Save**.
+3. - [x] ✔ **Adónde llevan los enlaces de los correos.** Authentication → **URL Configuration**:
+   - En **Site URL** escribe `https://abtcc.abtcc-bo.workers.dev` y toca **Save**.
+   - En **Redirect URLs** toca **Add URL**, escribe `https://abtcc.abtcc-bo.workers.dev/**` y guarda. Repite con `http://localhost:4321/**` (sirve para mis pruebas).
+4. - [ ] **El texto del correo (hacerlo DESPUÉS del paso 6).** Supabase no deja cambiar los correos mientras use su cartero propio: el asunto queda bloqueado en "Reset your password". Primero el paso A1 (Gmail) y el paso 6 (cartero); recién ahí se puede escribir. Authentication → **Emails** → pestaña **Templates** → **Reset Password**:
+   - En **Subject** escribe: `Tu contraseña del área de socios de la ABTCC`
+   - En el cuadro grande (**Source**), borra todo y pega el contenido del archivo `supabase/plantillas/recuperar-contrasena.html` (si quieres, pídeme que te lo copie aquí en el chat). Toca **Save**.
+5. - [x] ✔ **La clave secreta para entrar con usuario o código.** Sin ella, en la web publicada solo se puede entrar con el correo.
+   - En Supabase: **Project Settings** (el engranaje, abajo a la izquierda) → **API Keys** → en **Secret keys**, toca el ícono de copiar de la clave `default`. **No me la pegues en el chat.**
+   - En Cloudflare (https://dash.cloudflare.com): **Workers & Pages** → **abtcc** → **Settings** → **Variables and Secrets** → **+ Add**. En **Type** elige **Secret** (no "Text": esas se borran al publicar), en **Variable name** escribe `SUPABASE_SECRET_KEY`, en **Value** pega la clave y toca **Deploy**.
+6. - [ ] **El cartero (después del paso A1).** Authentication → **Emails** → pestaña **SMTP Settings** → activa **Enable custom SMTP** y llena: Sender email `abtcc.bo@gmail.com` · Sender name `ABTCC` · Host `smtp.gmail.com` · Port `465` · Username `abtcc.bo@gmail.com` · Password: la contraseña de aplicación de 16 letras del paso A1. Toca **Save**. Hasta hacer esto, Supabase solo manda correos a quienes son parte del equipo del proyecto (por ejemplo, a tu correo personal), lo que alcanza para probar.
+7. - [ ] Avísame y creamos **tu cuenta de socio** para probarlo todo de verdad.
+
+### Datos que necesito (sin apuro, pero antes de la biblioteca)
+- [x] **Código de socio:** decidido `ABTCC-0001`, `ABTCC-0002`… (lo pone el sistema solo y no cambia); cada socio puede elegir además su nombre de usuario ✔
+- [ ] ¿Estás de acuerdo con los **tipos** de material (Libros · Libros del docente · Plataformas · Guías y manuales · Presentaciones · Artículos) y los **temas** (ACT · DBT · Análisis funcional · Neuropsicología · Psicología forense)? Agrega o quita lo que quieras.
+- [ ] Revisar con la comisión que el material que se suba se pueda compartir (derechos de autor).
+
+---
+
 ## 🟡 Datos que la web dejó de mostrar hasta tenerlos (revisión de credibilidad, 23/11/2026)
 
 La web ya no muestra rellenos como "[PENDIENTE]" ni avisos de "en preparación". Lo que faltaba se quitó o se escribió de otra forma. Cuando tengas estos datos, pásamelos y vuelven a aparecer:

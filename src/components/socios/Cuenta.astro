@@ -1,0 +1,272 @@
+---
+// "Mi cuenta": datos del socio, cambio de nombre de usuario (con revisión en vivo de si está libre) y de contraseña.
+// La revisión en vivo consulta /api/socios/usuario/; sin JavaScript, la revisión se hace al guardar.
+import CampoClave from './CampoClave.astro';
+import Mensaje from './Mensaje.astro';
+import type { EstadoAreaSocios } from '../../lib/area-socios';
+import type { ResultadoCambioUsuario, Socio } from '../../lib/socios';
+import { formatearFecha, formato, rutaSocios, t } from '../../i18n';
+
+interface Props {
+	estado: EstadoAreaSocios;
+	socio: Socio;
+}
+
+const { estado, socio } = Astro.props;
+const { idioma } = estado;
+const textos = t(idioma).socios;
+
+/** Texto de cada resultado de la base de datos (algunos comparten mensaje). */
+const textosUsuario: Record<ResultadoCambioUsuario, string> = {
+	disponible: textos.usuario.disponible,
+	ocupado: textos.usuario.ocupado,
+	reservado: textos.usuario.reservado,
+	invalido: textos.usuario.invalido,
+	tuyo: textos.usuario.tuyo,
+	'sin-cambios': textos.usuario.tuyo,
+	'muy-pronto': textos.usuario.muyPronto,
+	inactivo: textos.usuario.inactivo,
+	cambiado: '',
+	error: textos.usuario.error,
+	'sin-sesion': textos.usuario.error,
+	'sin-socio': textos.usuario.error,
+};
+
+const cambiableDesde = socio.usuario_cambiable_desde ? new Date(socio.usuario_cambiable_desde) : null;
+const esperar = cambiableDesde && cambiableDesde > new Date() ? formatearFecha(cambiableDesde, idioma) : undefined;
+const resultadoUsuario = estado.usuario;
+const errorClave = estado.error?.formulario === 'clave' ? estado.error.tipo : undefined;
+---
+
+<div class="tarjeta-socios">
+	{estado.aviso === 'bienvenida' && <Mensaje tipo="exito">{textos.avisos.bienvenida}</Mensaje>}
+	{estado.aviso === 'usuarioCambiado' && <Mensaje tipo="exito">{textos.avisos.usuarioCambiado}</Mensaje>}
+	{estado.aviso === 'claveCambiada' && <Mensaje tipo="exito">{textos.avisos.claveCambiada}</Mensaje>}
+
+	<h2>{textos.cuenta.datos}</h2>
+	<dl class="datos-cuenta">
+		<dt>{textos.panel.codigo}</dt>
+		<dd>{socio.codigo} <span class="ayuda">{textos.cuenta.codigoFijo}</span></dd>
+		<dt>{textos.cuenta.correo}</dt>
+		<dd>{socio.correo}</dd>
+		<dt>{textos.panel.categoria}</dt>
+		<dd>{textos.categorias[socio.categoria]}</dd>
+	</dl>
+</div>
+
+<div class="tarjeta-socios" id="usuario">
+	<h2>{textos.cuenta.usuarioTitulo}</h2>
+	<p class="bajada">{textos.cuenta.usuarioTexto}</p>
+	{resultadoUsuario && <Mensaje tipo="error">{textosUsuario[resultadoUsuario.resultado]}</Mensaje>}
+	{esperar && !resultadoUsuario && <p class="ayuda aviso-espera">{formato(textos.cuenta.usuarioProximo, { fecha: esperar })}</p>}
+
+	<form
+		method="post"
+		action={`${rutaSocios('cuenta', idioma)}#usuario`}
+		data-cambio-usuario
+		data-actual={socio.usuario}
+		data-textos={JSON.stringify({ ...textosUsuario, revisando: textos.cuenta.revisando, quedara: textos.cuenta.usuarioQuedara })}
+	>
+		<input type="hidden" name="accion" value="cambiar-usuario" />
+		<div class="campo">
+			<label for="socio-usuario">{textos.cuenta.usuarioCampo}</label>
+			<input
+				id="socio-usuario"
+				name="usuario"
+				type="text"
+				autocomplete="off"
+				autocapitalize="none"
+				spellcheck="false"
+				required
+				maxlength="60"
+				value={estado.valores.usuario ?? socio.usuario}
+				aria-describedby="socio-usuario-estado"
+				aria-invalid={resultadoUsuario ? 'true' : undefined}
+				disabled={Boolean(esperar) || socio.estado !== 'activo'}
+			/>
+			<p class="ayuda estado-usuario" id="socio-usuario-estado" aria-live="polite" data-estado-usuario></p>
+		</div>
+		<div class="sugerencias" data-sugerencias hidden={!resultadoUsuario?.sugerencias.length}>
+			<span>{textos.cuenta.sugerencias}</span>
+			{resultadoUsuario?.sugerencias.map((s) => <button type="button" class="sugerencia" data-sugerencia={s}>{s}</button>)}
+		</div>
+		<button class="boton" type="submit" disabled={Boolean(esperar) || socio.estado !== 'activo'}>{textos.cuenta.usuarioGuardar}</button>
+	</form>
+</div>
+
+<div class="tarjeta-socios" id="clave">
+	<h2>{textos.cuenta.claveTitulo}</h2>
+	<p class="bajada">{textos.cuenta.claveOtros}</p>
+	{errorClave && <Mensaje tipo="error">{textos.errores[errorClave]}</Mensaje>}
+	<form method="post" action={`${rutaSocios('cuenta', idioma)}#clave`}>
+		<input type="hidden" name="accion" value="cambiar-clave" />
+		<input type="text" name="usuario-oculto" autocomplete="username" value={socio.correo} hidden readonly />
+		<CampoClave idioma={idioma} id="socio-clave-actual" nombre="actual" etiqueta={textos.cuenta.claveActual} autocomplete="current-password" invalido={errorClave === 'claveActual'} />
+		<CampoClave
+			idioma={idioma}
+			id="socio-clave-nueva"
+			nombre="clave"
+			etiqueta={textos.clave.nueva}
+			autocomplete="new-password"
+			ayuda={textos.clave.ayuda}
+			invalido={Boolean(errorClave) && errorClave !== 'claveActual'}
+		/>
+		<CampoClave idioma={idioma} id="socio-clave-repetir" nombre="clave2" etiqueta={textos.clave.repetir} autocomplete="new-password" invalido={errorClave === 'distintas'} />
+		<button class="boton" type="submit">{textos.clave.guardar}</button>
+	</form>
+</div>
+
+<p class="volver-panel">
+	<a href={rutaSocios('inicio', idioma)}>← {textos.cuenta.volver}</a>
+</p>
+
+<script>
+	// Revisión en vivo del nombre de usuario: mientras se escribe, pregunta al servidor si está libre.
+	const formulario = document.querySelector<HTMLFormElement>('[data-cambio-usuario]');
+	const campo = formulario?.querySelector<HTMLInputElement>('input[name="usuario"]');
+	const estado = formulario?.querySelector<HTMLElement>('[data-estado-usuario]');
+	const caja = formulario?.querySelector<HTMLElement>('[data-sugerencias]');
+
+	if (formulario && campo && estado && caja && !campo.disabled) {
+		const textos = JSON.parse(formulario.dataset.textos ?? '{}') as Record<string, string>;
+		const actual = formulario.dataset.actual ?? '';
+		let temporizador: ReturnType<typeof setTimeout> | undefined;
+		let pedido = 0;
+
+		const mostrarSugerencias = (lista: string[]) => {
+			caja.querySelectorAll('[data-sugerencia]').forEach((b) => b.remove());
+			for (const sugerencia of lista) {
+				const boton = document.createElement('button');
+				boton.type = 'button';
+				boton.className = 'sugerencia';
+				boton.dataset.sugerencia = sugerencia;
+				boton.textContent = sugerencia;
+				caja.append(boton);
+			}
+			caja.hidden = lista.length === 0;
+		};
+
+		caja.addEventListener('click', (evento) => {
+			const boton = (evento.target as HTMLElement).closest<HTMLButtonElement>('[data-sugerencia]');
+			if (!boton) return;
+			campo.value = boton.dataset.sugerencia ?? '';
+			campo.focus();
+			revisar();
+		});
+
+		const revisar = async () => {
+			const valor = campo.value.trim();
+			const numero = ++pedido;
+			if (!valor || valor === actual) {
+				estado.textContent = '';
+				estado.dataset.tipo = '';
+				campo.removeAttribute('aria-invalid');
+				mostrarSugerencias([]);
+				return;
+			}
+			estado.textContent = textos.revisando ?? '';
+			estado.dataset.tipo = '';
+			try {
+				const respuesta = await fetch(`/api/socios/usuario/?u=${encodeURIComponent(valor)}`, { headers: { Accept: 'application/json' } });
+				const datos = (await respuesta.json()) as { normalizado?: string; estado?: string; sugerencias?: string[] };
+				if (numero !== pedido) return; // llegó tarde: ya se escribió otra cosa
+				if (!respuesta.ok || !datos.estado) {
+					estado.textContent = '';
+					return;
+				}
+				const partes = [textos[datos.estado] ?? ''];
+				if (datos.normalizado && datos.normalizado !== valor && datos.estado === 'disponible') {
+					partes.push((textos.quedara ?? '').replace('{usuario}', datos.normalizado));
+				}
+				estado.textContent = partes.join(' ');
+				estado.dataset.tipo = datos.estado === 'disponible' ? 'bien' : datos.estado === 'tuyo' ? '' : 'mal';
+				if (datos.estado === 'disponible' || datos.estado === 'tuyo') campo.removeAttribute('aria-invalid');
+				else campo.setAttribute('aria-invalid', 'true');
+				mostrarSugerencias(datos.sugerencias ?? []);
+			} catch {
+				estado.textContent = '';
+			}
+		};
+
+		campo.addEventListener('input', () => {
+			clearTimeout(temporizador);
+			temporizador = setTimeout(revisar, 450);
+		});
+	}
+</script>
+
+<style>
+	.datos-cuenta {
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		gap: 0.5rem 1.25rem;
+		margin: 1rem 0 0;
+	}
+	.datos-cuenta dt {
+		font-weight: 600;
+		color: var(--color-texto-suave);
+	}
+	.datos-cuenta dd {
+		margin: 0;
+		font-weight: 700;
+		overflow-wrap: anywhere;
+	}
+	.datos-cuenta .ayuda {
+		display: block;
+		font-weight: 400;
+	}
+	@media (max-width: 30rem) {
+		.datos-cuenta {
+			grid-template-columns: 1fr;
+		}
+		.datos-cuenta dd {
+			margin-bottom: 0.5rem;
+		}
+	}
+	.estado-usuario {
+		min-height: 1.4em;
+	}
+	.estado-usuario[data-tipo='bien'] {
+		color: var(--color-acento-hover);
+		font-weight: 700;
+	}
+	.estado-usuario[data-tipo='mal'] {
+		color: #a40000;
+		font-weight: 700;
+	}
+	.aviso-espera {
+		margin-bottom: 1rem !important;
+	}
+	.sugerencias {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.875rem;
+	}
+	.sugerencias[hidden] {
+		display: none;
+	}
+	.sugerencias :global(.sugerencia) {
+		min-height: 36px;
+		padding-inline: 0.9rem;
+		border: 1px solid var(--color-acento);
+		border-radius: 999px;
+		background: #fff;
+		color: var(--color-acento);
+		font: inherit;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.sugerencias :global(.sugerencia:hover) {
+		background: var(--color-acento-suave);
+	}
+	button[disabled] {
+		opacity: 0.55;
+		cursor: not-allowed;
+	}
+	.volver-panel {
+		max-width: 34rem;
+		margin: 1.5rem auto 0;
+	}
+</style>

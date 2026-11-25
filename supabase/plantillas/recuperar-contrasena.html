@@ -1,0 +1,22 @@
+<!--
+  Plantilla del correo "Reset password" de Supabase (Authentication → Emails → Reset password).
+  Asunto sugerido: Tu contraseña del área de socios de la ABTCC
+  Sirve para quien olvidó su contraseña y también para los socios nuevos (así reciben su primera contraseña).
+  El enlace lleva a /es/socios/nueva-contrasena/ (o a la versión en inglés o portugués): {{ .RedirectTo }} lo pone la web.
+-->
+<div style="font-family: Arial, Helvetica, sans-serif; max-width: 520px; margin: 0 auto; color: #1d2b24; line-height: 1.6">
+	<p style="font-size: 20px; font-weight: bold; color: #0c4030; margin: 0 0 16px">ABTCC · Área de socios</p>
+	<p>Hola:</p>
+	<p>Recibimos un pedido para crear o cambiar la contraseña de tu cuenta en el área de socios de la ABTCC.</p>
+	<p style="margin: 28px 0">
+		<a
+			href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=recovery"
+			style="background: #127052; color: #ffffff; padding: 12px 22px; border-radius: 999px; text-decoration: none; font-weight: bold"
+			>Elegir mi contraseña</a
+		>
+	</p>
+	<p>El enlace vence en una hora y sirve una sola vez. Si no lo pediste, puedes ignorar este correo: tu contraseña no cambia.</p>
+	<p style="color: #4a5a52; font-size: 13px; margin-top: 32px">
+		Asociación Boliviana de Terapias Cognitivas Conductuales y Contextuales · abtcc.bo@gmail.com
+	</p>
+</div>

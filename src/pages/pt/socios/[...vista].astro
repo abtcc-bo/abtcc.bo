@@ -1,0 +1,15 @@
+---
+// Área de socios: ingreso, panel, "Mi cuenta" y contraseñas. Se genera en cada visita porque revisa la sesión.
+// Los tres idiomas tienen este mismo archivo (src/pages/es/socios/, en/members/ y pt/socios/); si cambia la ruta de la
+// sección en SECCIONES, mover la carpeta. La lógica está en src/lib/area-socios.ts y el dibujo en src/vistas/Socios.astro.
+import Pagina from '../../../vistas/Pagina.astro';
+import { atenderAreaSocios } from '../../../lib/area-socios';
+
+export const prerender = false;
+
+const respuesta = await atenderAreaSocios(Astro);
+if (respuesta) return respuesta;
+const { pagina } = Astro.locals.areaSocios!;
+---
+
+<Pagina {...pagina} />

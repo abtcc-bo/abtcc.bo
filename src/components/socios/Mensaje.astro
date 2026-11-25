@@ -1,0 +1,9 @@
+---
+// Mensaje de éxito o de error de los formularios del área de socios (estilos en src/vistas/Socios.astro).
+interface Props {
+	tipo: 'exito' | 'error';
+}
+const { tipo } = Astro.props;
+---
+
+<p class:list={['mensaje', `mensaje-${tipo}`]} role={tipo === 'error' ? 'alert' : 'status'}><slot /></p>

@@ -1,0 +1,77 @@
+---
+// Campo de contraseña con botón "Mostrar / Ocultar". Sin JavaScript el botón no aparece y el campo funciona igual.
+import { t, type Idioma } from '../../i18n';
+
+interface Props {
+	idioma: Idioma;
+	id: string;
+	nombre: string;
+	etiqueta: string;
+	autocomplete: 'current-password' | 'new-password';
+	ayuda?: string;
+	invalido?: boolean;
+}
+
+const { idioma, id, nombre, etiqueta, autocomplete, ayuda, invalido = false } = Astro.props;
+const textos = t(idioma).socios.clave;
+---
+
+<div class="campo campo-clave">
+	<label for={id}>{etiqueta}</label>
+	<div class="clave-con-boton">
+		<input
+			id={id}
+			name={nombre}
+			type="password"
+			autocomplete={autocomplete}
+			required
+			maxlength="200"
+			aria-invalid={invalido ? 'true' : undefined}
+			aria-describedby={ayuda ? `${id}-ayuda` : undefined}
+		/>
+		<button type="button" class="ver-clave" data-ver-clave data-mostrar={textos.mostrar} data-ocultar={textos.ocultar} aria-controls={id} aria-pressed="false" hidden>
+			{textos.mostrar}
+		</button>
+	</div>
+	{ayuda && <p class="ayuda" id={`${id}-ayuda`}>{ayuda}</p>}
+</div>
+
+<script>
+	for (const boton of document.querySelectorAll<HTMLButtonElement>('[data-ver-clave]')) {
+		const campo = document.getElementById(boton.getAttribute('aria-controls') ?? '') as HTMLInputElement | null;
+		if (!campo) continue;
+		boton.hidden = false;
+		boton.addEventListener('click', () => {
+			const visible = campo.type === 'password';
+			campo.type = visible ? 'text' : 'password';
+			boton.setAttribute('aria-pressed', String(visible));
+			boton.textContent = (visible ? boton.dataset.ocultar : boton.dataset.mostrar) ?? '';
+		});
+	}
+</script>
+
+<style>
+	.clave-con-boton {
+		position: relative;
+	}
+	.clave-con-boton input {
+		padding-inline-end: 5.5rem !important;
+	}
+	.ver-clave {
+		position: absolute;
+		inset-block: 4px;
+		inset-inline-end: 4px;
+		padding-inline: 0.8rem;
+		border: 0;
+		border-radius: calc(var(--radio) - 2px);
+		background: var(--color-acento-suave);
+		color: var(--color-acento-hover);
+		font: inherit;
+		font-size: 0.8125rem;
+		font-weight: 700;
+		cursor: pointer;
+	}
+	.ver-clave[hidden] {
+		display: none;
+	}
+</style>
