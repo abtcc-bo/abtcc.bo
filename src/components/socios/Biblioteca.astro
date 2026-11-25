@@ -1,10 +1,16 @@
 ---
-// Biblioteca del área de socios: buscador, filtros por temática y tipo, y descarga protegida.
-// La lista se carga desde /api/socios/catalogo/ en el navegador del socio (así el Worker no arma 1.000 filas en cada visita);
-// las descargas pasan por /api/socios/descargar/<id>/, que revisa la sesión. Un administrador ve además "Borrar".
+// Biblioteca del área de socios, por estantes: Biblioteca › Estante (sección) › Tema › Carpeta.
+//  - Inicio: buscador, "Lo nuevo" y las tarjetas de los estantes.
+//  - Estante: sus temas como tarjetas (subcarpetas). Tema: los materiales, con carpetas y tipo como filtros.
+//  - Buscar: resultados de toda la biblioteca, agrupados por estante y tema.
+// La lista se arma en el navegador desde /api/socios/catalogo/ (el Worker gratis tiene poco tiempo de CPU);
+// la dirección guarda dónde está el socio (?estante=…&tema=…), así funcionan el botón "atrás" y los enlaces.
+// Cada material del catálogo trae `seccion`, `subtema` y, a veces, `carpeta` (los arma el script de subida).
+// Un administrador ve además "Borrar". Las descargas pasan por /api/socios/descargar/<id>/, que revisa la sesión.
 import Mensaje from './Mensaje.astro';
 import type { EstadoAreaSocios } from '../../lib/area-socios';
 import type { Socio } from '../../lib/socios';
+import { ICONOS } from '../../datos/iconos';
 import { ORGANIZACION } from '../../datos/organizacion';
 import { rutaSocios, t } from '../../i18n';
 
@@ -18,6 +24,19 @@ const { idioma } = estado;
 const textos = t(idioma).socios;
 const b = textos.biblioteca;
 const avisosError = ['topeDescargas', 'noEncontrado'];
+
+/** Estantes en el orden en que se muestran, con su ícono (src/datos/iconos.ts) y el color del lomo de sus libros. */
+const ESTANTES = [
+	{ nombre: 'Terapias contextuales', icono: ICONOS.hoja, color: '#127052' },
+	{ nombre: 'DBT', icono: ICONOS.dialogo, color: '#0c4030' },
+	{ nombre: 'Análisis funcional y conducta', icono: ICONOS.investigacion, color: '#15795a' },
+	{ nombre: 'Problemas clínicos', icono: ICONOS.cuidado, color: '#2f6f8f' },
+	{ nombre: 'Infancia y adolescencia', icono: ICONOS.personas, color: '#8a5a12' },
+	{ nombre: 'Evaluación', icono: ICONOS.check, color: '#5b4a8a' },
+	{ nombre: 'Terapia cognitivo-conductual', icono: ICONOS.diana, color: '#7a2f45' },
+	{ nombre: 'Salud y estilos de vida', icono: ICONOS.sol, color: '#4f7a1f' },
+	{ nombre: 'Más temas', icono: ICONOS.libro, color: '#5a5a5a' },
+];
 ---
 
 <div class="biblioteca">
@@ -38,27 +57,15 @@ const avisosError = ['topeDescargas', 'noEncontrado'];
 				data-admin={socio.es_admin ? 'si' : undefined}
 				data-ruta={rutaSocios('biblioteca', idioma)}
 				data-textos={JSON.stringify(b)}
+				data-estantes={JSON.stringify(ESTANTES)}
 			>
-				<div class="filtros">
-					<div class="campo campo-busqueda">
-						<label for="biblioteca-buscar">{b.buscar}</label>
-						<input id="biblioteca-buscar" type="search" autocomplete="off" data-buscar />
-					</div>
-					<div class="campo">
-						<label for="biblioteca-tema">{b.tema}</label>
-						<select id="biblioteca-tema" data-tema>
-							<option value="">{b.todas}</option>
-						</select>
-					</div>
-					<div class="campo">
-						<label for="biblioteca-tipo">{b.tipo}</label>
-						<select id="biblioteca-tipo" data-tipo>
-							<option value="">{b.todos}</option>
-						</select>
-					</div>
+				<div class="buscador">
+					<label for="biblioteca-buscar">{b.buscar}</label>
+					<input id="biblioteca-buscar" type="search" autocomplete="off" data-buscar />
 				</div>
-				<p class="resultados" aria-live="polite" data-resultados>{b.cargando}</p>
-				<div data-lista></div>
+				<nav class="migas-biblioteca" aria-label={b.titulo} data-migas></nav>
+				<p class="estado-lista" aria-live="polite" data-resultados>{b.cargando}</p>
+				<div data-vista></div>
 				<noscript>
 					<p>{b.sinJs}</p>
 				</noscript>
@@ -80,21 +87,50 @@ const avisosError = ['topeDescargas', 'noEncontrado'];
 		mb: number;
 		ext: string;
 		agregado?: string;
+		seccion?: string;
+		subtema?: string;
+		carpeta?: string;
 	}
+	interface Estante {
+		nombre: string;
+		icono: string;
+		color: string;
+	}
+	type Estado = { estante: string; tema: string; carpeta: string; tipo: string };
 
 	const caja = document.querySelector<HTMLElement>('[data-biblioteca]');
 	if (caja) iniciar(caja);
 
+	function el<K extends keyof HTMLElementTagNameMap>(etiqueta: K, clase?: string, texto?: string) {
+		const nodo = document.createElement(etiqueta);
+		if (clase) nodo.className = clase;
+		if (texto !== undefined) nodo.textContent = texto;
+		return nodo;
+	}
+
+	function icono(trazo: string) {
+		const ns = 'http://www.w3.org/2000/svg';
+		const svg = document.createElementNS(ns, 'svg');
+		svg.setAttribute('viewBox', '0 0 24 24');
+		svg.setAttribute('aria-hidden', 'true');
+		const path = document.createElementNS(ns, 'path');
+		path.setAttribute('d', trazo);
+		svg.append(path);
+		return svg;
+	}
+
 	async function iniciar(caja: HTMLElement) {
 		const textos = JSON.parse(caja.dataset.textos ?? '{}') as Record<string, string>;
+		const estantes = JSON.parse(caja.dataset.estantes ?? '[]') as Estante[];
 		const idioma = caja.dataset.idioma ?? 'es';
 		const esAdmin = caja.dataset.admin === 'si';
 		const ruta = caja.dataset.ruta ?? '';
 		const buscar = caja.querySelector<HTMLInputElement>('[data-buscar]')!;
-		const selTema = caja.querySelector<HTMLSelectElement>('[data-tema]')!;
-		const selTipo = caja.querySelector<HTMLSelectElement>('[data-tipo]')!;
-		const resultados = caja.querySelector<HTMLElement>('[data-resultados]')!;
-		const lista = caja.querySelector<HTMLElement>('[data-lista]')!;
+		const migas = caja.querySelector<HTMLElement>('[data-migas]')!;
+		const estadoLista = caja.querySelector<HTMLElement>('[data-resultados]')!;
+		const vista = caja.querySelector<HTMLElement>('[data-vista]')!;
+		const tx = (clave: string, n?: number) => (textos[clave] ?? '').replace('{n}', n === undefined ? '' : n.toLocaleString(idioma));
+		const cuantos = (n: number) => tx(n === 1 ? 'resultado' : 'resultados', n);
 
 		let materiales: Material[];
 		try {
@@ -102,168 +138,387 @@ const avisosError = ['topeDescargas', 'noEncontrado'];
 			if (!respuesta.ok) throw new Error(String(respuesta.status));
 			materiales = (await respuesta.json()) as Material[];
 		} catch {
-			resultados.textContent = textos.error ?? '';
+			estadoLista.textContent = tx('error');
 			return;
 		}
 
-		const orden = new Intl.Collator(idioma, { sensitivity: 'base' });
+		const orden = new Intl.Collator(idioma, { sensitivity: 'base', numeric: true });
 		const sinTildes = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-		materiales.sort((a, b) => orden.compare(a.tema, b.tema) || orden.compare(a.titulo, b.titulo));
-		const llenar = (sel: HTMLSelectElement, valores: string[]) => {
-			for (const v of [...new Set(valores)].sort(orden.compare)) sel.append(new Option(v, v));
-		};
-		llenar(selTema, materiales.map((m) => m.tema));
-		llenar(selTipo, materiales.map((m) => m.tipo));
-		const busqueda = materiales.map((m) => sinTildes(`${m.titulo} ${m.tema} ${m.tipo}`));
+		const slug = (s: string) => sinTildes(s).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+		for (const m of materiales) {
+			m.seccion ??= 'Más temas';
+			m.subtema ??= m.tema;
+		}
+		materiales.sort((a, b) => orden.compare(a.titulo, b.titulo));
+		const textoBusqueda = new Map(materiales.map((m) => [m, sinTildes(`${m.titulo} ${m.subtema} ${m.carpeta ?? ''} ${m.tipo} ${m.seccion}`)]));
+		const colorDe = (seccion?: string) => estantes.find((e) => e.nombre === seccion)?.color ?? '#5a5a5a';
 		// El primer lote (25/11/2026) no lleva el sello "Nuevo"; lo agregado después, durante 30 días.
 		const hace30Dias = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
 		const esNuevo = (m: Material) => Boolean(m.agregado && m.agregado > '2026-11-25' && m.agregado >= hace30Dias);
-
-		const fila = (m: Material) => {
-			const li = document.createElement('li');
-			li.className = 'material';
-			const datos = document.createElement('div');
-			datos.className = 'datos';
-			const titulo = document.createElement('p');
-			titulo.className = 'titulo';
-			titulo.textContent = m.titulo;
-			if (esNuevo(m)) {
-				const sello = document.createElement('span');
-				sello.className = 'nuevo';
-				sello.textContent = textos.nuevo ?? '';
-				titulo.append(' ', sello);
+		function contar(lista: Material[], clave: (m: Material) => string | undefined) {
+			const mapa = new Map<string, number>();
+			for (const m of lista) {
+				const k = clave(m);
+				if (k) mapa.set(k, (mapa.get(k) ?? 0) + 1);
 			}
-			const detalle = document.createElement('p');
-			detalle.className = 'detalle';
-			detalle.textContent = `${m.tipo} · ${m.ext.toUpperCase()} · ${(textos.mb ?? '{n} MB').replace('{n}', m.mb.toLocaleString(idioma))}`;
-			datos.append(titulo, detalle);
-			const acciones = document.createElement('div');
-			acciones.className = 'acciones-material';
-			const descargar = document.createElement('a');
-			descargar.className = 'boton boton-chico';
-			descargar.href = `/api/socios/descargar/${m.id}/?idioma=${idioma}`;
-			descargar.textContent = textos.descargar ?? '';
-			descargar.setAttribute('aria-label', `${textos.descargar}: ${m.titulo}`);
-			acciones.append(descargar);
+			return mapa;
+		}
+
+		/** "Título - Autor (2011)" → título, autor y año por separado. */
+		function partes(m: Material) {
+			const anio = m.titulo.match(/\((\d{4})\)\s*$/)?.[1] ?? m.titulo.match(/\b(19|20)\d{2}\b/)?.[0];
+			const sinAnio = m.titulo.replace(/\s*\(\d{4}\)\s*$/, '');
+			const corte = sinAnio.lastIndexOf(' - ');
+			const autor = corte > 10 && sinAnio.length - corte < 80 ? sinAnio.slice(corte + 3) : '';
+			return { titulo: autor ? sinAnio.slice(0, corte) : sinAnio, autor, anio };
+		}
+
+		function tarjeta(m: Material) {
+			const { titulo, autor, anio } = partes(m);
+			const li = el('li', 'material');
+			const lomo = el('span', 'lomo');
+			lomo.style.setProperty('--lomo', colorDe(m.seccion));
+			const datos = el('div', 'datos');
+			const t = el('p', 'titulo', titulo);
+			if (esNuevo(m)) t.append(' ', el('span', 'nuevo', tx('nuevo')));
+			const detalle = [autor, anio && !autor.includes(anio) ? anio : '', m.tipo, tx('mb', m.mb)].filter(Boolean).join(' · ');
+			datos.append(t, el('p', 'detalle', detalle));
+			const acciones = el('div', 'acciones-material');
+			const enlace = (texto: string, extra: string, clase: string) => {
+				const a = el('a', clase, texto);
+				a.href = `/api/socios/descargar/${m.id}/?idioma=${idioma}${extra}`;
+				a.setAttribute('aria-label', `${texto}: ${titulo}`);
+				return a;
+			};
+			const ver = enlace(tx('ver'), '&ver=1', 'boton boton-contorno boton-chico');
+			ver.target = '_blank';
+			ver.rel = 'noopener';
+			acciones.append(ver, enlace(tx('descargar'), '', 'boton boton-chico'));
 			if (esAdmin) {
-				const form = document.createElement('form');
+				const form = el('form');
 				form.method = 'post';
 				form.action = ruta;
-				form.dataset.titulo = m.titulo;
-				form.innerHTML = '<input type="hidden" name="accion" value="borrar-material"><input type="hidden" name="id">';
-				(form.elements.namedItem('id') as HTMLInputElement).value = m.id;
-				const borrar = document.createElement('button');
+				form.dataset.titulo = titulo;
+				for (const [nombre, valor] of [
+					['accion', 'borrar-material'],
+					['id', m.id],
+				]) {
+					const campo = el('input');
+					campo.type = 'hidden';
+					campo.name = nombre;
+					campo.value = valor;
+					form.append(campo);
+				}
+				const borrar = el('button', 'borrar', tx('borrar'));
 				borrar.type = 'submit';
-				borrar.className = 'borrar';
-				borrar.textContent = textos.borrar ?? '';
-				borrar.setAttribute('aria-label', `${textos.borrar}: ${m.titulo}`);
+				borrar.setAttribute('aria-label', `${tx('borrar')}: ${titulo}`);
 				form.append(borrar);
 				acciones.append(form);
 			}
-			li.append(datos, acciones);
+			li.append(lomo, datos, acciones);
 			return li;
-		};
+		}
 
-		lista.addEventListener('submit', (evento) => {
-			const form = evento.target as HTMLFormElement;
-			const pregunta = (textos.confirmarBorrar ?? '').replace('{titulo}', form.dataset.titulo ?? '');
-			if (!window.confirm(pregunta)) evento.preventDefault();
-		});
+		function listaDe(items: Material[]) {
+			const ul = el('ul', 'materiales');
+			for (const m of items) ul.append(tarjeta(m));
+			return ul;
+		}
 
-		const dibujar = () => {
-			const texto = sinTildes(buscar.value.trim());
-			const palabras = texto.split(/\s+/).filter(Boolean);
-			const visibles = materiales.filter(
-				(m, i) => (!selTema.value || m.tema === selTema.value) && (!selTipo.value || m.tipo === selTipo.value) && palabras.every((p) => busqueda[i].includes(p)),
-			);
-			resultados.textContent = visibles.length ? ((visibles.length === 1 ? textos.resultado : textos.resultados) ?? '').replace('{n}', visibles.length.toLocaleString(idioma)) : (textos.sinResultados ?? '');
-			const grupos = new Map<string, Material[]>();
-			for (const m of visibles) grupos.set(m.tema, [...(grupos.get(m.tema) ?? []), m]);
-			const fragmento = document.createDocumentFragment();
-			for (const [tema, items] of grupos) {
-				const seccion = document.createElement('section');
-				seccion.className = 'grupo';
-				const h = document.createElement('h3');
-				h.textContent = `${tema} (${items.length})`;
-				const ul = document.createElement('ul');
-				ul.className = 'materiales';
-				for (const m of items) ul.append(fila(m));
-				seccion.append(h, ul);
-				fragmento.append(seccion);
+		function chips(valores: Map<string, number>, activo: string, alElegir: (v: string) => void, todos: string) {
+			const fila = el('div', 'chips');
+			const total = [...valores.values()].reduce((a, n) => a + n, 0);
+			const opciones: [string, number][] = [['', total], ...[...valores].sort((a, b) => orden.compare(a[0], b[0]))];
+			for (const [valor, n] of opciones) {
+				const boton = el('button', 'chip', `${valor || todos} · ${n.toLocaleString(idioma)}`);
+				boton.type = 'button';
+				boton.setAttribute('aria-pressed', String(valor === activo));
+				boton.addEventListener('click', () => alElegir(valor));
+				fila.append(boton);
 			}
-			lista.replaceChildren(fragmento);
-		};
+			return fila;
+		}
 
+		function tarjetaEstante(nombre: string, trazo: string, color: string, n: number, temas: string, alTocar: () => void) {
+			const boton = el('button', 'estante');
+			boton.type = 'button';
+			boton.style.setProperty('--lomo', color);
+			boton.append(icono(trazo), el('span', 'nombre', nombre));
+			if (temas) boton.append(el('span', 'temas', temas));
+			boton.append(el('span', 'cantidad', cuantos(n)));
+			boton.addEventListener('click', alTocar);
+			return boton;
+		}
+
+		// ---------- Dónde está el socio (en la dirección) ----------
+		const leer = (): Estado => {
+			const p = new URLSearchParams(location.search);
+			return { estante: p.get('estante') ?? '', tema: p.get('tema') ?? '', carpeta: p.get('carpeta') ?? '', tipo: p.get('tipo') ?? '' };
+		};
+		function ir(nuevo: Partial<Estado>, reemplazar = false) {
+			const e = { ...leer(), ...nuevo };
+			const p = new URLSearchParams();
+			for (const [k, v] of Object.entries(e)) if (v) p.set(k, v);
+			const url = `${location.pathname}${p.size ? `?${p}` : ''}`;
+			if (reemplazar) history.replaceState(null, '', url);
+			else history.pushState(null, '', url);
+			dibujar();
+			if (!reemplazar) caja.scrollIntoView({ block: 'start' });
+		}
+		window.addEventListener('popstate', () => dibujar());
+
+		function miga(texto: string, alTocar?: () => void) {
+			if (!alTocar) return el('span', 'miga-actual', texto);
+			const boton = el('button', 'miga', texto);
+			boton.type = 'button';
+			boton.addEventListener('click', alTocar);
+			return boton;
+		}
+
+		function dibujar(): void {
+			const e = leer();
+			const consulta = sinTildes(buscar.value.trim());
+			vista.replaceChildren();
+			migas.replaceChildren();
+
+			// Buscar: toda la biblioteca, agrupada por estante y tema.
+			if (consulta) {
+				const palabras = consulta.split(/\s+/);
+				const hallados = materiales.filter((m) => palabras.every((p) => textoBusqueda.get(m)!.includes(p)));
+				estadoLista.textContent = hallados.length ? cuantos(hallados.length) : tx('sinResultados');
+				const grupos = new Map<string, Material[]>();
+				for (const m of hallados) {
+					const clave = `${m.seccion} › ${m.subtema}`;
+					grupos.set(clave, [...(grupos.get(clave) ?? []), m]);
+				}
+				for (const [grupo, items] of [...grupos].sort((a, b) => orden.compare(a[0], b[0]))) {
+					const seccion = el('section', 'grupo');
+					seccion.append(el('h3', '', `${grupo} (${items.length})`), listaDe(items));
+					vista.append(seccion);
+				}
+				return;
+			}
+
+			const estante = estantes.find((x) => slug(x.nombre) === e.estante);
+			const enEstante = estante ? materiales.filter((m) => m.seccion === estante.nombre) : [];
+			const temas = contar(enEstante, (m) => m.subtema);
+			const tema = [...temas.keys()].find((t) => slug(t) === e.tema);
+
+			migas.append(miga(tx('titulo'), estante ? () => ir({ estante: '', tema: '', carpeta: '', tipo: '' }) : undefined));
+			if (estante) migas.append(miga(estante.nombre, tema && temas.size > 1 ? () => ir({ tema: '', carpeta: '', tipo: '' }) : undefined));
+			if (tema && temas.size > 1) migas.append(miga(tema));
+
+			// Inicio: "Lo nuevo" y los estantes.
+			if (!estante) {
+				estadoLista.textContent = cuantos(materiales.length);
+				const nuevos = materiales.filter(esNuevo).sort((a, b) => (b.agregado ?? '').localeCompare(a.agregado ?? '')).slice(0, 8);
+				if (nuevos.length) {
+					const s = el('section', 'grupo');
+					s.append(el('h3', '', tx('loNuevo')), listaDe(nuevos));
+					vista.append(s);
+				}
+				const grilla = el('div', 'estantes');
+				for (const x of estantes) {
+					const propios = materiales.filter((m) => m.seccion === x.nombre);
+					if (!propios.length) continue;
+					const temasDe = [...contar(propios, (m) => m.subtema)].sort((a, b) => b[1] - a[1]).map(([t]) => t);
+					grilla.append(tarjetaEstante(x.nombre, x.icono, x.color, propios.length, temasDe.slice(0, 4).join(' · '), () => ir({ estante: slug(x.nombre) })));
+				}
+				vista.append(grilla);
+				return;
+			}
+
+			// Estante sin tema elegido: sus temas como subcarpetas (con un solo tema, se entra directo).
+			if (!tema) {
+				if (temas.size === 1) return ir({ tema: slug([...temas.keys()][0]) }, true);
+				estadoLista.textContent = cuantos(enEstante.length);
+				const grilla = el('div', 'estantes subcarpetas');
+				for (const [t, n] of [...temas].sort((a, b) => orden.compare(a[0], b[0]))) {
+					grilla.append(tarjetaEstante(t, estante.icono, estante.color, n, '', () => ir({ tema: slug(t) })));
+				}
+				vista.append(grilla);
+				return;
+			}
+
+			// Tema: materiales, con carpetas y tipo como filtros.
+			const enTema = enEstante.filter((m) => m.subtema === tema);
+			const carpetas = contar(enTema, (m) => m.carpeta);
+			const carpeta = [...carpetas.keys()].find((c) => slug(c) === e.carpeta) ?? '';
+			const enCarpeta = carpeta ? enTema.filter((m) => m.carpeta === carpeta) : enTema;
+			const tipos = contar(enCarpeta, (m) => m.tipo);
+			const tipo = [...tipos.keys()].find((t) => slug(t) === e.tipo) ?? '';
+			const visibles = tipo ? enCarpeta.filter((m) => m.tipo === tipo) : enCarpeta;
+			estadoLista.textContent = cuantos(visibles.length);
+			if (carpetas.size) vista.append(chips(carpetas, carpeta, (v) => ir({ carpeta: slug(v), tipo: '' }), tx('todo')));
+			if (tipos.size > 1) vista.append(chips(tipos, tipo, (v) => ir({ tipo: slug(v) }), tx('todosLosTipos')));
+			vista.append(listaDe(visibles));
+		}
+
+		vista.addEventListener('submit', (evento) => {
+			const form = evento.target as HTMLFormElement;
+			if (!window.confirm(tx('confirmarBorrar').replace('{titulo}', form.dataset.titulo ?? ''))) evento.preventDefault();
+		});
 		let espera: ReturnType<typeof setTimeout> | undefined;
 		buscar.addEventListener('input', () => {
 			clearTimeout(espera);
 			espera = setTimeout(dibujar, 200);
 		});
-		selTema.addEventListener('change', dibujar);
-		selTipo.addEventListener('change', dibujar);
 		dibujar();
 	}
 </script>
 
 <style>
 	.biblioteca {
-		max-width: 60rem;
+		max-width: 62rem;
 		margin: 0 auto;
 	}
-	.filtros {
+	.buscador {
 		display: grid;
-		grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
-		gap: 1rem;
-		padding: 1.25rem;
-		border: 1px solid var(--color-borde);
-		border-radius: var(--radio);
-		background: var(--color-tarjeta);
+		gap: 0.3rem;
+		margin-bottom: 1rem;
 	}
-	@media (max-width: 44rem) {
-		.filtros {
-			grid-template-columns: 1fr;
-		}
+	.migas-biblioteca {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.25rem 0.5rem;
+		font-size: 0.9375rem;
 	}
-	.filtros select {
+	.biblioteca :global(.miga) {
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--color-acento);
 		font: inherit;
-		min-height: 48px;
-		padding: 0.5rem 0.75rem;
-		border: 1px solid var(--color-borde);
-		border-radius: var(--radio);
-		background: #fff;
+		text-decoration: underline;
+		cursor: pointer;
 	}
-	.resultados {
-		margin: 1.25rem 0 0.5rem;
+	.biblioteca :global(.migas-biblioteca > * + *::before) {
+		content: '›';
+		display: inline-block;
+		margin-inline-end: 0.5rem;
+		color: var(--color-texto-suave);
+		text-decoration: none;
+	}
+	.biblioteca :global(.miga-actual) {
 		font-weight: 700;
+	}
+	.estado-lista {
+		margin: 0.75rem 0 1rem;
+		font-size: 0.9375rem;
 		color: var(--color-texto-suave);
 	}
+	.biblioteca :global(.estantes) {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+		gap: 1rem;
+	}
+	.biblioteca :global(.estante) {
+		display: grid;
+		align-content: start;
+		gap: 0.35rem;
+		min-height: 9rem;
+		padding: 1.1rem 1.2rem;
+		border: 1px solid var(--color-borde);
+		border-top: 6px solid var(--lomo);
+		border-radius: var(--radio);
+		background: var(--color-tarjeta);
+		color: inherit;
+		font: inherit;
+		text-align: start;
+		cursor: pointer;
+		transition:
+			transform 0.2s,
+			box-shadow 0.2s;
+	}
+	.biblioteca :global(.estante:hover) {
+		transform: translateY(-2px);
+		box-shadow: var(--sombra);
+	}
+	.biblioteca :global(.estante svg) {
+		width: 1.75rem;
+		height: 1.75rem;
+		fill: none;
+		stroke: var(--lomo);
+		stroke-width: 1.6;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.biblioteca :global(.estante .nombre) {
+		font-family: var(--fuente-titulos);
+		font-size: 1.2rem;
+		font-weight: 700;
+		line-height: 1.25;
+	}
+	.biblioteca :global(.estante .temas),
+	.biblioteca :global(.estante .cantidad) {
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+	.biblioteca :global(.subcarpetas .estante) {
+		min-height: 7rem;
+	}
+	.biblioteca :global(.chips) {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 0.75rem;
+	}
+	.biblioteca :global(.chip) {
+		min-height: 38px;
+		padding-inline: 0.9rem;
+		border: 1px solid var(--color-borde);
+		border-radius: 999px;
+		background: var(--color-tarjeta);
+		color: inherit;
+		font: inherit;
+		font-size: 0.875rem;
+		cursor: pointer;
+	}
+	.biblioteca :global(.chip[aria-pressed='true']) {
+		border-color: var(--color-acento);
+		background: var(--color-acento);
+		color: #fff;
+	}
 	.biblioteca :global(.grupo) {
-		margin-top: 1.75rem;
+		margin-top: 1.5rem;
 	}
 	.biblioteca :global(.grupo h3) {
 		margin: 0 0 0.5rem;
-		font-size: 1.25rem;
+		font-size: 1.15rem;
 	}
 	.biblioteca :global(.materiales) {
+		display: grid;
+		gap: 0.6rem;
 		margin: 0;
 		padding: 0;
 		list-style: none;
-		border-top: 1px solid var(--color-borde);
 	}
 	.biblioteca :global(.material) {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
 		gap: 1rem;
-		padding: 0.85rem 0.25rem;
-		border-bottom: 1px solid var(--color-borde);
+		padding: 0.8rem 1rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		background: var(--color-tarjeta);
+	}
+	.biblioteca :global(.lomo) {
+		flex-shrink: 0;
+		width: 2.1rem;
+		height: 2.9rem;
+		border-radius: 3px;
+		border-inline-start: 5px solid var(--color-realce);
+		background: var(--lomo);
 	}
 	.biblioteca :global(.datos) {
+		flex: 1;
 		min-width: 0;
 	}
 	.biblioteca :global(.titulo) {
 		margin: 0;
 		font-weight: 700;
+		line-height: 1.35;
 		overflow-wrap: anywhere;
 	}
 	.biblioteca :global(.detalle) {
@@ -288,12 +543,12 @@ const avisosError = ['topeDescargas', 'noEncontrado'];
 		gap: 0.5rem;
 	}
 	.biblioteca :global(.boton-chico) {
-		min-height: 40px;
-		padding-inline: 1rem;
+		min-height: 38px;
+		padding-inline: 0.95rem;
 		font-size: 0.875rem;
 	}
 	.biblioteca :global(.borrar) {
-		min-height: 40px;
+		min-height: 38px;
 		padding-inline: 0.9rem;
 		border: 1px solid #a40000;
 		border-radius: 999px;
@@ -304,13 +559,13 @@ const avisosError = ['topeDescargas', 'noEncontrado'];
 		font-weight: 700;
 		cursor: pointer;
 	}
-	.biblioteca :global(.borrar:hover) {
-		background: #fbeaea;
-	}
-	@media (max-width: 36rem) {
+	@media (max-width: 40rem) {
 		.biblioteca :global(.material) {
-			flex-direction: column;
-			align-items: flex-start;
+			flex-wrap: wrap;
+		}
+		.biblioteca :global(.acciones-material) {
+			width: 100%;
+			padding-inline-start: 3.1rem;
 		}
 	}
 	.volver-panel {

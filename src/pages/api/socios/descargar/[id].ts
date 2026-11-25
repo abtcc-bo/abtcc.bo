@@ -34,11 +34,13 @@ export const GET: APIRoute = async ({ params, cookies, url, redirect }) => {
 	if (registro !== 'ok') return volver('noEncontrado');
 
 	const nombre = nombreDeDescarga(material);
+	// ?ver=1: se abre en el navegador (visor de PDF) en lugar de descargarse.
+	const modo = url.searchParams.get('ver') === '1' ? 'inline' : 'attachment';
 	return new Response(objeto.body, {
 		headers: {
 			'Content-Type': TIPOS[material.ext] ?? 'application/octet-stream',
 			'Content-Length': String(objeto.size),
-			'Content-Disposition': `attachment; filename="${nombre.replace(/[^\x20-\x7e]/g, '_').replace(/"/g, '')}"; filename*=UTF-8''${encodeURIComponent(nombre)}`,
+			'Content-Disposition': `${modo}; filename="${nombre.replace(/[^\x20-\x7e]/g, '_').replace(/"/g, '')}"; filename*=UTF-8''${encodeURIComponent(nombre)}`,
 			'Cache-Control': 'private, no-store',
 		},
 	});

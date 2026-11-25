@@ -543,11 +543,7 @@
 		"biblioteca": {
 			"titulo": "Biblioteca",
 			"texto": "Libros, manuales y artículos para los miembros de la ABTCC. Son para tu uso personal: por favor, no los compartas fuera de la asociación.",
-			"buscar": "Buscar por título, autor o tema",
-			"tema": "Temática",
-			"todas": "Todas las temáticas",
-			"tipo": "Tipo",
-			"todos": "Todos los tipos",
+			"buscar": "Buscar en toda la biblioteca: título, autor o tema",
 			"resultados": "{n} materiales",
 			"resultado": "{n} material",
 			"sinResultados": "No hay materiales con esa búsqueda.",
@@ -559,7 +555,11 @@
 			"borrar": "Borrar",
 			"confirmarBorrar": "¿Borrar «{titulo}» de la biblioteca? No se puede deshacer.",
 			"sinJs": "Para ver la biblioteca necesitas tener JavaScript activado en tu navegador.",
-			"inactivo": "Tu membresía no está activa: por ahora no puedes ver la biblioteca. Escríbenos para regularizarla:"
+			"inactivo": "Tu membresía no está activa: por ahora no puedes ver la biblioteca. Escríbenos para regularizarla:",
+			"ver": "Ver",
+			"loNuevo": "Lo nuevo",
+			"todo": "Todo",
+			"todosLosTipos": "Todos los tipos"
 		}
 	},
 	"aliados": {
