@@ -63,6 +63,7 @@ export function ruta(seccion: Seccion, idioma: Idioma, slug?: string): string {
  */
 export const SUBPAGINAS_SOCIOS = {
 	inicio: { es: '', en: '', pt: '' },
+	biblioteca: { es: 'biblioteca', en: 'library', pt: 'biblioteca' },
 	cuenta: { es: 'mi-cuenta', en: 'my-account', pt: 'minha-conta' },
 	recuperar: { es: 'recuperar-contrasena', en: 'forgot-password', pt: 'recuperar-senha' },
 	nuevaClave: { es: 'nueva-contrasena', en: 'new-password', pt: 'nova-senha' },

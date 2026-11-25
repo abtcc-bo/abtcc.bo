@@ -4,6 +4,7 @@
 import type { AstroCookies, AstroGlobal } from 'astro';
 import { TURNSTILE_SECRET_KEY } from 'astro:env/server';
 import { verificarTurnstile } from './contacto';
+import { borrarMaterial } from './biblioteca';
 import { buscarPagina, type PaginaDelSitio } from './paginas';
 import * as supabase from './socios';
 import type { ProblemaDeClave, ResultadoCambioUsuario, SesionSupabase, Socio } from './socios';
@@ -82,7 +83,7 @@ export async function sesionActual(cookies: AstroCookies, url: URL): Promise<Ses
 // ---------- Estado de la página ----------
 
 /** Mensajes de éxito que llegan en la dirección (?aviso=) después de un formulario. */
-const AVISOS = ['sesionCerrada', 'usuarioCambiado', 'claveCambiada', 'bienvenida', 'correoEnviado'] as const;
+const AVISOS = ['sesionCerrada', 'usuarioCambiado', 'claveCambiada', 'bienvenida', 'correoEnviado', 'materialBorrado', 'topeDescargas', 'noEncontrado'] as const;
 export type Aviso = (typeof AVISOS)[number];
 
 export type ErrorArea =
@@ -176,7 +177,7 @@ export async function atenderAreaSocios(Astro: AstroGlobal): Promise<Response | 
 	}
 
 	// Qué puede ver cada quien.
-	if (!actual && vista === 'cuenta') return ir('inicio');
+	if (!actual && (vista === 'cuenta' || vista === 'biblioteca')) return ir('inicio');
 	if (actual && vista === 'recuperar') return ir('cuenta');
 	if (vista === 'nuevaClave' && !estado.enlace) {
 		const tokenHash = Astro.url.searchParams.get('token_hash') ?? '';
@@ -334,6 +335,13 @@ async function atenderFormulario(
 			await supabase.cerrarSesion(comprobacion.sesion.acceso, 'others');
 			guardarSesion(Astro.cookies, Astro.url, comprobacion.sesion, Astro.cookies.get(COOKIE_RECORDAR)?.value === '1');
 			return ir('cuenta', 'claveCambiada');
+		}
+
+		case 'borrar-material': {
+			// Solo un administrador (es_admin en Supabase) puede borrar; se comprueba aquí, en el servidor.
+			if (!actual?.socio.es_admin) return new Response(null, { status: 403 });
+			await borrarMaterial(texto('id'));
+			return ir('biblioteca', 'materialBorrado');
 		}
 
 		default:

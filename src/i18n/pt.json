@@ -425,6 +425,7 @@
 	"socios": {
 		"titulos": {
 			"inicio": "Acesso sócios",
+			"biblioteca": "Biblioteca",
 			"cuenta": "Minha conta",
 			"recuperar": "Recuperar senha",
 			"nuevaClave": "Criar senha"
@@ -452,7 +453,9 @@
 			"elegir": "Escolher meu nome de usuário",
 			"miCuenta": "Minha conta",
 			"salir": "Sair",
-			"inactivo": "Sua filiação não está ativa no momento. Escreva para nós para regularizá-la e recuperar o acesso a todo o material:"
+			"inactivo": "Sua filiação não está ativa no momento. Escreva para nós para regularizá-la e recuperar o acesso a todo o material:",
+			"biblioteca": "Ir para a biblioteca",
+			"bibliotecaTexto": "Livros, manuais e artigos organizados por tema."
 		},
 		"categorias": {
 			"asociado": "Membro associado",
@@ -516,7 +519,10 @@
 			"usuarioCambiado": "Pronto: seu nome de usuário mudou.",
 			"claveCambiada": "Pronto: sua senha mudou. Encerramos a sessão nos seus outros aparelhos.",
 			"bienvenida": "Boas-vindas à ABTCC! Sua senha está pronta. Se quiser, escolha agora seu nome de usuário.",
-			"correoEnviado": "Se esse e-mail estiver cadastrado, você receberá um link para criar uma senha nova. Ele vence em uma hora. Confira também as pastas Spam e Promoções."
+			"correoEnviado": "Se esse e-mail estiver cadastrado, você receberá um link para criar uma senha nova. Ele vence em uma hora. Confira também as pastas Spam e Promoções.",
+			"materialBorrado": "Pronto: o material foi apagado da biblioteca.",
+			"topeDescargas": "Você chegou ao máximo de 30 downloads em 24 horas. Poderá continuar baixando amanhã.",
+			"noEncontrado": "Esse material não está mais disponível."
 		},
 		"errores": {
 			"campos": "Preencha todos os campos.",
@@ -533,6 +539,27 @@
 			"larga": "A senha é longa demais.",
 			"comun": "Essa senha é fácil demais de adivinhar. Escolha outra.",
 			"parecida": "A senha não pode conter seu usuário, seu código nem seu e-mail."
+		},
+		"biblioteca": {
+			"titulo": "Biblioteca",
+			"texto": "Livros, manuais e artigos para os membros da ABTCC. São para seu uso pessoal: por favor, não os compartilhe fora da associação.",
+			"buscar": "Buscar por título, autor ou tema",
+			"tema": "Tema",
+			"todas": "Todos os temas",
+			"tipo": "Tipo",
+			"todos": "Todos os tipos",
+			"resultados": "{n} materiais",
+			"resultado": "{n} material",
+			"sinResultados": "Não há materiais com essa busca.",
+			"cargando": "Carregando a biblioteca…",
+			"error": "Não conseguimos carregar a biblioteca. Recarregue a página.",
+			"descargar": "Baixar",
+			"nuevo": "Novo",
+			"mb": "{n} MB",
+			"borrar": "Apagar",
+			"confirmarBorrar": "Apagar «{titulo}» da biblioteca? Não é possível desfazer.",
+			"sinJs": "Para ver a biblioteca, você precisa ter o JavaScript ativado no navegador.",
+			"inactivo": "Sua filiação não está ativa: por enquanto não é possível ver a biblioteca. Escreva para nós para regularizá-la:"
 		}
 	},
 	"aliados": {

@@ -60,8 +60,17 @@ const usaCodigo = socio.usuario === socio.codigo.toLowerCase();
 		)
 	}
 
+	{
+		socio.estado === 'activo' && (
+			<a class="tarjeta-biblioteca" href={rutaSocios('biblioteca', idioma)}>
+				<span class="nombre">{textos.panel.biblioteca} <span class="flecha" aria-hidden="true">→</span></span>
+				<span class="texto">{textos.panel.bibliotecaTexto}</span>
+			</a>
+		)
+	}
+
 	<div class="acciones">
-		<a class="boton" href={rutaSocios('cuenta', idioma)}>{textos.panel.miCuenta}</a>
+		<a class="boton boton-contorno" href={rutaSocios('cuenta', idioma)}>{textos.panel.miCuenta}</a>
 		<form method="post" action={rutaSocios('inicio', idioma)}>
 			<input type="hidden" name="accion" value="salir" />
 			<button class="boton boton-contorno" type="submit">{textos.panel.salir}</button>
@@ -99,6 +108,30 @@ const usaCodigo = socio.usuario === socio.codigo.toLowerCase();
 		padding: 0.9rem 1rem;
 		border-inline-start: 4px solid var(--color-realce);
 		background: var(--color-acento-suave);
+	}
+	.tarjeta-biblioteca {
+		display: grid;
+		gap: 0.25rem;
+		margin: 0 0 1.5rem;
+		padding: 1.25rem 1.4rem;
+		border-radius: var(--radio);
+		border-start-start-radius: 1.5rem;
+		background: var(--color-oscuro);
+		color: #fff;
+		text-decoration: none;
+		transition: transform 0.2s;
+	}
+	.tarjeta-biblioteca:hover {
+		transform: translateY(-2px);
+		color: #fff;
+	}
+	.tarjeta-biblioteca .nombre {
+		font-family: var(--fuente-titulos);
+		font-size: 1.4rem;
+		font-weight: 700;
+	}
+	.tarjeta-biblioteca .texto {
+		color: rgb(255 255 255 / 0.85);
 	}
 	.acciones {
 		display: flex;

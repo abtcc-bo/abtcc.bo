@@ -1,0 +1,319 @@
+---
+// Biblioteca del área de socios: buscador, filtros por temática y tipo, y descarga protegida.
+// La lista se carga desde /api/socios/catalogo/ en el navegador del socio (así el Worker no arma 1.000 filas en cada visita);
+// las descargas pasan por /api/socios/descargar/<id>/, que revisa la sesión. Un administrador ve además "Borrar".
+import Mensaje from './Mensaje.astro';
+import type { EstadoAreaSocios } from '../../lib/area-socios';
+import type { Socio } from '../../lib/socios';
+import { ORGANIZACION } from '../../datos/organizacion';
+import { rutaSocios, t } from '../../i18n';
+
+interface Props {
+	estado: EstadoAreaSocios;
+	socio: Socio;
+}
+
+const { estado, socio } = Astro.props;
+const { idioma } = estado;
+const textos = t(idioma).socios;
+const b = textos.biblioteca;
+const avisosError = ['topeDescargas', 'noEncontrado'];
+---
+
+<div class="biblioteca">
+	<p class="bajada">{b.texto}</p>
+
+	{estado.aviso && avisosError.includes(estado.aviso) && <Mensaje tipo="error">{textos.avisos[estado.aviso]}</Mensaje>}
+	{estado.aviso === 'materialBorrado' && <Mensaje tipo="exito">{textos.avisos.materialBorrado}</Mensaje>}
+
+	{
+		socio.estado !== 'activo' ? (
+			<Mensaje tipo="error">
+				{b.inactivo} {ORGANIZACION.correo && <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>}
+			</Mensaje>
+		) : (
+			<div
+				data-biblioteca
+				data-idioma={idioma}
+				data-admin={socio.es_admin ? 'si' : undefined}
+				data-ruta={rutaSocios('biblioteca', idioma)}
+				data-textos={JSON.stringify(b)}
+			>
+				<div class="filtros">
+					<div class="campo campo-busqueda">
+						<label for="biblioteca-buscar">{b.buscar}</label>
+						<input id="biblioteca-buscar" type="search" autocomplete="off" data-buscar />
+					</div>
+					<div class="campo">
+						<label for="biblioteca-tema">{b.tema}</label>
+						<select id="biblioteca-tema" data-tema>
+							<option value="">{b.todas}</option>
+						</select>
+					</div>
+					<div class="campo">
+						<label for="biblioteca-tipo">{b.tipo}</label>
+						<select id="biblioteca-tipo" data-tipo>
+							<option value="">{b.todos}</option>
+						</select>
+					</div>
+				</div>
+				<p class="resultados" aria-live="polite" data-resultados>{b.cargando}</p>
+				<div data-lista></div>
+				<noscript>
+					<p>{b.sinJs}</p>
+				</noscript>
+			</div>
+		)
+	}
+
+	<p class="volver-panel">
+		<a href={rutaSocios('inicio', idioma)}>← {textos.cuenta.volver}</a>
+	</p>
+</div>
+
+<script>
+	interface Material {
+		id: string;
+		titulo: string;
+		tema: string;
+		tipo: string;
+		mb: number;
+		ext: string;
+		agregado?: string;
+	}
+
+	const caja = document.querySelector<HTMLElement>('[data-biblioteca]');
+	if (caja) iniciar(caja);
+
+	async function iniciar(caja: HTMLElement) {
+		const textos = JSON.parse(caja.dataset.textos ?? '{}') as Record<string, string>;
+		const idioma = caja.dataset.idioma ?? 'es';
+		const esAdmin = caja.dataset.admin === 'si';
+		const ruta = caja.dataset.ruta ?? '';
+		const buscar = caja.querySelector<HTMLInputElement>('[data-buscar]')!;
+		const selTema = caja.querySelector<HTMLSelectElement>('[data-tema]')!;
+		const selTipo = caja.querySelector<HTMLSelectElement>('[data-tipo]')!;
+		const resultados = caja.querySelector<HTMLElement>('[data-resultados]')!;
+		const lista = caja.querySelector<HTMLElement>('[data-lista]')!;
+
+		let materiales: Material[];
+		try {
+			const respuesta = await fetch('/api/socios/catalogo/', { headers: { Accept: 'application/json' } });
+			if (!respuesta.ok) throw new Error(String(respuesta.status));
+			materiales = (await respuesta.json()) as Material[];
+		} catch {
+			resultados.textContent = textos.error ?? '';
+			return;
+		}
+
+		const orden = new Intl.Collator(idioma, { sensitivity: 'base' });
+		const sinTildes = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+		materiales.sort((a, b) => orden.compare(a.tema, b.tema) || orden.compare(a.titulo, b.titulo));
+		const llenar = (sel: HTMLSelectElement, valores: string[]) => {
+			for (const v of [...new Set(valores)].sort(orden.compare)) sel.append(new Option(v, v));
+		};
+		llenar(selTema, materiales.map((m) => m.tema));
+		llenar(selTipo, materiales.map((m) => m.tipo));
+		const busqueda = materiales.map((m) => sinTildes(`${m.titulo} ${m.tema} ${m.tipo}`));
+		// El primer lote (25/11/2026) no lleva el sello "Nuevo"; lo agregado después, durante 30 días.
+		const hace30Dias = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
+		const esNuevo = (m: Material) => Boolean(m.agregado && m.agregado > '2026-11-25' && m.agregado >= hace30Dias);
+
+		const fila = (m: Material) => {
+			const li = document.createElement('li');
+			li.className = 'material';
+			const datos = document.createElement('div');
+			datos.className = 'datos';
+			const titulo = document.createElement('p');
+			titulo.className = 'titulo';
+			titulo.textContent = m.titulo;
+			if (esNuevo(m)) {
+				const sello = document.createElement('span');
+				sello.className = 'nuevo';
+				sello.textContent = textos.nuevo ?? '';
+				titulo.append(' ', sello);
+			}
+			const detalle = document.createElement('p');
+			detalle.className = 'detalle';
+			detalle.textContent = `${m.tipo} · ${m.ext.toUpperCase()} · ${(textos.mb ?? '{n} MB').replace('{n}', m.mb.toLocaleString(idioma))}`;
+			datos.append(titulo, detalle);
+			const acciones = document.createElement('div');
+			acciones.className = 'acciones-material';
+			const descargar = document.createElement('a');
+			descargar.className = 'boton boton-chico';
+			descargar.href = `/api/socios/descargar/${m.id}/?idioma=${idioma}`;
+			descargar.textContent = textos.descargar ?? '';
+			descargar.setAttribute('aria-label', `${textos.descargar}: ${m.titulo}`);
+			acciones.append(descargar);
+			if (esAdmin) {
+				const form = document.createElement('form');
+				form.method = 'post';
+				form.action = ruta;
+				form.dataset.titulo = m.titulo;
+				form.innerHTML = '<input type="hidden" name="accion" value="borrar-material"><input type="hidden" name="id">';
+				(form.elements.namedItem('id') as HTMLInputElement).value = m.id;
+				const borrar = document.createElement('button');
+				borrar.type = 'submit';
+				borrar.className = 'borrar';
+				borrar.textContent = textos.borrar ?? '';
+				borrar.setAttribute('aria-label', `${textos.borrar}: ${m.titulo}`);
+				form.append(borrar);
+				acciones.append(form);
+			}
+			li.append(datos, acciones);
+			return li;
+		};
+
+		lista.addEventListener('submit', (evento) => {
+			const form = evento.target as HTMLFormElement;
+			const pregunta = (textos.confirmarBorrar ?? '').replace('{titulo}', form.dataset.titulo ?? '');
+			if (!window.confirm(pregunta)) evento.preventDefault();
+		});
+
+		const dibujar = () => {
+			const texto = sinTildes(buscar.value.trim());
+			const palabras = texto.split(/\s+/).filter(Boolean);
+			const visibles = materiales.filter(
+				(m, i) => (!selTema.value || m.tema === selTema.value) && (!selTipo.value || m.tipo === selTipo.value) && palabras.every((p) => busqueda[i].includes(p)),
+			);
+			resultados.textContent = visibles.length ? ((visibles.length === 1 ? textos.resultado : textos.resultados) ?? '').replace('{n}', visibles.length.toLocaleString(idioma)) : (textos.sinResultados ?? '');
+			const grupos = new Map<string, Material[]>();
+			for (const m of visibles) grupos.set(m.tema, [...(grupos.get(m.tema) ?? []), m]);
+			const fragmento = document.createDocumentFragment();
+			for (const [tema, items] of grupos) {
+				const seccion = document.createElement('section');
+				seccion.className = 'grupo';
+				const h = document.createElement('h3');
+				h.textContent = `${tema} (${items.length})`;
+				const ul = document.createElement('ul');
+				ul.className = 'materiales';
+				for (const m of items) ul.append(fila(m));
+				seccion.append(h, ul);
+				fragmento.append(seccion);
+			}
+			lista.replaceChildren(fragmento);
+		};
+
+		let espera: ReturnType<typeof setTimeout> | undefined;
+		buscar.addEventListener('input', () => {
+			clearTimeout(espera);
+			espera = setTimeout(dibujar, 200);
+		});
+		selTema.addEventListener('change', dibujar);
+		selTipo.addEventListener('change', dibujar);
+		dibujar();
+	}
+</script>
+
+<style>
+	.biblioteca {
+		max-width: 60rem;
+		margin: 0 auto;
+	}
+	.filtros {
+		display: grid;
+		grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+		gap: 1rem;
+		padding: 1.25rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		background: var(--color-tarjeta);
+	}
+	@media (max-width: 44rem) {
+		.filtros {
+			grid-template-columns: 1fr;
+		}
+	}
+	.filtros select {
+		font: inherit;
+		min-height: 48px;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		background: #fff;
+	}
+	.resultados {
+		margin: 1.25rem 0 0.5rem;
+		font-weight: 700;
+		color: var(--color-texto-suave);
+	}
+	.biblioteca :global(.grupo) {
+		margin-top: 1.75rem;
+	}
+	.biblioteca :global(.grupo h3) {
+		margin: 0 0 0.5rem;
+		font-size: 1.25rem;
+	}
+	.biblioteca :global(.materiales) {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border-top: 1px solid var(--color-borde);
+	}
+	.biblioteca :global(.material) {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.85rem 0.25rem;
+		border-bottom: 1px solid var(--color-borde);
+	}
+	.biblioteca :global(.datos) {
+		min-width: 0;
+	}
+	.biblioteca :global(.titulo) {
+		margin: 0;
+		font-weight: 700;
+		overflow-wrap: anywhere;
+	}
+	.biblioteca :global(.detalle) {
+		margin: 0.15rem 0 0;
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+	}
+	.biblioteca :global(.nuevo) {
+		display: inline-block;
+		padding: 0.05rem 0.5rem;
+		border-radius: 999px;
+		background: var(--color-realce);
+		color: var(--color-oscuro);
+		font-size: 0.75rem;
+		font-weight: 800;
+		vertical-align: middle;
+	}
+	.biblioteca :global(.acciones-material) {
+		display: flex;
+		flex-shrink: 0;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.biblioteca :global(.boton-chico) {
+		min-height: 40px;
+		padding-inline: 1rem;
+		font-size: 0.875rem;
+	}
+	.biblioteca :global(.borrar) {
+		min-height: 40px;
+		padding-inline: 0.9rem;
+		border: 1px solid #a40000;
+		border-radius: 999px;
+		background: #fff;
+		color: #a40000;
+		font: inherit;
+		font-size: 0.875rem;
+		font-weight: 700;
+		cursor: pointer;
+	}
+	.biblioteca :global(.borrar:hover) {
+		background: #fbeaea;
+	}
+	@media (max-width: 36rem) {
+		.biblioteca :global(.material) {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+	.volver-panel {
+		margin-top: 2rem;
+	}
+</style>

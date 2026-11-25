@@ -2,6 +2,7 @@
 // Área de socios. Muestra, según la sesión y la página: el ingreso, el panel del socio, "Mi cuenta",
 // "¿Olvidaste tu contraseña?" o "Crea tu contraseña". Qué se muestra lo decide el servidor (src/lib/area-socios.ts):
 // sin sesión válida, esta página nunca recibe datos de socios. Queda fuera de Google (noindex y robots.txt).
+import Biblioteca from '../components/socios/Biblioteca.astro';
 import Cuenta from '../components/socios/Cuenta.astro';
 import Ingreso from '../components/socios/Ingreso.astro';
 import NuevaClave from '../components/socios/NuevaClave.astro';
@@ -23,6 +24,8 @@ const estado = Astro.locals.areaSocios;
 				<NuevaClave estado={estado} />
 			) : estado.vista === 'recuperar' ? (
 				<Recuperar estado={estado} />
+			) : estado.socio && estado.vista === 'biblioteca' ? (
+				<Biblioteca estado={estado} socio={estado.socio} />
 			) : estado.socio && estado.vista === 'cuenta' ? (
 				<Cuenta estado={estado} socio={estado.socio} />
 			) : estado.socio ? (

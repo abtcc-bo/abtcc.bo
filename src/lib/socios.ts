@@ -12,6 +12,8 @@ export interface Socio {
 	correo: string;
 	/** Desde cuándo puede volver a cambiar su nombre de usuario (null = ya puede). */
 	usuario_cambiable_desde: string | null;
+	/** Puede borrar materiales de la biblioteca (se cambia solo desde Supabase). */
+	es_admin: boolean;
 }
 
 export interface SesionSupabase {
@@ -274,4 +276,10 @@ export function crearLimite(maximo: number, ventanaMs: number) {
 		registro.set(clave, recientes);
 		return recientes.length > maximo;
 	};
+}
+
+/** Anota una descarga de la biblioteca. `tope` = ya bajó 30 archivos en las últimas 24 horas. */
+export async function registrarDescarga(acceso: string, material: string): Promise<'ok' | 'tope' | 'inactivo' | 'sin-socio' | 'error'> {
+	const respuesta = await rpc('registrar_descarga', { p_material: material }, acceso);
+	return respuesta?.ok ? ((await respuesta.json()) as 'ok' | 'tope' | 'inactivo' | 'sin-socio') : 'error';
 }

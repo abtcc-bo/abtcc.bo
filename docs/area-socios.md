@@ -137,10 +137,11 @@ Hecho el 25/11/2026 y probado en el navegador con dos cuentas de prueba (ya borr
 ### C. La biblioteca (lo hago yo)
 
 - [x] C0. Lista de la carpeta "Biblioteca -Libros-" ordenada por temática (25/11/2026), sin la carpeta RFT ni "La terapia basada en procesos (PBT)": planilla "Biblioteca ABTCC por temática" en claude.ai (https://claude.ai/artifact/Us11HxLHLc3QUFqbeXoBDY). 1.419 archivos, 20,6 GB: 11,9 GB son videos (quedan para después) y el resto entra en los 10 GB gratis. Cada archivo tiene temática, tipo y una sugerencia (Subir · Revisar derechos · Revisar · Más adelante · No subir). Columna "Título" con el nombre limpio para la web. Decisión de Leo (25/11/2026): **1.083 archivos "Subir"**, 217 "No subir", 65 videos y 54 "Revisar" (posibles datos de consultantes —casos, fichas, registros, perfiles de tests— o contenido desconocido: **no se suben hasta que Leo los revise**). Títulos corregidos con el título guardado dentro de cada PDF cuando lo había. Se sube solo lo marcado "Subir".
-- [ ] C1. Catálogo de materiales: título, tipo, tema, autor, año, archivo o enlace.
-- [ ] C2. Página de la biblioteca con filtros por tipo y por tema, y buscador.
-- [ ] C3. Descarga protegida (solo con sesión abierta). Registro de descargas y tope diario.
-- [ ] C4. Subir los primeros materiales reales.
+- [x] C1. Catálogo (25/11/2026): `catalogo.json` en el depósito R2 (no en GitHub), con título, temática, tipo, tamaño y clave del archivo. Lo arma el script de subida desde la planilla.
+- [x] C2. Página `/es/socios/biblioteca/` (`Biblioteca.astro`): buscador, filtros por temática y tipo, agrupada por temática. La lista se arma en el navegador desde `/api/socios/catalogo/` para no gastar el tiempo de CPU del Worker gratis.
+- [x] C3. Descarga protegida `/api/socios/descargar/<id>/`: sesión y membresía activa, registro en la tabla `descargas` y tope de 30 por día; el archivo sale del depósito privado con el título como nombre.
+- [x] C3 bis. Borrar materiales desde la web, solo administradores (`es_admin` en `socios`; hoy solo ABTCC-0001, Leo). Se cambia desde Supabase.
+- [ ] C4. Subida de los 984 archivos aprobados (7,6 GB) en curso desde el 25/11/2026 (script de Claude; se puede retomar). No se suben: CIPCO, ITEMA, hipnosis, diapositivas (irán en otra carpeta), videos ni los marcados "No subir". Quedan 9 hojas de respuesta y perfiles de tests en "Revisar".
 
 ### D. Diseño
 

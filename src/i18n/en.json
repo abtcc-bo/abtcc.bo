@@ -425,6 +425,7 @@
 	"socios": {
 		"titulos": {
 			"inicio": "Members access",
+			"biblioteca": "Library",
 			"cuenta": "My account",
 			"recuperar": "Reset password",
 			"nuevaClave": "Create password"
@@ -452,7 +453,9 @@
 			"elegir": "Choose my username",
 			"miCuenta": "My account",
 			"salir": "Sign out",
-			"inactivo": "Your membership is not active right now. Write to us to renew it and regain access to all the material:"
+			"inactivo": "Your membership is not active right now. Write to us to renew it and regain access to all the material:",
+			"biblioteca": "Go to the library",
+			"bibliotecaTexto": "Books, manuals and articles organized by topic."
 		},
 		"categorias": {
 			"asociado": "Associate member",
@@ -516,7 +519,10 @@
 			"usuarioCambiado": "Done: your username has changed.",
 			"claveCambiada": "Done: your password has changed. We signed you out on your other devices.",
 			"bienvenida": "Welcome to ABTCC! Your password is ready. If you like, choose your username now.",
-			"correoEnviado": "If that email is registered, you will receive a link to create a new password. It expires in one hour. Please also check your Spam and Promotions folders."
+			"correoEnviado": "If that email is registered, you will receive a link to create a new password. It expires in one hour. Please also check your Spam and Promotions folders.",
+			"materialBorrado": "Done: the item was deleted from the library.",
+			"topeDescargas": "You have reached the limit of 30 downloads in 24 hours. You can keep downloading tomorrow.",
+			"noEncontrado": "That item is no longer available."
 		},
 		"errores": {
 			"campos": "Please fill in all the fields.",
@@ -533,6 +539,27 @@
 			"larga": "The password is too long.",
 			"comun": "That password is too easy to guess. Choose another one.",
 			"parecida": "The password cannot contain your username, your code or your email."
+		},
+		"biblioteca": {
+			"titulo": "Library",
+			"texto": "Books, manuals and articles for ABTCC members. They are for your personal use: please do not share them outside the association.",
+			"buscar": "Search by title, author or topic",
+			"tema": "Topic",
+			"todas": "All topics",
+			"tipo": "Type",
+			"todos": "All types",
+			"resultados": "{n} items",
+			"resultado": "{n} item",
+			"sinResultados": "No items match that search.",
+			"cargando": "Loading the library…",
+			"error": "We could not load the library. Please reload the page.",
+			"descargar": "Download",
+			"nuevo": "New",
+			"mb": "{n} MB",
+			"borrar": "Delete",
+			"confirmarBorrar": "Delete “{titulo}” from the library? This cannot be undone.",
+			"sinJs": "You need JavaScript enabled in your browser to see the library.",
+			"inactivo": "Your membership is not active: you cannot see the library for now. Write to us to renew it:"
 		}
 	},
 	"aliados": {

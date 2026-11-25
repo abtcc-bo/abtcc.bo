@@ -425,6 +425,7 @@
 	"socios": {
 		"titulos": {
 			"inicio": "Acceso socios",
+			"biblioteca": "Biblioteca",
 			"cuenta": "Mi cuenta",
 			"recuperar": "Recuperar contraseña",
 			"nuevaClave": "Crear contraseña"
@@ -452,7 +453,9 @@
 			"elegir": "Elegir mi nombre de usuario",
 			"miCuenta": "Mi cuenta",
 			"salir": "Cerrar sesión",
-			"inactivo": "Tu membresía no está activa en este momento. Escríbenos para regularizarla y recuperar el acceso a todo el material:"
+			"inactivo": "Tu membresía no está activa en este momento. Escríbenos para regularizarla y recuperar el acceso a todo el material:",
+			"biblioteca": "Ir a la biblioteca",
+			"bibliotecaTexto": "Libros, manuales y artículos ordenados por temática."
 		},
 		"categorias": {
 			"asociado": "Miembro asociado",
@@ -516,7 +519,10 @@
 			"usuarioCambiado": "Listo: tu nombre de usuario cambió.",
 			"claveCambiada": "Listo: tu contraseña cambió. Cerramos la sesión en tus otros aparatos.",
 			"bienvenida": "¡Te damos la bienvenida a la ABTCC! Ya tienes tu contraseña. Si quieres, elige ahora tu nombre de usuario.",
-			"correoEnviado": "Si ese correo está registrado, te llegó un enlace para crear una contraseña nueva. Vence en una hora. Revisa también las carpetas Spam y Promociones."
+			"correoEnviado": "Si ese correo está registrado, te llegó un enlace para crear una contraseña nueva. Vence en una hora. Revisa también las carpetas Spam y Promociones.",
+			"materialBorrado": "Listo: el material se borró de la biblioteca.",
+			"topeDescargas": "Llegaste al máximo de 30 descargas en 24 horas. Podrás seguir descargando mañana.",
+			"noEncontrado": "Ese material ya no está disponible."
 		},
 		"errores": {
 			"campos": "Completa todos los campos.",
@@ -533,6 +539,27 @@
 			"larga": "La contraseña es demasiado larga.",
 			"comun": "Esa contraseña es muy fácil de adivinar. Elige otra.",
 			"parecida": "La contraseña no puede contener tu usuario, tu código ni tu correo."
+		},
+		"biblioteca": {
+			"titulo": "Biblioteca",
+			"texto": "Libros, manuales y artículos para los miembros de la ABTCC. Son para tu uso personal: por favor, no los compartas fuera de la asociación.",
+			"buscar": "Buscar por título, autor o tema",
+			"tema": "Temática",
+			"todas": "Todas las temáticas",
+			"tipo": "Tipo",
+			"todos": "Todos los tipos",
+			"resultados": "{n} materiales",
+			"resultado": "{n} material",
+			"sinResultados": "No hay materiales con esa búsqueda.",
+			"cargando": "Cargando la biblioteca…",
+			"error": "No pudimos cargar la biblioteca. Recarga la página.",
+			"descargar": "Descargar",
+			"nuevo": "Nuevo",
+			"mb": "{n} MB",
+			"borrar": "Borrar",
+			"confirmarBorrar": "¿Borrar «{titulo}» de la biblioteca? No se puede deshacer.",
+			"sinJs": "Para ver la biblioteca necesitas tener JavaScript activado en tu navegador.",
+			"inactivo": "Tu membresía no está activa: por ahora no puedes ver la biblioteca. Escríbenos para regularizarla:"
 		}
 	},
 	"aliados": {
