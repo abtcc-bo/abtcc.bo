@@ -121,7 +121,7 @@ Hecho el 25/11/2026 y probado en el navegador con dos cuentas de prueba (ya borr
 - [x] B4. Sesión en cookies seguras (`httpOnly`, revisada en cada visita) y "Cerrar sesión".
 - [x] B5. "¿Olvidaste tu contraseña?" (`/es/socios/recuperar-contrasena/`) y "Crea tu contraseña" (`/es/socios/nueva-contrasena/`). **Falta la configuración en Supabase** (ver más abajo) para que el correo llegue con el enlace correcto.
 - [x] B6 bis. "Mi cuenta" (`/es/socios/mi-cuenta/`): nombre de usuario con revisión en vivo (disponible / ocupado + sugerencias, un cambio cada 30 días) y cambio de contraseña (pide la actual y cierra las otras sesiones).
-- [ ] B6. Alta de socios: Claude crea la cuenta y la fila en `socios`, y la web le manda el correo "Elegir mi contraseña" (el mismo de recuperación).
+- [x] B6. Alta de socios: Claude crea la cuenta y la fila en `socios`, y la web le manda el correo "Elegir mi contraseña" (el mismo de recuperación). Así se creó la cuenta ABTCC-0001 (Leonardo Eyzaguirre, fundador) el 25/11/2026. Mientras no haya cartero propio, el correo es el estándar de Supabase (en inglés) y la página "Crea tu contraseña" también acepta su enlace.
 - [ ] B7. Probarlo todo con tu propia cuenta de socio (después de la configuración de Supabase).
 - [ ] B8. Tarea diaria (`scheduled` en `src/worker.ts`): una consulta a Supabase para que el plan gratis no se pause.
 
