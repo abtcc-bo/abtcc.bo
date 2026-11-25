@@ -141,7 +141,7 @@ Hecho el 25/11/2026 y probado en el navegador con dos cuentas de prueba (ya borr
 - [x] C2. Página `/es/socios/biblioteca/` (`Biblioteca.astro`): buscador, filtros por temática y tipo, agrupada por temática. La lista se arma en el navegador desde `/api/socios/catalogo/` para no gastar el tiempo de CPU del Worker gratis.
 - [x] C3. Descarga protegida `/api/socios/descargar/<id>/`: sesión y membresía activa, registro en la tabla `descargas` y tope de 30 por día; el archivo sale del depósito privado con el título como nombre.
 - [x] C3 bis. Borrar materiales desde la web, solo administradores (`es_admin` en `socios`; hoy solo ABTCC-0001, Leo). Se cambia desde Supabase.
-- [ ] C4. Subida de los 984 archivos aprobados (7,6 GB) en curso desde el 25/11/2026 (script de Claude; se puede retomar). No se suben: CIPCO, ITEMA, hipnosis, diapositivas (irán en otra carpeta), videos ni los marcados "No subir". Quedan 9 hojas de respuesta y perfiles de tests en "Revisar".
+- [x] C4. Subidos 983 de 984 archivos aprobados (25/11/2026), con el catálogo ordenado en estantes. Falta 1 libro de más de 300 MB (Manual de tratamientos psicológicos: infancia y adolescencia, Fonseca Pedrero): hay que comprimirlo o subirlo de otra forma. Unos 60 materiales quedaron en "Más temas" por repartir. No se suben: CIPCO, ITEMA, hipnosis, diapositivas (irán en otra carpeta), videos ni los marcados "No subir". Quedan 9 hojas de respuesta y perfiles de tests en "Revisar".
 
 ### D. Diseño
 
