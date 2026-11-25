@@ -4,8 +4,8 @@
  * Todo el movimiento va dentro de "prefers-reduced-motion: no-preference".
  */
 
-/* ---------- Portada generada ---------- */
-.portada {
+/* ---------- Portada generada (clase .cubierta: .portada es la presentación de la página de inicio) ---------- */
+.cubierta {
 	--c: #5a5a5a;
 	position: relative;
 	display: block;
@@ -19,57 +19,57 @@
 	font-family: var(--fuente-interfaz);
 	box-shadow: 0 10px 16px -8px rgb(12 64 48 / 0.45);
 }
-.portada-canto {
+.cubierta-canto {
 	position: absolute;
 	inset: 0 auto 0 0;
 	width: 7%;
 	background: linear-gradient(90deg, rgb(0 0 0 / 0.3), rgb(0 0 0 / 0));
 	box-shadow: 1px 0 0 rgb(255 255 255 / 0.2);
 }
-.portada-deco {
+.cubierta-deco {
 	position: absolute;
 	inset: 0;
 }
-.portada-libro .portada-deco::before,
-.portada-libro .portada-deco::after {
+.cubierta-libro .cubierta-deco::before,
+.cubierta-libro .cubierta-deco::after {
 	content: '';
 	position: absolute;
 	border-radius: 50%;
 }
-.portada-libro .portada-deco::before {
+.cubierta-libro .cubierta-deco::before {
 	right: -28cqw;
 	bottom: -28cqw;
 	width: 92cqw;
 	height: 92cqw;
 	border: 1.4cqw solid rgb(255 255 255 / 0.14);
 }
-.portada-libro .portada-deco::after {
+.cubierta-libro .cubierta-deco::after {
 	right: -12cqw;
 	bottom: -12cqw;
 	width: 60cqw;
 	height: 60cqw;
 	border: 1.4cqw solid rgb(242 201 76 / 0.35);
 }
-.portada-manual .portada-deco {
+.cubierta-manual .cubierta-deco {
 	background-image:
 		linear-gradient(rgb(255 255 255 / 0.09) 1px, transparent 1px),
 		linear-gradient(90deg, rgb(255 255 255 / 0.09) 1px, transparent 1px);
 	background-size: 10cqw 10cqw;
 }
-.portada-instrumento .portada-deco {
+.cubierta-instrumento .cubierta-deco {
 	background-image: radial-gradient(rgb(255 255 255 / 0.22) 0.9cqw, transparent 1cqw);
 	background-size: 8cqw 8cqw;
 	background-position: 3cqw 3cqw;
 }
-.portada-articulo {
+.cubierta-articulo {
 	background: #f4f1e6;
 }
-.portada-articulo .portada-deco {
+.cubierta-articulo .cubierta-deco {
 	bottom: auto;
 	height: 58%;
 	background: var(--c);
 }
-.portada-articulo .portada-deco::after {
+.cubierta-articulo .cubierta-deco::after {
 	content: '';
 	position: absolute;
 	left: 14cqw;
@@ -78,28 +78,28 @@
 	height: 12cqw;
 	background: repeating-linear-gradient(rgb(12 64 48 / 0.16) 0 1cqw, transparent 1cqw 4.2cqw);
 }
-.portada-texto {
+.cubierta-texto {
 	position: absolute;
 	inset: 10cqw 9cqw 9cqw 14cqw;
 	display: flex;
 	flex-direction: column;
 	gap: 3.5cqw;
 }
-.portada-tipo {
+.cubierta-tipo {
 	font-size: 5.2cqw;
 	font-weight: 800;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	color: rgb(255 255 255 / 0.88);
 }
-.portada-raya {
+.cubierta-raya {
 	width: 18cqw;
 	height: 1.4cqw;
 	flex: none;
 	border-radius: 1cqw;
 	background: #f2c94c;
 }
-.portada-titulo {
+.cubierta-titulo {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
@@ -109,22 +109,22 @@
 	letter-spacing: -0.01em;
 	overflow-wrap: anywhere;
 }
-.portada-titulo-corto {
+.cubierta-titulo-corto {
 	font-size: 12cqw;
 	-webkit-line-clamp: 5;
 }
-.portada-titulo-medio {
+.cubierta-titulo-medio {
 	font-size: 9.4cqw;
 	-webkit-line-clamp: 6;
 }
-.portada-titulo-largo {
+.cubierta-titulo-largo {
 	font-size: 7.6cqw;
 	-webkit-line-clamp: 7;
 }
-.portada-articulo .portada-titulo {
+.cubierta-articulo .cubierta-titulo {
 	-webkit-line-clamp: 5;
 }
-.portada-autor {
+.cubierta-autor {
 	margin-top: auto;
 	font-size: 5.8cqw;
 	font-weight: 700;
@@ -134,10 +134,10 @@
 	-webkit-line-clamp: 2;
 	overflow: hidden;
 }
-.portada-articulo .portada-autor {
+.cubierta-articulo .cubierta-autor {
 	color: var(--color-oscuro);
 }
-.portada-mini {
+.cubierta-mini {
 	box-shadow: 0 6px 10px -6px rgb(12 64 48 / 0.5);
 }
 
@@ -155,15 +155,15 @@
 	transform-origin: bottom center;
 	transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.libro-repisa .tapa .portada {
+.libro-repisa .tapa .cubierta {
 	transition: box-shadow 0.55s;
 }
 .libro-repisa:hover .tapa,
 .libro-repisa:focus-visible .tapa {
 	transform: translateY(-12px) rotate(-1.5deg);
 }
-.libro-repisa:hover .portada,
-.libro-repisa:focus-visible .portada {
+.libro-repisa:hover .cubierta,
+.libro-repisa:focus-visible .cubierta {
 	box-shadow: 0 26px 30px -12px rgb(12 64 48 / 0.55);
 }
 .libro-repisa .sello-nuevo {

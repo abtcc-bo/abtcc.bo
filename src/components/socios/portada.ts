@@ -119,15 +119,15 @@ export function claseDeTipo(tipo: string): 'libro' | 'manual' | 'instrumento' | 
 export function portada(m: Material, color: string, opciones: { mini?: boolean } = {}) {
 	const { titulo, autor } = partes(m);
 	const tipo = claseDeTipo(m.tipo);
-	const tapa = el('span', `portada portada-${tipo}${opciones.mini ? ' portada-mini' : ''}`);
+	const tapa = el('span', `cubierta cubierta-${tipo}${opciones.mini ? ' cubierta-mini' : ''}`);
 	tapa.setAttribute('aria-hidden', 'true');
 	pintar(tapa, color);
-	tapa.append(el('span', 'portada-deco'), el('span', 'portada-canto'));
+	tapa.append(el('span', 'cubierta-deco'), el('span', 'cubierta-canto'));
 	if (!opciones.mini) {
 		const largo = titulo.length <= 24 ? 'corto' : titulo.length <= 56 ? 'medio' : 'largo';
-		const texto = el('span', 'portada-texto');
-		texto.append(el('span', 'portada-tipo', m.tipo), el('span', 'portada-raya'), el('span', `portada-titulo portada-titulo-${largo}`, titulo));
-		if (autor) texto.append(el('span', 'portada-autor', autor));
+		const texto = el('span', 'cubierta-texto');
+		texto.append(el('span', 'cubierta-tipo', m.tipo), el('span', 'cubierta-raya'), el('span', `cubierta-titulo cubierta-titulo-${largo}`, titulo));
+		if (autor) texto.append(el('span', 'cubierta-autor', autor));
 		tapa.append(texto);
 	}
 	return tapa;
