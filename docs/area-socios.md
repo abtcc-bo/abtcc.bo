@@ -136,6 +136,7 @@ Hecho el 25/11/2026 y probado en el navegador con dos cuentas de prueba (ya borr
 
 ### C. La biblioteca (lo hago yo)
 
+- [x] C0. Lista de la carpeta "Biblioteca -Libros-" ordenada por temática (25/11/2026), sin la carpeta RFT ni "La terapia basada en procesos (PBT)": planilla "Biblioteca ABTCC por temática" en claude.ai (https://claude.ai/artifact/Us11HxLHLc3QUFqbeXoBDY). 1.419 archivos, 20,6 GB: 11,9 GB son videos (quedan para después) y el resto entra en los 10 GB gratis. Cada archivo tiene temática, tipo y una sugerencia (Subir · Revisar derechos · Revisar · Más adelante · No subir). **Leo o la comisión completan la columna "Decisión"**; se sube solo lo marcado "Subir".
 - [ ] C1. Catálogo de materiales: título, tipo, tema, autor, año, archivo o enlace.
 - [ ] C2. Página de la biblioteca con filtros por tipo y por tema, y buscador.
 - [ ] C3. Descarga protegida (solo con sesión abierta). Registro de descargas y tope diario.
