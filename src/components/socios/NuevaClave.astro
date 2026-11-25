@@ -1,6 +1,8 @@
 ---
 // "Crea tu contraseña": se llega desde el enlace del correo (recuperación o bienvenida de un socio nuevo).
-// El enlace se canjea recién al guardar (src/lib/area-socios.ts), no al abrir la página.
+// Con la plantilla propia el enlace trae ?token_hash=… y se canjea recién al guardar (src/lib/area-socios.ts).
+// Con la plantilla estándar de Supabase, la sesión llega en la dirección (#access_token=…): el script de abajo
+// la pasa al formulario y la saca de la dirección. Sin ninguna de las dos, se ofrece pedir un enlace nuevo.
 import CampoClave from './CampoClave.astro';
 import Mensaje from './Mensaje.astro';
 import type { EstadoAreaSocios } from '../../lib/area-socios';
@@ -14,43 +16,71 @@ const { estado } = Astro.props;
 const { idioma } = estado;
 const textos = t(idioma).socios;
 const error = estado.error?.formulario === 'nuevaClave' ? estado.error.tipo : undefined;
+const conEnlace = (Boolean(estado.enlace) || Boolean(estado.valores.acceso)) && error !== 'enlace';
 ---
 
 <div class="tarjeta-socios">
 	<h2>{textos.nuevaClave.titulo}</h2>
-	{
-		estado.enlace && error !== 'enlace' ? (
-			<>
-				<p class="bajada">{textos.nuevaClave.texto}</p>
-				{error && <Mensaje tipo="error">{textos.errores[error]}</Mensaje>}
-				<form method="post" action={rutaSocios('nuevaClave', idioma)}>
-					<input type="hidden" name="accion" value="nueva-clave" />
-					<input type="hidden" name="token_hash" value={estado.enlace.tokenHash} />
-					<input type="hidden" name="tipo" value={estado.enlace.tipo} />
-					<CampoClave
-						idioma={idioma}
-						id="socio-clave-nueva"
-						nombre="clave"
-						etiqueta={textos.clave.nueva}
-						autocomplete="new-password"
-						ayuda={textos.clave.ayuda}
-						invalido={Boolean(error)}
-					/>
-					<CampoClave idioma={idioma} id="socio-clave-repetir" nombre="clave2" etiqueta={textos.clave.repetir} autocomplete="new-password" invalido={error === 'distintas'} />
-					<button class="boton" type="submit">
-						{textos.clave.guardar} <span class="flecha" aria-hidden="true">→</span>
-					</button>
-				</form>
-			</>
-		) : (
-			<>
-				<Mensaje tipo="error">{error === 'enlace' ? textos.errores.enlace : textos.nuevaClave.sinEnlace}</Mensaje>
-				<p>
-					<a class="boton" href={rutaSocios('recuperar', idioma)}>
-						{textos.nuevaClave.pedirOtro} <span class="flecha" aria-hidden="true">→</span>
-					</a>
-				</p>
-			</>
-		)
-	}
+
+	<div data-con-enlace hidden={!conEnlace}>
+		<p class="bajada">{textos.nuevaClave.texto}</p>
+		{error && error !== 'enlace' && <Mensaje tipo="error">{textos.errores[error]}</Mensaje>}
+		<form method="post" action={rutaSocios('nuevaClave', idioma)} data-formulario-clave>
+			<input type="hidden" name="accion" value="nueva-clave" />
+			<input type="hidden" name="token_hash" value={estado.enlace?.tokenHash ?? ''} />
+			<input type="hidden" name="tipo" value={estado.enlace?.tipo ?? estado.valores.tipo ?? ''} />
+			<input type="hidden" name="acceso" value={estado.valores.acceso ?? ''} />
+			<input type="hidden" name="renovacion" value={estado.valores.renovacion ?? ''} />
+			<CampoClave
+				idioma={idioma}
+				id="socio-clave-nueva"
+				nombre="clave"
+				etiqueta={textos.clave.nueva}
+				autocomplete="new-password"
+				ayuda={textos.clave.ayuda}
+				invalido={Boolean(error)}
+			/>
+			<CampoClave idioma={idioma} id="socio-clave-repetir" nombre="clave2" etiqueta={textos.clave.repetir} autocomplete="new-password" invalido={error === 'distintas'} />
+			<button class="boton" type="submit">
+				{textos.clave.guardar} <span class="flecha" aria-hidden="true">→</span>
+			</button>
+		</form>
+	</div>
+
+	<div data-sin-enlace hidden={conEnlace}>
+		<Mensaje tipo="error">
+			<span data-texto-sin-enlace hidden={error === 'enlace'}>{textos.nuevaClave.sinEnlace}</span>
+			<span data-texto-enlace-vencido hidden={error !== 'enlace'}>{textos.errores.enlace}</span>
+		</Mensaje>
+		<p>
+			<a class="boton" href={rutaSocios('recuperar', idioma)}>
+				{textos.nuevaClave.pedirOtro} <span class="flecha" aria-hidden="true">→</span>
+			</a>
+		</p>
+	</div>
 </div>
+
+<script>
+	// Enlace con la plantilla estándar de Supabase: #access_token=…&refresh_token=…&type=recovery (o un error).
+	const datos = new URLSearchParams(location.hash.slice(1));
+	const formulario = document.querySelector<HTMLFormElement>('[data-formulario-clave]');
+	if (formulario && location.hash.length > 1) {
+		const tipo = datos.get('type');
+		const acceso = datos.get('access_token');
+		const renovacion = datos.get('refresh_token');
+		const conEnlace = document.querySelector<HTMLElement>('[data-con-enlace]');
+		const sinEnlace = document.querySelector<HTMLElement>('[data-sin-enlace]');
+		if (acceso && renovacion && (tipo === 'recovery' || tipo === 'invite')) {
+			(formulario.elements.namedItem('acceso') as HTMLInputElement).value = acceso;
+			(formulario.elements.namedItem('renovacion') as HTMLInputElement).value = renovacion;
+			(formulario.elements.namedItem('tipo') as HTMLInputElement).value = tipo;
+			if (conEnlace) conEnlace.hidden = false;
+			if (sinEnlace) sinEnlace.hidden = true;
+		} else if (datos.get('error')) {
+			document.querySelector<HTMLElement>('[data-texto-sin-enlace]')?.setAttribute('hidden', '');
+			document.querySelector<HTMLElement>('[data-texto-enlace-vencido]')?.removeAttribute('hidden');
+		}
+		// Los datos del enlace no quedan en la dirección ni en el historial.
+		history.replaceState(null, '', location.pathname + location.search);
+	}
+</script>

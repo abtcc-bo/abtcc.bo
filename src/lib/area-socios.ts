@@ -262,17 +262,29 @@ async function atenderFormulario(
 		case 'nueva-clave': {
 			const tokenHash = texto('token_hash');
 			const tipo = texto('tipo');
-			if (!tokenHash || (tipo !== 'recovery' && tipo !== 'invite')) return fallar('enlace', 'nuevaClave', 400);
-			estado.enlace = { tokenHash, tipo };
+			// Dos formas de llegar desde el correo:
+			//  - plantilla propia (supabase/plantillas/): ?token_hash=… que se canjea aquí;
+			//  - plantilla estándar de Supabase (mientras no se pueda editar): Supabase ya validó el enlace y deja la sesión
+			//    en la dirección (#access_token=…); el script de NuevaClave.astro la pasa a este formulario.
+			const sesionDelCorreo = { acceso: texto('acceso'), renovacion: texto('renovacion') };
+			const conSesion = Boolean(sesionDelCorreo.acceso && sesionDelCorreo.renovacion);
+			if ((!tokenHash && !conSesion) || (tipo !== 'recovery' && tipo !== 'invite')) return fallar('enlace', 'nuevaClave', 400);
+			if (tokenHash) estado.enlace = { tokenHash, tipo };
+			// Si algo falla (p. ej. contraseñas distintas), el formulario vuelve con la sesión del correo para reintentar.
+			else Object.assign(estado.valores, { acceso: sesionDelCorreo.acceso, renovacion: sesionDelCorreo.renovacion, tipo });
 			if (superaLimiteCambios(ip)) return fallar('demasiados', 'nuevaClave', 429);
 			const nueva = clave('clave');
 			if (nueva !== clave('clave2')) return fallar('distintas', 'nuevaClave', 422);
 			const problema = supabase.problemaDeClave(nueva);
 			if (problema) return fallar(problema, 'nuevaClave', 422);
 			// El enlace se canjea recién aquí (no al abrirlo): así los antivirus del correo que "visitan" los enlaces no lo gastan.
-			const canje = await supabase.canjearEnlace(tokenHash, tipo);
+			const canje: Awaited<ReturnType<typeof supabase.canjearEnlace>> = conSesion
+				? { tipo: 'ok', sesion: sesionDelCorreo }
+				: await supabase.canjearEnlace(tokenHash, tipo);
 			if (canje.tipo !== 'ok') return fallar(canje.tipo === 'demasiados' ? 'demasiados' : 'enlace', 'nuevaClave', 400);
 			const cambio = await supabase.cambiarClave(canje.sesion.acceso, nueva);
+			// Con la sesión del correo, un token falso o vencido hace fallar el cambio: el enlace no sirve.
+			if (conSesion && cambio === 'error') return fallar('enlace', 'nuevaClave', 400);
 			if (cambio === 'debil' || cambio === 'error') return fallar(cambio === 'debil' ? 'comun' : 'servidor', 'nuevaClave', 422);
 			const socio = await supabase.datosDelSocio(canje.sesion.acceso);
 			if (socio.tipo !== 'ok' || !socio.socio) {
