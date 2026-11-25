@@ -1,0 +1,400 @@
+/*
+ * Biblioteca del área de socios (y la repisa del panel): portadas generadas, estantes con lomos,
+ * repisas, cinta de libros y ficha. Las piezas se arman en el navegador (src/components/socios/portada.ts).
+ * Todo el movimiento va dentro de "prefers-reduced-motion: no-preference".
+ */
+
+/* ---------- Portada generada ---------- */
+.portada {
+	--c: #5a5a5a;
+	position: relative;
+	display: block;
+	width: 100%;
+	aspect-ratio: 2 / 3;
+	overflow: hidden;
+	container-type: inline-size;
+	border-radius: 3px 8px 8px 3px;
+	background: var(--c);
+	color: #fff;
+	font-family: var(--fuente-interfaz);
+	box-shadow: 0 10px 16px -8px rgb(12 64 48 / 0.45);
+}
+.portada-canto {
+	position: absolute;
+	inset: 0 auto 0 0;
+	width: 7%;
+	background: linear-gradient(90deg, rgb(0 0 0 / 0.3), rgb(0 0 0 / 0));
+	box-shadow: 1px 0 0 rgb(255 255 255 / 0.2);
+}
+.portada-deco {
+	position: absolute;
+	inset: 0;
+}
+.portada-libro .portada-deco::before,
+.portada-libro .portada-deco::after {
+	content: '';
+	position: absolute;
+	border-radius: 50%;
+}
+.portada-libro .portada-deco::before {
+	right: -28cqw;
+	bottom: -28cqw;
+	width: 92cqw;
+	height: 92cqw;
+	border: 1.4cqw solid rgb(255 255 255 / 0.14);
+}
+.portada-libro .portada-deco::after {
+	right: -12cqw;
+	bottom: -12cqw;
+	width: 60cqw;
+	height: 60cqw;
+	border: 1.4cqw solid rgb(242 201 76 / 0.35);
+}
+.portada-manual .portada-deco {
+	background-image:
+		linear-gradient(rgb(255 255 255 / 0.09) 1px, transparent 1px),
+		linear-gradient(90deg, rgb(255 255 255 / 0.09) 1px, transparent 1px);
+	background-size: 10cqw 10cqw;
+}
+.portada-instrumento .portada-deco {
+	background-image: radial-gradient(rgb(255 255 255 / 0.22) 0.9cqw, transparent 1cqw);
+	background-size: 8cqw 8cqw;
+	background-position: 3cqw 3cqw;
+}
+.portada-articulo {
+	background: #f4f1e6;
+}
+.portada-articulo .portada-deco {
+	bottom: auto;
+	height: 58%;
+	background: var(--c);
+}
+.portada-articulo .portada-deco::after {
+	content: '';
+	position: absolute;
+	left: 14cqw;
+	right: 9cqw;
+	top: calc(100% + 18cqw);
+	height: 12cqw;
+	background: repeating-linear-gradient(rgb(12 64 48 / 0.16) 0 1cqw, transparent 1cqw 4.2cqw);
+}
+.portada-texto {
+	position: absolute;
+	inset: 10cqw 9cqw 9cqw 14cqw;
+	display: flex;
+	flex-direction: column;
+	gap: 3.5cqw;
+}
+.portada-tipo {
+	font-size: 5.2cqw;
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: rgb(255 255 255 / 0.88);
+}
+.portada-raya {
+	width: 18cqw;
+	height: 1.4cqw;
+	flex: none;
+	border-radius: 1cqw;
+	background: #f2c94c;
+}
+.portada-titulo {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	font-family: var(--fuente-titulos);
+	font-weight: 600;
+	line-height: 1.1;
+	letter-spacing: -0.01em;
+	overflow-wrap: anywhere;
+}
+.portada-titulo-corto {
+	font-size: 12cqw;
+	-webkit-line-clamp: 5;
+}
+.portada-titulo-medio {
+	font-size: 9.4cqw;
+	-webkit-line-clamp: 6;
+}
+.portada-titulo-largo {
+	font-size: 7.6cqw;
+	-webkit-line-clamp: 7;
+}
+.portada-articulo .portada-titulo {
+	-webkit-line-clamp: 5;
+}
+.portada-autor {
+	margin-top: auto;
+	font-size: 5.8cqw;
+	font-weight: 700;
+	line-height: 1.25;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+.portada-articulo .portada-autor {
+	color: var(--color-oscuro);
+}
+.portada-mini {
+	box-shadow: 0 6px 10px -6px rgb(12 64 48 / 0.5);
+}
+
+/* ---------- Un libro en la repisa (tapa + nombre) ---------- */
+.libro-repisa {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	color: inherit;
+	text-decoration: none;
+}
+.libro-repisa .tapa {
+	position: relative;
+	display: block;
+	transform-origin: bottom center;
+	transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.libro-repisa .tapa .portada {
+	transition: box-shadow 0.55s;
+}
+.libro-repisa:hover .tapa,
+.libro-repisa:focus-visible .tapa {
+	transform: translateY(-12px) rotate(-1.5deg);
+}
+.libro-repisa:hover .portada,
+.libro-repisa:focus-visible .portada {
+	box-shadow: 0 26px 30px -12px rgb(12 64 48 / 0.55);
+}
+.libro-repisa .sello-nuevo {
+	position: absolute;
+	top: -0.6rem;
+	right: -0.6rem;
+	z-index: 1;
+	padding: 0.15rem 0.6rem;
+	border-radius: 999px;
+	background: var(--color-realce);
+	color: var(--color-oscuro);
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	box-shadow: 0 6px 12px -6px rgb(0 0 0 / 0.4);
+}
+/* La tabla de la repisa: cada libro pone su tramo y, juntos, forman una tabla continua por fila. */
+.libro-repisa .tabla {
+	display: block;
+	height: 14px;
+	margin: 0 calc(var(--hueco-repisa, 1.6rem) / -2);
+	background: var(--color-oscuro);
+	box-shadow:
+		inset 0 3px 0 var(--color-banda),
+		0 18px 20px -14px rgb(12 64 48 / 0.6);
+}
+.libro-repisa .nombre-libro {
+	margin-top: 0.75rem;
+	font-weight: 800;
+	color: var(--color-titulos);
+	font-size: 0.9375rem;
+	line-height: 1.3;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+	overflow-wrap: anywhere;
+}
+.libro-repisa .autor-libro {
+	margin-top: 0.15rem;
+	font-size: 0.875rem;
+	color: var(--color-texto-suave);
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+	overflow: hidden;
+}
+.repisa {
+	--hueco-repisa: 1.6rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
+	gap: 2.25rem var(--hueco-repisa);
+	margin: 0;
+	padding: 1.75rem calc(var(--hueco-repisa) / 2) 0;
+	list-style: none;
+	overflow: hidden;
+}
+@media (max-width: 30rem) {
+	.repisa {
+		--hueco-repisa: 1rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+/* ---------- Tarjetas de estante con lomos ---------- */
+.mueble {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 1.25rem;
+	border: 1px solid var(--color-borde);
+	border-radius: var(--radio);
+	border-start-start-radius: 2rem;
+	background: var(--color-tarjeta);
+	color: inherit;
+	font: inherit;
+	text-align: start;
+	cursor: pointer;
+	transition:
+		transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+		box-shadow 0.45s;
+}
+.mueble:hover,
+.mueble:focus-visible {
+	transform: translateY(-6px);
+	box-shadow: 0 24px 40px -24px rgb(12 64 48 / 0.45);
+}
+.mueble .lomos {
+	display: flex;
+	align-items: flex-end;
+	gap: 3px;
+	height: 6.5rem;
+	padding: 0 1.1rem;
+	overflow: hidden;
+	border-radius: 1.1rem 1.1rem 6px 6px;
+	border-bottom: 9px solid var(--c);
+	background: var(--c-tinte);
+}
+.lomo-estante {
+	display: block;
+	flex: none;
+	width: var(--ancho);
+	height: var(--alto);
+	border-radius: 2px 2px 0 0;
+	background: var(--lomo);
+	box-shadow:
+		inset -2px 0 0 rgb(0 0 0 / 0.14),
+		inset 0 -12px 0 rgb(255 255 255 / 0.12);
+	transform-origin: bottom left;
+	transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+	transition-delay: calc(var(--i) * 25ms);
+}
+.lomo-estante.inclinado {
+	transform: rotate(16deg) translateX(4px);
+}
+.mueble:hover .lomo-estante,
+.mueble:focus-visible .lomo-estante {
+	transform: translateY(-9px);
+}
+.mueble .cabeza {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+}
+.mueble .circulo {
+	display: grid;
+	place-items: center;
+	width: 3rem;
+	height: 3rem;
+	flex: none;
+	border-radius: 50%;
+	background: var(--c-tinte);
+}
+.mueble .circulo svg {
+	width: 1.5rem;
+	height: 1.5rem;
+	fill: none;
+	stroke: var(--c);
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+.mueble .nombre {
+	flex: 1;
+	font-family: var(--fuente-titulos);
+	font-size: 1.3rem;
+	font-weight: 600;
+	line-height: 1.2;
+	color: var(--color-titulos);
+}
+.mueble .flecha {
+	color: var(--color-acento);
+	font-weight: 800;
+	font-size: 1.3rem;
+	transition: translate 0.35s;
+}
+.mueble:hover .flecha {
+	translate: 6px 0;
+}
+.mueble .pie {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.4rem;
+}
+.mueble .etiqueta-tema {
+	padding: 0.15rem 0.7rem;
+	border-radius: 999px;
+	background: var(--color-acento-suave);
+	color: var(--color-titulos);
+	font-size: 0.8125rem;
+	font-weight: 700;
+}
+.mueble .cantidad {
+	margin-inline-start: auto;
+	font-size: 0.875rem;
+	color: var(--color-texto-suave);
+}
+
+/* ---------- Movimiento (apagado con "reducir movimiento") ---------- */
+@media (prefers-reduced-motion: no-preference) {
+	.cinta-libros .cinta {
+		animation: biblioteca-deslizar var(--duracion, 90s) linear infinite;
+	}
+	.cinta-libros:hover .cinta,
+	.cinta-libros:focus-within .cinta {
+		animation-play-state: paused;
+	}
+	.repisa > * {
+		animation: biblioteca-caer 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+		animation-delay: calc(min(var(--i, 0), 12) * 45ms);
+	}
+	.mueble-entra {
+		animation: biblioteca-subir 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+		animation-delay: calc(min(var(--i, 0), 12) * 50ms);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.libro-repisa .tapa,
+	.mueble,
+	.lomo-estante,
+	.mueble .flecha {
+		transition: none;
+	}
+	.cinta-libros {
+		overflow-x: auto;
+	}
+}
+@keyframes biblioteca-deslizar {
+	to {
+		transform: translateX(-50%);
+	}
+}
+@keyframes biblioteca-caer {
+	from {
+		opacity: 0;
+		translate: 0 -18px;
+	}
+	to {
+		opacity: 1;
+		translate: 0 0;
+	}
+}
+@keyframes biblioteca-subir {
+	from {
+		opacity: 0;
+		translate: 0 22px;
+	}
+	to {
+		opacity: 1;
+		translate: 0 0;
+	}
+}

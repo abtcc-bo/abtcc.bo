@@ -1,18 +1,21 @@
 ---
-// Biblioteca del área de socios, por estantes: Biblioteca › Estante (sección) › Tema › Carpeta.
-//  - Inicio: buscador, "Lo nuevo" y las tarjetas de los estantes.
-//  - Estante: sus temas como tarjetas (subcarpetas). Tema: los materiales, con carpetas y tipo como filtros.
-//  - Buscar: resultados de toda la biblioteca, agrupados por estante y tema.
+// Biblioteca del área de socios, como una biblioteca de verdad (diseño aprobado por Leo el 25/11/2026):
+//  - Inicio: buscador con sugerencias, "Sigue donde lo dejaste", cinta de libros que se desliza ("Lo nuevo" o,
+//    si no hay novedades, "Para descubrir") y los estantes dibujados con lomos.
+//  - Estante: sus temas como estantes. Tema: los materiales en repisas, separados por tipo, con portadas
+//    generadas (o en lista), y carpetas y tipo como filtros. Ficha (?libro=id): tapa en 3D, datos, Leer y Descargar.
+//  - Buscar: resultados de toda la biblioteca, en lista, agrupados por estante y tema.
 // La lista se arma en el navegador desde /api/socios/catalogo/ (el Worker gratis tiene poco tiempo de CPU);
-// la dirección guarda dónde está el socio (?estante=…&tema=…), así funcionan el botón "atrás" y los enlaces.
-// Cada material del catálogo trae `seccion`, `subtema` y, a veces, `carpeta` (los arma el script de subida).
+// la dirección guarda dónde está el socio (?estante=…&tema=…&libro=…), así funcionan "atrás" y los enlaces.
 // Un administrador ve además "Borrar". Las descargas pasan por /api/socios/descargar/<id>/, que revisa la sesión.
+// Piezas compartidas en ./portada.ts; estilos en src/styles/biblioteca.css (y los propios, abajo).
 import Mensaje from './Mensaje.astro';
 import type { EstadoAreaSocios } from '../../lib/area-socios';
 import type { Socio } from '../../lib/socios';
-import { ICONOS } from '../../datos/iconos';
+import { ESTANTES } from '../../datos/estantes';
 import { ORGANIZACION } from '../../datos/organizacion';
 import { rutaSocios, t } from '../../i18n';
+import '../../styles/biblioteca.css';
 
 interface Props {
 	estado: EstadoAreaSocios;
@@ -24,24 +27,9 @@ const { idioma } = estado;
 const textos = t(idioma).socios;
 const b = textos.biblioteca;
 const avisosError = ['topeDescargas', 'noEncontrado'];
-
-/** Estantes en el orden en que se muestran, con su ícono (src/datos/iconos.ts) y el color del lomo de sus libros. */
-const ESTANTES = [
-	{ nombre: 'Terapias contextuales', icono: ICONOS.hoja, color: '#127052' },
-	{ nombre: 'DBT', icono: ICONOS.dialogo, color: '#0c4030' },
-	{ nombre: 'Análisis funcional y conducta', icono: ICONOS.investigacion, color: '#15795a' },
-	{ nombre: 'Problemas clínicos', icono: ICONOS.cuidado, color: '#2f6f8f' },
-	{ nombre: 'Infancia y adolescencia', icono: ICONOS.personas, color: '#8a5a12' },
-	{ nombre: 'Evaluación', icono: ICONOS.check, color: '#5b4a8a' },
-	{ nombre: 'Terapia cognitivo-conductual', icono: ICONOS.diana, color: '#7a2f45' },
-	{ nombre: 'Salud y estilos de vida', icono: ICONOS.sol, color: '#4f7a1f' },
-	{ nombre: 'Más temas', icono: ICONOS.libro, color: '#5a5a5a' },
-];
 ---
 
 <div class="biblioteca">
-	<p class="bajada">{b.texto}</p>
-
 	{estado.aviso && avisosError.includes(estado.aviso) && <Mensaje tipo="error">{textos.avisos[estado.aviso]}</Mensaje>}
 	{estado.aviso === 'materialBorrado' && <Mensaje tipo="exito">{textos.avisos.materialBorrado}</Mensaje>}
 
@@ -59,9 +47,14 @@ const ESTANTES = [
 				data-textos={JSON.stringify(b)}
 				data-estantes={JSON.stringify(ESTANTES)}
 			>
-				<div class="buscador">
-					<label for="biblioteca-buscar">{b.buscar}</label>
-					<input id="biblioteca-buscar" type="search" autocomplete="off" data-buscar />
+				<div class="sala">
+					<p class="bajada">{b.texto}</p>
+					<div class="buscador">
+						<label for="biblioteca-buscar" class="visualmente-oculto">{b.buscar}</label>
+						<svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+						<input id="biblioteca-buscar" type="search" autocomplete="off" placeholder={b.buscar} data-buscar />
+					</div>
+					<div class="sugerencias" data-sugerencias hidden></div>
 				</div>
 				<nav class="migas-biblioteca" aria-label={b.titulo} data-migas></nav>
 				<p class="estado-lista" aria-live="polite" data-resultados>{b.cargando}</p>
@@ -69,6 +62,7 @@ const ESTANTES = [
 				<noscript>
 					<p>{b.sinJs}</p>
 				</noscript>
+				<p class="uso-personal">{b.usoPersonal}</p>
 			</div>
 		)
 	}
@@ -79,58 +73,33 @@ const ESTANTES = [
 </div>
 
 <script>
-	interface Material {
-		id: string;
-		titulo: string;
-		tema: string;
-		tipo: string;
-		mb: number;
-		ext: string;
-		agregado?: string;
-		seccion?: string;
-		subtema?: string;
-		carpeta?: string;
-	}
-	interface Estante {
-		nombre: string;
-		icono: string;
-		color: string;
-	}
-	type Estado = { estante: string; tema: string; carpeta: string; tipo: string };
+	import { anotarReciente, barajar, el, icono, leerRecientes, lomos, partes, pintar, portada, COLOR_RESPALDO } from './portada';
+	import type { Estante, Material } from './portada';
+
+	type Estado = { estante: string; tema: string; carpeta: string; tipo: string; libro: string };
+	type Textos = Record<string, string> & { tipos?: Record<string, string> };
 
 	const caja = document.querySelector<HTMLElement>('[data-biblioteca]');
 	if (caja) iniciar(caja);
 
-	function el<K extends keyof HTMLElementTagNameMap>(etiqueta: K, clase?: string, texto?: string) {
-		const nodo = document.createElement(etiqueta);
-		if (clase) nodo.className = clase;
-		if (texto !== undefined) nodo.textContent = texto;
-		return nodo;
-	}
-
-	function icono(trazo: string) {
-		const ns = 'http://www.w3.org/2000/svg';
-		const svg = document.createElementNS(ns, 'svg');
-		svg.setAttribute('viewBox', '0 0 24 24');
-		svg.setAttribute('aria-hidden', 'true');
-		const path = document.createElementNS(ns, 'path');
-		path.setAttribute('d', trazo);
-		svg.append(path);
-		return svg;
-	}
+	/** Orden de los grupos por tipo dentro de un tema. */
+	const ORDEN_TIPOS = ['Libro', 'Manual o guía', 'Artículo o capítulo', 'Artículo', 'Capítulo', 'Instrumento de evaluación'];
+	const CLAVE_VISTA = 'abtcc-biblioteca-vista';
 
 	async function iniciar(caja: HTMLElement) {
-		const textos = JSON.parse(caja.dataset.textos ?? '{}') as Record<string, string>;
+		const textos = JSON.parse(caja.dataset.textos ?? '{}') as Textos;
 		const estantes = JSON.parse(caja.dataset.estantes ?? '[]') as Estante[];
 		const idioma = caja.dataset.idioma ?? 'es';
 		const esAdmin = caja.dataset.admin === 'si';
 		const ruta = caja.dataset.ruta ?? '';
 		const buscar = caja.querySelector<HTMLInputElement>('[data-buscar]')!;
+		const sugerencias = caja.querySelector<HTMLElement>('[data-sugerencias]')!;
 		const migas = caja.querySelector<HTMLElement>('[data-migas]')!;
 		const estadoLista = caja.querySelector<HTMLElement>('[data-resultados]')!;
 		const vista = caja.querySelector<HTMLElement>('[data-vista]')!;
-		const tx = (clave: string, n?: number) => (textos[clave] ?? '').replace('{n}', n === undefined ? '' : n.toLocaleString(idioma));
+		const tx = (clave: string, n?: number) => String(textos[clave] ?? '').replace('{n}', n === undefined ? '' : n.toLocaleString(idioma));
 		const cuantos = (n: number) => tx(n === 1 ? 'resultado' : 'resultados', n);
+		const plural = (tipo: string) => textos.tipos?.[tipo] ?? tipo;
 
 		let materiales: Material[];
 		try {
@@ -150,8 +119,10 @@ const ESTANTES = [
 			m.subtema ??= m.tema;
 		}
 		materiales.sort((a, b) => orden.compare(a.titulo, b.titulo));
+		const porId = new Map(materiales.map((m) => [m.id, m]));
 		const textoBusqueda = new Map(materiales.map((m) => [m, sinTildes(`${m.titulo} ${m.subtema} ${m.carpeta ?? ''} ${m.tipo} ${m.seccion}`)]));
-		const colorDe = (seccion?: string) => estantes.find((e) => e.nombre === seccion)?.color ?? '#5a5a5a';
+		const estanteDe = (m: Material) => estantes.find((e) => e.nombre === m.seccion);
+		const colorDe = (m: Material) => estanteDe(m)?.color ?? COLOR_RESPALDO;
 		// El primer lote (25/11/2026) no lleva el sello "Nuevo"; lo agregado después, durante 30 días.
 		const hace30Dias = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
 		const esNuevo = (m: Material) => Boolean(m.agregado && m.agregado > '2026-11-25' && m.agregado >= hace30Dias);
@@ -163,74 +134,146 @@ const ESTANTES = [
 			}
 			return mapa;
 		}
+		const leerVista = () => {
+			try {
+				return localStorage.getItem(CLAVE_VISTA) === 'lista' ? 'lista' : 'estante';
+			} catch {
+				return 'estante';
+			}
+		};
 
-		/** "Título - Autor (2011)" → título, autor y año por separado. */
-		function partes(m: Material) {
-			const anio = m.titulo.match(/\((\d{4})\)\s*$/)?.[1] ?? m.titulo.match(/\b(19|20)\d{2}\b/)?.[0];
-			const sinAnio = m.titulo.replace(/\s*\(\d{4}\)\s*$/, '');
-			const corte = sinAnio.lastIndexOf(' - ');
-			const autor = corte > 10 && sinAnio.length - corte < 80 ? sinAnio.slice(corte + 3) : '';
-			return { titulo: autor ? sinAnio.slice(0, corte) : sinAnio, autor, anio };
+		// ---------- Dónde está el socio (en la dirección) ----------
+		const leer = (): Estado => {
+			const p = new URLSearchParams(location.search);
+			return { estante: p.get('estante') ?? '', tema: p.get('tema') ?? '', carpeta: p.get('carpeta') ?? '', tipo: p.get('tipo') ?? '', libro: p.get('libro') ?? '' };
+		};
+		const urlDe = (e: Estado) => {
+			const p = new URLSearchParams();
+			for (const [k, v] of Object.entries(e)) if (v) p.set(k, v);
+			return `${location.pathname}${p.size ? `?${p}` : ''}`;
+		};
+		function ir(nuevo: Partial<Estado>, reemplazar = false) {
+			const url = urlDe({ ...leer(), libro: '', ...nuevo });
+			if (reemplazar) history.replaceState(null, '', url);
+			else history.pushState(null, '', url);
+			dibujar();
+			if (!reemplazar) caja.scrollIntoView({ block: 'start' });
+		}
+		window.addEventListener('popstate', () => dibujar());
+
+		/** Dónde vive un material: su estante y su tema, para que la ficha tenga migas. */
+		const lugarDe = (m: Material): Estado => ({ estante: slug(m.seccion ?? ''), tema: slug(m.subtema ?? ''), carpeta: '', tipo: '', libro: m.id });
+
+		/** Enlace a la ficha de un material (funciona también con clic central o "abrir en otra pestaña"). */
+		function enlaceFicha(m: Material, clase: string) {
+			const a = el('a', clase);
+			a.href = urlDe(lugarDe(m));
+			a.addEventListener('click', (evento) => {
+				if (evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.button !== 0) return;
+				evento.preventDefault();
+				buscar.value = '';
+				ir(lugarDe(m));
+			});
+			return a;
 		}
 
-		function tarjeta(m: Material) {
-			const { titulo, autor, anio } = partes(m);
-			const li = el('li', 'material');
-			const lomo = el('span', 'lomo');
-			lomo.style.setProperty('--lomo', colorDe(m.seccion));
-			const datos = el('div', 'datos');
-			const t = el('p', 'titulo', titulo);
-			if (esNuevo(m)) t.append(' ', el('span', 'nuevo', tx('nuevo')));
-			const detalle = [autor, anio && !autor.includes(anio) ? anio : '', m.tipo, tx('mb', m.mb)].filter(Boolean).join(' · ');
-			datos.append(t, el('p', 'detalle', detalle));
-			const acciones = el('div', 'acciones-material');
-			const enlace = (texto: string, extra: string, clase: string) => {
-				const a = el('a', clase, texto);
-				a.href = `/api/socios/descargar/${m.id}/?idioma=${idioma}${extra}`;
-				a.setAttribute('aria-label', `${texto}: ${titulo}`);
-				return a;
-			};
-			const ver = enlace(tx('ver'), '&ver=1', 'boton boton-contorno boton-chico');
-			ver.target = '_blank';
-			ver.rel = 'noopener';
-			acciones.append(ver, enlace(tx('descargar'), '', 'boton boton-chico'));
-			if (esAdmin) {
-				const form = el('form');
-				form.method = 'post';
-				form.action = ruta;
-				form.dataset.titulo = titulo;
-				for (const [nombre, valor] of [
-					['accion', 'borrar-material'],
-					['id', m.id],
-				]) {
-					const campo = el('input');
-					campo.type = 'hidden';
-					campo.name = nombre;
-					campo.value = valor;
-					form.append(campo);
-				}
-				const borrar = el('button', 'borrar', tx('borrar'));
-				borrar.type = 'submit';
-				borrar.setAttribute('aria-label', `${tx('borrar')}: ${titulo}`);
-				form.append(borrar);
-				acciones.append(form);
+		function enlaceArchivo(m: Material, texto: string, ver: boolean, clase: string, titulo: string) {
+			const a = el('a', clase, texto);
+			a.href = `/api/socios/descargar/${m.id}/?idioma=${idioma}${ver ? '&ver=1' : ''}`;
+			a.setAttribute('aria-label', `${texto}: ${titulo}`);
+			if (ver) {
+				a.target = '_blank';
+				a.rel = 'noopener';
 			}
-			li.append(lomo, datos, acciones);
+			a.addEventListener('click', () => anotarReciente(m.id));
+			return a;
+		}
+
+		function formBorrar(m: Material, titulo: string) {
+			const form = el('form', 'form-borrar');
+			form.method = 'post';
+			form.action = ruta;
+			form.dataset.titulo = titulo;
+			for (const [nombre, valor] of [
+				['accion', 'borrar-material'],
+				['id', m.id],
+			]) {
+				const campo = el('input');
+				campo.type = 'hidden';
+				campo.name = nombre;
+				campo.value = valor;
+				form.append(campo);
+			}
+			const borrar = el('button', 'borrar', tx('borrar'));
+			borrar.type = 'submit';
+			borrar.setAttribute('aria-label', `${tx('borrar')}: ${titulo}`);
+			form.append(borrar);
+			return form;
+		}
+
+		function acciones(m: Material, titulo: string, chico = true) {
+			const fila = el('div', 'acciones-material');
+			const tam = chico ? ' boton-chico' : '';
+			fila.append(enlaceArchivo(m, tx(chico ? 'ver' : 'leer'), true, `boton${tam}${chico ? ' boton-contorno' : ''}`, titulo));
+			fila.append(enlaceArchivo(m, tx('descargar'), false, `boton${tam}${chico ? '' : ' boton-contorno'}`, titulo));
+			if (esAdmin) fila.append(formBorrar(m, titulo));
+			return fila;
+		}
+
+		// ---------- Piezas ----------
+
+		/** Un libro de pie en la repisa: tapa, tramo de tabla, título y autor. */
+		function libroEnRepisa(m: Material, i: number) {
+			const { titulo, autor, anio } = partes(m);
+			const li = el('li');
+			li.style.setProperty('--i', String(i));
+			const a = enlaceFicha(m, 'libro-repisa');
+			const tapa = el('span', 'tapa');
+			tapa.append(portada(m, colorDe(m)));
+			if (esNuevo(m)) tapa.append(el('span', 'sello-nuevo', tx('nuevo')));
+			a.append(tapa, el('span', 'tabla'), el('span', 'nombre-libro', titulo));
+			const pie = [autor, anio && !autor.includes(anio) ? anio : ''].filter(Boolean).join(' · ');
+			if (pie) a.append(el('span', 'autor-libro', pie));
+			li.append(a);
 			return li;
 		}
 
-		function listaDe(items: Material[]) {
-			const ul = el('ul', 'materiales');
-			for (const m of items) ul.append(tarjeta(m));
+		function repisa(items: Material[]) {
+			const ul = el('ul', 'repisa');
+			items.forEach((m, i) => ul.append(libroEnRepisa(m, i)));
 			return ul;
 		}
 
-		function chips(valores: Map<string, number>, activo: string, alElegir: (v: string) => void, todos: string) {
+		/** Fila de lista: miniatura, título (a la ficha), detalle y botones. */
+		function filaLista(m: Material) {
+			const { titulo, autor, anio } = partes(m);
+			const li = el('li', 'material');
+			const mini = el('span', 'mini');
+			mini.append(portada(m, colorDe(m), { mini: true }));
+			const datos = el('div', 'datos');
+			const enlace = enlaceFicha(m, 'titulo');
+			enlace.textContent = titulo;
+			const t = el('p', 'titulo-fila');
+			t.append(enlace);
+			if (esNuevo(m)) t.append(' ', el('span', 'nuevo', tx('nuevo')));
+			const detalle = [autor, anio && !autor.includes(anio) ? anio : '', m.tipo, tx('mb', m.mb)].filter(Boolean).join(' · ');
+			datos.append(t, el('p', 'detalle', detalle));
+			li.append(mini, datos, acciones(m, titulo));
+			return li;
+		}
+
+		function lista(items: Material[]) {
+			const ul = el('ul', 'materiales');
+			for (const m of items) ul.append(filaLista(m));
+			return ul;
+		}
+
+		function chips(valores: Map<string, number>, activo: string, alElegir: (v: string) => void, todos: string, nombre = (v: string) => v) {
 			const fila = el('div', 'chips');
 			const total = [...valores.values()].reduce((a, n) => a + n, 0);
 			const opciones: [string, number][] = [['', total], ...[...valores].sort((a, b) => orden.compare(a[0], b[0]))];
 			for (const [valor, n] of opciones) {
-				const boton = el('button', 'chip', `${valor || todos} · ${n.toLocaleString(idioma)}`);
+				const boton = el('button', 'chip', `${valor ? nombre(valor) : todos} · ${n.toLocaleString(idioma)}`);
 				boton.type = 'button';
 				boton.setAttribute('aria-pressed', String(valor === activo));
 				boton.addEventListener('click', () => alElegir(valor));
@@ -239,33 +282,55 @@ const ESTANTES = [
 			return fila;
 		}
 
-		function tarjetaEstante(nombre: string, trazo: string, color: string, n: number, temas: string, alTocar: () => void) {
-			const boton = el('button', 'estante');
+		/** Tarjeta de un estante (o de un tema): lomos que se levantan, ícono, nombre y etiquetas. */
+		function mueble(nombre: string, trazo: string, color: string, etiquetas: string[], cantidad: string, i: number, alTocar: () => void) {
+			const boton = el('button', 'mueble mueble-entra');
 			boton.type = 'button';
-			boton.style.setProperty('--lomo', color);
-			boton.append(icono(trazo), el('span', 'nombre', nombre));
-			if (temas) boton.append(el('span', 'temas', temas));
-			boton.append(el('span', 'cantidad', cuantos(n)));
+			pintar(boton, color);
+			boton.style.setProperty('--i', String(i));
+			const cabeza = el('span', 'cabeza');
+			const circulo = el('span', 'circulo');
+			circulo.append(icono(trazo));
+			const flecha = el('span', 'flecha', '→');
+			flecha.setAttribute('aria-hidden', 'true');
+			cabeza.append(circulo, el('span', 'nombre', nombre), flecha);
+			const pie = el('span', 'pie');
+			for (const e of etiquetas) pie.append(el('span', 'etiqueta-tema', e));
+			if (cantidad) pie.append(el('span', 'cantidad', cantidad));
+			boton.append(lomos(nombre, color), cabeza, pie);
 			boton.addEventListener('click', alTocar);
 			return boton;
 		}
 
-		// ---------- Dónde está el socio (en la dirección) ----------
-		const leer = (): Estado => {
-			const p = new URLSearchParams(location.search);
-			return { estante: p.get('estante') ?? '', tema: p.get('tema') ?? '', carpeta: p.get('carpeta') ?? '', tipo: p.get('tipo') ?? '' };
-		};
-		function ir(nuevo: Partial<Estado>, reemplazar = false) {
-			const e = { ...leer(), ...nuevo };
-			const p = new URLSearchParams();
-			for (const [k, v] of Object.entries(e)) if (v) p.set(k, v);
-			const url = `${location.pathname}${p.size ? `?${p}` : ''}`;
-			if (reemplazar) history.replaceState(null, '', url);
-			else history.pushState(null, '', url);
-			dibujar();
-			if (!reemplazar) caja.scrollIntoView({ block: 'start' });
+		/** Cinta de libros que se desliza sola (se detiene con el mouse o el teclado). */
+		function cinta(items: Material[]) {
+			const marco = el('div', 'cinta-libros');
+			const fila = el('div', 'cinta');
+			fila.style.setProperty('--duracion', `${Math.max(40, items.length * 6)}s`);
+			for (const copia of [0, 1]) {
+				for (const m of items) {
+					const a = enlaceFicha(m, 'libro-cinta');
+					a.append(portada(m, colorDe(m)));
+					if (copia) {
+						a.setAttribute('aria-hidden', 'true');
+						a.tabIndex = -1;
+					} else a.setAttribute('aria-label', partes(m).titulo);
+					fila.append(a);
+				}
+			}
+			marco.append(fila);
+			const bloque = el('div', 'cinta-bloque');
+			bloque.append(marco, el('div', 'cinta-tabla'));
+			return bloque;
 		}
-		window.addEventListener('popstate', () => dibujar());
+
+		function encabezado(titulo: string, texto?: string, rotulo?: string) {
+			const cab = el('div', 'encabezado-seccion');
+			if (rotulo) cab.append(el('p', 'rotulo-seccion', rotulo));
+			cab.append(el('h2', '', titulo));
+			if (texto) cab.append(el('p', 'texto-seccion', texto));
+			return cab;
+		}
 
 		function miga(texto: string, alTocar?: () => void) {
 			if (!alTocar) return el('span', 'miga-actual', texto);
@@ -275,13 +340,33 @@ const ESTANTES = [
 			return boton;
 		}
 
+		// Sugerencias del buscador: los temas con más materiales.
+		const temasFrecuentes = [...contar(materiales, (m) => m.subtema)].sort((a, b) => b[1] - a[1]).slice(0, 4);
+		if (temasFrecuentes.length) {
+			sugerencias.append(el('span', 'prueba', tx('pruebaCon')));
+			for (const [tema] of temasFrecuentes) {
+				const boton = el('button', 'sugerencia-tema', tema);
+				boton.type = 'button';
+				boton.addEventListener('click', () => {
+					buscar.value = tema;
+					dibujar();
+					buscar.focus();
+				});
+				sugerencias.append(boton);
+			}
+		}
+		// "Para descubrir": una selección distinta en cada visita (primero libros y manuales, que lucen más).
+		const paraDescubrir = barajar(materiales.filter((m) => /^(libro|manual)/i.test(m.tipo))).slice(0, 14);
+
+		// ---------- Dibujo de cada vista ----------
 		function dibujar(): void {
 			const e = leer();
 			const consulta = sinTildes(buscar.value.trim());
 			vista.replaceChildren();
 			migas.replaceChildren();
+			sugerencias.hidden = true;
 
-			// Buscar: toda la biblioteca, agrupada por estante y tema.
+			// Buscar: toda la biblioteca, en lista, agrupada por estante y tema.
 			if (consulta) {
 				const palabras = consulta.split(/\s+/);
 				const hallados = materiales.filter((m) => palabras.every((p) => textoBusqueda.get(m)!.includes(p)));
@@ -293,54 +378,91 @@ const ESTANTES = [
 				}
 				for (const [grupo, items] of [...grupos].sort((a, b) => orden.compare(a[0], b[0]))) {
 					const seccion = el('section', 'grupo');
-					seccion.append(el('h3', '', `${grupo} (${items.length})`), listaDe(items));
+					seccion.append(el('h2', 'titulo-grupo', `${grupo} (${items.length})`), lista(items));
 					vista.append(seccion);
 				}
 				return;
 			}
 
-			const estante = estantes.find((x) => slug(x.nombre) === e.estante);
+			const libro = e.libro ? porId.get(e.libro) : undefined;
+			const estante = libro ? estanteDe(libro) : estantes.find((x) => slug(x.nombre) === e.estante);
 			const enEstante = estante ? materiales.filter((m) => m.seccion === estante.nombre) : [];
 			const temas = contar(enEstante, (m) => m.subtema);
-			const tema = [...temas.keys()].find((t) => slug(t) === e.tema);
+			const tema = libro ? libro.subtema : [...temas.keys()].find((t) => slug(t) === e.tema);
 
-			migas.append(miga(tx('titulo'), estante ? () => ir({ estante: '', tema: '', carpeta: '', tipo: '' }) : undefined));
-			if (estante) migas.append(miga(estante.nombre, tema && temas.size > 1 ? () => ir({ tema: '', carpeta: '', tipo: '' }) : undefined));
-			if (tema && temas.size > 1) migas.append(miga(tema));
+			const alInicio = () => ir({ estante: '', tema: '', carpeta: '', tipo: '' });
+			migas.append(miga(tx('titulo'), estante || libro ? alInicio : undefined));
+			if (estante) migas.append(miga(estante.nombre, (tema && temas.size > 1) || libro ? () => ir({ estante: slug(estante.nombre), tema: '', carpeta: '', tipo: '' }) : undefined));
+			if (tema && temas.size > 1) migas.append(miga(tema, libro ? () => ir({ estante: slug(estante!.nombre), tema: slug(tema), carpeta: '', tipo: '' }) : undefined));
+			if (libro) migas.append(miga(partes(libro).titulo));
 
-			// Inicio: "Lo nuevo" y los estantes.
+			if (libro) return dibujarFicha(libro);
+
+			// Inicio: "Sigue donde lo dejaste", la cinta y los estantes.
 			if (!estante) {
-				estadoLista.textContent = cuantos(materiales.length);
-				const nuevos = materiales.filter(esNuevo).sort((a, b) => (b.agregado ?? '').localeCompare(a.agregado ?? '')).slice(0, 8);
-				if (nuevos.length) {
-					const s = el('section', 'grupo');
-					s.append(el('h3', '', tx('loNuevo')), listaDe(nuevos));
+				estadoLista.textContent = '';
+				sugerencias.hidden = false;
+				const recientes = leerRecientes()
+					.map((id) => porId.get(id))
+					.filter((m): m is Material => Boolean(m))
+					.slice(0, 3);
+				if (recientes.length) {
+					const s = el('section', 'seguir');
+					s.append(el('h2', '', tx('sigue')));
+					const ul = el('ul', 'lista-seguir');
+					for (const m of recientes) {
+						const li = el('li');
+						const a = enlaceFicha(m, 'fila-seguir');
+						const mini = el('span', 'mini');
+						mini.append(portada(m, colorDe(m), { mini: true }));
+						const datos = el('span', 'datos');
+						datos.append(el('span', 'titulo-fila', partes(m).titulo), el('span', 'detalle', `${m.seccion} · ${m.subtema}`));
+						a.append(mini, datos);
+						li.append(a);
+						ul.append(li);
+					}
+					s.append(ul);
 					vista.append(s);
 				}
+				const nuevos = materiales.filter(esNuevo).sort((a, b) => (b.agregado ?? '').localeCompare(a.agregado ?? ''));
+				const hayNuevos = nuevos.length >= 4;
+				const enCinta = hayNuevos ? nuevos.slice(0, 16) : paraDescubrir;
+				if (enCinta.length) {
+					const s = el('section', 'seccion-cinta');
+					s.append(encabezado(tx(hayNuevos ? 'loNuevoTitulo' : 'paraDescubrir'), tx(hayNuevos ? 'loNuevoTexto' : 'paraDescubrirTexto'), tx(hayNuevos ? 'loNuevo' : 'seleccion')));
+					s.append(cinta(enCinta), el('p', 'nota-cinta', tx('notaCinta')));
+					vista.append(s);
+				}
+				const s = el('section', 'seccion-estantes');
+				s.append(encabezado(tx('estantes'), tx('estantesTexto'), tx('rotuloEstantes')));
 				const grilla = el('div', 'estantes');
+				let i = 0;
 				for (const x of estantes) {
 					const propios = materiales.filter((m) => m.seccion === x.nombre);
 					if (!propios.length) continue;
 					const temasDe = [...contar(propios, (m) => m.subtema)].sort((a, b) => b[1] - a[1]).map(([t]) => t);
-					grilla.append(tarjetaEstante(x.nombre, x.icono, x.color, propios.length, temasDe.slice(0, 4).join(' · '), () => ir({ estante: slug(x.nombre) })));
+					grilla.append(mueble(x.nombre, x.icono, x.color, temasDe.slice(0, 3), '', i++, () => ir({ estante: slug(x.nombre) })));
 				}
-				vista.append(grilla);
+				s.append(grilla);
+				vista.append(s);
 				return;
 			}
 
-			// Estante sin tema elegido: sus temas como subcarpetas (con un solo tema, se entra directo).
+			// Estante sin tema elegido: sus temas como estantes (con un solo tema, se entra directo).
 			if (!tema) {
 				if (temas.size === 1) return ir({ tema: slug([...temas.keys()][0]) }, true);
 				estadoLista.textContent = cuantos(enEstante.length);
 				const grilla = el('div', 'estantes subcarpetas');
+				let i = 0;
 				for (const [t, n] of [...temas].sort((a, b) => orden.compare(a[0], b[0]))) {
-					grilla.append(tarjetaEstante(t, estante.icono, estante.color, n, '', () => ir({ tema: slug(t) })));
+					const tipos = [...contar(enEstante.filter((m) => m.subtema === t), (m) => m.tipo)].sort((a, b) => b[1] - a[1]).map(([x]) => plural(x));
+					grilla.append(mueble(t, estante.icono, estante.color, tipos.slice(0, 2), cuantos(n), i++, () => ir({ tema: slug(t) })));
 				}
 				vista.append(grilla);
 				return;
 			}
 
-			// Tema: materiales, con carpetas y tipo como filtros.
+			// Tema: materiales en repisas por tipo (o en lista), con carpetas y tipo como filtros.
 			const enTema = enEstante.filter((m) => m.subtema === tema);
 			const carpetas = contar(enTema, (m) => m.carpeta);
 			const carpeta = [...carpetas.keys()].find((c) => slug(c) === e.carpeta) ?? '';
@@ -349,9 +471,103 @@ const ESTANTES = [
 			const tipo = [...tipos.keys()].find((t) => slug(t) === e.tipo) ?? '';
 			const visibles = tipo ? enCarpeta.filter((m) => m.tipo === tipo) : enCarpeta;
 			estadoLista.textContent = cuantos(visibles.length);
-			if (carpetas.size) vista.append(chips(carpetas, carpeta, (v) => ir({ carpeta: slug(v), tipo: '' }), tx('todo')));
-			if (tipos.size > 1) vista.append(chips(tipos, tipo, (v) => ir({ tipo: slug(v) }), tx('todosLosTipos')));
-			vista.append(listaDe(visibles));
+
+			const filtros = el('div', 'filtros');
+			const izquierda = el('div', 'filtros-chips');
+			if (carpetas.size) izquierda.append(chips(carpetas, carpeta, (v) => ir({ carpeta: slug(v), tipo: '' }, true), tx('todo')));
+			if (tipos.size > 1) izquierda.append(chips(tipos, tipo, (v) => ir({ tipo: slug(v) }, true), tx('todosLosTipos'), plural));
+			const modo = leerVista();
+			const selector = el('div', 'selector-vista');
+			selector.setAttribute('role', 'group');
+			selector.setAttribute('aria-label', tx('vista'));
+			for (const [valor, texto] of [
+				['estante', tx('vistaEstante')],
+				['lista', tx('vistaLista')],
+			] as const) {
+				const boton = el('button', '', texto);
+				boton.type = 'button';
+				boton.setAttribute('aria-pressed', String(modo === valor));
+				boton.addEventListener('click', () => {
+					try {
+						localStorage.setItem(CLAVE_VISTA, valor);
+					} catch {
+						/* sin almacenamiento: vale solo para esta vez */
+					}
+					dibujar();
+				});
+				selector.append(boton);
+			}
+			filtros.append(izquierda, selector);
+			vista.append(filtros);
+
+			if (modo === 'lista') {
+				vista.append(lista(visibles));
+				return;
+			}
+			const grupos = [...contar(visibles, (m) => m.tipo).keys()].sort((a, b) => {
+				const ia = ORDEN_TIPOS.indexOf(a);
+				const ib = ORDEN_TIPOS.indexOf(b);
+				return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || orden.compare(a, b);
+			});
+			for (const g of grupos) {
+				const items = visibles.filter((m) => m.tipo === g);
+				const seccion = el('section', 'grupo');
+				const cab = el('div', 'cabeza-grupo');
+				cab.append(el('h2', 'titulo-grupo', plural(g)), el('span', 'cuenta-grupo', cuantos(items.length)));
+				seccion.append(cab, repisa(items));
+				vista.append(seccion);
+			}
+		}
+
+		function dibujarFicha(m: Material) {
+			anotarReciente(m.id);
+			const { titulo, autor, anio } = partes(m);
+			estadoLista.textContent = '';
+			const ficha = el('article', 'ficha');
+
+			const escena = el('div', 'ficha-escena');
+			escena.setAttribute('aria-hidden', 'true');
+			const libro3d = el('div', 'libro3d');
+			pintar(libro3d, colorDe(m));
+			const frente = el('div', 'frente');
+			frente.append(portada(m, colorDe(m)));
+			libro3d.append(el('div', 'trasera'), el('div', 'lomo3d'), el('div', 'canto'), frente);
+			escena.append(libro3d, el('div', 'sombra-suelo'));
+
+			const datos = el('div', 'ficha-datos');
+			const sellos = el('div', 'sellos');
+			sellos.append(el('span', 'sello', m.tipo));
+			if (esNuevo(m)) sellos.append(el('span', 'sello sello-oro', tx('nuevo')));
+			datos.append(sellos, el('h2', 'ficha-titulo', titulo));
+			const linea = [autor, anio && !autor.includes(anio) ? anio : ''].filter(Boolean).join(' · ');
+			if (linea) datos.append(el('p', 'ficha-autor', linea));
+			const dl = el('dl', 'ficha-detalles');
+			const dato = (nombre: string, valor?: string) => {
+				if (!valor) return;
+				const d = el('div');
+				d.append(el('dt', '', nombre), el('dd', '', valor));
+				dl.append(d);
+			};
+			dato(tx('estante'), m.seccion);
+			dato(tx('tema'), m.subtema);
+			dato(tx('carpeta'), m.carpeta);
+			dato(tx('archivo'), `${m.ext.toUpperCase()} · ${tx('mb', m.mb)}`);
+			datos.append(dl, acciones(m, titulo, false));
+			if (m.mb > 10) datos.append(el('p', 'aviso-wifi', tx('wifi')));
+			ficha.append(escena, datos);
+			vista.append(ficha);
+
+			const vecinos = barajar(materiales.filter((x) => x.subtema === m.subtema && x.seccion === m.seccion && x.id !== m.id)).slice(0, 10);
+			if (vecinos.length) {
+				const s = el('section', 'grupo vecinos');
+				const cab = el('div', 'cabeza-grupo');
+				const todo = el('button', 'ver-todo', `${tx('verTodoTema')} →`);
+				todo.type = 'button';
+				todo.addEventListener('click', () => ir({ estante: slug(m.seccion ?? ''), tema: slug(m.subtema ?? ''), carpeta: '', tipo: '' }));
+				cab.append(el('h2', 'titulo-grupo', tx('mismoTema')), todo);
+				s.append(cab, repisa(vecinos));
+				vista.append(s);
+			}
 		}
 
 		vista.addEventListener('submit', (evento) => {
@@ -367,15 +583,96 @@ const ESTANTES = [
 	}
 </script>
 
-<style>
+<style is:global>
 	.biblioteca {
-		max-width: 62rem;
+		max-width: var(--ancho-maximo);
 		margin: 0 auto;
 	}
-	.buscador {
+	.biblioteca h2 {
+		margin: 0;
+	}
+	.biblioteca [data-biblioteca] {
+		scroll-margin-top: 7rem;
+	}
+	.biblioteca .sala {
 		display: grid;
-		gap: 0.3rem;
-		margin-bottom: 1rem;
+		justify-items: center;
+		gap: 1rem;
+		margin-bottom: 1.5rem;
+		text-align: center;
+	}
+	.biblioteca .sala .bajada {
+		max-width: 40rem;
+		margin: 0;
+	}
+	.biblioteca .buscador {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		width: min(100%, 40rem);
+		padding: 0.35rem 1.25rem;
+		border: 1px solid var(--color-borde);
+		border-radius: 999px;
+		background: #fff;
+		box-shadow: 0 18px 40px -24px rgb(12 64 48 / 0.45);
+		transition:
+			box-shadow 0.25s,
+			border-color 0.25s;
+	}
+	.biblioteca .buscador:focus-within {
+		border-color: var(--color-acento);
+		box-shadow:
+			0 0 0 3px var(--color-acento-suave),
+			0 18px 40px -24px rgb(12 64 48 / 0.45);
+	}
+	.biblioteca .buscador svg {
+		width: 1.4rem;
+		height: 1.4rem;
+		flex: none;
+		fill: none;
+		stroke: var(--color-acento);
+		stroke-width: 2;
+		stroke-linecap: round;
+	}
+	.area-socios .biblioteca .buscador input {
+		min-height: 48px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		box-shadow: none;
+		font-size: 1.05rem;
+	}
+	.area-socios .biblioteca .buscador input:focus {
+		box-shadow: none;
+	}
+	.biblioteca .sugerencias {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.9375rem;
+	}
+	.biblioteca .sugerencias[hidden] {
+		display: none;
+	}
+	.biblioteca .sugerencia-tema {
+		min-height: 40px;
+		padding-inline: 1rem;
+		border: 1px solid var(--color-borde);
+		border-radius: 999px;
+		background: var(--color-tarjeta);
+		color: var(--color-titulos);
+		font: inherit;
+		font-weight: 700;
+		cursor: pointer;
+		transition:
+			background 0.25s,
+			border-color 0.25s;
+	}
+	.biblioteca .sugerencia-tema:hover {
+		border-color: var(--color-realce);
+		background: var(--color-realce);
 	}
 	.migas-biblioteca {
 		display: flex;
@@ -384,7 +681,7 @@ const ESTANTES = [
 		gap: 0.25rem 0.5rem;
 		font-size: 0.9375rem;
 	}
-	.biblioteca :global(.miga) {
+	.biblioteca .miga {
 		padding: 0;
 		border: 0;
 		background: none;
@@ -393,140 +690,275 @@ const ESTANTES = [
 		text-decoration: underline;
 		cursor: pointer;
 	}
-	.biblioteca :global(.migas-biblioteca > * + *::before) {
+	.biblioteca .migas-biblioteca > * + *::before {
 		content: '›';
 		display: inline-block;
 		margin-inline-end: 0.5rem;
 		color: var(--color-texto-suave);
 		text-decoration: none;
 	}
-	.biblioteca :global(.miga-actual) {
+	.biblioteca .miga-actual {
 		font-weight: 700;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 1;
+		overflow: hidden;
+		max-width: 30rem;
 	}
-	.estado-lista {
-		margin: 0.75rem 0 1rem;
+	.biblioteca .estado-lista {
+		margin: 0.5rem 0 1rem;
 		font-size: 0.9375rem;
 		color: var(--color-texto-suave);
 	}
-	.biblioteca :global(.estantes) {
+	.biblioteca .estado-lista:empty {
+		margin: 0;
+	}
+
+	/* Títulos de cada parte */
+	.biblioteca .encabezado-seccion {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
-		gap: 1rem;
+		gap: 0.3rem;
+		max-width: 46rem;
+		margin-bottom: 0.5rem;
 	}
-	.biblioteca :global(.estante) {
-		display: grid;
-		align-content: start;
-		gap: 0.35rem;
-		min-height: 9rem;
-		padding: 1.1rem 1.2rem;
-		border: 1px solid var(--color-borde);
-		border-top: 6px solid var(--lomo);
-		border-radius: var(--radio);
-		background: var(--color-tarjeta);
-		color: inherit;
-		font: inherit;
-		text-align: start;
-		cursor: pointer;
-		transition:
-			transform 0.2s,
-			box-shadow 0.2s;
+	.biblioteca .rotulo-seccion {
+		margin: 0;
+		font-size: 0.8125rem;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--color-rotulo);
 	}
-	.biblioteca :global(.estante:hover) {
-		transform: translateY(-2px);
-		box-shadow: var(--sombra);
+	.biblioteca .encabezado-seccion h2 {
+		font-size: clamp(1.6rem, 3vw, 2.3rem);
+		line-height: 1.1;
 	}
-	.biblioteca :global(.estante svg) {
-		width: 1.75rem;
-		height: 1.75rem;
-		fill: none;
-		stroke: var(--lomo);
-		stroke-width: 1.6;
-		stroke-linecap: round;
-		stroke-linejoin: round;
-	}
-	.biblioteca :global(.estante .nombre) {
-		font-family: var(--fuente-titulos);
-		font-size: 1.2rem;
-		font-weight: 700;
-		line-height: 1.25;
-	}
-	.biblioteca :global(.estante .temas),
-	.biblioteca :global(.estante .cantidad) {
-		font-size: 0.875rem;
+	.biblioteca .texto-seccion {
+		margin: 0;
 		color: var(--color-texto-suave);
 	}
-	.biblioteca :global(.subcarpetas .estante) {
-		min-height: 7rem;
+	.biblioteca .seccion-cinta,
+	.biblioteca .seccion-estantes {
+		margin-top: 3.5rem;
 	}
-	.biblioteca :global(.chips) {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		margin-bottom: 0.75rem;
-	}
-	.biblioteca :global(.chip) {
-		min-height: 38px;
-		padding-inline: 0.9rem;
-		border: 1px solid var(--color-borde);
-		border-radius: 999px;
+
+	/* Sigue donde lo dejaste */
+	.biblioteca .seguir {
+		padding: 1.4rem 1.5rem;
+		border-radius: var(--radio);
+		border-start-start-radius: 2rem;
 		background: var(--color-tarjeta);
-		color: inherit;
-		font: inherit;
-		font-size: 0.875rem;
-		cursor: pointer;
+		box-shadow: 0 24px 50px -30px rgb(12 64 48 / 0.45);
 	}
-	.biblioteca :global(.chip[aria-pressed='true']) {
-		border-color: var(--color-acento);
-		background: var(--color-acento);
-		color: #fff;
+	.biblioteca .seguir h2 {
+		font-size: 1.35rem;
 	}
-	.biblioteca :global(.grupo) {
-		margin-top: 1.5rem;
-	}
-	.biblioteca :global(.grupo h3) {
-		margin: 0 0 0.5rem;
-		font-size: 1.15rem;
-	}
-	.biblioteca :global(.materiales) {
+	.biblioteca .lista-seguir {
 		display: grid;
-		gap: 0.6rem;
-		margin: 0;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+		gap: 0.5rem;
+		margin: 0.75rem 0 0;
 		padding: 0;
 		list-style: none;
 	}
-	.biblioteca :global(.material) {
+	.biblioteca .fila-seguir {
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+		padding: 0.5rem;
+		border-radius: 0.9rem;
+		color: inherit;
+		text-decoration: none;
+		transition: background 0.25s;
+	}
+	.biblioteca .fila-seguir:hover {
+		background: var(--color-banda-clara);
+	}
+	.biblioteca .fila-seguir .datos {
+		display: grid;
+		min-width: 0;
+	}
+	.biblioteca .mini {
+		width: 2.6rem;
+		flex: none;
+	}
+
+	/* Cinta */
+	.biblioteca .cinta-libros {
+		overflow: hidden;
+		padding-top: 1.75rem;
+		mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+	}
+	.biblioteca .cinta {
+		display: flex;
+		align-items: flex-end;
+		gap: 1.6rem;
+		width: max-content;
+		padding: 0 0.8rem;
+	}
+	.biblioteca .libro-cinta {
+		display: block;
+		width: 9rem;
+		flex: none;
+		transform-origin: bottom center;
+		transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+	.biblioteca .libro-cinta:hover,
+	.biblioteca .libro-cinta:focus-visible {
+		transform: translateY(-12px) rotate(-1.5deg);
+	}
+	.biblioteca .cinta-tabla {
+		height: 16px;
+		border-radius: 4px;
+		background: var(--color-oscuro);
+		box-shadow:
+			inset 0 3px 0 var(--color-banda),
+			0 20px 24px -12px rgb(12 64 48 / 0.5);
+	}
+	.biblioteca .nota-cinta {
+		margin: 0.75rem 0 0;
+		font-size: 0.875rem;
+		color: var(--color-texto-suave);
+		text-align: center;
+	}
+
+	/* Estantes */
+	.biblioteca .estantes {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+		gap: 1.5rem;
+		margin-top: 1.25rem;
+	}
+
+	/* Filtros y grupos */
+	.biblioteca .filtros {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 0.75rem 1rem;
+	}
+	.biblioteca .filtros-chips {
+		display: grid;
+		gap: 0.5rem;
+	}
+	.biblioteca .chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.biblioteca .chip {
+		min-height: 40px;
+		padding-inline: 0.95rem;
+		border: 1.5px solid var(--color-borde);
+		border-radius: 999px;
+		background: var(--color-tarjeta);
+		color: var(--color-titulos);
+		font: inherit;
+		font-size: 0.875rem;
+		font-weight: 700;
+		cursor: pointer;
+	}
+	.biblioteca .chip[aria-pressed='true'] {
+		border-color: var(--color-realce);
+		background: var(--color-realce);
+		color: var(--color-oscuro);
+	}
+	.biblioteca .selector-vista {
+		display: flex;
+		padding: 4px;
+		border-radius: 999px;
+		background: var(--color-acento-suave);
+	}
+	.biblioteca .selector-vista button {
+		min-height: 40px;
+		padding-inline: 1rem;
+		border: 0;
+		border-radius: 999px;
+		background: transparent;
+		color: var(--color-titulos);
+		font: inherit;
+		font-size: 0.9375rem;
+		font-weight: 800;
+		cursor: pointer;
+	}
+	.biblioteca .selector-vista button[aria-pressed='true'] {
+		background: #fff;
+		box-shadow: 0 2px 6px rgb(12 64 48 / 0.15);
+	}
+	.biblioteca .grupo {
+		margin-top: 2.5rem;
+	}
+	.biblioteca .cabeza-grupo {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.4rem 0.9rem;
+	}
+	.biblioteca .titulo-grupo {
+		font-size: 1.5rem;
+	}
+	.biblioteca .cuenta-grupo {
+		font-size: 0.9375rem;
+		font-weight: 700;
+		color: var(--color-rotulo);
+	}
+	.biblioteca .ver-todo {
+		margin-inline-start: auto;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--color-acento);
+		font: inherit;
+		font-weight: 800;
+		cursor: pointer;
+	}
+
+	/* Lista */
+	.biblioteca .materiales {
+		display: grid;
+		gap: 0.6rem;
+		margin: 1rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.biblioteca .material {
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		padding: 0.8rem 1rem;
+		padding: 0.7rem 1rem;
 		border: 1px solid var(--color-borde);
 		border-radius: var(--radio);
 		background: var(--color-tarjeta);
+		transition: background 0.25s;
 	}
-	.biblioteca :global(.lomo) {
-		flex-shrink: 0;
-		width: 2.1rem;
-		height: 2.9rem;
-		border-radius: 3px;
-		border-inline-start: 5px solid var(--color-realce);
-		background: var(--lomo);
+	.biblioteca .material:hover {
+		background: #fbfdfc;
 	}
-	.biblioteca :global(.datos) {
+	.biblioteca .datos {
 		flex: 1;
 		min-width: 0;
 	}
-	.biblioteca :global(.titulo) {
+	.biblioteca .titulo-fila {
 		margin: 0;
-		font-weight: 700;
+		font-weight: 800;
+		color: var(--color-titulos);
 		line-height: 1.35;
 		overflow-wrap: anywhere;
 	}
-	.biblioteca :global(.detalle) {
+	.biblioteca .titulo-fila a {
+		color: inherit;
+		text-decoration: none;
+	}
+	.biblioteca .titulo-fila a:hover {
+		text-decoration: underline;
+	}
+	.biblioteca .detalle {
 		margin: 0.15rem 0 0;
 		font-size: 0.875rem;
 		color: var(--color-texto-suave);
 	}
-	.biblioteca :global(.nuevo) {
+	.biblioteca .nuevo {
 		display: inline-block;
 		padding: 0.05rem 0.5rem;
 		border-radius: 999px;
@@ -536,19 +968,23 @@ const ESTANTES = [
 		font-weight: 800;
 		vertical-align: middle;
 	}
-	.biblioteca :global(.acciones-material) {
+	.biblioteca .acciones-material {
 		display: flex;
+		flex-wrap: wrap;
 		flex-shrink: 0;
 		align-items: center;
 		gap: 0.5rem;
 	}
-	.biblioteca :global(.boton-chico) {
-		min-height: 38px;
+	.area-socios .biblioteca .form-borrar {
+		display: block;
+	}
+	.biblioteca .boton-chico {
+		min-height: 40px;
 		padding-inline: 0.95rem;
 		font-size: 0.875rem;
 	}
-	.biblioteca :global(.borrar) {
-		min-height: 38px;
+	.biblioteca .borrar {
+		min-height: 40px;
 		padding-inline: 0.9rem;
 		border: 1px solid #a40000;
 		border-radius: 999px;
@@ -560,15 +996,182 @@ const ESTANTES = [
 		cursor: pointer;
 	}
 	@media (max-width: 40rem) {
-		.biblioteca :global(.material) {
+		.biblioteca .material {
 			flex-wrap: wrap;
 		}
-		.biblioteca :global(.acciones-material) {
+		.biblioteca .acciones-material {
 			width: 100%;
-			padding-inline-start: 3.1rem;
+			padding-inline-start: 3.6rem;
 		}
 	}
+
+	/* Ficha */
+	.biblioteca .ficha {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 2.5rem 4rem;
+		padding: clamp(1.25rem, 4vw, 2.5rem);
+		border-radius: var(--radio);
+		border-start-start-radius: 2.5rem;
+		background: linear-gradient(var(--color-banda-clara), var(--color-fondo));
+	}
+	.biblioteca .ficha-escena {
+		flex: none;
+		margin-inline: auto;
+		padding: 0.5rem 1.5rem 0;
+		perspective: 1600px;
+	}
+	.biblioteca .libro3d {
+		position: relative;
+		width: 15rem;
+		aspect-ratio: 2 / 3;
+		transform-style: preserve-3d;
+		transform: rotateY(-28deg) rotateX(4deg);
+		transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+	.biblioteca .ficha-escena:hover .libro3d {
+		transform: rotateY(-10deg) rotateX(2deg);
+	}
+	.biblioteca .libro3d .frente {
+		position: absolute;
+		inset: 0;
+		transform: translateZ(14px);
+	}
+	.biblioteca .libro3d .trasera {
+		position: absolute;
+		inset: 0;
+		border-radius: 8px 3px 3px 8px;
+		background: var(--c-oscuro);
+		transform: rotateY(180deg) translateZ(14px);
+	}
+	.biblioteca .libro3d .canto {
+		position: absolute;
+		top: 4px;
+		bottom: 4px;
+		left: 0;
+		width: 28px;
+		background: repeating-linear-gradient(90deg, #fbf8ef 0 2px, #e3dccb 2px 3px);
+		transform: translateX(calc(15rem - 14px)) rotateY(90deg);
+	}
+	.biblioteca .libro3d .lomo3d {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		width: 28px;
+		background: var(--c-oscuro);
+		transform: translateX(-14px) rotateY(-90deg);
+	}
+	.biblioteca .sombra-suelo {
+		width: 15rem;
+		height: 1.6rem;
+		margin-top: -0.3rem;
+		border-radius: 50%;
+		background: radial-gradient(closest-side, rgb(12 64 48 / 0.35), rgb(12 64 48 / 0));
+	}
+	.biblioteca .ficha-datos {
+		display: grid;
+		gap: 1rem;
+		flex: 1 1 24rem;
+		min-width: 0;
+	}
+	.biblioteca .sellos {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.biblioteca .sello {
+		padding: 0.2rem 0.85rem;
+		border-radius: 999px;
+		background: var(--color-acento);
+		color: #fff;
+		font-size: 0.8125rem;
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.biblioteca .sello-oro {
+		background: var(--color-realce);
+		color: var(--color-oscuro);
+	}
+	.biblioteca .ficha-titulo {
+		font-size: clamp(1.6rem, 3vw, 2.4rem);
+		line-height: 1.08;
+		overflow-wrap: anywhere;
+	}
+	.biblioteca .ficha-autor {
+		margin: -0.4rem 0 0;
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: var(--color-titulos);
+	}
+	.biblioteca .ficha-detalles {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr));
+		gap: 0.9rem;
+		margin: 0;
+		padding: 1rem 1.2rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		border-start-start-radius: 1.5rem;
+		background: var(--color-tarjeta);
+	}
+	.biblioteca .ficha-detalles dt {
+		font-size: 0.75rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-rotulo);
+	}
+	.biblioteca .ficha-detalles dd {
+		margin: 0.1rem 0 0;
+		font-weight: 700;
+		color: var(--color-titulos);
+		overflow-wrap: anywhere;
+	}
+	.biblioteca .aviso-wifi {
+		margin: 0;
+		font-size: 0.9375rem;
+		font-weight: 700;
+		color: #7a4f0e;
+	}
+
+	.biblioteca .uso-personal {
+		margin: 3rem auto 0;
+		max-width: 36rem;
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+		text-align: center;
+	}
 	.volver-panel {
-		margin-top: 2rem;
+		margin-top: 1.5rem;
+		text-align: center;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.biblioteca .ficha-escena {
+			animation: biblioteca-llegar 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+		}
+		.biblioteca .seguir,
+		.biblioteca .ficha-datos {
+			animation: biblioteca-subir 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.biblioteca .libro3d,
+		.biblioteca .libro-cinta {
+			transition: none;
+		}
+	}
+	@keyframes biblioteca-llegar {
+		from {
+			opacity: 0;
+			translate: -40px 0;
+		}
+		to {
+			opacity: 1;
+			translate: 0 0;
+		}
 	}
 </style>

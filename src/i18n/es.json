@@ -444,7 +444,7 @@
 		},
 		"panel": {
 			"hola": "Hola, {nombre}",
-			"texto": "Este es tu espacio en la ABTCC.",
+			"texto": "Aquí tienes lo que la asociación prepara para sus miembros: lecturas, eventos y tus datos.",
 			"codigo": "Código de socio",
 			"usuario": "Nombre de usuario",
 			"categoria": "Categoría",
@@ -455,7 +455,19 @@
 			"salir": "Cerrar sesión",
 			"inactivo": "Tu membresía no está activa en este momento. Escríbenos para regularizarla y recuperar el acceso a todo el material:",
 			"biblioteca": "Ir a la biblioteca",
-			"bibliotecaTexto": "Libros, manuales y artículos ordenados por temática."
+			"bibliotecaTexto": "Libros, manuales, artículos e instrumentos, ordenados por estantes.",
+			"rotulo": "Tu espacio en la ABTCC",
+			"tusDatos": "Tus datos",
+			"accesos": "Accesos",
+			"eventos": "Eventos",
+			"eventosTexto": "Lo que viene en la agenda de la asociación.",
+			"miCuentaTexto": "Tu nombre de usuario y tu contraseña.",
+			"tuBiblioteca": "Tu biblioteca",
+			"tuBibliotecaTexto": "Lo último que abriste y algunas lecturas para descubrir.",
+			"proximoEvento": "Próximo evento",
+			"verEvento": "Ver el evento",
+			"faltanDias": "Faltan {n} días",
+			"faltaUnDia": "Falta 1 día"
 		},
 		"categorias": {
 			"asociado": "Miembro asociado",
@@ -542,7 +554,7 @@
 		},
 		"biblioteca": {
 			"titulo": "Biblioteca",
-			"texto": "Libros, manuales y artículos para los miembros de la ABTCC. Son para tu uso personal: por favor, no los compartas fuera de la asociación.",
+			"texto": "Libros, manuales y artículos para los miembros de la ABTCC, ordenados en estantes como en una biblioteca de verdad.",
 			"buscar": "Buscar en toda la biblioteca: título, autor o tema",
 			"resultados": "{n} materiales",
 			"resultado": "{n} material",
@@ -559,7 +571,38 @@
 			"ver": "Ver",
 			"loNuevo": "Lo nuevo",
 			"todo": "Todo",
-			"todosLosTipos": "Todos los tipos"
+			"todosLosTipos": "Todos los tipos",
+			"usoPersonal": "Material de uso personal para miembros de la ABTCC. Por favor, no lo compartas fuera de la asociación.",
+			"pruebaCon": "Prueba con:",
+			"sigue": "Sigue donde lo dejaste",
+			"seleccion": "Selección",
+			"paraDescubrir": "Para descubrir",
+			"paraDescubrirTexto": "Una selección distinta de libros y manuales en cada visita.",
+			"loNuevoTitulo": "Recién llegados a los estantes",
+			"loNuevoTexto": "Lo que llegó a la biblioteca en los últimos 30 días.",
+			"notaCinta": "Pasa el mouse para detener la cinta; toca un libro para ver su ficha.",
+			"rotuloEstantes": "Estantes",
+			"estantes": "Recorre la biblioteca por estantes",
+			"estantesTexto": "Cada estante reúne sus temas. Adentro, todo está separado por tipo: libros, manuales y guías, artículos e instrumentos.",
+			"vista": "Cómo ver los materiales",
+			"vistaEstante": "Estante",
+			"vistaLista": "Lista",
+			"leer": "Leer ahora",
+			"estante": "Estante",
+			"tema": "Tema",
+			"carpeta": "Carpeta",
+			"archivo": "Archivo",
+			"wifi": "Es un archivo pesado: mejor descárgalo con wifi.",
+			"mismoTema": "En el mismo tema",
+			"verTodoTema": "Ver todo el tema",
+			"tipos": {
+				"Libro": "Libros",
+				"Manual o guía": "Manuales y guías",
+				"Artículo o capítulo": "Artículos y capítulos",
+				"Artículo": "Artículos",
+				"Capítulo": "Capítulos",
+				"Instrumento de evaluación": "Instrumentos de evaluación"
+			}
 		}
 	},
 	"aliados": {

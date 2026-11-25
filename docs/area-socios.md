@@ -146,8 +146,10 @@ Hecho el 25/11/2026 y probado en el navegador con dos cuentas de prueba (ya borr
 ### D. Diseño
 
 - [x] D0. **Biblioteca más amigable (hecho el 25/11/2026)** (pedido de Leo, 25/11/2026; boceto mostrado):** estantes en lugar de lista (unas 8 secciones con ícono y cantidad → temas → separado por tipo: libros, manuales y guías, artículos, instrumentos), migas "Biblioteca › Sección › Tema", buscador siempre arriba con resultados por estante, tarjetas con título, autor y año, botón "Ver" (abrir en el navegador) además de "Descargar" y estante "Lo nuevo". Al terminar la subida: repartir los 160 de "Otros temas" en los estantes y publicar el catálogo ordenado. Después: "Mis descargas", "Lo más descargado" y favoritos.
-- [ ] D1. Darle la cara "verde bosque" del sitio: ingreso, panel de bienvenida y biblioteca.
-- [ ] D2. Revisarlo en celular.
+- [x] D1. **Biblioteca y panel con vida (publicado el 25/11/2026)**, según el diseño aprobado por Leo (lienzo "Área de socios y biblioteca" en claude.ai): portadas generadas para cada material (color del estante, título y un dibujo por tipo), estantes con lomos que se levantan, cinta de libros que se desliza ("Lo nuevo" o, si no hay novedades, "Para descubrir"), repisas por tipo con vista de lista, ficha de cada libro con tapa en 3D y "En el mismo tema", "Sigue donde lo dejaste" (solo en ese navegador). Panel: saludo, tus datos, accesos, repisa "Tu biblioteca" y próximo evento. No se muestra el total de archivos (pedido de Leo). Falta: "Mi cuenta" con más vida.
+- [x] D2. Revisado en celular (375 px) con el catálogo real.
+- [ ] D3. Ideas aprobadas en el diseño que necesitan datos o la base de datos: rutas de lectura (lista elegida por la asociación), "Lo más leído" (de la tabla `descargas`), "Mi estante" (favoritos guardados en Supabase, para verlos en cualquier aparato), avisos de la comisión, perfil en la Red de terapeutas y grupos de lectura.
+- [ ] D4. **En consulta con la asociación (no hacer todavía):** certificados, estado de la cuota y carnet digital.
 
 ### E. Más adelante (ideas, sin apuro)
 

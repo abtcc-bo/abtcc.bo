@@ -8,6 +8,8 @@ Cuando termines algo, márcalo con [x] o simplemente avísame en el chat.
 
 ## 🔵 Área de socios (empezamos el 25/11/2026)
 
+- [ ] **Consultar con el equipo** si el área de socios tendrá **certificados**, **estado de la cuota** y **carnet digital** (están en el diseño, pero no se publicaron). Avísame lo que decidan.
+
 El plan completo y la lista de tareas están en `docs/area-socios.md`. Primero hay que preparar las cuentas gratuitas; hazlas **en este orden** y avísame al terminar cada una. Si algo en pantalla no coincide con lo que dice aquí, mándame una captura.
 
 ### A1. Gmail: verificación en dos pasos y contraseña de aplicación

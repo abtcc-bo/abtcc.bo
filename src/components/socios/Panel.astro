@@ -1,11 +1,18 @@
 ---
-// Panel del socio con sesión abierta: saludo, sus datos, acceso a "Mi cuenta" y cerrar sesión.
-// Aquí se sumará la biblioteca (docs/area-socios.md, etapa C).
+// Panel del socio con sesión abierta (diseño del 25/11/2026): saludo, sus datos, accesos (biblioteca, eventos,
+// Mi cuenta), "Tu biblioteca" (una repisa con lo último que abrió en este navegador y lecturas para descubrir,
+// armada en el navegador desde /api/socios/catalogo/), el próximo evento y cerrar sesión.
+// Certificados, cuota y carnet digital quedan para después (Leo los consulta con la asociación, 25/11/2026).
 import Mensaje from './Mensaje.astro';
 import type { EstadoAreaSocios } from '../../lib/area-socios';
 import type { Socio } from '../../lib/socios';
+import { ESTANTES } from '../../datos/estantes';
+import { ICONOS } from '../../datos/iconos';
 import { ORGANIZACION } from '../../datos/organizacion';
-import { formato, rutaSocios, t } from '../../i18n';
+import { obtenerEventos, yaPaso } from '../../lib/contenido';
+import { fechaDelEvento } from '../../lib/eventos';
+import { formato, ruta, rutaSocios, t } from '../../i18n';
+import '../../styles/biblioteca.css';
 
 interface Props {
 	estado: EstadoAreaSocios;
@@ -15,123 +22,407 @@ interface Props {
 const { estado, socio } = Astro.props;
 const { idioma } = estado;
 const textos = t(idioma).socios;
+const p = textos.panel;
 const primerNombre = socio.nombre.split(/\s+/)[0];
 const usaCodigo = socio.usuario === socio.codigo.toLowerCase();
+const activo = socio.estado === 'activo';
+const [antesNombre, despuesNombre = ''] = p.hola.split('{nombre}');
+
+// Próximo evento (también los exclusivos para socios), si hay alguno que no haya pasado ni esté cancelado.
+const ahora = new Date();
+const evento = (await obtenerEventos(idioma)).find((e) => !yaPaso(e, ahora) && e.datos.estado !== 'cancelado');
+const dias = evento ? Math.ceil((evento.datos.inicio.getTime() - ahora.getTime()) / 864e5) : 0;
+const lugar = evento?.datos.lugar ? [evento.datos.lugar.nombre, evento.datos.lugar.ciudad].filter(Boolean).join(', ') : '';
+
+const accesos = [
+	{ nombre: textos.titulos.biblioteca, texto: p.bibliotecaTexto, href: rutaSocios('biblioteca', idioma), icono: ICONOS.libro, solo: true },
+	{ nombre: p.eventos, texto: p.eventosTexto, href: ruta('eventos', idioma), icono: ICONOS.calendario ?? ICONOS.libro, solo: false },
+	{ nombre: p.miCuenta, texto: p.miCuentaTexto, href: rutaSocios('cuenta', idioma), icono: ICONOS.personas, solo: false },
+].filter((a) => activo || !a.solo);
 ---
 
-<div class="tarjeta-socios panel">
+<div class="panel-socio">
 	{estado.aviso === 'claveCambiada' && <Mensaje tipo="exito">{textos.avisos.claveCambiada}</Mensaje>}
 
-	<h2>{formato(textos.panel.hola, { nombre: primerNombre })}</h2>
-	<p class="bajada">{textos.panel.texto}</p>
-
-	{
-		socio.estado !== 'activo' && (
-			<Mensaje tipo="error">
-				{textos.panel.inactivo} {ORGANIZACION.correo && <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>}
-			</Mensaje>
-		)
-	}
-
-	<dl class="datos">
-		<div>
-			<dt>{textos.panel.codigo}</dt>
-			<dd>{socio.codigo}</dd>
+	<div class="saludo">
+		<div class="saludo-texto">
+			<p class="rotulo-panel"><span class="tricolor" aria-hidden="true"></span>{p.rotulo}</p>
+			<h2>{antesNombre}<em>{primerNombre}</em>{despuesNombre}</h2>
+			<p class="bajada">{p.texto}</p>
+			{
+				!activo && (
+					<Mensaje tipo="error">
+						{p.inactivo} {ORGANIZACION.correo && <a href={`mailto:${ORGANIZACION.correo}`}>{ORGANIZACION.correo}</a>}
+					</Mensaje>
+				)
+			}
+			{
+				usaCodigo && activo && (
+					<p class="sugerencia">
+						{p.eligeUsuario} <a href={`${rutaSocios('cuenta', idioma)}#usuario`}>{p.elegir} →</a>
+					</p>
+				)
+			}
 		</div>
-		<div>
-			<dt>{textos.panel.usuario}</dt>
-			<dd>{socio.usuario}</dd>
-		</div>
-		<div>
-			<dt>{textos.panel.categoria}</dt>
-			<dd>{textos.categorias[socio.categoria]}</dd>
-		</div>
-		<div>
-			<dt>{textos.panel.membresia}</dt>
-			<dd>{textos.estados[socio.estado]}</dd>
-		</div>
-	</dl>
+		<section class="tus-datos" aria-labelledby="titulo-tus-datos">
+			<h3 id="titulo-tus-datos">{p.tusDatos}</h3>
+			<dl>
+				<div>
+					<dt>{p.codigo}</dt>
+					<dd>{socio.codigo}</dd>
+				</div>
+				<div>
+					<dt>{p.usuario}</dt>
+					<dd>{socio.usuario}</dd>
+				</div>
+				<div>
+					<dt>{p.categoria}</dt>
+					<dd>{textos.categorias[socio.categoria]}</dd>
+				</div>
+				<div>
+					<dt>{p.membresia}</dt>
+					<dd><span class:list={['estado-membresia', { activa: activo }]}>{textos.estados[socio.estado]}</span></dd>
+				</div>
+			</dl>
+		</section>
+	</div>
 
-	{
-		usaCodigo && socio.estado === 'activo' && (
-			<p class="sugerencia">
-				{textos.panel.eligeUsuario} <a href={`${rutaSocios('cuenta', idioma)}#usuario`}>{textos.panel.elegir} →</a>
-			</p>
-		)
-	}
+	<nav class="accesos" aria-label={p.accesos}>
+		{
+			accesos.map((a, i) => (
+				<a class="acceso" href={a.href} data-i={i}>
+					<span class="icono-acceso" aria-hidden="true">
+						<svg viewBox="0 0 24 24">
+							<path d={a.icono} />
+						</svg>
+					</span>
+					<span class="nombre">{a.nombre}</span>
+					<span class="texto">{a.texto}</span>
+				</a>
+			))
+		}
+	</nav>
 
-	{
-		socio.estado === 'activo' && (
-			<a class="tarjeta-biblioteca" href={rutaSocios('biblioteca', idioma)}>
-				<span class="nombre">{textos.panel.biblioteca} <span class="flecha" aria-hidden="true">→</span></span>
-				<span class="texto">{textos.panel.bibliotecaTexto}</span>
-			</a>
-		)
-	}
+	<div class="columnas">
+		{
+			activo && (
+				<section class="tu-biblioteca" aria-labelledby="titulo-tu-biblioteca" data-panel-biblioteca data-ruta={rutaSocios('biblioteca', idioma)} data-estantes={JSON.stringify(ESTANTES)}>
+					<div class="cabeza-tarjeta">
+						<h3 id="titulo-tu-biblioteca">{p.tuBiblioteca}</h3>
+						<a href={rutaSocios('biblioteca', idioma)}>{p.biblioteca} →</a>
+					</div>
+					<p class="texto-tarjeta">{p.tuBibliotecaTexto}</p>
+					<ul class="repisa repisa-panel" data-repisa />
+				</section>
+			)
+		}
+		{
+			evento && (
+				<section class="proximo-evento" aria-labelledby="titulo-proximo-evento">
+					<p class="rotulo-panel">{p.proximoEvento}</p>
+					<h3 id="titulo-proximo-evento">{evento.texto.data.titulo}</h3>
+					<p class="fecha-evento">
+						{fechaDelEvento(evento, idioma)}
+						{lugar && <span> · {lugar}</span>}
+					</p>
+					{!evento.datos.por_confirmar && dias > 0 && <p class="faltan">{formato(dias === 1 ? p.faltaUnDia : p.faltanDias, { n: dias })}</p>}
+					<a class="boton boton-realce" href={ruta('eventos', idioma, evento.slug)}>
+						{p.verEvento}
+					</a>
+				</section>
+			)
+		}
+	</div>
 
 	<div class="acciones">
-		<a class="boton boton-contorno" href={rutaSocios('cuenta', idioma)}>{textos.panel.miCuenta}</a>
+		<a class="boton boton-contorno" href={rutaSocios('cuenta', idioma)}>{p.miCuenta}</a>
 		<form method="post" action={rutaSocios('inicio', idioma)}>
 			<input type="hidden" name="accion" value="salir" />
-			<button class="boton boton-contorno" type="submit">{textos.panel.salir}</button>
+			<button class="boton boton-contorno" type="submit">{p.salir}</button>
 		</form>
 	</div>
 </div>
 
+<script>
+	import { barajar, el, leerRecientes, partes, portada, COLOR_RESPALDO } from './portada';
+	import type { Estante, Material } from './portada';
+
+	const caja = document.querySelector<HTMLElement>('[data-panel-biblioteca]');
+	if (caja) llenar(caja);
+
+	/** Repisa del panel: primero lo último que el socio abrió aquí, y se completa con libros para descubrir. */
+	async function llenar(caja: HTMLElement) {
+		const repisa = caja.querySelector<HTMLElement>('[data-repisa]')!;
+		const estantes = JSON.parse(caja.dataset.estantes ?? '[]') as Estante[];
+		const ruta = caja.dataset.ruta ?? '';
+		let materiales: Material[];
+		try {
+			const r = await fetch('/api/socios/catalogo/', { headers: { Accept: 'application/json' } });
+			if (!r.ok) throw new Error(String(r.status));
+			materiales = (await r.json()) as Material[];
+		} catch {
+			repisa.remove();
+			return;
+		}
+		const porId = new Map(materiales.map((m) => [m.id, m]));
+		const recientes = leerRecientes()
+			.map((id) => porId.get(id))
+			.filter((m): m is Material => Boolean(m));
+		const vistos = new Set(recientes.map((m) => m.id));
+		const otros = barajar(materiales.filter((m) => /^(libro|manual)/i.test(m.tipo) && !vistos.has(m.id)));
+		const slug = (s: string) =>
+			s
+				.normalize('NFD')
+				.replace(/[̀-ͯ]/g, '')
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/^-|-$/g, '');
+		[...recientes, ...otros].slice(0, 4).forEach((m, i) => {
+			const { titulo } = partes(m);
+			const li = el('li');
+			li.style.setProperty('--i', String(i));
+			const a = el('a', 'libro-repisa');
+			const p = new URLSearchParams({ estante: slug(m.seccion ?? ''), tema: slug(m.subtema ?? m.tema), libro: m.id });
+			a.href = `${ruta}?${p}`;
+			const tapa = el('span', 'tapa');
+			tapa.append(portada(m, estantes.find((e) => e.nombre === m.seccion)?.color ?? COLOR_RESPALDO));
+			a.append(tapa, el('span', 'tabla'), el('span', 'nombre-libro', titulo));
+			li.append(a);
+			repisa.append(li);
+		});
+	}
+</script>
+
 <style>
-	.panel {
-		max-width: 44rem !important;
-	}
-	.datos {
+	.panel-socio {
+		max-width: var(--ancho-maximo);
+		margin: 0 auto;
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-		gap: 1rem;
-		margin: 0 0 1.5rem;
+		gap: 2rem;
 	}
-	.datos div {
-		padding: 0.9rem 1rem;
-		border-radius: var(--radio);
-		background: var(--color-banda-clara);
+	.saludo {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 2rem;
 	}
-	dt {
+	.saludo-texto {
+		flex: 1 1 26rem;
+		min-width: 0;
+	}
+	.rotulo-panel {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin: 0 0 0.5rem;
 		font-size: 0.8125rem;
-		font-weight: 600;
-		color: var(--color-texto-suave);
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--color-rotulo);
 	}
-	dd {
-		margin: 0.2rem 0 0;
-		font-weight: 700;
-		overflow-wrap: anywhere;
+	.tricolor {
+		width: 2.6rem;
+		height: 4px;
+		border-radius: 2px;
+		background: var(--franja-tricolor);
+	}
+	.saludo h2 {
+		margin: 0 0 0.5rem;
+		font-size: clamp(2.2rem, 5vw, 3.4rem);
+		line-height: 1.05;
+	}
+	.saludo h2 em {
+		font-style: italic;
+		font-weight: 500;
+		color: var(--color-acento);
+	}
+	.saludo .bajada {
+		max-width: 36rem;
+		margin-bottom: 1rem;
 	}
 	.sugerencia {
-		margin: 0 0 1.5rem;
-		padding: 0.9rem 1rem;
-		border-inline-start: 4px solid var(--color-realce);
+		margin: 0;
+		padding: 0.9rem 1.1rem;
+		border-radius: var(--radio);
 		background: var(--color-acento-suave);
 	}
-	.tarjeta-biblioteca {
-		display: grid;
-		gap: 0.25rem;
-		margin: 0 0 1.5rem;
-		padding: 1.25rem 1.4rem;
+	.tus-datos {
+		flex: 1 1 20rem;
+		padding: 1.4rem 1.5rem;
+		border: 1px solid var(--color-borde);
 		border-radius: var(--radio);
-		border-start-start-radius: 1.5rem;
-		background: var(--color-oscuro);
-		color: #fff;
-		text-decoration: none;
-		transition: transform 0.2s;
+		border-start-start-radius: 2rem;
+		background: var(--color-tarjeta);
+		box-shadow: var(--sombra);
 	}
-	.tarjeta-biblioteca:hover {
-		transform: translateY(-2px);
-		color: #fff;
+	.tus-datos h3 {
+		margin: 0 0 0.9rem;
+		font-size: 1.2rem;
 	}
-	.tarjeta-biblioteca .nombre {
-		font-family: var(--fuente-titulos);
-		font-size: 1.4rem;
+	.tus-datos dl {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		margin: 0;
+	}
+	dt {
+		font-size: 0.75rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-rotulo);
+	}
+	dd {
+		margin: 0.15rem 0 0;
 		font-weight: 700;
+		color: var(--color-titulos);
+		overflow-wrap: anywhere;
 	}
-	.tarjeta-biblioteca .texto {
-		color: rgb(255 255 255 / 0.85);
+	.estado-membresia {
+		display: inline-block;
+		padding: 0.05rem 0.7rem;
+		border-radius: 999px;
+		background: #f6dede;
+		color: #7a1a1a;
+	}
+	.estado-membresia.activa {
+		background: var(--color-realce);
+		color: var(--color-oscuro);
+	}
+	.accesos {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+		gap: 1.1rem;
+	}
+	.acceso {
+		display: grid;
+		align-content: start;
+		gap: 0.55rem;
+		padding: 1.4rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		border-start-start-radius: 1.75rem;
+		background: var(--color-tarjeta);
+		color: inherit;
+		text-decoration: none;
+		transition:
+			transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+			box-shadow 0.4s;
+	}
+	.acceso:hover,
+	.acceso:focus-visible {
+		transform: translateY(-6px);
+		box-shadow: 0 22px 36px -22px rgb(12 64 48 / 0.5);
+		color: inherit;
+	}
+	.icono-acceso {
+		display: grid;
+		place-items: center;
+		width: 3.2rem;
+		height: 3.2rem;
+		border-radius: 50%;
+		background: var(--color-acento-suave);
+		transition: transform 0.5s cubic-bezier(0.3, 1.6, 0.5, 1);
+	}
+	.acceso:hover .icono-acceso {
+		transform: rotate(-8deg) scale(1.08);
+	}
+	.icono-acceso svg {
+		width: 1.6rem;
+		height: 1.6rem;
+		fill: none;
+		stroke: var(--color-acento);
+		stroke-width: 1.8;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.acceso .nombre {
+		font-family: var(--fuente-titulos);
+		font-size: 1.35rem;
+		font-weight: 600;
+		color: var(--color-titulos);
+	}
+	.acceso .texto {
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+	.columnas {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+	}
+	.tu-biblioteca {
+		flex: 3 1 32rem;
+		min-width: 0;
+		padding: 1.5rem;
+		border: 1px solid var(--color-borde);
+		border-radius: var(--radio);
+		border-start-start-radius: 2rem;
+		background: var(--color-tarjeta);
+	}
+	.cabeza-tarjeta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+	.cabeza-tarjeta h3 {
+		margin: 0;
+		font-size: 1.5rem;
+	}
+	.cabeza-tarjeta a {
+		font-weight: 800;
+	}
+	.texto-tarjeta {
+		margin: 0.3rem 0 0;
+		font-size: 0.9375rem;
+		color: var(--color-texto-suave);
+	}
+	.repisa-panel {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	@media (max-width: 30rem) {
+		.repisa-panel {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	.proximo-evento {
+		flex: 2 1 20rem;
+		display: grid;
+		align-content: start;
+		gap: 0.6rem;
+		padding: 1.6rem;
+		border-radius: var(--radio);
+		border-start-start-radius: 2rem;
+		background: var(--color-banda);
+		color: #fff;
+	}
+	.proximo-evento .rotulo-panel {
+		margin: 0;
+		color: var(--color-realce);
+	}
+	.proximo-evento h3 {
+		margin: 0;
+		font-size: 1.6rem;
+		line-height: 1.15;
+		color: #fff;
+	}
+	.fecha-evento,
+	.faltan {
+		margin: 0;
+		color: #f2f8f4;
+	}
+	.faltan {
+		font-family: var(--fuente-titulos);
+		font-size: 1.3rem;
+		font-style: italic;
+		color: var(--color-realce);
+	}
+	.proximo-evento .boton {
+		justify-self: start;
+		margin-top: 0.5rem;
 	}
 	.acciones {
 		display: flex;
@@ -140,5 +431,27 @@ const usaCodigo = socio.usuario === socio.codigo.toLowerCase();
 	}
 	.acciones form {
 		display: block;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.saludo-texto,
+		.tus-datos,
+		.acceso {
+			animation: biblioteca-subir 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+		}
+		.tus-datos {
+			animation-delay: 0.1s;
+		}
+		.acceso[data-i='1'] {
+			animation-delay: 0.15s;
+		}
+		.acceso[data-i='2'] {
+			animation-delay: 0.25s;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.acceso,
+		.icono-acceso {
+			transition: none;
+		}
 	}
 </style>

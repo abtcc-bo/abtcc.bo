@@ -444,7 +444,7 @@
 		},
 		"panel": {
 			"hola": "Hello, {nombre}",
-			"texto": "This is your space at ABTCC.",
+			"texto": "Here is what the association prepares for its members: readings, events and your details.",
 			"codigo": "Member code",
 			"usuario": "Username",
 			"categoria": "Category",
@@ -455,7 +455,19 @@
 			"salir": "Sign out",
 			"inactivo": "Your membership is not active right now. Write to us to renew it and regain access to all the material:",
 			"biblioteca": "Go to the library",
-			"bibliotecaTexto": "Books, manuals and articles organized by topic."
+			"bibliotecaTexto": "Books, manuals, articles and assessment tools, arranged on shelves.",
+			"rotulo": "Your space at ABTCC",
+			"tusDatos": "Your details",
+			"accesos": "Shortcuts",
+			"eventos": "Events",
+			"eventosTexto": "What is coming up on the association’s calendar.",
+			"miCuentaTexto": "Your username and your password.",
+			"tuBiblioteca": "Your library",
+			"tuBibliotecaTexto": "What you opened last and some readings to discover.",
+			"proximoEvento": "Next event",
+			"verEvento": "See the event",
+			"faltanDias": "{n} days to go",
+			"faltaUnDia": "1 day to go"
 		},
 		"categorias": {
 			"asociado": "Associate member",
@@ -542,7 +554,7 @@
 		},
 		"biblioteca": {
 			"titulo": "Library",
-			"texto": "Books, manuals and articles for ABTCC members. They are for your personal use: please do not share them outside the association.",
+			"texto": "Books, manuals and articles for ABTCC members, arranged on shelves like a real library.",
 			"buscar": "Search the whole library: title, author or topic",
 			"resultados": "{n} items",
 			"resultado": "{n} item",
@@ -559,7 +571,38 @@
 			"ver": "View",
 			"loNuevo": "New",
 			"todo": "All",
-			"todosLosTipos": "All types"
+			"todosLosTipos": "All types",
+			"usoPersonal": "Material for the personal use of ABTCC members. Please do not share it outside the association.",
+			"pruebaCon": "Try:",
+			"sigue": "Pick up where you left off",
+			"seleccion": "Selection",
+			"paraDescubrir": "To discover",
+			"paraDescubrirTexto": "A different selection of books and manuals on every visit.",
+			"loNuevoTitulo": "Just arrived on the shelves",
+			"loNuevoTexto": "What reached the library in the last 30 days.",
+			"notaCinta": "Hover to stop the shelf; tap a book to see its details.",
+			"rotuloEstantes": "Shelves",
+			"estantes": "Browse the library by shelf",
+			"estantesTexto": "Each shelf groups its topics. Inside, everything is sorted by type: books, manuals and guides, articles and assessment tools.",
+			"vista": "How to show the items",
+			"vistaEstante": "Shelf",
+			"vistaLista": "List",
+			"leer": "Read now",
+			"estante": "Shelf",
+			"tema": "Topic",
+			"carpeta": "Folder",
+			"archivo": "File",
+			"wifi": "This is a large file: better download it on wifi.",
+			"mismoTema": "On the same topic",
+			"verTodoTema": "See the whole topic",
+			"tipos": {
+				"Libro": "Books",
+				"Manual o guía": "Manuals and guides",
+				"Artículo o capítulo": "Articles and chapters",
+				"Artículo": "Articles",
+				"Capítulo": "Chapters",
+				"Instrumento de evaluación": "Assessment tools"
+			}
 		}
 	},
 	"aliados": {
