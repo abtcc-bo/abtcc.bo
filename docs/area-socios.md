@@ -145,6 +145,7 @@ Hecho el 25/11/2026 y probado en el navegador con dos cuentas de prueba (ya borr
 
 ### D. Diseño
 
+- [ ] D0. **Biblioteca más amigable (pedido de Leo, 25/11/2026; boceto mostrado):** estantes en lugar de lista (unas 8 secciones con ícono y cantidad → temas → separado por tipo: libros, manuales y guías, artículos, instrumentos), migas "Biblioteca › Sección › Tema", buscador siempre arriba con resultados por estante, tarjetas con título, autor y año, botón "Ver" (abrir en el navegador) además de "Descargar" y estante "Lo nuevo". Al terminar la subida: repartir los 160 de "Otros temas" en los estantes y publicar el catálogo ordenado. Después: "Mis descargas", "Lo más descargado" y favoritos.
 - [ ] D1. Darle la cara "verde bosque" del sitio: ingreso, panel de bienvenida y biblioteca.
 - [ ] D2. Revisarlo en celular.
 
